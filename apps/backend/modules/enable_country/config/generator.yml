@@ -1,0 +1,20 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      EnableCountry
+    theme:            default
+
+    fields:
+      language_symbol:     { name: Language Symbol }
+      refill:    { help: Refill Amount Must be Comma Separate }
+
+    edit:
+      title: Create/Edit Country
+      display: [name, language, language_symbol, currency , currency_symbol, status, base_url,refill,calling_code,cbf_rate]
+
+    list:
+      display: [name, language, language_symbol, currency , currency_symbol, status, base_url,refill,calling_code,cbf_rate]
+      max_per_page: 100
+      object_actions:
+        _edit: ~
+        _delete: ~

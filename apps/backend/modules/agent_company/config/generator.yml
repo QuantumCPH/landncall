@@ -1,0 +1,15 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      AgentCompany
+    theme:            default
+    fields:
+        cvr_number: {name: Vat Number}
+    list:
+      filters: [id, name, cvr_number ]
+      display: [id, name, cvr_number, contact_name, head_phone_number, status , registration_revenue_commissision ,refill_revenue_commissision,revenue_at_shop, registration_revenue,refill_revenue,revenue_at_shop,sms_code]
+      max_per_page: 500
+      object_actions:
+        _edit: ~
+        _delete: ~
+        #viewDetail : {label: view details, action: view}

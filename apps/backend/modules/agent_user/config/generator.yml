@@ -1,0 +1,9 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      AgentUser
+    theme:            default
+    list:
+      display: [id, agent_company, username, password, status]
+      object_actions:
+        _delete: ~

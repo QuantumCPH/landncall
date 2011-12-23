@@ -1,0 +1,108 @@
+<?php use_helper('I18N') ?>
+<?php use_helper('Number') ?>
+
+
+<script type="text/javascript">
+function countChar(str)
+{
+var chars = document.getElementById('chars');
+chars.value = "Characters: "+str.length+"/434";
+}
+</script>
+
+
+<?php include_partial('dashboard_header', array('customer'=> $customer, 'section'=>__('Refill') ) ) ?>
+
+
+<div class="left-col">
+    <?php include_partial('navigation', array('selected'=>'', 'customer_id'=>$customer->getId())) ?>
+	<div class="split-form">
+      <div class="fl col">
+  
+
+          <form action=<?php echo url_for('customer/websms')?>  method="post" id="websms" onsubmit="return checkForm()">
+    <center><h3>Your Current Balance is: <?php echo $balance ?> </h3></center>
+       <ul>
+        <li>  </li>
+        <li bgcolor="f0f0f0">
+            NOTICE: <br />
+		  - 1 SMS constitutes 142 characters <br />
+		  - Message upto 302 characters will be considered as 2 sms <br />
+		  - Message upto 432 characters will be considered as 3 SMS <br />
+		  - Any Text written above character limit will be automatically truncated <br />
+          - SMS charges may apply <br />
+		  <br />
+       </li>
+       <br />
+       <li>
+    <table cellspacing="0" class="summary">
+        <tr bgcolor="#f0f0f0">
+            <td>
+               <label for="country">Country</label>
+            </td>
+            <td>
+                <select name="country" id="country" >
+             
+                <?php foreach($countries as $country){ ?>
+                    <option value="<?php echo $country->getCallingCode() ?>"><?php echo $country->getName() ?></option>
+              
+                <?php } ?>
+                </select>
+            </td>
+            <td> </td>
+        </tr>
+        <tr bgcolor="#ffffff">
+            <td></td>
+            <td></td>
+        </tr>
+        <tr bgcolor="#ffffff">
+            <td>
+                <label for="destination">Destination Number<br />(without trailing 0)</label>
+            </td>
+            <td>
+                <input type="text" name="number" id="number" size="30">
+            </td>
+            <td>
+                
+                 <input type="text" name="chars" id="chars" value="Characters: 0/432" disabled size="8">
+            </td>
+
+        </tr>
+        <tr bgcolor="#ffffff">
+            <td></td>
+            <td></td>
+        </tr>
+        <tr bgcolor="#f0f0f0">
+            <td>
+                <label for="message">Message:</label>
+            </td>
+            <td colspan="2">
+                <TEXTAREA id="message" name="message" rows="10" cols="30" maxlength="451" onkeydown="countChar(this.value)"></TEXTAREA>
+            </td>
+        </tr>
+        <tr bgcolor="#ffffff">
+            <td colspan="3">&nbsp;</td>
+            
+        </tr>
+        <tr>
+            <td>
+                    <input type="submit" value="Send SMS" >
+            </td>
+        </tr>
+    </table>
+            <br />
+            <br />
+   
+        </li>
+    </ul>
+</form>
+
+          
+          <br />
+          <?php echo $res_cbf ?>
+
+      </div>
+    </div> <!-- end split-form -->
+	
+  </div> <!-- end left-col -->
+  <?php include_partial('sidebar') ?>

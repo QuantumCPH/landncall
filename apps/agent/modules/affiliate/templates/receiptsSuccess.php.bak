@@ -1,0 +1,53 @@
+<?php $sf_user->setCulture('da_DK'); ?>
+<?php use_helper('I18N') ?>
+<?php use_helper('Number') ?>
+<style type="text/css">
+	table {
+		margin-bottom: 10px;
+	}
+	
+	table.summary td {
+		font-size: 1.3em;
+		font-weight: normal;
+	}
+</style>
+<div class="report_container">
+<h2>Reciepts For Transactions</h2>
+<table cellspacing="0" width="100%" class="summary">	
+	<tr>
+		<th>&nbsp;</th>
+		<th>Date</th>
+		<th>Customer name</th>
+		<th>Mobile Number</th>
+		<th>Amount Refilled</th>
+		<th>Description</th>
+		<th>Show Reciept</th>
+		
+	</tr>
+	<?php 
+	$i = 0;
+	foreach($transactions as $transaction):
+	?>
+	<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+		<td><?php echo ++$i ?>.</td>
+		<td><?php echo $transaction->getCreatedAt() ?>
+		<td><?php 
+			$customer = CustomerPeer::retrieveByPK($transaction->getCustomerId());
+			//$customer2 = CustomerPeer::retrieveByPK(72);
+			//echo $customer2->getFirstName();
+			echo sprintf("%s %s", $customer->getFirstName(), $customer->getLastName());
+			?>
+		</td>
+		<td><?php echo $customer->getMobileNumber?></td>
+		<td >
+			<?php echo BaseUtil::format_number($transaction->getAmount()) ?>
+		</td>
+		<td>
+		<?php echo $transaction->getDescription() ?>
+		</td>
+		<td><a href="#" class="receipt" onclick="javascript: window.open('<?php echo url_for('affiliate/printReceipt?tid='.$transaction->getId(), true) ?>')"> Reciept</a>
+		</td>
+		</td>
+	</tr>
+	<?php endforeach; ?>
+</table>

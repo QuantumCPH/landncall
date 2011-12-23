@@ -1,0 +1,22 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Device
+    theme:            default
+    
+    list:
+      display: [id, name, manufacturer]
+      fields:
+              manufacturer: {name: Mobile brand}
+      max_per_page: 500
+      object_actions:
+              _delete: ~
+              _edit: ~
+    edit:
+      title: 'Create/Edit device'
+      display: [id, name, manufacturer_id]
+    create:
+      title: 'Create device'
+      display: [id, name, manufacturer_id]
+      _delete: ~
+      

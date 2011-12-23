@@ -1,0 +1,18 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Faqs
+    theme:            default
+    list:
+      display: [id, question, answer, enablecountry, status]
+      fields:
+        enablecountry: {name: Country}
+      object_actions:
+        _delete: ~
+        _edit: ~
+    edit:
+      title: 'Edit Faqs'
+      display: [id, question, answer, country_id, status_id]
+    add:
+      title: 'Add Faqs'
+      display: [id, question, answer, country_id, status_id]

@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <?php include_http_metas() ?>
+        <?php include_metas() ?>
+        <?php include_title() ?>
+        <link rel="shortcut icon" href="/favicon.ico" />
+    </head>
+    <body>
+        <div id="basic" class="container_12 mitform">
+            <div id="header" class="grid_12">
+                <div id="logo" class="grid_3 alpha">
+                    <?php echo image_tag('/images/logo.gif');// link_to(image_tag('/images/logo.gif'), '@homepage'); ?>
+                </div>
+                <div id="slogan" class="grid_6 omega">
+                    <h1 class="slogan">CRM/Billing/Agent Portal</h1>
+                </div>
+            </div>
+            <div id="menu" class="grid_2 alpha">
+                <h1>menu</h1>
+                <ul class="menu-list">
+                    <?php if($sf_user->isAuthenticated()): ?>
+                    <li><?php echo link_to('Overview', 'affiliate/report?show_summary=1');?></li>
+                    <li><?php echo link_to('Register a Customer', '@customer_registration_step1');?></li>
+                    <li><?php echo link_to('Refill', 'affiliate/refill') ?>
+					<li><?php echo link_to('Receipts', 'affiliate/receipts');?></li>
+                    <li><?php echo link_to('My Company Info', 'agentcompany/view');?></li>
+                    <li><?php echo link_to('My Earnings', 'affiliate/report?show_details=1');?></li>
+                <?php /*
+                    <li><?php echo link_to('create customer', 'company/new');?></li>
+                  <!--<li><?php //echo link_to('create customer employee', 'employee/new');?></li>-->
+                    <li><?php echo link_to('view customer list', 'company/index');?></li>
+                  <!--<li><?php //echo link_to('view employee list', 'employee/index');?></li>-->
+				 */ ?>
+				 	<li><?php echo link_to('Supporting Handsets', 'affiliate/supportingHandset');?></li>
+				 	<li><?php echo link_to('User Guide', 'affiliate/userguide');?></li>
+				 	<li><?php echo link_to('FAQ', 'affiliate/faq');?></li>
+					
+                    <li><?php echo link_to('Logout', 'agentUser/logout');?></li>
+                    <?php endif; ?>
+                </ul>
+
+            </div>
+            <div id="content" class="grid_10 omega">
+
+                <?php if($sf_user->hasFlash('message')): ?>
+                    <div id="info-message" class="grid_9 save-ok">
+                        <?php echo $sf_user->getFlash('message'); ?>                        
+                    </div>
+                <?php endif; ?>
+                
+                <?php if($sf_user->isAuthenticated()): ?>
+                <p>Provide this link to your customers while they signup with your reference.
+				
+				<a href="http://zerocall.com/b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession') ?>">
+				http://zerocall.com/b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession')>?>
+				
+				</a>
+			
+				</p>
+
+				
+				<?php endif; ?>
+
+                <?php echo $sf_content ?>
+            </div>
+            <div id="footer" class="grid_12">
+                This is the footer
+            </div>
+            <div class="clear"></div>
+        </div>
+    </body>
+</html>

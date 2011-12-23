@@ -1,0 +1,827 @@
+<?php
+require_once(sfConfig::get('sf_lib_dir').'\Browser.php');
+/**
+ * affiliate actions.
+ *
+ * @package    zapnacrm
+ * @subpackage affiliate
+ * @author     Your name here
+ * @version    SVN: $Id: actions.class.php,v 1.2 2010-08-05 20:37:52 orehman Exp $
+ */
+class affiliateActions extends sfActions
+{
+ /**
+  * Executes index action
+  *
+  * @param sfRequest $request A request object
+  */
+  public function executeIndex(sfWebRequest $request)
+  {
+	  $this->updateNews = NewupdatePeer::doSelect(new Criteria());
+    $this->forward('default', 'module');
+  }
+  
+  public function executeReceipts(sfWebRequest $request)
+  {
+	  $this->updateNews = NewupdatePeer::doSelect(new Criteria());
+    $this->forward404Unless($this->getUser()->isAuthenticated());
+
+		$c = new Criteria();
+		$agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession');
+		$c->add(AgentCompanyPeer::ID, $agent_company_id);
+
+		$this->forward404Unless(AgentCompanyPeer::doSelectOne($c));
+
+		//echo $agent_company_id;
+		
+		
+		$cus = new Criteria();
+		$cus->add(CustomerPeer::REFERRER_ID,$agent_company_id );
+
+
+		$customers = CustomerPeer::doSelect($cus);
+
+		$transactions = array();
+		$count = count($transactions);
+				
+		$ar = new Criteria();
+		$ar->add(TransactionPeer::AGENT_COMPANY_ID,$agent_company_id);
+		$ar->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
+                $agentRefills = TransactionPeer::doSelect($ar);
+
+		foreach($agentRefills as $agentRefill){
+			
+			if($agentRefill->getOrderId()){
+				
+				$transactions[$count] = $agentRefill;
+				$count = $count-1;
+			}
+
+		}
+		
+		
+
+		$this->transactions = $transactions;
+		
+  }
+
+public function executePrintReceipt(sfWebRequest $request)
+  {
+  	//is authenticated
+	$this->forward404Unless($this->getUser()->isAuthenticated());
+	$this->updateNews = NewupdatePeer::doSelect(new Criteria());
+
+  	//check to see if transaction id is there
+  	
+  	$transaction_id = $request->getParameter('tid');
+  	
+  	$this->forward404Unless($transaction_id);
+  	
+  	//is this receipt really belongs to authenticated user
+  	
+  	$transaction = TransactionPeer::retrieveByPK($transaction_id);
+
+	$c = new Criteria();
+	$c->add(CustomerPeer::ID, $transaction->getCustomerId());
+	$this->customer = CustomerPeer::doSelectOne($c);
+	
+  	
+  	$this->forward404Unless($transaction->getCustomerId()==$this->customer->getId(), 'Not allowed');
+  	
+  	//set customer order
+  	$customer_order = CustomerOrderPeer::retrieveByPK($transaction->getOrderId());
+  	
+  	if ($customer_order)
+  	{
+  		$vat = $customer_order->getIsFirstOrder()?
+  				($customer_order->getProduct()->getPrice()*$customer_order->getQuantity() -
+  				$customer_order->getProduct()->getInitialBalance()) * .20:
+  				0;
+  	}
+  	else
+  		die('Error retreiving');
+
+
+  	$this->renderPartial('affiliate/order_receipt', array(
+  					'customer'=>$this->customer,
+  					'order'=>CustomerOrderPeer::retrieveByPK($transaction->getOrderId()),
+  					'transaction'=>$transaction,
+  					'vat'=>$vat,
+  				));
+  				
+  	return sfView::NONE;
+  	
+  	
+  }
+
+  public function executeNewsListing(sfWebRequest $request){
+	$this->forward404Unless($this->getUser()->isAuthenticated());
+
+	 	 
+         $c=new Criteria();  
+         $c->addDescendingOrderByColumn(NewupdatePeer::STARTING_DATE);
+         $news=  NewupdatePeer::doSelect($c);
+         $this->news = $news;
+
+
+  }
+
+  public function executeReport(sfWebRequest $request)
+  {
+		$this->forward404Unless($this->getUser()->isAuthenticated());
+
+		$nc = new Criteria();
+		$nc->addDescendingOrderByColumn(NewupdatePeer::STARTING_DATE);
+		$this->updateNews = NewupdatePeer::doSelect($nc);
+		
+		$ca = new Criteria();
+		$ca->add(AgentCompanyPeer::ID, $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+		$this->forward404Unless(AgentCompanyPeer::doSelectOne($ca));
+
+             
+		
+		
+		
+		
+			
+			try{
+			
+               
+//                        
+//
+//                       
+                        
+                        
+
+
+                     
+                       $c = new Criteria();
+                       $c->add(CustomerPeer::REFERRER_ID,$agent_company_id);
+					   $c->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
+                       $c->addDescendingOrderByColumn(CustomerPeer::CREATED_AT);
+                       $customers=CustomerPeer::doSelect($c);
+
+                    
+
+                       $registration_sum=0.00;
+                       $registration_commission=0.00;
+                       $registrations = array();
+                       $i=1;
+                       foreach($customers as $customer){
+                           $tc = new Criteria();
+                           $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId());
+                           $registrations[$i]=TransactionPeer::doSelectOne($tc);
+                           $i=$i+1;
+                       }
+                       
+
+                       foreach($registrations as $registration){
+                        $registration_sum = $registration_sum + $registration->getAmount();
+                       
+                       }
+                        $registration_commission=$registration_sum / 10;
+
+                       $this->registrations = $registrations;
+                       $this->registration_revenue = $registration_sum;
+                       $this->registration_commission = $registration_commission;
+
+                      
+
+                       $cc = new Criteria();
+                       $cc->add(TransactionPeer::AGENT_COMPANY_ID,$agent_company_id);
+                       $cc->add(TransactionPeer::DESCRIPTION,'Zerocall tank-op' );
+                       $cc->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
+                       $refills=TransactionPeer::doSelect($cc);
+       
+
+                           $refill_sum=0.00;
+                           $refill_com=0.00;
+                           foreach($refills as $refill){
+                            $refill_sum = $refill_sum+ $refill->getAmount();
+                            
+                           }
+                           $refill_com=$refill_sum / 10;
+
+                      
+                       $this->refills = $refills;
+                       $this->refill_revenue = $refill_sum;
+                       $this->refill_com = $refill_com;
+
+                      
+			
+			
+                   
+                   $efc = new Criteria();
+                   $efc->add(TransactionPeer::AGENT_COMPANY_ID,$agent_company_id);
+                   
+                   $efc->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
+                   $ef=TransactionPeer::doSelect($efc);
+              
+                   $ef_sum=0.00;
+                   $ef_com=0.00;
+                   foreach($ef as $efo)
+                   {
+                       $description=substr($efo->getDescription(),0 ,26);
+                       if($description== 'Zerocall refill via agent ')
+                       {
+                         
+
+                               $ef_sum = $ef_sum+ $efo->getAmount();
+                            
+
+                           
+                       }
+                   }
+
+                   $ef_com =  $ef_sum  / 10;
+
+                   $this->ef = $ef;
+                   $this->ef_sum = $ef_sum;
+                   $this->ef_com = $ef_com;
+
+                   
+
+
+                  $this->sf_request = $request;
+                        }catch(Exception $e){
+                            echo $e->getMessage();
+                        }
+
+  }
+  
+	public function executeRefill(sfWebRequest $request)
+	{
+		$this->browser = new Browser();
+		$this->form = new AccountRefillAgent();
+		if ($request->isMethod('post'))
+		{
+			$form = array(
+				'mobile_number'=>$request->getParameter('mobile_number'),
+				'extra_refill'=>$request->getParameter('extra_refill')
+			);
+
+			$this->form->bind($form);
+			
+			if ($this->form->isValid())
+			{
+				//get customer
+				$c = new Criteria();
+				$c->add(CustomerPeer::MOBILE_NUMBER, $form['mobile_number']);
+				
+				$customer = CustomerPeer::doSelectOne($c);
+				
+				//create order				
+				$order = new CustomerOrder();
+				
+				$order->setCustomer($customer);
+				
+				//get customer first product purchase
+				$c = new Criteria();
+				$c->add(CustomerOrderPeer::CUSTOMER_ID, $customer->getId());
+				$c->add(CustomerOrderPeer::IS_FIRST_ORDER, true);
+				
+				$customer_product = CustomerOrderPeer::doSelectOne($c)->getProduct();
+				
+				$order->setProduct($customer_product);
+				$order->setQuantity(0);
+				$order->setExtraRefill($form['extra_refill']);
+				
+				$order->save();
+
+				//create transaction
+				$transaction = new Transaction();
+				$transaction->setOrderId($order->getId());
+				$transaction->setCustomer($customer);
+				$transaction->setAmount($form['extra_refill']);
+				
+				//get agent name
+				$c = new Criteria();
+				$c->add(AgentCompanyPeer::ID, $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+		
+				
+				$transaction->setDescription(
+					$this->getContext()->getI18N()->__('Zerocall refill via agent ').
+					'('.AgentCompanyPeer::doSelectOne($c)->getName().')');
+				$transaction->setAgentCompanyId(AgentCompanyPeer::doSelectOne($c)->getId());
+				
+				//recharge customer account.
+				
+				$is_recharged =
+				Fonet::recharge($customer, $transaction->getAmount());
+				
+				if ($is_recharged)
+				{
+					//set status
+					$order->setOrderStatusId(sfConfig::get('app_status_completed'));
+					$transaction->setTransactionStatusId(sfConfig::get('app_status_completed'));
+					
+					$order->save();
+					$transaction->save();
+					
+					//send sms
+					$sms_message = $this->getContext()->getI18N()->__(
+						'Your account is successfully refilled with %1% dkk.', array("%1%"=>$transaction->getAmount())
+					);
+					
+					SMS::send($sms_message, $customer->getMobileNumber());
+					
+					//set vat
+					
+					$vat = 0;
+					//send invoices
+				  	$message_body = $this->getPartial('order_receipt', array(
+				  						'customer'=>$customer,
+				  						'order'=>$order,
+				  						'transaction'=>$transaction,
+				  						'vat'=>$vat,
+				  						'wrap'=>false,
+				  					));
+				  	
+				    $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
+					$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
+					$sender_name = sfConfig::get('app_email_sender_name', 'zerocall support');
+				
+					$recepient_email = trim($customer->getEmail());
+					$recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
+					
+					$c = new Criteria();
+					$c->add(AgentCompanyPeer::ID, $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+			
+					
+					$recepient_agent_email  = AgentCompanyPeer::doSelectOne($c)->getEmail();
+					$recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
+					
+/*				  	require_once(sfConfig::get('sf_lib_dir').'/swift/lib/swift_init.php');
+							
+					$connection = Swift_SmtpTransport::newInstance()
+								->setHost(sfConfig::get('app_email_smtp_host'))
+								->setPort(sfConfig::get('app_email_smtp_port'))
+								->setUsername(sfConfig::get('app_email_smtp_username'))
+								->setPassword(sfConfig::get('app_email_smtp_password'));				
+					
+					$mailer = new Swift_Mailer($connection);
+					
+					$message_1 = Swift_Message::newInstance($subject)
+					         ->setFrom(array($sender_email => $sender_name))
+					         ->setTo(array($recepient_email => $recepient_name))
+					         ->setBody($message_body, 'text/html')
+					         ;
+					         
+					$message_2 = Swift_Message::newInstance($subject)
+					         ->setFrom(array($sender_email => $sender_name))
+					         ->setTo(array($recepient_agent_email => $recepient_agent_name))
+					         ->setBody($message_body, 'text/html')
+					         ;
+					         				         
+					$message_3 = Swift_Message::newInstance($subject)
+					         ->setFrom(array($sender_email => $sender_name))
+					         ->setTo(array($sender_email => $sender_name))
+					         ->setBody($message_body, 'text/html')
+					         ;
+					         
+					
+					         
+					if (!($mailer->send($message_1) && $mailer->send($message_2) && $mailer->send($message_3)))
+					    $this->getUser()->setFlash('error_message', $this->getContext()->getI18N()->__(
+					  		"Email confirmation is not sent" ));
+		
+					else*/
+					
+					//send email to user
+					$email = new EmailQueue();
+			
+					$email->setSubject($subject);
+					$email->setReceipientName($recepient_name);
+					$email->setReceipientEmail($recepient_email);
+					$email->setMessage($message_body);
+					
+					$email->save();
+					
+					//send to agent
+					
+					if ($recepient_agent_email):
+						$email2 = new EmailQueue();
+				
+						$email2->setSubject($subject);
+						$email2->setReceipientName($recepient_agent_name);
+						$email2->setReceipientEmail($recepient_agent_email);
+						$email2->setMessage($message_body);
+						
+						$email->save();	
+					endif;
+					
+					
+					//send to support
+					$email3 = new EmailQueue();
+			
+					$email3->setSubject($subject);
+					$email3->setReceipientName($sender_name);
+					$email3->setReceipientEmail($sender_email);
+					$email3->setMessage($message_body);
+					
+					$email3->save();
+					
+					//end email
+					
+					//$this->getRequest()->setParameter('tid', $transaction->getId());
+					
+					//url_for('affiliate/printReceipt?tid='.$transaction->getId(), true)
+					//url_for('affiliate/printReceipt?tid='.$transaction->getId(), true)
+
+				    $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__('%1% account is successfully refilled with %2% dkk.', array("%1%"=>$customer->getMobileNumber(), "%2%"=>$transaction->getAmount() )));
+
+					$this->redirect('affiliate','receipts');
+					
+				
+					
+				}
+				else
+				{
+					$this->getUser()->setFlash('error_message', 'Unable to refill the account.');
+				
+				} //end else
+				
+			}
+		}
+
+	}
+	
+  public  function executeRegisterCustomer(sfWebRequest $request)
+  {
+    	
+  		
+      		
+    	
+  		
+  		//set referrer id
+  		
+         
+  		$this->getUser()->getAttribute('agent_company_id', '', 'usersession');
+                $c = new Criteria();
+$this->browser = new Browser();
+  		$c->add(AgentCompanyPeer::ID, $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+  		$referrer_id = AgentCompanyPeer::doSelectOne($c);//->getId();
+  		if($request->isMethod('post')){  			
+                        $this->form = new CustomerForm();
+                        $this->form->bind($request->getParameter("newCustomerForm"), $request->getFiles("newCustomerForm"));
+                        $this->form->setDefault('referrer_id', $referrer_id);
+                        unset($this->form['terms_conditions']);
+  			$this->processForm($request, $this->form);
+  		}else{
+                    $this->form = new CustomerForm();
+          
+                }
+  		
+  		//$this->setLayout();
+                sfView::NONE;
+  }
+  
+  protected function processForm(sfWebRequest $request, sfForm $form)
+  {
+  	//print_r($request->getParameter($form->getName()));
+ 
+
+
+  	$customer = $request->getParameter($form->getName());
+  	$product = $customer['product'];
+
+        //$customer['referrer_id']= $this->getUser()->getAttribute('agent_company_id', '', 'usersession');
+        
+  	
+    $form->bind($request->getParameter($form->getName()), $request->getFiles($form->getName()));
+
+    if ( $form->isValid())
+    {
+   	
+      $customer = $form->save();
+      $customer->setReferrerId($this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+      $customer->save();
+
+
+	  if($customer){
+		 
+	  }
+      $this->getUser()->setAttribute('customer_id', $customer->getId(), 'usersignup');
+      $this->getUser()->setAttribute('product_id', $product, 'usersignup');
+		  echo "redirecting";
+      $this->redirect('@customer_registration_step2?customer_id='.$customer->getId().'&product_id='.$product);
+      //$this->redirect(sfConfig::get('app_epay_relay_script_url').$this->getController()->genUrl('@signup_step2?customer_id='.$customer->getId().'&product_id='.$product, true));
+    }
+ //   if ($form->hasErrors()){
+//        echo 'form has errors<br/>';
+//        echo '<br/>password: '.$form['password']->renderError();
+//        echo '<br/>country: '.$form['country_id']->renderError();
+//        echo '<br/>first name: '.$form['first_name']->renderError();
+//        echo '<br/>last_name: '.$form['last_name']->renderError();
+//        echo '<br/>country_id: '.$form['country_id']->renderError();
+//        echo '<br/>city: '.$form['city']->renderError();
+//        echo '<br/>po box number: '.$form['po_box_number']->renderError();
+//        echo '<br/>mobile number: '.$form['mobile_number']->renderError();
+//        echo '<br/>device id: '.$form['device_id']->renderError();
+//        echo '<br/>email: '.$form['email']->renderError();
+//        echo '<br/>password: '.$form['password']->renderError();
+//        echo '<br/>is news letter subscribed: '.$form['is_newsletter_subscriber']->renderError();
+//        echo '<br/>created_at: '.$form['created_at']->renderError();
+//        echo '<br/>updated_at: '.$form['updated_at']->renderError();
+//        echo '<br/>customer_status_id: '.$form['customer_status_id']->renderError();
+//        echo '<br/>address: '.$form['address']->renderError();
+//        echo '<br/>fonet_customer_id: '.$form['fonet_customer_id']->renderError();
+//        echo '<br/>referrer_id: '.$form['referrer_id']->renderError();
+//        echo '<br/>telecom_operator_id: '.$form['telecom_operator_id']->renderError();
+//        echo '<br/>date_of_birth: '.$form['date_of_birth']->renderError();
+//       // echo '<br/>other'.$form['other: ']->renderError();
+//        echo '<br/>subscription_type: '.$form['subscription_type']->renderError();
+//        echo '<br/>auto_refill_amount: '.$form['auto_refill_amount']->renderError();
+//        echo '<br/>subscription_id: '.$form['subscription_id']->renderError();
+//        echo '<br/>last_auto_refill: '.$form['last_auto_refill']->renderError();
+//        echo '<br/>auto_refill_min_balance: '.$form['auto_refill_min_balance']->renderError();
+//        echo '<br/>c9_customer_number: '.$form['c9_customer_number']->renderError();
+//
+//        //echo ''.$form['']->renderError();
+//
+//    }
+    
+
+  }
+  
+  public function executeSetProductDetails(sfWebRequest $request)
+  {
+  		$this->forward404Unless($this->getUser()->isAuthenticated());
+		$this->updateNews = NewupdatePeer::doSelect(new Criteria());
+
+		$this->browser = new Browser();
+   		
+  		$this->form = new PaymentForm();
+
+		 unset( 
+			$this->form['cardno'],
+			$this->form['expmonth'],
+			$this->form['expyear'],
+			$this->form['cvc'],
+			$this->form['cardtype']
+		 );
+		 
+		 
+    	$product_id = $request->getParameter('product_id');
+    	$customer_id = $request->getParameter('customer_id');
+    	
+    	if($product_id == '' || $customer_id == ''){
+    		$this->forward404('Product id not found in session');
+    	}
+    	
+    	$order = new CustomerOrder();
+    	$transaction = new Transaction();
+    	
+    	$order->setProductId($product_id);
+    	$order->setCustomerId($customer_id);
+    	$order->setExtraRefill($order->getProduct()->getInitialBalance());
+    	
+    	//$extra_refil_choices = ProductPeer::getRefillChoices();
+    	
+    	//$order->setExtraRefill($extra_refil_choices[0]);//minumum refill amount
+    	$order->setIsFirstOrder(1);
+    	
+    	$order->save();
+		
+		$customer = CustomerPeer::retrieveByPk($customer_id);
+                $customer->setReferrerId($this->getUser()->getAttribute('agent_company_id', '', 'usersession')) ;
+                $customer->save();
+		$transaction->setAgentCompanyId($customer->getReferrerId() );
+
+    	$transaction->setAmount($order->getProduct()->getPrice() - $order->getProduct()->getInitialBalance() + $order->getExtraRefill());
+    	$transaction->setDescription($this->getContext()->getI18N()->__('Registration and first product order'));
+    	$transaction->setOrderId($order->getId());
+    	$transaction->setCustomerId($customer_id);
+        
+
+
+
+		
+    	//$transaction->setTransactionStatusId() // default value 1
+    	
+    	$transaction->save();
+    	
+    	$this->order = $order;
+    	$this->forward404Unless($this->order);
+    	
+    	$this->order_id = $order->getId();
+    	$this->amount   = $transaction->getAmount();
+  }
+  
+  public function executeCompleteCustomerRegistration(sfWebRequest $request)
+  {
+  	$this->forward404Unless($this->getUser()->isAuthenticated());
+	$this->updateNews = NewupdatePeer::doSelect(new Criteria());
+	$this->browser = new Browser();
+
+	$order_id = $request->getParameter('orderid');
+  	
+  	$order_amount = ((double)$request->getParameter('amount'))/100;
+  	
+  	$this->forward404Unless($order_id || $order_amount);
+  	
+
+  	$order = CustomerOrderPeer::retrieveByPK($order_id);
+  	
+  	//if order is already completed > 404
+  	$this->forward404Unless($order->getOrderStatusId()!=sfConfig::get('app_status_completed'));
+  	
+  	$this->forward404Unless($order);
+  	
+  	$c = new Criteria;
+  	$c->add(TransactionPeer::ORDER_ID, $order_id);
+  	
+  	$transaction = TransactionPeer::doSelectOne($c);
+  	
+  	//echo sprintf("%s = %s", $order_amount, $transaction->getAmount());
+  	
+  	//echo var_dump($transaction);
+  	
+  	$order->setOrderStatusId(sfConfig::get('app_status_completed', 3)); //completed
+  	$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 3)); //completed
+  	$transaction->setTransactionStatusId(sfConfig::get('app_status_completed', 3)); //completed
+  	
+  	if($transaction->getAmount() > $order_amount){
+  		//error
+  		$order->setOrderStatusId(sfConfig::get('app_status_error', 5)); //error in amount
+  		$transaction->setTransactionStatusId(sfConfig::get('app_status_error', 5)); //error in amount
+  		$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_error', 5)); //error in amount
+  		
+  	} else if ($transaction->getAmount() < $order_amount){
+  		//$extra_refill_amount = $order_amount - $order->getProduct()->getPrice(); //extra refill includes vat in this way
+  		//$order->setExtraRefill(0); //extra refill disabled
+  		$transaction->setAmount($order_amount);
+  	}
+  	
+  	$is_transaction_completed = $transaction->getTransactionStatusId()==sfConfig::get('app_status_completed', 3);
+  	
+  	// if transactio ok
+  	if ($is_transaction_completed)
+  	{
+  		/*
+	  	$transaction_vat = .20*$order_amount;
+	  	$product_price = ($order->getProduct()->getPrice()) - ($order->getProduct()->getPrice()*.20);
+	  	
+	  	$quantity = 0;
+	  	
+	  	try
+	  	{
+	  		$quantity = ceil(($order_amount-$transaction_vat)/$product_price); //extra refill not there
+	  	}
+	  	catch (Exception $e)
+	  	{
+	  		//
+	  	}
+	  	
+	  	//set order quantity
+	  	$order->setQuantity($quantity);
+		*/
+	  	$product_price = $order->getProduct()->getPrice() - $order->getExtraRefill();
+	  	
+	  	$product_price_vat = .20 * $product_price;
+	  	
+	  	//set active agent_package in case customer
+	
+	  	if ($order->getCustomer()->getAgentCompany())
+	  	{
+	  		$order->setAgentCommissionPackageId($order->getCustomer()->getAgentCompany()->getAgentCommissionPackageId());
+	  	}
+	  	
+  	}
+  	
+  	$order->save();
+  	$transaction->save();
+  	
+  	if ($is_transaction_completed)
+  	{
+	  	//set customer's proudcts in use
+	  	$customer_product = new CustomerProduct();
+	  	
+	  	$customer_product->setCustomer($order->getCustomer());
+	  	$customer_product->setProduct($order->getProduct());
+	  	
+	  	$customer_product->save();
+	  	
+	  	//register to fonet
+	  	$this->customer = $order->getCustomer();
+	  	
+	  	
+	  	Fonet::registerFonet($this->customer);
+	  	Fonet::recharge($this->customer, $order->getExtraRefill());
+	  	
+	  	//send email
+	  	  
+	  	$message_body = $this->getPartial('order_receipt', array(
+	  						'customer'=>$this->customer,
+	  						'order'=>$order,
+	  						'transaction'=>$transaction,
+	  						'vat'=>$product_price_vat,
+	  						'wrap'=>false,
+	  					));
+	  	
+	    $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
+		$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
+		$sender_name = sfConfig::get('app_email_sender_name', 'zerocall support');
+	
+		$recepient_email = trim($this->customer->getEmail());
+		$recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
+
+							
+		$c = new Criteria();
+		$c->add(AgentCompanyPeer::ID, $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+
+		$recepient_agent_email  = AgentCompanyPeer::doSelectOne($c)->getEmail();
+		$recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
+		
+		
+/*	  	require_once(sfConfig::get('sf_lib_dir').'/swift/lib/swift_init.php');
+				
+		$connection = Swift_SmtpTransport::newInstance()
+					->setHost(sfConfig::get('app_email_smtp_host'))
+					->setPort(sfConfig::get('app_email_smtp_port'))
+					->setUsername(sfConfig::get('app_email_smtp_username'))
+					->setPassword(sfConfig::get('app_email_smtp_password'));				
+		
+		$mailer = new Swift_Mailer($connection);
+		
+		$message_1 = Swift_Message::newInstance($subject)
+		         ->setFrom(array($sender_email => $sender_name))
+		         ->setTo(array($recepient_email => $recepient_name))
+		         ->setBody($message_body, 'text/html')
+		         ;
+		         
+		$message_2 = Swift_Message::newInstance($subject)
+		         ->setFrom(array($sender_email => $sender_name))
+		         ->setTo(array($sender_email => $sender_name))
+		         ->setBody($message_body, 'text/html')
+		         ;
+		         
+		if (!($mailer->send($message_1) && $mailer->send($message_2)))
+		    $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__(
+		  		"Email confirmation is not sent" ));*/
+				//send email to user
+				$email = new EmailQueue();
+		
+				$email->setSubject($subject);
+				$email->setReceipientName($recepient_name);
+				$email->setReceipientEmail($recepient_email);
+				$email->setMessage($message_body);
+				
+				$email->save();
+				
+				//send to agent
+				
+				if ($recepient_agent_email):
+					$email2 = new EmailQueue();
+			
+					$email2->setSubject($subject);
+					$email2->setReceipientName($recepient_agent_name);
+					$email2->setReceipientEmail($recepient_agent_email);
+					$email2->setMessage($message_body);
+					
+					$email->save();	
+				endif;
+				
+				
+				//send to support
+				$email3 = new EmailQueue();
+		
+				$email3->setSubject($subject);
+				$email3->setReceipientName($sender_name);
+				$email3->setReceipientEmail($sender_email);
+				$email3->setMessage($message_body);
+				
+				$email3->save();
+				
+				//end email
+
+		//end send email
+					//$this->getUser()->setFlash('message', $this->getContext()->getI18N()->__('%1% account is successfully refilled with %2% dkk.', //array("%1%"=>$customer->getMobileNumber(), "%2%"=>$transaction->getAmount() )));
+
+					$this->redirect('affiliate/receipts');
+
+  	}
+
+
+  }
+  
+  public function executeFaq(sfWebRequest $request)
+  {
+	  $this->updateNews = NewupdatePeer::doSelect(new Criteria());
+	  $this->browser = new Browser();
+  	
+  }
+  
+  public function executeUserguide(sfWebRequest $request)
+  {
+	  $this->updateNews = NewupdatePeer::doSelect(new Criteria());
+  	$this->browser = new Browser();
+  }
+  
+  public function executeSupportingHandset(sfWebRequest $request)
+  {
+	  $this->updateNews = NewupdatePeer::doSelect(new Criteria());
+	  $this->browser = new Browser();
+  	
+  }
+}

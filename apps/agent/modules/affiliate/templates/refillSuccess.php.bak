@@ -1,0 +1,50 @@
+<form method="post"  class="split-form-sign-up" id="refill_form" action="<?php url_for('affiliate/refill') ?>" <?php $form->isMultipart() and print 'enctype="multipart/form-data" ' ?>>
+
+	<ul class="fl col">
+	
+	      <?php
+            $error_mobile_number = false;
+            if($form['mobile_number']->hasError())
+            	$error_mobile_number = true;
+            ?>
+            <li>
+             <?php echo $form['mobile_number']->renderLabel() ?>
+             <?php echo $form['mobile_number'] ?>
+             <?php if ($error_mobile_number): ?>
+             <span id="cardno_decl" class="alertstep1">
+			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
+			 </span>
+			 <?php endif; ?>
+             <div class='inline-error'><?php echo $error_mobile_number?$form['mobile_number']->renderError():'&nbsp;'?></div>
+            </li>
+            
+             <?php
+            $error_extra_refill = false;
+            if($form['extra_refill']->hasError())
+            	$error_extra_refill = true;
+            ?>
+            <li>
+             <?php echo $form['extra_refill']->renderLabel() ?>
+             <?php echo $form['extra_refill'] ?>
+             <?php if ($error_extra_refill): ?>
+             <span id="cardno_decl" class="alertstep1">
+			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
+			 </span>
+			 <?php endif; ?>
+             <div class='inline-error'><?php echo $error_extra_refill?$form['extra_refill']->renderError():'&nbsp;'?></div>
+             <?php
+          if( $browser->getBrowser() == Browser::BROWSER_IE  )
+          {
+                   ?>
+          <li class="fr buttonplacement" style="margin-left:20px ">
+               <input type="submit" value="Next">
+          </li>
+
+          <?php } else{ ?>
+	          <li class="fr buttonplacement">
+	            <button onclick="$('#refill_form').submit();" style="cursor: pointer; left: 0px"><?php echo __('Refill') ?></button>
+	          </li>
+	<?php }?>
+			  
+	</ul>
+</form>

@@ -1,0 +1,20 @@
+generator:
+  class:              sfPropelAdminGenerator
+  param:
+    model_class:      Userguide
+    theme:            default
+    list:
+      title: 'User Guide'
+      display: [id, title, description, enablecountry, status]
+      fields:
+        enablecountry: {name: Country}
+        file_path:  { type: admin_input_file_tag }
+      object_actions:
+        _delete: ~
+        _edit: ~
+    edit:
+      title: 'Create/Edit User Guide'
+      display: [id, title, description, country_id, status_id,image]
+    create:
+      title: 'Create/Edit User Guide'
+      display: [id, title, description, country_id, status_id,image]

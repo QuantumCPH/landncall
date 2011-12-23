@@ -1,0 +1,34 @@
+<?php
+/*
+  <div class="right-col">
+    <div class="box box-b">
+      <h3>Zapna Call<span>All</span></h3>
+      <small>Ring billigt over hele verden</small>
+      <p>Luda esse singularis simmilas
+        vector ludo prosint nunc pro
+        exreas...</p>
+      <a href="#" class="more"><span>Læs og bestil &raquo;</span></a> </div>
+
+  </div>
+*/?>
+
+<!-- new sidebar -->
+
+<div id="sidebar" role="complementary">
+
+	<div class="right-col">
+		<div class="box box-0">
+			<h3>Web SMS</h3>
+			<p>Send sms til hele verden til de bedste priser pa marked</p>
+			<br />
+			<a href="http://test.zerocall.com/b2c/customer/websms" rel="bookmark" title="Gratis lande"><span>Send SMS</span></a>
+		</div>
+
+		<div class="box box-1">
+			<h3>Tip en ven</h3>
+			<p>Internationale opkald fra 0 &oslash;re* Med zerOcall Out kan du ringe til hele
+  verden til de</p>
+			<a title="Tip en ven" rel="bookmark" href="http://test.zerocall.com/b2c/customer/tellAFriend"><span>L&aelig;s og bestil &raquo;</span></a>
+		</div>
+	</div>
+</div>
