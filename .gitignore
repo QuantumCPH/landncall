@@ -1,4 +1,4 @@
 cache/
 log/
-config/database.yml
+config/databases.yml
 config/ProjectConfiguration.class.php
