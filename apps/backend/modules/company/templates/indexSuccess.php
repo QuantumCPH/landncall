@@ -1,12 +1,12 @@
-<h1>Company List</h1>
+<h1>Zapna Company List</h1>
 
 <table class="list-view">
   <thead>
-    <tr>
+    <tr>    
       <th>Id</th>
       <th>Name</th>
       <th>Cvr number</th>
-      <th>Ean number</th>
+     
       <th>Address</th>
       <th>Post code</th>
       <th>Contact name</th>
@@ -22,7 +22,7 @@
       <td><a href="<?php echo url_for('company/edit?id='.$company->getId()) ?>"><?php echo $company->getId() ?></a></td>
       <td><?php echo $company->getName() ?></td>
       <td><?php echo $company->getCvrNumber() ?></td>
-      <td><?php echo $company->getEanNumber() ?></td>
+      
       <td><?php echo $company->getAddress() ?></td>
       <td><?php echo $company->getPostCode() ?></td>
       <td><?php echo $company->getContactName() ?></td>

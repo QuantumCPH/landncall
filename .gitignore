@@ -2,3 +2,4 @@ cache/
 log/
 config/databases.yml
 config/ProjectConfiguration.class.php
+nbproject/

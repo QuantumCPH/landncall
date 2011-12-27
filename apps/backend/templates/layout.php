@@ -66,6 +66,23 @@
   		
       </ul>
       <ul id="sddm">
+             <li><a href="#"
+                onmouseover="mopen('m2')"
+                onmouseout="mclosetime()">B2B</a>
+                <div id="m2"
+                    onmouseover="mcancelclosetime()"
+                    onmouseout="mclosetime()">
+
+                    <?php echo link_to('Companies list', 'company/index') ?>
+                    <?php echo link_to('Employee lists', 'employee/index') ?>
+                    <?php // echo link_to('Generte App Code', 'employee/appCode') ?>
+                    <?php //echo link_to('sale activity', 'sale_activity/index'); ?>
+                    <?php //echo link_to('support activity', 'support_activity/index'); ?>
+                    <?php //echo link_to('usage', 'cdr/index'); ?>
+                    <?php //echo link_to('invoices', 'invoice/index'); ?>
+                    <?php //echo link_to('Product orders', 'product_order/index') ?>
+                </div>
+            </li>
             <li>
                 <a href="#"
                 onmouseover="mopen('m5')"

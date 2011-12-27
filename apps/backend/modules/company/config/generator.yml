@@ -7,11 +7,12 @@ generator:
       head_phone_number: {label: head phone nr}
       name: {label: Company Name}
     list:
+      title:  B2B Company List
       filters: [_company_name, vat_no]
-      display: [name, vat_no, contact_name, head_phone_number, confirmed_at, sim_card_dispatch_date, _action_generate_invoice]
+      display: [name, vat_no, contact_name, head_phone_number ]
       fields:
-        action_generate_invoice: {name: Invoice}
         name: {name: Company Name}
+      
       max_per_page: 1000
       object_actions:
         _edit: ~
@@ -19,8 +20,12 @@ generator:
         view: {label: view details, action:view}
     edit:
       title:  Create/Edit Company
-      display:  ~
+      display: [name ,vat_no  ,address ,post_code ,city_id,country_id   ,contact_name  ,email,head_phone_number ,fax_number,website,status_id,   company_size_id ,  company_type_id,customer_type_id ,invoice_method_id,agent_company_id,sim_card_dispatch_date, package_id ,usage_discount_pc, registration_date,  created_at ,file_path]
       fields:
+        created_at: {params: disabled=true}
+        registration_date: {params: disabled=true}
+        updated_at: {params: disabled=true}
+        
         file_path:
           name:       Registration Doc
           type:       admin_input_file_tag

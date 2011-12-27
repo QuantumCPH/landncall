@@ -34,12 +34,12 @@ class companyActions extends autocompanyActions
 			*/
 			$this->country_id = $this->__getDefaultCountry()->getId();	
 		}
-			$c->add(CityPeer::COUNTRY_ID, $this->country_id);
+			$c->addAnd(CityPeer::COUNTRY_ID, $this->country_id);
                         $c->addAscendingOrderByColumn('name');
 			$Lcities = CityPeer::doSelect($c);
 			
 		
-		
+		   
 		$cities_List = '';
 		foreach($Lcountries as $country)
 		{
@@ -77,8 +77,9 @@ class companyActions extends autocompanyActions
 	function __getDefaultCountry()
 	{
 		$c = new Criteria();
-		$c->add(CountryPeer::CODE, 'DK');
-		$country = CountryPeer::doSelectOne($c);
+              
+		$c->addAnd(CountryPeer::CODE, 'DK');
+               	$country = CountryPeer::doSelectOne($c);
 		
 		return $country;
 	}
@@ -94,5 +95,9 @@ class companyActions extends autocompanyActions
 	  parent::addFiltersCriteria($c);
 
 		
+	}
+
+        public function executeUsage($request){
+		$this->company = CompanyPeer::retrieveByPK($request->getParameter('company_id'));
 	}
 }

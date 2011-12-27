@@ -1,13 +1,9 @@
 <div id="sf_admin_container">
 	<div id="sf_admin_content">
 	<!-- employee/list?filters[company_id]=1 -->
-		<a href="<?php echo url_for('sale_activity/list').'?filters[company_id]='.$company->getId()."&filter=filter" ?>" class="external_link" target="_self">Sales Activities (<?php echo count($company->getSaleActivitys()) ?>)</a>
-		<a href="<?php echo url_for('support_activity/list').'?filters[company_id]='.$company->getId()."&filter=filter" ?>" class="external_link" target="_self">Support Activities (<?php echo count($company->getSupportActivites()) ?>)</a>
-		<a href="<?php echo url_for('employee/list').'?filters[company_id]='.$company->getId()."&filter=filter" ?>" class="external_link" target="_self">Employees (<?php echo count($company->getEmployees()) ?>)</a>
-		<a href="<?php echo url_for('employee/list').'?filters[company_id]='.$company->getId()."&filter=filter" ?>" class="external_link" target="_self">Employees (<?php echo count($company->getEmployees()) ?>)</a>
-		<a href="<?php echo url_for('product_order/list').'?filters[company_id]='.$company->getId()."&filter=filter" ?>" class="external_link" target="_self">Product Orders (<?php echo count($company->getProductOrders()) ?>)</a>
-		<a href="<?php echo url_for('usage/list').'?filters[company_id]='.$company->getId()."&filter=filter" ?>" class="external_link" target="_self">Usage</a>
-	<!-- 
+	<a href="<?php echo url_for('employee/index').'?company_id='.$company->getId()."&filter=filter" ?>" class="external_link" target="_self">Employees (<?php echo count($company->getEmployees()) ?>)</a>
+	<a href="<?php echo url_for('company/usage').'?company_id='.$company->getId(); ?>" class="external_link" target="_self">Usage</a>
+	<!--
 	<a onclick="companyShow();" style="cursor:pointer;">Company Info</a>
 	&nbsp; | &nbsp;
 	<a onclick="salesShow();" style="cursor:pointer;">Sales Activity</a>
@@ -24,6 +20,19 @@
 				  </div>
 				</div>
 
+	<div class="form-row">
+				  <label class="required">Balance view: </label>
+				  <div class="content"><?php
+                                 $uniqueId=$company->getVatNo();
+                                 $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
+        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
+        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
+        echo  $telintaGetBalance;
+          echo "Sek";
+                           ?>
+				   
+				  </div>
+				</div>
 				<div class="form-row">
 				  <label class="required">Vat Number:</label>
 				  <div class="content">
@@ -152,12 +161,7 @@
 				  </div>
 				</div>
 
-				<div class="form-row">
-				  <label class="required">Confirmed at:</label>
-				  <div class="content">
-				  	<?php echo $company->getConfirmedAt() ?>
-				  </div>
-				</div>				
+			 		
 				
 				<div class="form-row">
 				  <label class="required">Sim Card Dispatch date:</label>
@@ -223,6 +227,12 @@
 				  	<?php echo $LatestSalesActivity->getComment() ?>
 				  </div>
 				</div>
+
+
+				
+				
+
+
 
 				<div class="form-row">
 				  <label class="required">Attached File: </label>

@@ -7,7 +7,7 @@
 				<div class="form-row">
 				  <label class="required">Employee Name:</label>
 				  <div class="content">
-				  	<?php echo trim($employee->getLastName() . $employee->getFirstName()) ?> &nbsp; <?php echo link_to('edit info', 'employee/edit?id='.$employee->getId()) ?>
+				  	<?php echo $employee->getFirstName()." ".$employee->getLastName(); ?> &nbsp; <?php echo link_to('edit info', 'employee/edit?id='.$employee->getId()) ?>
 				  </div>
 				</div>
 
@@ -33,11 +33,64 @@
 				</div>
 
 				<div class="form-row">
+				  <label class="required">Product:</label>
+				  <div class="content">
+				  	<?php $pidd=$employee->getProductId();
+
+                                         $pid = new Criteria();
+        $pid->add(ProductPeer::ID, $pidd);
+        $product = ProductPeer::doSelectOne($pid);
+
+                         echo $product->getName();
+                                        ?>
+				  </div>
+				</div>
+
+
+
+                            <?php
+
+
+                           $empid=$employee->getRegistrationType();
+                          if(isset($empid) && $empid==1){ ?>
+
+                            <div class="form-row">
+				  <label class="required">Resenumber:</label>
+				  <div class="content">
+				  	<?php    $voip = new Criteria();
+        $voip->addAnd(SeVoipNumberPeer::CUSTOMER_ID, $employee->getCountryMobileNumber());
+        $voipv = SeVoipNumberPeer::doSelectOne($voip);
+
+                         echo $voipv->getNumber(); ?>
+				  </div>
+				</div>
+
+
+                            <?php  } ?>
+
+
+
+
+                            <div class="form-row">
+				  <label class="required">Product Price:</label>
+				  <div class="content">
+				  	<?php echo $employee->getProductPrice(); ?>
+				  </div>
+				</div>
+
+
+                            <div class="form-row">
 				  <label class="required">Created at:</label>
 				  <div class="content">
 				  	<?php echo $employee->getCreatedAt() ?>
 				  </div>
 				</div>
+                	<!--<div class="form-row">
+				  <label class="required">App Code:</label>
+				  <div class="content">
+				  	<?php //echo $employee->getAppCode() ?>
+				  </div>
+				</div>-->
 			</fieldset>
 		</div>
 	</div>
