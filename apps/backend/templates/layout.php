@@ -316,5 +316,52 @@
       <div style="clear:both"></div>
     <?php echo $sf_content ?>
     </div> <!--  end wrapper -->
+
+
+    <script type="text/javascript">
+jQuery(function(){
+
+	jQuery('#sf_admin_form').validate({
+	});
+jQuery('#sf_admin_edit_form').validate({
+
+     rules: {
+    "company[name]": "required",
+     "company[vat_no]": "required",
+      "company[post_code]": "required",
+       "company[address]": "required",
+        "company[contact_name]": "required",
+         "company[head_phone_number]": "required",
+       "company[email]": "required email"
+  }
+	});
+});
+</script>
+
+    <script type="text/javascript">
+     jQuery('#company_post_code').blur(function(){
+        var poid=jQuery("#company_post_code").val();
+        poid = poid.replace(/\s+/g, '');
+        var poidlenght=poid.length;
+        //alert(poidlenght);
+        var poida= poid.charAt(0);
+        var poidb= poid.charAt(1);
+        var poidc= poid.charAt(2);
+        var poidd= poid.charAt(3);
+        var poide= poid.charAt(4);
+        if(poidlenght>4){
+            var fulvalue=poida+poidb+poidc+" "+poidd+poide;
+        }else{
+           //var fulvalue=poida+poidb+poidc;
+        }
+       jQuery("#company_post_code").val(fulvalue);
+       //  alert(fulvalue);
+
+        });
+
+
+
+
+</script>
   </body>
 </html>

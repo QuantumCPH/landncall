@@ -34,7 +34,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'apartment_form_id'      => new sfWidgetFormPropelChoice(array('model' => 'ApartmentForm', 'add_empty' => true)),
       'invoice_method_id'      => new sfWidgetFormPropelChoice(array('model' => 'InvoiceMethod', 'add_empty' => true)),
       'account_manager_id'     => new sfWidgetFormPropelChoice(array('model' => 'User', 'add_empty' => true)),
-      'agent_company_id'       => new sfWidgetFormPropelChoice(array('model' => 'AgentCompany', 'add_empty' => true)),
+      'agent_company_id'       => new sfWidgetFormFilterInput(),
       'confirmed_at'           => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
       'cvr_number'             => new sfWidgetFormFilterInput(),
       'sim_card_dispatch_date' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
@@ -44,6 +44,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'created_at'             => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
       'updated_at'             => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
       'file_path'              => new sfWidgetFormFilterInput(),
+      'rate_table_id'          => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -51,7 +52,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'vat_no'                 => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'ean_number'             => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'address'                => new sfValidatorPass(array('required' => false)),
-      'post_code'              => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'post_code'              => new sfValidatorPass(array('required' => false)),
       'country_id'             => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Country', 'column' => 'id')),
       'city_id'                => new sfValidatorPropelChoice(array('required' => false, 'model' => 'City', 'column' => 'id')),
       'contact_name'           => new sfValidatorPass(array('required' => false)),
@@ -67,7 +68,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'apartment_form_id'      => new sfValidatorPropelChoice(array('required' => false, 'model' => 'ApartmentForm', 'column' => 'id')),
       'invoice_method_id'      => new sfValidatorPropelChoice(array('required' => false, 'model' => 'InvoiceMethod', 'column' => 'id')),
       'account_manager_id'     => new sfValidatorPropelChoice(array('required' => false, 'model' => 'User', 'column' => 'id')),
-      'agent_company_id'       => new sfValidatorPropelChoice(array('required' => false, 'model' => 'AgentCompany', 'column' => 'id')),
+      'agent_company_id'       => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'confirmed_at'           => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'cvr_number'             => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'sim_card_dispatch_date' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
@@ -77,6 +78,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'created_at'             => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'updated_at'             => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'file_path'              => new sfValidatorPass(array('required' => false)),
+      'rate_table_id'          => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('company_filters[%s]');
@@ -99,7 +101,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'vat_no'                 => 'Number',
       'ean_number'             => 'Number',
       'address'                => 'Text',
-      'post_code'              => 'Number',
+      'post_code'              => 'Text',
       'country_id'             => 'ForeignKey',
       'city_id'                => 'ForeignKey',
       'contact_name'           => 'Text',
@@ -115,7 +117,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'apartment_form_id'      => 'ForeignKey',
       'invoice_method_id'      => 'ForeignKey',
       'account_manager_id'     => 'ForeignKey',
-      'agent_company_id'       => 'ForeignKey',
+      'agent_company_id'       => 'Number',
       'confirmed_at'           => 'Date',
       'cvr_number'             => 'Number',
       'sim_card_dispatch_date' => 'Date',
@@ -125,6 +127,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'created_at'             => 'Date',
       'updated_at'             => 'Date',
       'file_path'              => 'Text',
+      'rate_table_id'          => 'Number',
     );
   }
 }

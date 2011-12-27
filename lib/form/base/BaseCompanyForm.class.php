@@ -33,7 +33,7 @@ class BaseCompanyForm extends BaseFormPropel
       'apartment_form_id'      => new sfWidgetFormPropelChoice(array('model' => 'ApartmentForm', 'add_empty' => true)),
       'invoice_method_id'      => new sfWidgetFormPropelChoice(array('model' => 'InvoiceMethod', 'add_empty' => false)),
       'account_manager_id'     => new sfWidgetFormPropelChoice(array('model' => 'User', 'add_empty' => true)),
-      'agent_company_id'       => new sfWidgetFormPropelChoice(array('model' => 'AgentCompany', 'add_empty' => true)),
+      'agent_company_id'       => new sfWidgetFormInput(),
       'confirmed_at'           => new sfWidgetFormDate(),
       'cvr_number'             => new sfWidgetFormInput(),
       'sim_card_dispatch_date' => new sfWidgetFormDate(),
@@ -43,6 +43,7 @@ class BaseCompanyForm extends BaseFormPropel
       'created_at'             => new sfWidgetFormDateTime(),
       'updated_at'             => new sfWidgetFormDateTime(),
       'file_path'              => new sfWidgetFormInput(),
+      'rate_table_id'          => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -51,7 +52,7 @@ class BaseCompanyForm extends BaseFormPropel
       'vat_no'                 => new sfValidatorInteger(),
       'ean_number'             => new sfValidatorInteger(array('required' => false)),
       'address'                => new sfValidatorString(array('max_length' => 255)),
-      'post_code'              => new sfValidatorInteger(),
+      'post_code'              => new sfValidatorString(array('max_length' => 255)),
       'country_id'             => new sfValidatorPropelChoice(array('model' => 'Country', 'column' => 'id', 'required' => false)),
       'city_id'                => new sfValidatorPropelChoice(array('model' => 'City', 'column' => 'id', 'required' => false)),
       'contact_name'           => new sfValidatorString(array('max_length' => 150)),
@@ -67,7 +68,7 @@ class BaseCompanyForm extends BaseFormPropel
       'apartment_form_id'      => new sfValidatorPropelChoice(array('model' => 'ApartmentForm', 'column' => 'id', 'required' => false)),
       'invoice_method_id'      => new sfValidatorPropelChoice(array('model' => 'InvoiceMethod', 'column' => 'id')),
       'account_manager_id'     => new sfValidatorPropelChoice(array('model' => 'User', 'column' => 'id', 'required' => false)),
-      'agent_company_id'       => new sfValidatorPropelChoice(array('model' => 'AgentCompany', 'column' => 'id', 'required' => false)),
+      'agent_company_id'       => new sfValidatorInteger(array('required' => false)),
       'confirmed_at'           => new sfValidatorDate(array('required' => false)),
       'cvr_number'             => new sfValidatorInteger(array('required' => false)),
       'sim_card_dispatch_date' => new sfValidatorDate(array('required' => false)),
@@ -77,6 +78,7 @@ class BaseCompanyForm extends BaseFormPropel
       'created_at'             => new sfValidatorDateTime(),
       'updated_at'             => new sfValidatorDateTime(array('required' => false)),
       'file_path'              => new sfValidatorString(array('max_length' => 255, 'required' => false)),
+      'rate_table_id'          => new sfValidatorInteger(),
     ));
 
     $this->widgetSchema->setNameFormat('company[%s]');

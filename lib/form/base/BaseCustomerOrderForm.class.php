@@ -15,13 +15,13 @@ class BaseCustomerOrderForm extends BaseFormPropel
       'id'                          => new sfWidgetFormInputHidden(),
       'product_id'                  => new sfWidgetFormPropelChoice(array('model' => 'Product', 'add_empty' => false)),
       'quantity'                    => new sfWidgetFormInput(),
-      'order_status_id'             => new sfWidgetFormPropelChoice(array('model' => 'EntityStatus', 'add_empty' => false)),
+      'order_status_id'             => new sfWidgetFormInput(),
       'customer_id'                 => new sfWidgetFormPropelChoice(array('model' => 'Customer', 'add_empty' => false)),
       'extra_refill'                => new sfWidgetFormInput(),
       'created_at'                  => new sfWidgetFormDateTime(),
       'updated_at'                  => new sfWidgetFormDateTime(),
       'is_first_order'              => new sfWidgetFormInputCheckbox(),
-      'agent_commission_package_id' => new sfWidgetFormPropelChoice(array('model' => 'AgentCommissionPackage', 'add_empty' => true)),
+      'agent_commission_package_id' => new sfWidgetFormInput(),
       'exe_status'                  => new sfWidgetFormInput(),
     ));
 
@@ -29,13 +29,13 @@ class BaseCustomerOrderForm extends BaseFormPropel
       'id'                          => new sfValidatorPropelChoice(array('model' => 'CustomerOrder', 'column' => 'id', 'required' => false)),
       'product_id'                  => new sfValidatorPropelChoice(array('model' => 'Product', 'column' => 'id')),
       'quantity'                    => new sfValidatorInteger(),
-      'order_status_id'             => new sfValidatorPropelChoice(array('model' => 'EntityStatus', 'column' => 'id')),
+      'order_status_id'             => new sfValidatorInteger(),
       'customer_id'                 => new sfValidatorPropelChoice(array('model' => 'Customer', 'column' => 'id')),
       'extra_refill'                => new sfValidatorNumber(),
       'created_at'                  => new sfValidatorDateTime(),
       'updated_at'                  => new sfValidatorDateTime(array('required' => false)),
       'is_first_order'              => new sfValidatorBoolean(),
-      'agent_commission_package_id' => new sfValidatorPropelChoice(array('model' => 'AgentCommissionPackage', 'column' => 'id', 'required' => false)),
+      'agent_commission_package_id' => new sfValidatorInteger(array('required' => false)),
       'exe_status'                  => new sfValidatorInteger(array('required' => false)),
     ));
 
