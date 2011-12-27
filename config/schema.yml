@@ -302,7 +302,7 @@ propel:
     apartment_form_id: { type: INTEGER, size: '11', required: false, foreignTable: apartment_form, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     invoice_method_id: { type: INTEGER, size: '11', required: true, foreignTable: invoice_method, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     account_manager_id: { type: INTEGER, size: '11', required: false, foreignTable: user, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
-    agent_company_id: { type: INTEGER, size: '11', required: false }
+    agent_company_id: { type: INTEGER, size: '11', required: false, foreignTable: agent_company, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     confirmed_at: { type: DATE, required: false }
     cvr_number: { type: INTEGER, size: '11', required: false }
     sim_card_dispatch_date: { type: DATE, required: false }
@@ -365,7 +365,7 @@ propel:
     customer_status_id: { type: INTEGER, size: '11', required: true, defaultValue: '1' }
     address: { type: VARCHAR, size: '255', required: true }
     fonet_customer_id: { type: DOUBLE, required: false }
-    referrer_id: { type: INTEGER, size: '11', required: false }
+    referrer_id: { type: INTEGER, size: '11', required: false, foreignTable: agent_company, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     telecom_operator_id: { type: INTEGER, size: '11', required: true, defaultValue: '1', foreignTable: telecom_operator, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     date_of_birth: { type: DATE, required: false }
     other: { type: VARCHAR, size: '255', required: false }
@@ -400,7 +400,7 @@ propel:
     created_at: { type: TIMESTAMP, required: true,defaultExpr: CURRENT_TIMESTAMP }
     updated_at: { type: TIMESTAMP, required: false }
     is_first_order: { type: boolean, required: true, defaultValue: '0' }
-    agent_commission_package_id: { type: INTEGER, size: '11', required: false }
+    agent_commission_package_id: { type: INTEGER, size: '11', required: false, foreignTable: agent_commission_package, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     exe_status: { type: INTEGER, size: '11', required: false, defaultValue: '0' }
     _indexes: { FK_order_customer: [customer_id], FK_order_order_status: [order_status_id], FK_order_product: [product_id], FK_customer_order: [agent_commission_package_id] }
   customer_product:

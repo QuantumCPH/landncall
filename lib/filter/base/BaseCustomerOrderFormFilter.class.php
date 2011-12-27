@@ -22,7 +22,7 @@ class BaseCustomerOrderFormFilter extends BaseFormFilterPropel
       'created_at'                  => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
       'updated_at'                  => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
       'is_first_order'              => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
-      'agent_commission_package_id' => new sfWidgetFormFilterInput(),
+      'agent_commission_package_id' => new sfWidgetFormPropelChoice(array('model' => 'AgentCommissionPackage', 'add_empty' => true)),
       'exe_status'                  => new sfWidgetFormFilterInput(),
     ));
 
@@ -35,7 +35,7 @@ class BaseCustomerOrderFormFilter extends BaseFormFilterPropel
       'created_at'                  => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'updated_at'                  => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'is_first_order'              => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
-      'agent_commission_package_id' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'agent_commission_package_id' => new sfValidatorPropelChoice(array('required' => false, 'model' => 'AgentCommissionPackage', 'column' => 'id')),
       'exe_status'                  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
@@ -63,7 +63,7 @@ class BaseCustomerOrderFormFilter extends BaseFormFilterPropel
       'created_at'                  => 'Date',
       'updated_at'                  => 'Date',
       'is_first_order'              => 'Boolean',
-      'agent_commission_package_id' => 'Number',
+      'agent_commission_package_id' => 'ForeignKey',
       'exe_status'                  => 'Number',
     );
   }
