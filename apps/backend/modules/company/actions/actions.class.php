@@ -78,7 +78,8 @@ class companyActions extends autocompanyActions
 	{
 		$c = new Criteria();
               
-		$c->addAnd(CountryPeer::CODE, 'DK');
+		$c->addAnd(CountryPeer::CODE, 'SE');
+                  $c->addAscendingOrderByColumn('name');
                	$country = CountryPeer::doSelectOne($c);
 		
 		return $country;
