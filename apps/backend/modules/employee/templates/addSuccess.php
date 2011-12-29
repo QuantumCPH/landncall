@@ -1,9 +1,20 @@
-<?php if(isset($_REQUEST['message']) && $_REQUEST['message']!=""){  ?>
+<?php if(isset($_REQUEST['message']) && $_REQUEST['message']!=""){ 
+    
+    if($_REQUEST['message']=="error"){ ?>
+        
+        
+<div class="save-ok">
+<h2>Employee is not added and  registered on tilinta please check email </h2>
+</div>
+        
+  <?php }else{  ?>
+
+
 
 <div class="save-ok">
 <h2>Employee is added successfully</h2>
 </div>
-<?php  }   ?>
+<?php  }  }   ?>
 <div id="sf_admin_container">
 <h1>New My employee</h1></div>
 <form id="sf_admin_form" name="sf_admin_edit_form" method="post" enctype="multipart/form-data" action="saveEmployee">

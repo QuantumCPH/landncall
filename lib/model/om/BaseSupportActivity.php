@@ -1402,7 +1402,7 @@ abstract class BaseSupportActivity extends BaseObject  implements Persistent {
   {
     if (!$callable = sfMixer::getCallable('BaseSupportActivity:'.$method))
     {
-   //   throw new sfException(sprintf('Call to undefined method BaseSupportActivity::%s', $method));
+     throw new sfException(sprintf('Call to undefined method BaseSupportActivity::%s', $method));
     }
 
     array_unshift($arguments, $this);

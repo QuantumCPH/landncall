@@ -115,10 +115,18 @@ class employeeActions extends sfActions {
       $this->companys = CompanyPeer::doSelectOne($c);
       $companyCVR=$this->companys->getVatNo();
       $companyCVRNumber=$companyCVR;
-      CompanyEmployeActivation::telintaRegisterCompany($companyCVR);
-      sleep(0.5);
-      CompanyEmployeActivation::telintaRegisterEmployee($employeMobileNumber, $companyCVRNumber);
-     sleep(0.5);
+    
+      
+    
+     
+
+        if(!CompanyEmployeActivation::telintaRegisterEmployee($employeMobileNumber, $companyCVRNumber)){
+                 $this->message = "employee added successfully";
+            $this->redirect('employee/add?message=error');
+die;
+        }
+
+     
      $rtype=$request->getParameter('registration_type');
       if($rtype==1){
       ////////////////////////////////////////////////
@@ -159,7 +167,22 @@ class employeeActions extends sfActions {
                     }else{
                       $TelintaMobile= $contrymobilenumber;
                     }
+
+                    
                     $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=' . $voipnumbers . '&customer=' . $companyCVR . '&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=' . $TelintaMobile . '&billing_model=1&password=asdf1asd');
+
+                       if(!$telintaAddAccount){
+                       emailLib::sendErrorInTelinta("Error in B2b employee  Resenmuber registration", "We have faced an issue in employee Resenmuber registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=". $voipnumbers ."&customer=". $companyCVR ."&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=". $TelintaMobile ."&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
+
+                    }
+                    parse_str($telintaAddAccount);
+                    if(isset($success) && $success!="OK"){
+                        emailLib::sendErrorInTelinta("Error in B2b employee  Resenmuber registration", "We have faced an issue in employee Resenmuber registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=". $voipnumbers ."&customer=". $companyCVR ."&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=". $TelintaMobile ."&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
+                     
+                    }
+
+
+
 
                 }
       }

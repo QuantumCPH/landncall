@@ -10,34 +10,27 @@
  */
 class companyActions extends autocompanyActions
 {
-
-	
+   
 	public function executeCountrycity($request){
-		
+	
 		$this->country_id = $request->getParameter('country_id');
 		$this->city_id = $request->getParameter('city_id');
-		
-		
 		$c = new Criteria();
 		$c->addAscendingOrderByColumn('name');
 		$Lcountries = CountryPeer::doSelect($c);
-		
 		$c = new Criteria();
-		
 		if (!$this->country_id)
 		{
 			/*
 			if (($_country_id = $this->__getDefaultCountry()))
-			{
-				$c->add(CityPeer::COUNTRY_ID, $_country_id->getId());
-			}
+			{  $c->add(CityPeer::COUNTRY_ID, $_country_id->getId());   }
 			*/
-			$this->country_id = $this->__getDefaultCountry()->getId();	
+                    $this->country_id = $this->__getDefaultCountry()->getId();
 		}
 			$c->addAnd(CityPeer::COUNTRY_ID, $this->country_id);
                         $c->addAscendingOrderByColumn('name');
 			$Lcities = CityPeer::doSelect($c);
-			
+                     
 		
 		   
 		$cities_List = '';

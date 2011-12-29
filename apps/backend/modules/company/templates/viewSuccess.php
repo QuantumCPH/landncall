@@ -133,12 +133,12 @@
 				  </div>
 				</div>
 				
-				<div class="form-row">
+<!--				<div class="form-row">
 				  <label class="required">Account Manager:</label>
 				  <div class="content">
-				  	<?php echo $company->getAccountManager()?$company->getAccountManager():'N/A' ?>
+				  	<?php //echo $company->getAccountManager()?$company->getAccountManager():'N/A' ?>
 				  </div>
-				</div>
+				</div>-->
 				
 				<div class="form-row">
 				  <label class="required">Agent Company:</label>
@@ -184,6 +184,7 @@
 				  </div>
 				</div>		
 
+                            
 				<div class="form-row">
 				  <label class="required">Registration Doc:</label>
 				  <div class="content">
@@ -196,163 +197,6 @@
 				</div>
 			</fieldset>
 		</div>
-		<div id="sales-activity" style="display:none;">
-			<h1>last sales activity</h1>
-			<fieldset>
-				<?php if($LatestSalesActivity = $company->getLatestSalesActivity()): ?>
-				<div class="form-row">
-				  <label class="required">Created at: </label>
-				  <div class="content">
-				  	<?php echo $LatestSalesActivity->getCreatedAt() ?>
-				  </div>
-				</div>
-
-				<div class="form-row">
-				  <label class="required">Ticket nr: </label>
-				  <div class="content">
-				  	<?php echo $LatestSalesActivity->getTicketNumber() ?>
-				  </div>
-				</div>
-
-				<div class="form-row">
-				  <label class="required">Sale action: </label>
-				  <div class="content">
-				  	<?php echo ''.$LatestSalesActivity->getSaleAction() ?>
-				  </div>
-				</div>
-
-				<div class="form-row">
-				  <label class="required">Comment: </label>
-				  <div class="content">
-				  	<?php echo $LatestSalesActivity->getComment() ?>
-				  </div>
-				</div>
-
-
-				
-				
-
-
-
-				<div class="form-row">
-				  <label class="required">Attached File: </label>
-				  <div class="content">
-				  	<?php if($LatestSalesActivity->getFilePath()): ?>
-				  		<?php echo $LatestSalesActivity->getFilePath() ?>
-				  	<?php else: ?>
-				  		none
-				  	<?php endif; ?>
-				  </div>
-				</div>
-				<?php else: ?>
-					<div class="form-row">
-					  	<label>
-					  		No Sale Activity
-					  	</label>
-					  	<div class="content">&nbsp;</div>
-					</div>
-				<?php endif; ?>
-			</fieldset>
-		</div>
-		<div id="support-activity" style="display:none;">
-			<h1>last support activity</h1>
-			<fieldset>
-				<?php if($LatestSupportActivity = $company->getLatestSupportActivity()): ?>
-				<div class="form-row">
-				  <label class="required">Employee: </label>
-				  <div class="content">
-				  	<?php echo ''.$LatestSupportActivity->getEmployee() ?>
-				  </div>
-				</div>
-
-				<div class="form-row">
-				  <label class="required">Created at: </label>
-				  <div class="content">
-				  	<?php echo $LatestSupportActivity->getCreatedAt() ?>
-				  </div>
-				</div>
-
-				<div class="form-row">
-				  <label class="required">Ticket nr: </label>
-				  <div class="content">
-				  	<?php echo $LatestSupportActivity->getTicketNumber() ?>
-				  </div>
-				</div>
-
-				<div class="form-row">
-				  <label class="required">Support issue: </label>
-				  <div class="content">
-				  	<?php echo ''.$LatestSupportActivity->getSupportIssue() ?>
-				  </div>
-				</div>
-
-				<div class="form-row">
-				  <label class="required">Comment: </label>
-				  <div class="content">
-				  	<?php echo $LatestSupportActivity->getComment() ?>
-				  </div>
-				</div>
-
-				<div class="form-row">
-				  <label class="required">Solution: </label>
-				  <div class="content">
-				  	<?php echo $LatestSupportActivity->getSolution() ?>
-				  </div>
-				</div>
-
-				<div class="form-row">
-				  <label class="required">Attached File: </label>
-				  <div class="content">
-				  	<?php if($LatestSupportActivity->getFilePath()): ?>
-				  		<?php echo $LatestSupportActivity->getFilePath() ?>
-				  	<?php else: ?>
-				  		none
-				  	<?php endif; ?>
-				  </div>
-				</div>
-				<?php else: ?>
-					<div class="form-row">
-					  	<label>
-					  		No Support Activity
-					  	</label>
-					  	<div class="content">&nbsp;</div>
-					</div>
-				<?php endif; ?>
-			</fieldset>
-		</div>
+	
 	</div>
 </div>
-<script type="text/javascript">
-		function companyShow() {
-		  var companyShow = document.getElementById("company-info");
-		  var salesActivity = document.getElementById("sales-activity");
-		  var supportActivity = document.getElementById("support-activity");
-
-		  companyShow.style.display = "block";
-		  salesActivity.style.display = "none";
-		  supportActivity.style.display = "none";
-
-		};
-
-		function salesShow() {
-		  var companyShow = document.getElementById("company-info");
-		  var salesActivity = document.getElementById("sales-activity");
-		  var supportActivity = document.getElementById("support-activity");
-
-		  companyShow.style.display = "none";
-		  salesActivity.style.display = "block";
-		  supportActivity.style.display = "none";
-
-		};
-
-		function supportShow() {
-		  var companyShow = document.getElementById("company-info");
-		  var salesActivity = document.getElementById("sales-activity");
-		  var supportActivity = document.getElementById("support-activity");
-
-		  companyShow.style.display = "none";
-		  salesActivity.style.display = "none";
-		  supportActivity.style.display = "block";
-
-		};
-</script> 

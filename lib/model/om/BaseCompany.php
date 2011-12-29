@@ -1929,6 +1929,21 @@ abstract class BaseCompany extends BaseObject  implements Persistent {
 	public function save(PropelPDO $con = null)
 	{
 
+
+
+            if($this->isNew()){
+
+
+
+                              if(!CompanyEmployeActivation::telintaRegisterCompany($this->getVatNo())){
+                          
+                                throw new PropelException("You cannot save an object that has been deleted.");
+ 
+                              }
+
+
+            }
+            
     foreach (sfMixer::getCallables('BaseCompany:save:pre') as $callable)
     {
       $affectedRows = call_user_func($callable, $this, $con);
