@@ -1,6 +1,6 @@
 <div id="sf_admin_container"><h1>Edit Myemployee</h1>
 </div>
-<?php if (isset($message) && $message != "") {
+<?php if (isset($_REQUEST['message']) && $_REQUEST['message']!= "") {
  ?>
 
     <div class="save-ok">
@@ -60,7 +60,9 @@
                     <option value="1"  <?php  $varval = $employee->getRegistrationType();
                 if (isset($varval) && $varval == "1") { ?>  selected="selected" <?php  } ?> > yes</option>
                 </select> </td>
-        </tr
+        </tr>
+
+
         
          <!-- <tr>
             <td>App code:</td>
