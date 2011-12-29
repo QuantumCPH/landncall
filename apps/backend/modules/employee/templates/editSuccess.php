@@ -16,7 +16,6 @@
  <div id="sf_admin_content">
     <fieldset id="sf_fieldset_none" class="">
     <table id="sf_admin_container">
-
         <tr>
             <td style="padding: 5px;">First name:</td>
             <td style="padding: 5px;"><input type="text" name="first_name" id="employee_first_name"  value="<?php echo $employee->getFirstName(); ?>"   class="required"  size="25" /></td>
@@ -25,18 +24,18 @@
             <td style="padding: 5px;">Last name:</td>
             <td style="padding: 5px;"> <input type="text" name="last_name" id="employee_last_name"   value="<?php echo $employee->getLastName(); ?>"   class="required"    size="25" /></td>
         </tr>
-        <tr>
+<!--        <tr>
             <td style="padding: 5px;">Company:</td>
             <td style="padding: 5px;">
                 <select name="company_id" id="employee_company_id"  class="required"  style="width:190px;" disabled="disabled">
                     <option value="" selected="selected"></option>
-<?php foreach ($companys as $company) { ?>
-                    <option value="<?php echo $comid = $company->getId(); ?>"   <?php $varcom = $employee->getCompanyId();
-                    if (isset($varcom) && $varcom == $comid) { ?>  selected="selected" <?php } ?>   ><?php echo $company->getName() ?></option>
-<?php } ?>
+<?php //foreach ($companys as $company) { ?>
+                    <option value="<?php //echo $comid = $company->getId(); ?>"   <?php //$varcom = $employee->getCompanyId();
+                   // if (isset($varcom) && $varcom == $comid) { ?>  selected="selected" <?php //} ?>   ><?php //echo $company->getName() ?></option>
+<?php //} ?>
 
                 </select>  </td>
-        </tr>
+        </tr>-->
         <tr>
             <td style="padding: 5px;">Country Code:</td>
             <td style="padding: 5px;"> <input type="text" name="country_code" id="employee_country_code"   class="required"   value="<?php echo $employee->getCountryCode(); ?>" size="25" /> </td>

@@ -272,7 +272,7 @@ die;
 
         $contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
         $employee = EmployeePeer::retrieveByPk($request->getParameter('id'));
-        $employee->setCompanyId($request->getParameter('company_id'));
+      //  $employee->setCompanyId($request->getParameter('company_id'));
         $employee->setFirstName($request->getParameter('first_name'));
         $employee->setLastName($request->getParameter('last_name'));
         $employee->setCountryCode($request->getParameter('country_code'));

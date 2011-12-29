@@ -175,7 +175,7 @@
 				<div class="form-row">
 				  <label class="required">Usage Discount %:</label>
 				  <div class="content">
-				  	<?php echo $company->getUsageDiscountPc()*100 . '%' ?>
+				  	<?php echo $company->getUsageDiscountPc(). '%' ?>
 				  </div>
 				</div>		
 
