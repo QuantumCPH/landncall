@@ -289,7 +289,7 @@ die;
         $employee->save();
         $this->message = "employee updated successfully";
         $this->redirect('employee/index?message=edit');
-        return sfView::NONE;
+       // return sfView::NONE;
     }
 
     public function executeDel(sfWebRequest $request) {
