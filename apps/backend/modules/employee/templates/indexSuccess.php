@@ -85,12 +85,10 @@
       }
               ?>
 
+
       </td>
       <td><?php echo $employee->getMobileNumber() ?></td>
       <td> <?php  $mobileID= $employee->getCountryMobileNumber();
-
-
-
                                  $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=a'.$mobileID.'&type=account');
         $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
         $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
