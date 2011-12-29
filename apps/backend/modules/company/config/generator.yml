@@ -6,6 +6,16 @@ generator:
     fields:
       head_phone_number: {label: head phone nr}
       name: {label: Company Name}
+    create:
+        title:  Create Company
+        display: [name ,vat_no  ,address ,post_code ,city_id,country_id   ,contact_name  ,email,head_phone_number ,fax_number,website,status_id,   company_size_id ,  company_type_id,customer_type_id ,invoice_method_id,agent_company_id, package_id ,usage_discount_pc, registration_date,  created_at ,file_path]
+        fields:
+          created_at: {params: disabled=true}
+          registration_date: {params: disabled=true}
+        file_path:
+           name:       Registration Doc
+           type:       admin_input_file_tag
+           params:     include_link=/ include_remove=true
     list:
       title:  B2B Company List
       filters: [_company_name, vat_no]
@@ -22,11 +32,8 @@ generator:
       title:  Create/Edit Company
       display: [name ,vat_no  ,address ,post_code ,city_id,country_id   ,contact_name  ,email,head_phone_number ,fax_number,website,status_id,   company_size_id ,  company_type_id,customer_type_id ,invoice_method_id,agent_company_id, package_id ,usage_discount_pc, registration_date,  created_at ,file_path]
       fields:
-        vat_no: {params: disabled=true}
         created_at: {params: disabled=true}
         registration_date: {params: disabled=true}
- 
-        
         file_path:
           name:       Registration Doc
           type:       admin_input_file_tag
