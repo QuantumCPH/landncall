@@ -41,11 +41,11 @@
                 </tr>
                   <tr>
         <td style="padding: 5px;">Country Code:</td>
-        <td style="padding: 5px;"> <input type="text" name="country_code" id="employee_country_code"   size="25"   class="required" /> </td>
+        <td style="padding: 5px;"> <input type="text" name="country_code" id="employee_country_code"   size="25"   class="required digits" /> </td>
                 </tr>
                  <tr>
         <td style="padding: 5px;">Mobile number:</td>
-        <td style="padding: 5px;"> <input type="text" name="mobile_number" id="employee_mobile_number"  size="25"   class="required" /> </td>
+        <td style="padding: 5px;"> <input type="text" name="mobile_number" id="employee_mobile_number"  size="25"   class="required digits" /> </td>
                 </tr>
                  <tr>
         <td style="padding: 5px;">Email:</td>
