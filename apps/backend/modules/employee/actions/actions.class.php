@@ -203,6 +203,73 @@ die;
     }
 
     public function executeUpdateEmployee(sfWebRequest $request) {
+
+
+  $contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
+  $employeMobileNumber=$contrymobilenumber;
+
+  $rtype=$request->getParameter('registration_type');
+            if($rtype==1){
+      ////////////////////////////////////////////////
+        $c = new Criteria();
+                $c->setLimit(1);
+                $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
+
+                if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c))
+                    return false;
+
+                $voip_customer->setUpdatedAt(date('Y-m-d H:i:s'));
+                $voip_customer->setCustomerId($contrymobilenumber);
+                $voip_customer->setIsAssigned(1);
+                $voip_customer->save();
+
+
+                //--------------------------Telinta------------------/
+                $getvoipInfo = new Criteria();
+                $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $contrymobilenumber);
+                $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
+                if (isset($getvoipInfos)) {
+                    $voipnumbers = $getvoipInfos->getNumber();
+                    $voipnumbers = substr($voipnumbers, 2);
+                    $voip_customer = $getvoipInfos->getCustomerId();
+
+
+                    //$TelintaMobile = '46'.$this->customer->getMobileNumber();
+
+
+                    //This Condtion for if IC Active
+
+                    //------------------------------
+
+
+                     $getFirstnumberofMobile = substr($contrymobilenumber, 0, 1);     // bcdef
+                    if ($getFirstnumberofMobile == 0) {
+                        $TelintaMobile = substr($contrymobilenumber, 1);
+                    }else{
+                      $TelintaMobile= $contrymobilenumber;
+                    }
+
+
+                    $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=' . $voipnumbers . '&customer=' . $companyCVR . '&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=' . $TelintaMobile . '&billing_model=1&password=asdf1asd');
+
+                       if(!$telintaAddAccount){
+                       emailLib::sendErrorInTelinta("Error in B2b employee  Resenmuber registration", "We have faced an issue in employee Resenmuber registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=". $voipnumbers ."&customer=". $companyCVR ."&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=". $TelintaMobile ."&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
+
+                    }
+                    parse_str($telintaAddAccount);
+                    if(isset($success) && $success!="OK"){
+                        emailLib::sendErrorInTelinta("Error in B2b employee  Resenmuber registration", "We have faced an issue in employee Resenmuber registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=". $voipnumbers ."&customer=". $companyCVR ."&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=". $TelintaMobile ."&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
+
+                    }
+
+
+
+
+                }
+      }
+
+
+
         $contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
         $employee = EmployeePeer::retrieveByPk($request->getParameter('id'));
         $employee->setCompanyId($request->getParameter('company_id'));
@@ -214,8 +281,8 @@ die;
         $employee->setEmail($request->getParameter('email'));
    /*     $employee->setAppCode($request->getParameter('app_code'));
         $employee->setIsAppRegistered($request->getParameter('is_app_registered'));
-        $employee->setPassword($request->getParameter('password'));
-        $employee->setRegistrationType($request->getParameter('registration_type'));*/
+        $employee->setPassword($request->getParameter('password'));*/
+        $employee->setRegistrationType($request->getParameter('registration_type'));
         $employee->setProductId($request->getParameter('productid'));
         $employee->setProductPrice($request->getParameter('price'));
         $employee->setDeleted($request->getParameter('deleted'));

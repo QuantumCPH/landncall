@@ -49,19 +49,22 @@
             <td style="padding: 5px;">Email:</td>
             <td style="padding: 5px;"> <input type="text" name="email" id="employee_email"   class="required"   value="<?php echo $employee->getEmail(); ?>"  size="25" /> </td>
         </tr>
-       <!-- <tr>
+      
+        <tr>
+            <td style="padding: 5px;">Rese number:</td>
+            <td  style="padding: 5px;">
+                <select name="registration_type" id="employee_company_id"   <?php  $varval = $employee->getRegistrationType();
+                if (isset($varval) && $varval == "1") { ?>  disabled="disabled"   <?php } ?> >
+                    <option value="0"  <?php  $varval = $employee->getRegistrationType();
+                 if (isset($varval) && $varval == "0") { ?>  selected="selected" <?php  } ?> >No</option>
+                    <option value="1"  <?php  $varval = $employee->getRegistrationType();
+                if (isset($varval) && $varval == "1") { ?>  selected="selected" <?php  } ?> > yes</option>
+                </select> </td>
+        </tr
+        
+         <!-- <tr>
             <td>App code:</td>
             <td> <input type="text" name="app_code" id="employee_app_code"  value="<?php //echo $employee->getAppCode(); ?>"  size="25" /></td>
-        </tr>
-        <tr>
-            <td>RegistrationType:</td>
-            <td>
-                <select name="registration_type" id="employee_company_id">
-                    <option value="Mobile"  <?php //$varval = $employee->getRegistrationType();
-               // if (isset($varval) && $varval == "Mobile") { ?>  selected="selected" <?php //} ?> > Mobile</option>
-                    <option value="Landline"  <?php //$varval = $employee->getRegistrationType();
-               // if (isset($varval) && $varval == "Landline") { ?>  selected="selected" <?php //} ?> > Landline</option>
-                </select> </td>
         </tr>
         <tr>
             <td>Is app registered:</td>
