@@ -1,10 +1,25 @@
 
-<?php if(isset($_REQUEST['message']) && $_REQUEST['message']!=""){  ?>
+<?php if(isset($_REQUEST['message']) && $_REQUEST['message']=="edit"){  ?>
 
 <div class="save-ok">
-<h2>Employee is edit successfully</h2>
+<h2>Employee updated successfully</h2>
 </div>
 <?php  }   ?>
+
+<?php if(isset($_REQUEST['message']) && $_REQUEST['message']=="add"){  ?>
+
+<div class="save-ok">
+<h2>Employee added successfully</h2>
+</div>
+<?php  }   ?>
+
+
+
+
+
+
+
+
 <div  id="sf_admin_container">
 <h1>My employee List</h1>
 </div>

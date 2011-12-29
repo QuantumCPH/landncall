@@ -199,7 +199,7 @@ die;
         $employee->setProductPrice($request->getParameter('price'));
         $employee->save();
         $this->message = "employee added successfully";
-        $this->redirect('employee/add?message=add');
+        $this->redirect('employee/index?message=add');
     }
 
     public function executeUpdateEmployee(sfWebRequest $request) {
