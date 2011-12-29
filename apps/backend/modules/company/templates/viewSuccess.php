@@ -163,12 +163,7 @@
 
 			 		
 				
-				<div class="form-row">
-				  <label class="required">Sim Card Dispatch date:</label>
-				  <div class="content">
-				  	<?php echo $company->getSimCardDispatchDate() ?>
-				  </div>
-				</div>
+				
 				
 				<div class="form-row">
 				  <label class="required">Package:</label>
