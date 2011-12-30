@@ -81,6 +81,10 @@ class BaseCompanyForm extends BaseFormPropel
       'rate_table_id'          => new sfValidatorInteger(),
     ));
 
+    $this->validatorSchema->setPostValidator(
+      new sfValidatorPropelUnique(array('model' => 'Company', 'column' => array('vat_no')))
+    );
+
     $this->widgetSchema->setNameFormat('company[%s]');
 
     $this->errorSchema = new sfValidatorErrorSchema($this->validatorSchema);

@@ -38,11 +38,11 @@
         </tr>-->
         <tr>
             <td style="padding: 5px;">Country Code:</td>
-            <td style="padding: 5px;"> <input type="text" name="country_code" id="employee_country_code"   class="required digits"   value="<?php echo $employee->getCountryCode(); ?>" size="25" /> </td>
+            <td style="padding: 5px;"> <input type="text" name="country_code" id="employee_country_code"   class="required digits"   value="<?php echo $employee->getCountryCode(); ?>" size="25"  /> </td>
         </tr>
         <tr>
             <td style="padding: 5px;">Mobile number:</td>
-            <td style="padding: 5px;"> <input type="text" name="mobile_number" id="employee_mobile_number"   class="required digits"   value="<?php echo $employee->getMobileNumber(); ?>"   size="25" /> </td>
+            <td style="padding: 5px;"> <input type="text" name="mobile_number" id="employee_mobile_number"   class="required digits"   value="<?php echo $employee->getMobileNumber(); ?>"   size="25"  minlength="8" /> </td>
         </tr>
         <tr>
             <td style="padding: 5px;">Email:</td>
@@ -89,10 +89,10 @@
         </tr>
 
 
-        <tr>
+<!--        <tr>
             <td style="padding: 5px;">Product Price:</td>
-            <td style="padding: 5px;"> <input type="text" name="price" id="employee_password"   class="required"  value="<?php echo $employee->getProductPrice(); ?>"  size="25" />  </td>
-        </tr>
+            <td style="padding: 5px;"> <input type="text" name="price" id="employee_password"   class="required"  value="<?php //echo $employee->getProductPrice(); ?>"  size="25" />  </td>
+        </tr>-->
         <tr>
            <td colspan="2"><ul class="sf_admin_actions">
 

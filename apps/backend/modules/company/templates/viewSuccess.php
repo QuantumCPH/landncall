@@ -163,21 +163,21 @@
 
 			 		
 				
-				
+<!--
 				
 				<div class="form-row">
 				  <label class="required">Package:</label>
 				  <div class="content">
-				  	<?php echo $company->getPackage()?$company->getPackage():'N/A' ?>
+				  	<?php //echo $company->getPackage()?$company->getPackage():'N/A' ?>
 				  </div>
 				</div>
 				
 				<div class="form-row">
 				  <label class="required">Usage Discount %:</label>
 				  <div class="content">
-				  	<?php echo $company->getUsageDiscountPc(). '%' ?>
+				  	<?php //echo $company->getUsageDiscountPc(). '%' ?>
 				  </div>
-				</div>		
+				</div>		-->
 
                             
 				<div class="form-row">

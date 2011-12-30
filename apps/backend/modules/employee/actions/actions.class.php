@@ -99,7 +99,7 @@ class employeeActions extends sfActions {
         $this->companys = CompanyPeer::doSelect($c);
 
         $pr = new Criteria();
-      //  $pr->add(ProductPeer::IS_IN_ZAPNA, 1);
+       $pr->add(ProductPeer::ID, 14);
         $this->products = ProductPeer::doSelect($pr);
     }
 
@@ -196,7 +196,7 @@ die;
         $employee->setEmail($request->getParameter('email'));
            $employee->setRegistrationType($request->getParameter('registration_type'));
         $employee->setProductId($request->getParameter('productid'));
-        $employee->setProductPrice($request->getParameter('price'));
+       // $employee->setProductPrice($request->getParameter('price'));
         $employee->save();
         $this->message = "employee added successfully";
         $this->redirect('employee/index?message=add');
@@ -284,7 +284,7 @@ die;
         $employee->setPassword($request->getParameter('password'));*/
         $employee->setRegistrationType($request->getParameter('registration_type'));
         $employee->setProductId($request->getParameter('productid'));
-        $employee->setProductPrice($request->getParameter('price'));
+      //  $employee->setProductPrice($request->getParameter('price'));
         $employee->setDeleted($request->getParameter('deleted'));
         $employee->save();
         $this->message = "employee updated successfully";

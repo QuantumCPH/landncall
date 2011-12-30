@@ -38,10 +38,11 @@
       <th align="left"  id="sf_admin_list_th_name">product</th>
     
       <th align="left" id="sf_admin_list_th_name">Mobile number</th>
+       <th align="left">Resenumber</th>
         <th align="left"  id="sf_admin_list_th_name">Employee balance</th>
       <th align="left"  id="sf_admin_list_th_name">Created at</th>
-<!--        <th align="left">App Registered</th>
-      <th align="left">App code</th>
+   
+ <!--         <th align="left">App code</th>
    
       <th align="left">Password</th>-->
         <th align="left"  id="sf_admin_list_th_name">Action</th>
@@ -88,6 +89,25 @@
 
       </td>
       <td><?php echo $employee->getMobileNumber() ?></td>
+      <td>
+           <?php
+
+
+                            $empid=$employee->getRegistrationType();
+                          if(isset($empid) && $empid==1){ ?>
+
+
+				  	<?php    $voip = new Criteria();
+        $voip->addAnd(SeVoipNumberPeer::CUSTOMER_ID, $employee->getCountryMobileNumber());
+        $voipv = SeVoipNumberPeer::doSelectOne($voip);
+
+                         echo $voipv->getNumber(); ?>
+				 
+
+
+                            <?php  } ?>
+</td>
+
       <td> <?php  $mobileID= $employee->getCountryMobileNumber();
                                  $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=a'.$mobileID.'&type=account');
         $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
