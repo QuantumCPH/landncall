@@ -13,8 +13,8 @@ class employeeActions extends sfActions {
 
     public function executeIndex(sfWebRequest $request) {
         $c = new Criteria();
-                $this->companyval=$request->getParameter('company_id');
-                $companyval=$companyid;
+                $companyid=$request->getParameter('company_id');
+                $this->companyval=$companyid;
    if (isset($companyid) && $companyid != '') {
             $c->addAnd(EmployeePeer::COMPANY_ID,  $companyid);
 
