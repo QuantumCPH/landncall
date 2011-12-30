@@ -106,12 +106,12 @@
 
 
 
-                            <div class="form-row">
+<!--                            <div class="form-row">
 				  <label class="required">Product Price:</label>
 				  <div class="content">
-				  	<?php echo $employee->getProductPrice(); ?>
+				  	<?php //echo $employee->getProductPrice(); ?>
 				  </div>
-				</div>
+				</div>-->
 
 
                             <div class="form-row">
