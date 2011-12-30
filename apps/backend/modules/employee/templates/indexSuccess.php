@@ -39,7 +39,11 @@
     
       <th align="left" id="sf_admin_list_th_name">Mobile number</th>
        <th align="left">Resenumber</th>
+       <?php  if(isset($companyval) && $companyval!=""){  ?>
         <th align="left"  id="sf_admin_list_th_name">Employee balance</th>
+        <?php } ?>
+
+        
       <th align="left"  id="sf_admin_list_th_name">Created at</th>
    
  <!--         <th align="left">App code</th>
@@ -107,7 +111,7 @@
 
                             <?php  } ?>
 </td>
-
+ <?php  if(isset($companyval) && $companyval!=""){  ?>
       <td> <?php  $mobileID= $employee->getCountryMobileNumber();
                                  $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=a'.$mobileID.'&type=account');
         $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
@@ -122,6 +126,8 @@
       echo  $balnc=(float)$telintaGetBalance+(float)$telintaGetBalance;
           echo " Sek";
                                                 ?></td>
+
+      <?php } ?>
       <td><?php echo substr($employee->getCreatedAt(),0,10); ?></td>
    
     <!--  <td align="center">  <?php //$appval=$employee->getIsAppRegistered();  if(isset($appval) && $appval==1){   ?> <img alt="Tick" src="/sf/sf_admin/images/tick.png">  <?php //} ?></td>
