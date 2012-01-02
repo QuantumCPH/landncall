@@ -271,6 +271,10 @@ die;
 
 
 
+
+       if($rtype==3){
+         $rtype=1;  
+       }
         $contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
         $employee = EmployeePeer::retrieveByPk($request->getParameter('id'));
       //  $employee->setCompanyId($request->getParameter('company_id'));
@@ -283,7 +287,7 @@ die;
    /*     $employee->setAppCode($request->getParameter('app_code'));
         $employee->setIsAppRegistered($request->getParameter('is_app_registered'));
         $employee->setPassword($request->getParameter('password'));*/
-        $employee->setRegistrationType($request->getParameter('registration_type'));
+        $employee->setRegistrationType($rtype);
         $employee->setProductId($request->getParameter('productid'));
       //  $employee->setProductPrice($request->getParameter('price'));
         $employee->setDeleted($request->getParameter('deleted'));
