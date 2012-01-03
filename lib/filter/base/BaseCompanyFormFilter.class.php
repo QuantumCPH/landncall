@@ -38,7 +38,6 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'confirmed_at'           => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
       'cvr_number'             => new sfWidgetFormFilterInput(),
       'sim_card_dispatch_date' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
-      'package_id'             => new sfWidgetFormPropelChoice(array('model' => 'Package', 'add_empty' => true)),
       'usage_discount_pc'      => new sfWidgetFormFilterInput(),
       'registration_date'      => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
       'created_at'             => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
@@ -49,7 +48,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
 
     $this->setValidators(array(
       'name'                   => new sfValidatorPass(array('required' => false)),
-      'vat_no'                 => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'vat_no'                 => new sfValidatorPass(array('required' => false)),
       'ean_number'             => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'address'                => new sfValidatorPass(array('required' => false)),
       'post_code'              => new sfValidatorPass(array('required' => false)),
@@ -72,7 +71,6 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'confirmed_at'           => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'cvr_number'             => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'sim_card_dispatch_date' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
-      'package_id'             => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Package', 'column' => 'id')),
       'usage_discount_pc'      => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'registration_date'      => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'created_at'             => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
@@ -98,7 +96,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
     return array(
       'id'                     => 'Number',
       'name'                   => 'Text',
-      'vat_no'                 => 'Number',
+      'vat_no'                 => 'Text',
       'ean_number'             => 'Number',
       'address'                => 'Text',
       'post_code'              => 'Text',
@@ -121,7 +119,6 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'confirmed_at'           => 'Date',
       'cvr_number'             => 'Number',
       'sim_card_dispatch_date' => 'Date',
-      'package_id'             => 'ForeignKey',
       'usage_discount_pc'      => 'Number',
       'registration_date'      => 'Date',
       'created_at'             => 'Date',

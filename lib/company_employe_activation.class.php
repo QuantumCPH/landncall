@@ -28,12 +28,12 @@ class CompanyEmployeActivation {
     sleep(0.5);
    
                     if(!$telintaRegisterCus){
-                       emailLib::sendErrorInTelinta("Error in B2b company registration", "We have faced an issue in company registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_landNcall_B2b&action=add&name=".$companyCVR."&currency=SEK&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&customer_class=3332&type=customer&credit_limit=&opening_balance=5000. <br/> Please Investigate.");
+                       emailLib::sendErrorInTelinta("Error in B2b company registration", "Unable to call. We have faced an issue in company registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_landNcall_B2b&action=add&name=".$companyCVR."&currency=SEK&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&customer_class=3332&type=customer&credit_limit=&opening_balance=5000. <br/> Please Investigate.");
                         return false;
                     }
                     parse_str($telintaRegisterCus);
                     if(isset($success) && $success!="OK"){
-                        emailLib::sendErrorInTelinta("Error in B2b company registration", "We have faced an issue in company registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_landNcall_B2b&action=add&name=".$companyCVR."&currency=SEK&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&customer_class=3332&type=customer&credit_limit=&opening_balance=5000. <br/> Please Investigate.");
+                        emailLib::sendErrorInTelinta("Error in B2b company registration", "We have faced an issue on Success in company registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_landNcall_B2b&action=add&name=".$companyCVR."&currency=SEK&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&customer_class=3332&type=customer&credit_limit=&opening_balance=5000. <br/> Please Investigate.");
                         return false;
                     }
 
