@@ -328,12 +328,9 @@
 
 </form>
 
-<ul class="sf_admin_actions">
-      <li class="float-left"><?php if ($company->getId()): ?>
-<?php echo button_to(__('delete'), 'company/delete?id='.$company->getId(), array (
-  'post' => true,
-  'confirm' => __('Are you sure?'),
-  'class' => 'sf_admin_action_delete',
-)) ?><?php endif; ?>
+<!--<ul class="sf_admin_actions">
+      <li class="float-left"> <?php //if ($company->getId()): ?>
+        <?php //echo button_to(__('delete'), 'company/delete?id='.$company->getId(), array (  'post' => true,  'confirm' => __('Are you sure?'),  'class' => 'sf_admin_action_delete',)) ?><?php //endif; ?>
 </li>
   </ul>
+-->
