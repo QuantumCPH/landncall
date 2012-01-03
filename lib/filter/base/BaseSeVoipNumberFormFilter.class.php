@@ -22,7 +22,7 @@ class BaseSeVoipNumberFormFilter extends BaseFormFilterPropel
 
     $this->setValidators(array(
       'number'      => new sfValidatorPass(array('required' => false)),
-      'customer_id' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'customer_id' => new sfValidatorPass(array('required' => false)),
       'is_assigned' => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'updated_at'  => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
     ));
@@ -44,7 +44,7 @@ class BaseSeVoipNumberFormFilter extends BaseFormFilterPropel
     return array(
       'id'          => 'Number',
       'number'      => 'Text',
-      'customer_id' => 'Number',
+      'customer_id' => 'Text',
       'is_assigned' => 'Boolean',
       'updated_at'  => 'Date',
     );

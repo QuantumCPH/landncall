@@ -784,7 +784,7 @@ propel:
     _attributes: { phpName: SeVoipNumber }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
     number: { type: VARCHAR, size: '16', required: false }
-    customer_id: { type: INTEGER, size: '25', required: false }
+    customer_id: { type: VARCHAR, size: '255', required: false }
     is_assigned: { type: boolean, required: true, defaultValue: '0' }
     updated_at: { type: TIMESTAMP, required: false }
   sip:

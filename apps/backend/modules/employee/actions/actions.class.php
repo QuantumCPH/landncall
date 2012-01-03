@@ -218,17 +218,21 @@ die;
 
                 if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c))
                     return false;
-
+                    
                 $voip_customer->setUpdatedAt(date('Y-m-d H:i:s'));
                 $voip_customer->setCustomerId($contrymobilenumber);
                 $voip_customer->setIsAssigned(1);
                 $voip_customer->save();
-
-
+                 $voip_customer->getNumber();
+               
+            
                 //--------------------------Telinta------------------/
                 $getvoipInfo = new Criteria();
                 $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $contrymobilenumber);
                 $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
+
+                  $getvoipInfos->getNumber();
+              
                 if (isset($getvoipInfos)) {
                     $voipnumbers = $getvoipInfos->getNumber();
                     $voipnumbers = substr($voipnumbers, 2);
@@ -255,12 +259,12 @@ die;
 
                        if(!$telintaAddAccount){
                        emailLib::sendErrorInTelinta("Error in B2b employee  Resenmuber registration", "We have faced an issue in employee Resenmuber registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=". $voipnumbers ."&customer=". $companyCVR ."&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=". $TelintaMobile ."&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
-
+                         $rtype=0;
                     }
                     parse_str($telintaAddAccount);
                     if(isset($success) && $success!="OK"){
                         emailLib::sendErrorInTelinta("Error in B2b employee  Resenmuber registration", "We have faced an issue in employee Resenmuber registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=". $voipnumbers ."&customer=". $companyCVR ."&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=". $TelintaMobile ."&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
-
+                             $rtype=0;
                     }
 
 
