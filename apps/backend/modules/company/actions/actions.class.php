@@ -441,4 +441,12 @@ class companyActions extends sfActions
       'company{file_path}' => 'Registration Doc:',
     );
   }
+
+
+  public function executeView($request){
+		$this->company = CompanyPeer::retrieveByPK($request->getParameter('id'));
+	}
+     public function executeUsage($request){
+		$this->company = CompanyPeer::retrieveByPK($request->getParameter('company_id'));
+	}
 }
