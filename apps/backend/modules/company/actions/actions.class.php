@@ -422,6 +422,7 @@ class companyActions extends sfActions {
                     $transaction->setTransactionStatusId(3);
                     $transaction->save();
                     $this->getUser()->setFlash('message', 'B2B Company Refill Successfully');
+                    $this->redirect('company/paymenthistory');
             }else{
 
                 $this->getUser()->setFlash('message', 'Please Select B2B Company');
