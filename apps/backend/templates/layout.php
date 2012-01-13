@@ -75,7 +75,7 @@
 
                     <?php echo link_to('Companies list', 'company/index') ?>
                     <?php echo link_to('Employee lists', 'employee/index') ?>
-                    <?php  echo link_to('Payment History', 'company/Paymenthistory') ?>
+                    <?php  echo link_to('Payment History', 'company/paymenthistory') ?>
                     <?php echo link_to('Refill', 'company/refill'); ?>
                     <?php //echo link_to('support activity', 'support_activity/index'); ?>
                     <?php //echo link_to('usage', 'cdr/index'); ?>
@@ -367,7 +367,7 @@ jQuery('#sf_admin_edit_form').validate({
 		//remove all the class add the messagebox classes and start fading
 		jQuery("#msgbox").removeClass().addClass('messagebox').text('Checking...').fadeIn("slow");
 		//check the username exists or not from ajax
-		jQuery.post("http://localhost/landncall/web/backend_dev.php/company/Vat",{ vat_no:jQuery(this).val() } ,function(data)
+		jQuery.post("http://stagelc.zerocall.com/backend.php/company/vat",{ vat_no:jQuery(this).val() } ,function(data)
         {//alert(data);
 		  if(data=='no') //if username not avaiable
 		  {
@@ -394,7 +394,7 @@ jQuery('#sf_admin_edit_form').validate({
 		//remove all the class add the messagebox classes and start fading
 		jQuery("#msgbox").removeClass().addClass('messagebox').text('Checking...').fadeIn("slow");
 		//check the username exists or not from ajax
-		jQuery.post("http://localhost/landncall/web/backend_dev.php/employee/mobile",{ mobile_no:jQuery(this).val() } ,function(data)
+		jQuery.post("http://stagelc.zerocall.com/backend.php/employee/mobile",{ mobile_no:jQuery(this).val() } ,function(data)
         {//alert(data);
 		  if(data=='no') //if username not avaiable
 		  {
