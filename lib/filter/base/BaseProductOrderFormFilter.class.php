@@ -14,8 +14,8 @@ class BaseProductOrderFormFilter extends BaseFormFilterPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'product_id'       => new sfWidgetFormFilterInput(),
-      'company_id'       => new sfWidgetFormFilterInput(),
+      'product_id'       => new sfWidgetFormPropelChoice(array('model' => 'Product', 'add_empty' => true)),
+      'company_id'       => new sfWidgetFormPropelChoice(array('model' => 'Company', 'add_empty' => true)),
       'agent_company_id' => new sfWidgetFormPropelChoice(array('model' => 'AgentCompany', 'add_empty' => true)),
       'quantity'         => new sfWidgetFormFilterInput(),
       'discount'         => new sfWidgetFormFilterInput(),
@@ -24,8 +24,8 @@ class BaseProductOrderFormFilter extends BaseFormFilterPropel
     ));
 
     $this->setValidators(array(
-      'product_id'       => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
-      'company_id'       => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'product_id'       => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Product', 'column' => 'id')),
+      'company_id'       => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Company', 'column' => 'id')),
       'agent_company_id' => new sfValidatorPropelChoice(array('required' => false, 'model' => 'AgentCompany', 'column' => 'id')),
       'quantity'         => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'discount'         => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
@@ -49,8 +49,8 @@ class BaseProductOrderFormFilter extends BaseFormFilterPropel
   {
     return array(
       'id'               => 'Number',
-      'product_id'       => 'Number',
-      'company_id'       => 'Number',
+      'product_id'       => 'ForeignKey',
+      'company_id'       => 'ForeignKey',
       'agent_company_id' => 'ForeignKey',
       'quantity'         => 'Number',
       'discount'         => 'Number',

@@ -75,8 +75,8 @@
 
                     <?php echo link_to('Companies list', 'company/index') ?>
                     <?php echo link_to('Employee lists', 'employee/index') ?>
-                    <?php // echo link_to('Generte App Code', 'employee/appCode') ?>
-                    <?php //echo link_to('sale activity', 'sale_activity/index'); ?>
+                    <?php  echo link_to('Payment History', 'company/Paymenthistory') ?>
+                    <?php echo link_to('Refill', 'company/refill'); ?>
                     <?php //echo link_to('support activity', 'support_activity/index'); ?>
                     <?php //echo link_to('usage', 'cdr/index'); ?>
                     <?php //echo link_to('invoices', 'invoice/index'); ?>
@@ -359,9 +359,96 @@ jQuery('#sf_admin_edit_form').validate({
 
         });
 
+</script>
 
+    <script language="javascript">
 
+	jQuery('#company_vat_no').blur(function(){
+		//remove all the class add the messagebox classes and start fading
+		jQuery("#msgbox").removeClass().addClass('messagebox').text('Checking...').fadeIn("slow");
+		//check the username exists or not from ajax
+		jQuery.post("http://localhost/landncall/web/backend_dev.php/company/Vat",{ vat_no:jQuery(this).val() } ,function(data)
+        {//alert(data);
+		  if(data=='no') //if username not avaiable
+		  {
+		  	jQuery("#msgbox").fadeTo(200,0.1,function() //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('This Vat No Already exists').addClass('messageboxerror').fadeTo(900,1);
+			});
+          }
+		  else
+		  {
+		  	jQuery("#msgbox").fadeTo(200,0.1,function()  //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('Vat No is available').addClass('messageboxok').fadeTo(900,1);
+			});
+		  }
+
+        });
+
+	});
+
+        	jQuery('#employee_mobile_number').blur(function(){
+		//remove all the class add the messagebox classes and start fading
+		jQuery("#msgbox").removeClass().addClass('messagebox').text('Checking...').fadeIn("slow");
+		//check the username exists or not from ajax
+		jQuery.post("http://localhost/landncall/web/backend_dev.php/employee/mobile",{ mobile_no:jQuery(this).val() } ,function(data)
+        {//alert(data);
+		  if(data=='no') //if username not avaiable
+		  {
+		  	jQuery("#msgbox").fadeTo(200,0.1,function() //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('This Mobile No Already exists').addClass('messageboxerror').fadeTo(900,1);
+			});
+          }
+		  else
+		  {
+		  	jQuery("#msgbox").fadeTo(200,0.1,function()  //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('Mobile No is available').addClass('messageboxok').fadeTo(900,1);
+			});
+		  }
+
+        });
+
+	});
 
 </script>
+<style type="text/css">
+.messagebox{
+	position:absolute;
+	width:100px;
+	margin-left:30px;
+	border:1px solid #c93;
+	background:#ffc;
+	padding:3px;
+}
+.messageboxok{
+	position:absolute;
+	width:auto;
+	margin-left:30px;
+	border:1px solid #349534;
+	background:#C9FFCA;
+	padding:3px;
+	font-weight:bold;
+	color:#008000;
+
+}
+.messageboxerror{
+	position:absolute;
+	width:auto;
+	margin-left:30px;
+	border:1px solid #CC0000;
+	background:#F7CBCA;
+	padding:3px;
+	font-weight:bold;
+	color:#CC0000;
+}
+
+</style>
   </body>
 </html>

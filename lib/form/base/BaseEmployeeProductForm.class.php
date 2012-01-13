@@ -13,15 +13,15 @@ class BaseEmployeeProductForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'id'          => new sfWidgetFormInputHidden(),
-      'employee_id' => new sfWidgetFormInput(),
-      'product_id'  => new sfWidgetFormInput(),
+      'employee_id' => new sfWidgetFormPropelChoice(array('model' => 'Employee', 'add_empty' => false)),
+      'product_id'  => new sfWidgetFormPropelChoice(array('model' => 'Product', 'add_empty' => false)),
       'quantity'    => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
       'id'          => new sfValidatorPropelChoice(array('model' => 'EmployeeProduct', 'column' => 'id', 'required' => false)),
-      'employee_id' => new sfValidatorInteger(),
-      'product_id'  => new sfValidatorInteger(),
+      'employee_id' => new sfValidatorPropelChoice(array('model' => 'Employee', 'column' => 'id')),
+      'product_id'  => new sfValidatorPropelChoice(array('model' => 'Product', 'column' => 'id')),
       'quantity'    => new sfValidatorInteger(),
     ));
 

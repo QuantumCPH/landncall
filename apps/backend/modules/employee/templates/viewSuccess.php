@@ -1,4 +1,9 @@
-
+<div id="sf_admin_container">
+	<div id="sf_admin_content">
+	<!-- employee/list?filters[company_id]=1 -->
+	<a href="<?php echo url_for('employee/usage').'?employee_id='.$employee->getId(); ?>" class="external_link" target="_self">Usage</a>
+      
+        </div></div>
 <div id="sf_admin_container">
 	<div id="sf_admin_content">
 		<div id="company-info">
@@ -38,9 +43,28 @@
           $telintaGetBalance1 = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=cb'.$mobileID.'&type=account');
         $telintaGetBalance1 = str_replace('success=OK&Balance=', '', $telintaGetBalance1);
         $telintaGetBalance1 = str_replace('-', '', $telintaGetBalance1);
-         $telintaGetBalance;
+         //$telintaGetBalance;
+        $telintaGetBalancerese=0;
+        $regtype=$employee->getRegistrationType();
+        if(isset($regtype) && $regtype==1){
+        $voip = new Criteria();
 
-      echo  $balnc=(float)$telintaGetBalance+(float)$telintaGetBalance;
+        $voip->add(SeVoipNumberPeer::CUSTOMER_ID, $employee->getCountryMobileNumber());
+        $voip->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 1);
+        $voipv = SeVoipNumberPeer::doSelectOne($voip);
+
+        if(isset ($voipv)){
+
+       $resenummer=$voipv->getNumber();
+       $resenummer = substr($resenummer, 2);
+       $telintaGetBalancerese = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$resenummer.'&type=account');
+       $telintaGetBalancerese = str_replace('success=OK&Balance=', '', $telintaGetBalancerese);
+       $telintaGetBalancerese = str_replace('-', '', $telintaGetBalancerese);
+
+        }
+        }
+
+      echo  $balnc=(float)$telintaGetBalance+(float)$telintaGetBalance1+($telintaGetBalancerese>0)?(float)$telintaGetBalancerese:0;
           echo " Sek";
                                                 ?>
 				  </div>

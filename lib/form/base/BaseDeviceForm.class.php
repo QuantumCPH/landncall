@@ -14,14 +14,14 @@ class BaseDeviceForm extends BaseFormPropel
     $this->setWidgets(array(
       'id'              => new sfWidgetFormInputHidden(),
       'name'            => new sfWidgetFormInput(),
-      'manufacturer_id' => new sfWidgetFormInput(),
+      'manufacturer_id' => new sfWidgetFormPropelChoice(array('model' => 'Manufacturer', 'add_empty' => false)),
       'image_file_name' => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
       'id'              => new sfValidatorPropelChoice(array('model' => 'Device', 'column' => 'id', 'required' => false)),
       'name'            => new sfValidatorString(array('max_length' => 255)),
-      'manufacturer_id' => new sfValidatorInteger(),
+      'manufacturer_id' => new sfValidatorPropelChoice(array('model' => 'Manufacturer', 'column' => 'id')),
       'image_file_name' => new sfValidatorString(array('max_length' => 100, 'required' => false)),
     ));
 

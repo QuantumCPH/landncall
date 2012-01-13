@@ -1,16 +1,19 @@
 
 <?php if(isset($_REQUEST['message']) && $_REQUEST['message']=="edit"){  ?>
 
-<div class="save-ok">
-<h2>Employee updated successfully</h2>
+<?php if ($sf_user->hasFlash('messageEdit')): ?>
+<div style="color:#FF0000">
+ <?php echo __($sf_user->getFlash('messageEdit')) ?>
 </div>
+<?php endif; ?>
 <?php  }   ?>
 
 <?php if(isset($_REQUEST['message']) && $_REQUEST['message']=="add"){  ?>
-
-<div class="save-ok">
-<h2>Employee added successfully</h2>
+<?php if ($sf_user->hasFlash('messageAdd')): ?>
+<div style="color:#FF0000">
+ <?php echo __($sf_user->getFlash('messageAdd')) ?>
 </div>
+<?php endif; ?>
 <?php  }   ?>
 
 
@@ -27,6 +30,13 @@
 <div id="sf_admin_header">
 <a target="_self" class="external_link" href="<?php echo url_for('employee/add') ?>" style="text-decoration:none;">Create New</a>
 </div>
+<br>
+<?php if ($sf_user->hasFlash('message')): ?>
+<div style="color:#FF0000">
+ <?php echo __($sf_user->getFlash('message')) ?>
+</div>
+<?php endif; ?>
+
 <br/>
 <table width="950"  style="border: 1px;" class="sf_admin_list" cellspacing="0">
   <thead>
@@ -102,10 +112,11 @@
 
 
 				  	<?php    $voip = new Criteria();
-        $voip->addAnd(SeVoipNumberPeer::CUSTOMER_ID, $employee->getCountryMobileNumber());
+        $voip->add(SeVoipNumberPeer::CUSTOMER_ID, $employee->getCountryMobileNumber());
+        $voip->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 1);
         $voipv = SeVoipNumberPeer::doSelectOne($voip);
 
-                         echo $voipv->getNumber(); ?>
+                         if(isset ($voipv)){echo $voipv->getNumber();} ?>
 				 
 
 
@@ -113,17 +124,36 @@
 </td>
  <?php  if(isset($companyval) && $companyval!=""){  ?>
       <td> <?php  $mobileID= $employee->getCountryMobileNumber();
-                                 $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=a'.$mobileID.'&type=account');
+        $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=a'.$mobileID.'&type=account');
         $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
         $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-         $telintaGetBalance;
+        //$telintaGetBalance;
 
-          $telintaGetBalance1 = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=cb'.$mobileID.'&type=account');
+        $telintaGetBalance1 = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=cb'.$mobileID.'&type=account');
         $telintaGetBalance1 = str_replace('success=OK&Balance=', '', $telintaGetBalance1);
         $telintaGetBalance1 = str_replace('-', '', $telintaGetBalance1);
-         $telintaGetBalance;
+        //$telintaGetBalance;
 
-      echo  $balnc=(float)$telintaGetBalance+(float)$telintaGetBalance;
+         $regtype=$employee->getRegistrationType();
+
+        if(isset($regtype) && $regtype==1){
+        $voip = new Criteria();
+
+        $voip->add(SeVoipNumberPeer::CUSTOMER_ID, $employee->getCountryMobileNumber());
+        $voip->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 1);
+        $voipv = SeVoipNumberPeer::doSelectOne($voip);
+
+        if(isset ($voipv)){
+
+       $resenummer=$voipv->getNumber();
+       $resenummer = substr($resenummer, 2);
+       $telintaGetBalancerese = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$resenummer.'&type=account');
+       $telintaGetBalancerese = str_replace('success=OK&Balance=', '', $telintaGetBalancerese);
+       $telintaGetBalancerese = str_replace('-', '', $telintaGetBalancerese);
+
+        }
+        }
+      echo  $balnc=(float)$telintaGetBalance+(float)$telintaGetBalance1+($telintaGetBalancerese>0)?(float)$telintaGetBalancerese:0;
           echo " Sek";
                                                 ?></td>
 
@@ -133,7 +163,7 @@
     <!--  <td align="center">  <?php //$appval=$employee->getIsAppRegistered();  if(isset($appval) && $appval==1){   ?> <img alt="Tick" src="/sf/sf_admin/images/tick.png">  <?php //} ?></td>
        <td><?php //echo $employee->getAppCode() ?></td>
        <td><?php //echo $employee->getPassword() ?></td>-->
-       <td><a href="<?php echo url_for('employee/edit?id='.$employee->getId()) ?>"><img src="/sf/sf_admin/images/edit_icon.png" title="edit" alt="edit"></a><a href="employee/del?id=<?php echo $employee->getId() ?>" ><img src="/sf/sf_admin/images/delete_icon.png" title="delete" alt="delete"></a>
+       <td><a href="<?php echo url_for('employee/edit?id='.$employee->getId()) ?>"><img src="/sf/sf_admin/images/edit_icon.png" title="edit" alt="edit"></a><a href="employee/del?id=<?php echo $employee->getId(); if(isset($companyval) && $companyval!=""){echo "&company_id=".$companyval;} ?>" ><img src="/sf/sf_admin/images/delete_icon.png" title="delete" alt="delete"></a>
        <a href="<?php echo url_for('employee/view?id='.$employee->getId()) ?>"><img src="/sf/sf_admin/images/default_icon.png" title="view" alt="view"></a>
         <!--    <a href="<?php echo url_for('employee/view?id='.$employee->getId()) ?>"><img src="/sf/sf_admin/images/default_icon.png" title="view" alt="call history"></a>
      -->  </td>

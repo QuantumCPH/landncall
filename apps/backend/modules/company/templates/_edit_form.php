@@ -1,3 +1,4 @@
+
 <?php echo form_tag('company/save', array(
   'id'        => 'sf_admin_edit_form',
   'name'      => 'sf_admin_edit_form',
@@ -42,7 +43,7 @@
 )); echo $value ? $value : '&nbsp;' ;
 
       }?>
-     
+ <span id="msgbox" style="display:none"></span>
     </div>
 </div>
 
@@ -85,7 +86,7 @@
                       'related_class' => 'Country',
                       'control_name' => 'company[country_id]',
                       'peer_method'=>'getSortedCountries',
-                      'include_blank' => true,
+                      //'include_blank' => true,
                       'onchange'=> remote_function(array(
                                 'update'  => 'citySelectList',
                                 'url'     => 'company/countrycity',

@@ -42,7 +42,7 @@
         </tr>
         <tr>
             <td style="padding: 5px;">Mobile number:</td>
-            <td style="padding: 5px;"> <input type="text" name="mobile_number" id="employee_mobile_number"   class="required digits"   value="<?php echo $employee->getMobileNumber(); ?>"   size="25"  minlength="8" /> </td>
+            <td style="padding: 5px;"> <input type="text" name="mobile_number" id="employee_mobile_number"   class="required digits"   value="<?php echo $employee->getMobileNumber(); ?>"   size="25"  minlength="8" readonly="" /> </td>
         </tr>
         <tr>
             <td style="padding: 5px;">Email:</td>
@@ -89,7 +89,7 @@
         <tr>
             <td style="padding: 5px;">Product:</td>
             <td style="padding: 5px;"> <select name="productid" id="employee_product_id"   class="required" >
-                    <option value="" selected="selected"></option>
+<!--                    <option value="" selected="selected"></option>-->
 <?php foreach ($products as $product) { ?>
                     <option value="<?php echo $pid = $product->getId(); ?>"   <?php $varp = $employee->getProductId();
                     if (isset($varp) && $varp == $pid) { ?>  selected="selected" <?php } ?>><?php echo $product->getName() ?></option>

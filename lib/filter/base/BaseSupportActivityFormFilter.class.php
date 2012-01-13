@@ -14,7 +14,7 @@ class BaseSupportActivityFormFilter extends BaseFormFilterPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'employee_id'                => new sfWidgetFormFilterInput(),
+      'employee_id'                => new sfWidgetFormPropelChoice(array('model' => 'Employee', 'add_empty' => true)),
       'created_at'                 => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
       'ticket_number'              => new sfWidgetFormFilterInput(),
       'support_issue_id'           => new sfWidgetFormPropelChoice(array('model' => 'SupportIssue', 'add_empty' => true)),
@@ -26,7 +26,7 @@ class BaseSupportActivityFormFilter extends BaseFormFilterPropel
     ));
 
     $this->setValidators(array(
-      'employee_id'                => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'employee_id'                => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Employee', 'column' => 'id')),
       'created_at'                 => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'ticket_number'              => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'support_issue_id'           => new sfValidatorPropelChoice(array('required' => false, 'model' => 'SupportIssue', 'column' => 'id')),
@@ -53,7 +53,7 @@ class BaseSupportActivityFormFilter extends BaseFormFilterPropel
   {
     return array(
       'id'                         => 'Number',
-      'employee_id'                => 'Number',
+      'employee_id'                => 'ForeignKey',
       'created_at'                 => 'Date',
       'ticket_number'              => 'Number',
       'support_issue_id'           => 'ForeignKey',

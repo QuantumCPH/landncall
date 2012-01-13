@@ -13,8 +13,8 @@ class BaseProductOrderForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'id'               => new sfWidgetFormInputHidden(),
-      'product_id'       => new sfWidgetFormInput(),
-      'company_id'       => new sfWidgetFormInput(),
+      'product_id'       => new sfWidgetFormPropelChoice(array('model' => 'Product', 'add_empty' => false)),
+      'company_id'       => new sfWidgetFormPropelChoice(array('model' => 'Company', 'add_empty' => true)),
       'agent_company_id' => new sfWidgetFormPropelChoice(array('model' => 'AgentCompany', 'add_empty' => true)),
       'quantity'         => new sfWidgetFormInput(),
       'discount'         => new sfWidgetFormInput(),
@@ -24,8 +24,8 @@ class BaseProductOrderForm extends BaseFormPropel
 
     $this->setValidators(array(
       'id'               => new sfValidatorPropelChoice(array('model' => 'ProductOrder', 'column' => 'id', 'required' => false)),
-      'product_id'       => new sfValidatorInteger(),
-      'company_id'       => new sfValidatorInteger(array('required' => false)),
+      'product_id'       => new sfValidatorPropelChoice(array('model' => 'Product', 'column' => 'id')),
+      'company_id'       => new sfValidatorPropelChoice(array('model' => 'Company', 'column' => 'id', 'required' => false)),
       'agent_company_id' => new sfValidatorPropelChoice(array('model' => 'AgentCompany', 'column' => 'id', 'required' => false)),
       'quantity'         => new sfValidatorInteger(),
       'discount'         => new sfValidatorNumber(),

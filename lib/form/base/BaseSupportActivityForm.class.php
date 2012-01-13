@@ -13,7 +13,7 @@ class BaseSupportActivityForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'id'                         => new sfWidgetFormInputHidden(),
-      'employee_id'                => new sfWidgetFormInput(),
+      'employee_id'                => new sfWidgetFormPropelChoice(array('model' => 'Employee', 'add_empty' => true)),
       'created_at'                 => new sfWidgetFormDateTime(),
       'ticket_number'              => new sfWidgetFormInput(),
       'support_issue_id'           => new sfWidgetFormPropelChoice(array('model' => 'SupportIssue', 'add_empty' => true)),
@@ -26,7 +26,7 @@ class BaseSupportActivityForm extends BaseFormPropel
 
     $this->setValidators(array(
       'id'                         => new sfValidatorPropelChoice(array('model' => 'SupportActivity', 'column' => 'id', 'required' => false)),
-      'employee_id'                => new sfValidatorInteger(array('required' => false)),
+      'employee_id'                => new sfValidatorPropelChoice(array('model' => 'Employee', 'column' => 'id', 'required' => false)),
       'created_at'                 => new sfValidatorDateTime(array('required' => false)),
       'ticket_number'              => new sfValidatorInteger(),
       'support_issue_id'           => new sfValidatorPropelChoice(array('model' => 'SupportIssue', 'column' => 'id', 'required' => false)),

@@ -15,13 +15,13 @@ class BaseDeviceFormFilter extends BaseFormFilterPropel
   {
     $this->setWidgets(array(
       'name'            => new sfWidgetFormFilterInput(),
-      'manufacturer_id' => new sfWidgetFormFilterInput(),
+      'manufacturer_id' => new sfWidgetFormPropelChoice(array('model' => 'Manufacturer', 'add_empty' => true)),
       'image_file_name' => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
       'name'            => new sfValidatorPass(array('required' => false)),
-      'manufacturer_id' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'manufacturer_id' => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Manufacturer', 'column' => 'id')),
       'image_file_name' => new sfValidatorPass(array('required' => false)),
     ));
 
@@ -42,7 +42,7 @@ class BaseDeviceFormFilter extends BaseFormFilterPropel
     return array(
       'id'              => 'Number',
       'name'            => 'Text',
-      'manufacturer_id' => 'Number',
+      'manufacturer_id' => 'ForeignKey',
       'image_file_name' => 'Text',
     );
   }

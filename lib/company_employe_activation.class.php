@@ -24,7 +24,7 @@ class CompanyEmployeActivation {
     public static function telintaRegisterCompany($companyCVR) {
 
         
-        $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_landNcall_B2b&action=add&name='.$companyCVR.'&currency=SEK&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&customer_class=3332&type=customer&credit_limit=&opening_balance=5000');
+        $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_landNcall_B2b&action=add&name='.$companyCVR.'&currency=SEK&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&customer_class=3332&type=customer&credit_limit=&opening_balance=-5000');
     sleep(0.5);
    
                     if(!$telintaRegisterCus){

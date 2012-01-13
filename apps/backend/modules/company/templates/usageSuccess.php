@@ -2,7 +2,9 @@
 	<div id="sf_admin_content">
 	<!-- employee/list?filters[company_id]=1 -->
 	<a href="<?php echo url_for('employee/index').'?company_id='.$company->getId()."&filter=filter" ?>" class="external_link" target="_self">Employees (<?php echo count($company->getEmployees()) ?>)</a>
-	<a href="<?php echo url_for('company/usage').'?company_id='.$company->getId(); ?>" class="external_link" target="_self">Usage</a></div></div>
+	<a href="<?php echo url_for('company/usage').'?company_id='.$company->getId(); ?>" class="external_link" target="_self">Usage</a>
+        <a href="<?php echo url_for('company/Paymenthistory').'?company_id='.$company->getId().'&filter=filter' ?>" class="external_link" target="_self">Payment History</a>
+        </div></div>
 	 <table>
                         <tr>
                             <th align="left" colspan="6"  style="background-color: #CCCCFF;color: #000000;text-align: left;">Call History</th>

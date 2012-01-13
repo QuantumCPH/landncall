@@ -15,6 +15,11 @@
 <h2>Employee is added successfully</h2>
 </div>
 <?php  }  }   ?>
+<?php if ($sf_user->hasFlash('messageError')): ?>
+<div style="color:#FF0000">
+ <?php echo __($sf_user->getFlash('messageError')) ?>
+</div>
+<?php endif; ?>
 <div id="sf_admin_container">
 <h1>New My employee</h1></div>
 <form id="sf_admin_form" name="sf_admin_edit_form" method="post" enctype="multipart/form-data" action="saveEmployee">
@@ -45,7 +50,7 @@
                 </tr>
                  <tr>
         <td style="padding: 5px;">Mobile number:</td>
-        <td style="padding: 5px;"> <input type="text" name="mobile_number" id="employee_mobile_number"  size="25"   class="required digits"  minlength="8" /> </td>
+        <td style="padding: 5px;"> <input type="text" name="mobile_number" id="employee_mobile_number"  size="25"   class="required digits"  minlength="8" /><span id="msgbox" style="display:none"></span> </td>
                 </tr>
                  <tr>
         <td style="padding: 5px;">Email:</td>
