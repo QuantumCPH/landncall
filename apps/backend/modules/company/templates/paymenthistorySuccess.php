@@ -51,10 +51,10 @@ $incrment++;
     <td colspan="5"><p><?php echo __('There are currently no transactions to show.') ?></p></td>
 </tr>
 <?php else: ?>
-<!--<tr>
+<tr>
     <td colspan="3" align="right"><strong>Total:&nbsp;&nbsp;</strong></td>
     <td><?php echo format_number($amount_total); echo ('SEK'); ?></td>
     <td>&nbsp;</td>
-</tr>	-->
+</tr>	
 <?php endif; ?>
 </table>

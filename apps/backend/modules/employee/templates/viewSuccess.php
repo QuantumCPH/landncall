@@ -35,12 +35,13 @@
 				  <label class="required">Employee Balance:</label>
 				  <div class="content">
 				  	<?php  $mobileID= $employee->getCountryMobileNumber();
-                                 $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=a'.$mobileID.'&type=account');
+        $telintaGetBalance=0;
+        $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=a'.$mobileID.'&type=account');
         $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
         $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-         $telintaGetBalance;
-
-          $telintaGetBalance1 = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=cb'.$mobileID.'&type=account');
+        //$telintaGetBalance;
+        $telintaGetBalance1=0;
+        $telintaGetBalance1 = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=cb'.$mobileID.'&type=account');
         $telintaGetBalance1 = str_replace('success=OK&Balance=', '', $telintaGetBalance1);
         $telintaGetBalance1 = str_replace('-', '', $telintaGetBalance1);
          //$telintaGetBalance;

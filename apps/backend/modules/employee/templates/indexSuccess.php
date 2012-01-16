@@ -124,18 +124,19 @@
 </td>
  <?php  if(isset($companyval) && $companyval!=""){  ?>
       <td> <?php  $mobileID= $employee->getCountryMobileNumber();
+        $telintaGetBalance=0;
         $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=a'.$mobileID.'&type=account');
         $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
         $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
         //$telintaGetBalance;
-
+        $telintaGetBalance1=0;
         $telintaGetBalance1 = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=cb'.$mobileID.'&type=account');
         $telintaGetBalance1 = str_replace('success=OK&Balance=', '', $telintaGetBalance1);
         $telintaGetBalance1 = str_replace('-', '', $telintaGetBalance1);
         //$telintaGetBalance;
 
          $regtype=$employee->getRegistrationType();
-
+        $telintaGetBalancerese=0;
         if(isset($regtype) && $regtype==1){
         $voip = new Criteria();
 
