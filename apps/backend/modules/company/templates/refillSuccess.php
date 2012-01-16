@@ -27,12 +27,13 @@
         <tr>
         <td style="padding: 5px;">Refill:</td>
         <td style="padding: 5px;">
-            <select name="refill" id="refill" class="required"  style="width:190px;">
+            <input type="text" id="refill" class="required" style="width:180px;">
+<!--            <select name="refill" id="refill" class="required"  style="width:190px;">
             <?php   $value= ProductPeer::getRefillHashChoices();
                     foreach($value as $key=>$values){  ?>
                     <option value="<?php echo $key;   ?>"><?php echo $values;   ?></option>
             <?php   }  ?>
-            </select>
+            </select>-->
         </td>
     </tr>
     <tr>
