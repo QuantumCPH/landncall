@@ -1,5 +1,10 @@
 <?php use_helper('I18N') ?>
 <?php use_helper('Number') ?>
+<?php if ($sf_user->hasFlash('message')): ?>
+<div style="color:#FF0000">
+ <?php echo __($sf_user->getFlash('message')) ?>
+</div>
+<?php endif; ?>
 <?Php if($companyval!=''){?><div id="sf_admin_container">
 	<div id="sf_admin_content">
             <a href="<?php echo url_for('employee/index').'?company_id='.$companyval."&filter=filter" ?>" class="external_link" target="_self">Employees</a>

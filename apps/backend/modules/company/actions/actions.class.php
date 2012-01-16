@@ -410,12 +410,14 @@ class companyActions extends sfActions {
                 if(!$telintaRefillcustomer){
                    emailLib::sendErrorInTelinta("Error in B2b company Refill", "Unable to call. We have faced an issue in company refill on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$companyCVR.'&amount='.$refill_amount.'&type=customer. <br/> Please Investigate.");
                    $this->getUser()->setFlash('message', 'Error in B2B Company Refill');
+                   $this->redirect('company/paymenthistory');
                    return false;
                 }
                 parse_str($telintaRefillcustomer, $success);
                 if(isset($success['success']) && $success['success']!="OK"){
                     emailLib::sendErrorInTelinta("Error in B2b company Refill", "Unable to call. We have faced an issue in company refill on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$companyCVR.'&amount='.$refill_amount.'&type=customer. <br/> Please Investigate.");
                     $this->getUser()->setFlash('message', 'Error in B2B Company Refill');
+                    $this->redirect('company/paymenthistory');
                     return false;
                 }
 
