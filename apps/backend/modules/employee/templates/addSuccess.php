@@ -44,10 +44,10 @@
 <?php   }  ?>
 </select>  </td>
                 </tr>
-                  <tr>
+<!--                  <tr>
         <td style="padding: 5px;">Country Code:</td>
         <td style="padding: 5px;"> <input type="text" name="country_code" id="employee_country_code"   size="25"   class="required digits" /> </td>
-                </tr>
+                </tr>-->
                  <tr>
         <td style="padding: 5px;">Mobile number:</td>
         <td style="padding: 5px;"> <input type="text" name="mobile_number" id="employee_mobile_number"  size="25"   class="required digits"  minlength="8" /><span id="msgbox" style="display:none"></span> </td>
@@ -92,7 +92,7 @@
               
    <tr>
 
-       <td colspan="2"><ul class="sf_admin_actions">
+       <td colspan="2"><ul class="sf_admin_actions"><input type="text" value="" id="error" name="error">
 
   <li>  <input class="sf_admin_action_list" value="list" type="button" onclick="document.location.href='../employee';" /></li>
   <li><input type="submit" name="save" value="save" class="sf_admin_action_save" /> </li>

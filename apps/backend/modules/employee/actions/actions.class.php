@@ -108,27 +108,36 @@ class employeeActions extends sfActions {
     public function executeSaveEmployee($request) {
 
         
-  $contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
-  $employeMobileNumber=$contrymobilenumber;
+  //$contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
+  //$employeMobileNumber=$contrymobilenumber;
 
+
+          if (substr($request->getParameter('mobile_number'),0, 1) == 0) {
+               $mobileNo = substr($request->getParameter('mobile_number'), 1);
+           }else{
+               $mobileNo= $request->getParameter('mobile_number');
+           }
 
       $c = new Criteria();
       $c->addAnd(CompanyPeer::ID, $request->getParameter('company_id'));
       $this->companys = CompanyPeer::doSelectOne($c);
       $companyCVR=$this->companys->getVatNo();
+      $countryID=$this->companys->getCountryId();
       $companyCVRNumber=$companyCVR;
       $employee = new Employee();
-      
-    
-     
+      $c1 = new Criteria();
+      $c1->addAnd(CountryPeer::ID, $countryID);
+      $this->country = CountryPeer::doSelectOne($c1);
+     $contrymobilenumber = $this->country->getCallingCode() . $mobileNo;
+     $employeMobileNumber=$contrymobilenumber;
 
-        if(!CompanyEmployeActivation::telintaRegisterEmployee($employeMobileNumber, $companyCVRNumber)){
+       /* if(!CompanyEmployeActivation::telintaRegisterEmployee($employeMobileNumber, $companyCVRNumber)){
                  //$this->message = "employee added successfully";
                 $this->getUser()->setFlash('messageError', 'Employee is not added and  registered on Telinta please check email');
                 //$this->redirect('employee/add?message=error');
                 $this->redirect('employee/add');
 die;
-        }
+        }*/
 
      
      $rtype=$request->getParameter('registration_type');
