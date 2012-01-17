@@ -234,7 +234,7 @@ die;
         $employee->setCompanyId($request->getParameter('company_id'));
         $employee->setFirstName($request->getParameter('first_name'));
         $employee->setLastName($request->getParameter('last_name'));
-        $employee->setCountryCode($request->getParameter('country_code'));
+        $employee->setCountryCode($this->country->getCallingCode());
         $employee->setCountryMobileNumber($contrymobilenumber);
         $employee->setMobileNumber($request->getParameter('mobile_number'));
         $employee->setEmail($request->getParameter('email'));
@@ -249,8 +249,8 @@ die;
     public function executeUpdateEmployee(sfWebRequest $request) {
 
 
-  $contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
-  $employeMobileNumber=$contrymobilenumber;
+  //$contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
+  //$employeMobileNumber=$contrymobilenumber;
 
 
    $c = new Criteria();
@@ -371,13 +371,13 @@ $companyCVR=$compny->getVatNo();
        if($rtype==3){
          $rtype=1;  
        }
-        $contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
+       // $contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
         
       //  $employee->setCompanyId($request->getParameter('company_id'));
         $employee->setFirstName($request->getParameter('first_name'));
         $employee->setLastName($request->getParameter('last_name'));
-        $employee->setCountryCode($request->getParameter('country_code'));
-        $employee->setCountryMobileNumber($contrymobilenumber);
+       // $employee->setCountryCode($request->getParameter('country_code'));
+       // $employee->setCountryMobileNumber($contrymobilenumber);
         $employee->setMobileNumber($request->getParameter('mobile_number'));
         $employee->setEmail($request->getParameter('email'));
    /*     $employee->setAppCode($request->getParameter('app_code'));
