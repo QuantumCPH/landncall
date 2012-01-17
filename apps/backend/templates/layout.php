@@ -326,13 +326,15 @@ jQuery(function(){
 jQuery('#sf_admin_edit_form').validate({
 
      rules: {
-    "company[name]": "required",
-     "company[vat_no]": "required",
-      "company[post_code]": "required",
-       "company[address]": "required",
+        "company[name]": "required",
+        "company[vat_no]": "required",
+        "company[post_code]": "required",
+        "company[address]": "required",
         "company[contact_name]": "required",
-         "company[head_phone_number]": "required",
-       "company[email]": "required email"
+        "company[head_phone_number]": "required",
+        "company[fax_number]": "digits",
+        "company[created_at]": "required",
+        "company[email]": "required email"
   }
 	});
 });
@@ -366,6 +368,17 @@ jQuery('#sf_admin_edit_form').validate({
 	jQuery('#company_vat_no').blur(function(){
 		//remove all the class add the messagebox classes and start fading
 		jQuery("#msgbox").removeClass().addClass('messagebox').text('Checking...').fadeIn("slow");
+
+                 var val=jQuery(this).val();
+
+                if(val==''){
+                    jQuery("#msgbox").fadeTo(200,0.1,function() //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('Enter Vat Number').addClass('messageboxerror').fadeTo(900,1);
+			});
+                        jQuery('#error').val("error");
+                }else{
 		//check the username exists or not from ajax
 		jQuery.post("http://stagelc.zerocall.com/backend.php/company/vat",{ vat_no:jQuery(this).val() } ,function(data)
         {//alert(data);
@@ -375,7 +388,7 @@ jQuery('#sf_admin_edit_form').validate({
 			{
 			  //add message and change the class of the box and start fading
 			  jQuery(this).html('This Vat No Already exists').addClass('messageboxerror').fadeTo(900,1);
-			});
+			});jQuery('#error').val("error");
           }
 		  else
 		  {
@@ -383,11 +396,11 @@ jQuery('#sf_admin_edit_form').validate({
 			{
 			  //add message and change the class of the box and start fading
 			  jQuery(this).html('Vat No is available').addClass('messageboxok').fadeTo(900,1);
-			});
+			});jQuery('#error').val("");
 		  }
 
         });
-
+                }
 	});
 
         	jQuery('#employee_mobile_number').blur(function(){

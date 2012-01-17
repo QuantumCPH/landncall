@@ -38,9 +38,9 @@
         <td style="padding: 5px;">Company:</td>
         <td style="padding: 5px;">
   <select name="company_id" id="employee_company_id"    class="required"  style="width:190px;">
-      <option value="" selected="selected"></option>
+      <option value="">Select Company</option>
       <?php foreach($companys as $company){  ?>
-<option value="<?php echo $company->getId();   ?>"><?php echo $company->getName()   ?></option>
+<option value="<?php echo $company->getId(); ?>"<?php echo ($companyval==$company->getId())?"selected='selected'":''?>><?php echo $company->getName()   ?></option>
 <?php   }  ?>
 </select>  </td>
                 </tr>

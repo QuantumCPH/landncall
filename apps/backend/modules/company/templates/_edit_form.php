@@ -108,7 +108,7 @@
       'related_class' => 'City',
       'control_name' => 'company[city_id]',
          'peer_method'=>'getSortedSweedishCities',
-      'include_blank' => true,
+      'include_custom' => 'Select City',
     )); echo $value ? $value : '&nbsp;' ?>
      </div>
         </div>
@@ -195,7 +195,7 @@
   <?php $value = object_select_tag($company, 'getStatusId', array (
   'related_class' => 'Status',
   'control_name' => 'company[status_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Status',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -210,7 +210,7 @@
   <?php $value = object_select_tag($company, 'getCompanySizeId', array (
   'related_class' => 'CompanySize',
   'control_name' => 'company[company_size_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Company Size',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -225,7 +225,7 @@
   <?php $value = object_select_tag($company, 'getCompanyTypeId', array (
   'related_class' => 'CompanyType',
   'control_name' => 'company[company_type_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Company Type',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -240,13 +240,13 @@
   <?php $value = object_select_tag($company, 'getCustomerTypeId', array (
   'related_class' => 'CustomerType',
   'control_name' => 'company[customer_type_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Customer Type',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
 
 <div class="form-row">
-  <?php echo label_for('company[invoice_method_id]', __($labels['company{invoice_method_id}']), 'class="required" ') ?>
+  <?php echo label_for('company[invoice_method_id]', __($labels['company{invoice_method_id}'])) ?>
   <div class="content<?php if ($sf_request->hasError('company{invoice_method_id}')): ?> form-error<?php endif; ?>">
   <?php if ($sf_request->hasError('company{invoice_method_id}')): ?>
     <?php echo form_error('company{invoice_method_id}', array('class' => 'form-error-msg')) ?>
@@ -269,7 +269,7 @@
   <?php $value = object_select_tag($company, 'getAgentCompanyId', array (
   'related_class' => 'AgentCompany',
   'control_name' => 'company[agent_company_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Agent Company',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -286,7 +286,7 @@
   'withtime' => true,
   'calendar_button_img' => '/sf/sf_admin/images/date.png',
   'control_name' => 'company[registration_date]',
-  'disabled' => true,
+  'readonly' => 'true',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -303,7 +303,7 @@
   'withtime' => true,
   'calendar_button_img' => '/sf/sf_admin/images/date.png',
   'control_name' => 'company[created_at]',
-  'disabled' => true,
+  'readonly' => 'true',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -322,7 +322,7 @@
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
-
+<input type="hidden" value="" id="error" name="error">
 </fieldset>
 
 <?php include_partial('edit_actions', array('company' => $company)) ?>

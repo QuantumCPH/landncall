@@ -48,12 +48,12 @@
 				  </div>
 				</div>
 
-				<div class="form-row">
+<!--				<div class="form-row">
 				  <label class="required">Post Code:</label>
 				  <div class="content">
 				  	<?php echo $company->getPostCode() ?>
 				  </div>
-				</div>
+				</div>-->
 
 				<div class="form-row">
 				  <label class="required">Country:</label>
@@ -95,14 +95,14 @@
 				<div class="form-row">
 				  <label class="required">Fax Number:</label>
 				  <div class="content">
-				  	<?php echo $company->getFaxNumber() ?>
+				  	<?php echo $company->getFaxNumber()?$company->getFaxNumber():'N/A' ?>
 				  </div>
 				</div>
 				
 				<div class="form-row">
 				  <label class="required">Webstie:</label>
 				  <div class="content">
-				  	<?php echo $company->getWebsite() ?>
+				  	<?php echo $company->getWebsite()?$company->getWebsite():'N/A' ?>
 				  </div>
 				</div>
 
@@ -151,14 +151,14 @@
 				<div class="form-row">
 				  <label class="required">Status:</label>
 				  <div class="content">
-				  	<?php echo ''.$company->getStatus() ?>
+				  	<?php echo ''.$company->getStatus()?$company->getStatus():'N/A' ?>
 				  </div>
 				</div>
 
 				<div class="form-row">
 				  <label class="required">Registered at:</label>
 				  <div class="content">
-				  	<?php echo $company->getRegistrationDate() ?>
+				  	<?php echo $company->getRegistrationDate()?$company->getRegistrationDate():'N/A' ?>
 				  </div>
 				</div>
 

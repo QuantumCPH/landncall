@@ -28,7 +28,7 @@
 </div>
 
 <div id="sf_admin_header">
-<a target="_self" class="external_link" href="<?php echo url_for('employee/add') ?>" style="text-decoration:none;">Create New</a>
+<a target="_self" class="external_link" href="<?php echo url_for('employee/add'); if(isset($companyval) && $companyval!=""){echo "?company_id=".$companyval;} ?>" style="text-decoration:none;">Create New</a>
 </div>
 <br>
 <?php if ($sf_user->hasFlash('message')): ?>
@@ -120,7 +120,7 @@
 				 
 
 
-                            <?php  } ?>
+                            <?php  }else{echo "No";} ?>
 </td>
  <?php  if(isset($companyval) && $companyval!=""){  ?>
       <td> <?php  $mobileID= $employee->getCountryMobileNumber();
@@ -174,7 +174,7 @@
 </table>
 <br/>
   <div id="sf_admin_header">
-<a target="_self" class="external_link" href="<?php echo url_for('employee/add') ?>" style="text-decoration:none;">Create New</a>
+<a target="_self" class="external_link" href="<?php echo url_for('employee/add'); if(isset($companyval) && $companyval!=""){echo "?company_id=".$companyval;} ?>" style="text-decoration:none;">Create New</a>
 
 </div>
 

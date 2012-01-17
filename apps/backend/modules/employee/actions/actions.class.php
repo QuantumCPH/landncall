@@ -96,7 +96,8 @@ class employeeActions extends sfActions {
 
     public function executeAdd($request) {
 
-
+       $this->companyval=$request->getParameter('company_id');
+   
         $c = new Criteria();
         $this->companys = CompanyPeer::doSelect($c);
 

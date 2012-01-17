@@ -320,8 +320,8 @@ class companyActions extends sfActions {
             $criterion = $c->getNewCriterion(CompanyPeer::COMPANY_NAME, '');
             $criterion->addOr($c->getNewCriterion(CompanyPeer::COMPANY_NAME, null, Criteria::ISNULL));
             $c->add($criterion);
-        } else if (isset($this->filters['company_name']) && $this->filters['company_name'] !== '') {
-            $c->add(CompanyPeer::COMPANY_NAME, $this->filters['company_name']);
+        } else if (isset($this->filters['id']) && $this->filters['id'] !== '') {
+            $c->add(CompanyPeer::ID, $this->filters['id']);
         }
         if (isset($this->filters['vat_no_is_empty'])) {
             $criterion = $c->getNewCriterion(CompanyPeer::VAT_NO, '');
