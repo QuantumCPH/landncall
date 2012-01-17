@@ -380,7 +380,7 @@ jQuery('#sf_admin_edit_form').validate({
                         jQuery('#error').val("error");
                 }else{
 		//check the username exists or not from ajax
-		jQuery.post("http://stagelc.zerocall.com/backend.php/company/vat",{ vat_no:jQuery(this).val() } ,function(data)
+		jQuery.post("http://stagelc.zerocall.com/backend.php/company/vat",{ vat_no:val } ,function(data)
         {//alert(data);
 		  if(data=='no') //if username not avaiable
 		  {
@@ -459,13 +459,17 @@ jQuery('#sf_admin_edit_form').validate({
           return true;
       }
      
-      jQuery("#sf_admin_edit_form").submit(function() {
+      
+    });
+       jQuery("#sf_admin_edit_form").submit(function() {
       if (jQuery("#error").val() == "error") {
 
         return false;
       }else{
           return true;
       }
+
+
     });
 
 
