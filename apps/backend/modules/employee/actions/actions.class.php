@@ -401,10 +401,28 @@ $companyCVR=$compny->getVatNo();
         $c->add(EmployeePeer::ID, $employeeid);
         $employees = EmployeePeer::doSelectOne($c);
         $registration = $employees->getRegistrationType();
-        $mobileNumber=$employees->getCountryMobileNumber();
+        //$mobileNumber=$employees->getCountryMobileNumber();
+        $companyid=$request->getParameter('company_id');
         $contrymobilenumber=$employees->getCountryMobileNumber();
-        $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=a'.$mobileNumber.'&type=account');
-        $telintaRegisterCus1 = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=cb'.$mobileNumber.'&type=account');
+        $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=a'.$contrymobilenumber.'&type=account');
+         
+            parse_str($telintaRegisterCus);
+            if(isset($success) && $success!="OK"){
+                emailLib::sendErrorInTelinta("Error in employee  delete account", 'We have faced an issue in employee deletion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=a'.$contrymobilenumber.'&type=account');
+                $this->getUser()->setFlash('message', 'Employee has not been deleted Sucessfully! Error in Callthrough Account');
+                if(isset($companyid) && $companyid!=""){$this->redirect('employee/index?company_id='.$companyid.'&filter=filter');}
+                else{$this->redirect('employee/index');}
+                return false;
+            }
+        $telintaRegisterCus1 = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=cb'.$contrymobilenumber.'&type=account');
+        parse_str($telintaRegisterCus1);
+            if(isset($success) && $success!="OK"){
+                emailLib::sendErrorInTelinta("Error in employee  delete account", 'We have faced an issue in employee deletion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=cb'.$contrymobilenumber.'&type=account');
+                $this->getUser()->setFlash('message', 'Employee has not been deleted Sucessfully! Error in Callback Account');
+                if(isset($companyid) && $companyid!=""){$this->redirect('employee/index?company_id='.$companyid.'&filter=filter');}
+                else{$this->redirect('employee/index');}
+                return false;
+            }
         $this->forward404Unless($employee = EmployeePeer::retrieveByPk($request->getParameter('id')), sprintf('Object employee does not exist (%s).', $request->getParameter('id')));
 
 
@@ -417,9 +435,23 @@ $companyCVR=$compny->getVatNo();
                     $voipnumbers = substr($voipnumbers, 2);
 
                     $telintaDeactivate = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name=' . $voipnumbers . '&active=N&follow_me_number=' . $contrymobilenumber . '&type=account');
-
+                    parse_str($telintaDeactivate);
+                    if(isset($success) && $success!="OK"){
+                        emailLib::sendErrorInTelinta("Error in employee  delete account", 'We have faced an issue in employee deletion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name=' . $voipnumbers . '&active=N&follow_me_number=' . $contrymobilenumber . '&type=account');
+                        $this->getUser()->setFlash('message', 'Employee has not been deleted Sucessfully! Error in Deactivate Resenummer');
+                        if(isset($companyid) && $companyid!=""){$this->redirect('employee/index?company_id='.$companyid.'&filter=filter');}
+                        else{$this->redirect('employee/index');}
+                        return false;
+                    }
                     $telintaDeleteResenummer = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name='.$voipnumbers.'&type=account');
-
+                    parse_str($telintaDeleteResenummer);
+                    if(isset($success) && $success!="OK"){
+                        emailLib::sendErrorInTelinta("Error in employee  delete account", 'We have faced an issue in employee deletion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name='.$voipnumbers.'&type=account');
+                        $this->getUser()->setFlash('message', 'Employee has not been deleted Sucessfully! Error in delete resenummer');
+                        if(isset($companyid) && $companyid!=""){$this->redirect('employee/index?company_id='.$companyid.'&filter=filter');}
+                        else{$this->redirect('employee/index');}
+                        return false;
+                    }
                     $getvoipInfos->setUpdatedAt(Null);
                     $getvoipInfos->setCustomerId(Null);
                     $getvoipInfos->setIsAssigned(0);
@@ -430,7 +462,6 @@ $companyCVR=$compny->getVatNo();
                 
         $employee->delete();
         $this->getUser()->setFlash('message', 'Employee has been deleted Sucessfully');
-        $companyid=$request->getParameter('company_id');
         if(isset($companyid) && $companyid!=""){$this->redirect('employee/index?company_id='.$companyid.'&filter=filter');}
         else{$this->redirect('employee/index');}
     }
