@@ -322,7 +322,9 @@
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
+<?php if ($company->isNew()){ ?>
 <input type="hidden" value="" id="error" name="error">
+<? }?>
 </fieldset>
 
 <?php include_partial('edit_actions', array('company' => $company)) ?>
