@@ -143,8 +143,8 @@ class companyActions extends sfActions {
 
         if($company->isNew()&& $res){
 
-            var_dump($companyData);
-            var_dump($company);
+            //var_dump($companyData);
+            //var_dump($company);
             $company->save();
 
             $transaction = new CompanyTransaction();
