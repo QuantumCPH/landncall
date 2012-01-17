@@ -137,8 +137,9 @@ class companyActions extends sfActions {
 
     protected function saveCompany($company) {
         $companyData = $this->getRequestParameter('company');
-
-        $res = CompanyEmployeActivation::telintaRegisterCompany($companyData['vat_no']);
+        if($company->isNew()){
+            $res = CompanyEmployeActivation::telintaRegisterCompany($companyData['vat_no']);
+        }
         $company->isNew().":".$res; 
 
         if($company->isNew()&& $res){
