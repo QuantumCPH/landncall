@@ -94,8 +94,8 @@
                     <?php echo link_to('Registered Customer(Web)', 'customer/registeredByWeb'); ?>
                     <?php echo link_to('Registered Customer(Agent)', 'customer/registeredByAgent'); ?>
                     <?php echo link_to('Registered Customer(Agent Link)', 'customer/registeredByAgentLink'); ?>
-                    <?php echo link_to('Registered Customer(Agent SMS)', 'customer/registeredBySms'); ?>
-                    <?php echo link_to('Registered Customer(Mobile App)', 'customer/registeredByApp'); ?>
+                    <?php //echo link_to('Registered Customer(Agent SMS)', 'customer/registeredBySms'); ?>
+                    <?php //echo link_to('Registered Customer(Mobile App)', 'customer/registeredByApp'); ?>
                     <?php echo link_to('Partial Registeration(Web)', 'customer/partialRegisteredByWeb'); ?>
                     <?php echo link_to('Partial Registeration(Agent)', 'customer/partialRegisteredByAgent'); ?>
                     <?php echo link_to('Partial Registeration(Agent Link)', 'customer/partialRegisteredByAgentLink'); ?>
