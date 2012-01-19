@@ -1118,7 +1118,7 @@ class customerActions extends sfActions {
         $this->total_pages = $pager->getNbResults() / $items_per_page;
     }
 
-    public function executePasswordchange(sfWebRequest $request) {
+   /* public function executePasswordchange(sfWebRequest $request) {
 
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         changeLanguageCulture::languageCulture($request, $this);
@@ -1230,7 +1230,107 @@ class customerActions extends sfActions {
 //                'device_id', $device->getId()
 //                );
     }
+*/
+    public function executePasswordchange(sfWebRequest $request) {
 
+        //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
+        changeLanguageCulture::languageCulture($request, $this);
+        //-----------------------
+
+        $this->redirectUnless($this->getUser()->isAuthenticated(), "@homepage");
+        //$this->customer = CustomerPeer::retrieveByPK(58);
+        $this->customer = CustomerPeer::retrieveByPK(
+                        $this->getUser()->getAttribute('customer_id', null, 'usersession')
+        );
+        //$this->forward404Unless($this->customer);
+        $this->redirectUnless($this->customer, "@homepage");
+
+        $this->form = new CustomerForm(CustomerPeer::retrieveByPK($this->customer->getId()));
+
+
+    unset($this->form['first_name']);
+                    unset($this->form['last_name']);
+                    unset($this->form['country_id']);
+                    unset($this->form['city']);
+                    unset($this->form['po_box_number']);
+                    unset($this->form['mobile_number']);
+                    unset($this->form['device_id']);
+                    unset($this->form['email']);
+                    unset($this->form['is_newsletter_subscriber']);
+                    unset($this->form['created_at']);
+                    unset($this->form['updated_at']);
+                    unset($this->form['customer_status_id']);
+                    unset($this->form['address']);
+                    unset($this->form['fonet_customer_id']);
+                    unset($this->form['referrer_id']);
+                    unset($this->form['telecom_operator_id']);
+                    unset($this->form['date_of_birth']);
+                    unset($this->form['other']);
+                    unset($this->form['subscription_type']);
+                    unset($this->form['auto_refill_amount']);
+                    unset($this->form['subscription_id']);
+                    unset($this->form['last_auto_refill']);
+                    unset($this->form['auto_refill_min_balance']);
+                    unset($this->form['c9_customer_number']);
+                    unset($this->form['registration_type_id']);
+                    unset($this->form['imsi']);
+                    unset($this->form['uniqueid']);
+                    unset($this->form['plain_text']);
+                    unset($this->form['ticketval']);
+                    unset($this->form['to_date']);
+                    unset($this->form['from_date']);
+                     unset($this->form['uniqueid']);
+                    unset($this->form['plain_text']);
+                    unset($this->form['ticketval']);
+                    unset($this->form['to_date']);
+                    unset($this->form['from_date']);
+                    unset($this->form['terms_conditions']);
+                    unset($this->form['manufacturer']);
+                    unset($this->form['product']);
+        //unset($this->form['password_confirm']);
+        /////////////////////////////////////
+
+
+
+        /////////////////////////////////////////
+        $this->oldpasswordError = '';
+        $this->oldpassword = '';
+        if ($request->isMethod('post')) {
+            $customers = $request->getParameter($this->form->getName());
+            $customerId = $customers["id"];
+            //echo '<br>';
+            $getcusInfo = new Criteria();
+            $getcusInfo->add(CustomerPeer::ID, $customerId);
+            $getcusInfos = CustomerPeer::doSelectOne($getcusInfo); //->getId();
+            $customeroldpass = $getcusInfos->getPlainText();
+            if ($customeroldpass == $customers["oldpassword"]) {
+                $this->oldpasswordError = '';
+            } else {
+                $this->oldpasswordError = 'wrong';
+            }
+            $this->oldpassword = $customers["oldpassword"];
+            $this->form->bind($request->getParameter($this->form->getName()), $request->getFiles($this->form->getName()));
+
+            if ($this->form->isValid() && $this->oldpasswordError == '') {
+                // echo 'validated';
+                $customer = $this->form->save();
+
+                $plainPws = $customers["password"];
+
+
+                $customer->setPlainText($plainPws);
+
+                $customer->save();
+
+                $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__('Your Password have been saved.'));
+            }
+            // echo 'after';
+        }
+
+
+
+
+    }
     public function executeSettings(sfWebRequest $request) {
 
 
