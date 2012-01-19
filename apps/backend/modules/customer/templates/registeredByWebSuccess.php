@@ -1,8 +1,6 @@
 <?php    ?>
 
-<ul>
-            <li>
-                <div id="sf_admin_content">
+
 		<table width="100%" cellspacing="0" cellpadding="2" style="float:left;">
                   <thead ><tr style="background-color: #CCCCFF;color: #000000;">
                     <th id="sf_admin_list_th_id" >Id</th>
@@ -80,11 +78,4 @@
                 
                   </tbody>
               </table>
-                </div>
-            </li>
-            
-          </ul>
-   
-
-
-
+              
