@@ -27,7 +27,7 @@
                     </div>
                     <?php echo count($customers)." - Results" ?></th></tr>
                   </tfoot>
-                  <tbody>
+                  <tbody> <?php   $incrment=1;    ?>
                 <?php foreach($customers as $customer): ?>
                  <?php
                   if($incrment%2==0){
@@ -72,7 +72,7 @@
          }else{  }  ?> </td>
                   
                   
-                </tr>
+                </tr><?php   $incrment++;    ?>
                 <?php endforeach; ?>
 
                 
