@@ -66,7 +66,7 @@
   		
       </ul>
       <ul id="sddm">
-             <li><a href="#"
+<!--             <li><a href="#"
                 onmouseover="mopen('m2')"
                 onmouseout="mclosetime()">B2B</a>
                 <div id="m2"
@@ -82,7 +82,7 @@
                     <?php //echo link_to('invoices', 'invoice/index'); ?>
                     <?php //echo link_to('Product orders', 'product_order/index') ?>
                 </div>
-            </li>
+            </li>-->
             <li>
                 <a href="#"
                 onmouseover="mopen('m5')"
@@ -242,7 +242,7 @@
                         <?php echo link_to('Mobile Models', 'device/index'); ?>
                         <?php echo link_to('Mobile Brands', 'manufacturer/index'); ?>
                         <?php echo link_to('Mobile Operator', 'telecom_operator/index') ?>
-                        <?php echo link_to('Postal charges', 'postal_charges/index') ?>
+                        <?php //echo link_to('Postal charges', 'postal_charges/index') ?>
                         <?php
                         // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
                         // echo link_to('<b></b>', '') ?>
@@ -264,9 +264,9 @@
                         <?php //echo link_to('SMS TEXT', 'sms_text/index') ?>
                         <?php echo link_to('Usage Alert', 'usage_alert/index') ?>
                         <?php echo link_to('Usage Alert Sender', 'usage_alert_sender/index') ?>
-                        <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
-                        <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
-                        <a href="http://landncall.zerocall.com/backend_dev.php/client_documents">Upload Client Document</a>
+                        <?php //echo link_to('Telecom Operator', 'telecom_operator/index') ?>
+                        <?php //echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
+<!--                        <a href="http://landncall.zerocall.com/backend_dev.php/client_documents">Upload Client Document</a>-->
                         <?php //echo link_to('global setting', 'global_setting/index') ?>
                         <?php //echo link_to('employee products', 'employee_product/index') ?>
 
