@@ -284,7 +284,7 @@
             </li> </ul>
           <!-- end newsletter -->
           <div>
-            &nbsp;<br>
+            <br>
              
             <a href="<?php echo url_for('customer/passwordchange') ?>" style="margin-left: 45px;"><b><?php echo __('Change password') ?></b></a>
 <!--            <input type="submit" style="border: 0px;" class="settingbutton" name="submit"  value="<?php echo __('Update') ?>">-->
