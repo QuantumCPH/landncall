@@ -286,8 +286,8 @@
           <div>
             &nbsp;</br>
              
-       <!--       <a href="<?php //echo url_for('customer/passwordchange') ?>" style="margin-left: 45px;"><b><?php //echo __('Change password') ?></b></a>
-          <input type="submit" style="border: 0px;" class="settingbutton" name="submit"  value="<?php echo __('Update') ?>">-->
+           <a href="<?php echo url_for('customer/passwordchange') ?>" style="margin-left: 45px;"><b><?php echo __('Change password') ?></b></a>
+       <!--      <input type="submit" style="border: 0px;" class="settingbutton" name="submit"  value="<?php echo __('Update') ?>">-->
              
 <!--            <button onclick="$('#newCustomerForm').submit();" style="cursor: pointer"><?php echo __('Next') ?></button>-->
           </div>
