@@ -109,7 +109,7 @@
             <!-- end last name -->
             
             <!-- end email -->
-            <li>&nbsp;</br></br></li>
+            <li>&nbsp;<br><br></li>
           </ul>
                     <input type="submit" class="butonsigninsmall"  name="submit"  style="cursor: pointer; float: right;"  value="<?php echo __('Update') ?>"  >
       </div>
@@ -284,7 +284,7 @@
             </li> </ul>
           <!-- end newsletter -->
           <div>
-            &nbsp;</br>
+            &nbsp;<br>
              
             <a href="<?php echo url_for('customer/passwordchange') ?>" style="margin-left: 45px;"><b><?php echo __('Change password') ?></b></a>
 <!--            <input type="submit" style="border: 0px;" class="settingbutton" name="submit"  value="<?php echo __('Update') ?>">-->
