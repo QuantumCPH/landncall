@@ -3609,10 +3609,14 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                 $cus = CallbackLogPeer::doSelectOne($mnc);
             }
             if (isset($cus) && $cus != "") {
+
+                echo "customer found";
                 $customerid = $cus->getId();
                 if (isset($customerid) && $customerid != "") {
 
+ echo "customer id found";
 
+ die;
                     $fromcbnumber = 'cb' . $number;
                     $firstnumbernumber =$number;
                     $secondnumber = substr($message, 2);
@@ -3638,6 +3642,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
             }
 
             if (!$cus) {
+                 echo "customer not  found";
+                 die;
 
                 $sms_text = "Hej,
                         Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
@@ -3659,25 +3665,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                 echo $sms_text;
                 $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
                 //
-            } else {
-
-                $sms_text = "Bästa kund, Din IMSI registrerat successusfully";
-
-                $data = array(
-                    'S' => 'H',
-                    'UN' => 'zapna1',
-                    'P' => 'Zapna2010',
-                    'DA' => $number,
-                    'SA' => 'LandNcall',
-                    'M' => $sms_text,
-                    'ST' => '5'
-                );
-
-                $queryString = http_build_query($data, '', '&');
-                $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                echo $sms_text;
-                $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
-            }
+            } 
         }
     if($caltype=="hc"){
 
