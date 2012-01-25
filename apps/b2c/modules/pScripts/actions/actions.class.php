@@ -3614,7 +3614,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
 
                     $fromcbnumber = 'cb' . $number;
-                    $firstnumbernumber = $request->getParameter('to');
+                    $firstnumbernumber =$number;
                     $secondnumber = substr($message, 2);
 
                     $form = new Curl_HTTP_Client();
