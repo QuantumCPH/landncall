@@ -3681,7 +3681,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
 
 
-             
+                 
                 $number="0".$number;
 		$mnc = new Criteria();
 		$mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
