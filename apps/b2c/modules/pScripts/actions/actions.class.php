@@ -3643,10 +3643,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
             if (!$cus) {
                
 
-                $sms_text = "Hej,
-                    Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com
-                    MVH
-                    LandNCall";
+                $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
 
                 $data = array(
                     'S' => 'H',
