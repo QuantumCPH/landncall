@@ -16,6 +16,6 @@
 	.
 
   </div> <!-- end left-col -->
-  <?php //include_partial('customer/sidebar') ?>
+ 
   </td></tr>
   </table>
