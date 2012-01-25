@@ -3663,7 +3663,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                 echo $sms_text;
                 $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
                 //
-            } 
+            }
+             return sfView::NONE;
         }
     if($caltype=="hc"){
 
