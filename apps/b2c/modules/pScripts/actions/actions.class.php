@@ -3610,13 +3610,12 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
             }
             if (isset($cus) && $cus != "") {
 
-                echo "customer found";
+                 
                 $customerid = $cus->getId();
                 if (isset($customerid) && $customerid != "") {
 
- echo "customer id found";
+ 
 
- die;
                     $fromcbnumber = 'cb' . $number;
                     $firstnumbernumber =$number;
                     $secondnumber = substr($message, 2);
@@ -3642,8 +3641,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
             }
 
             if (!$cus) {
-                 echo "customer not  found";
-                 die;
+               
 
                 $sms_text = "Hej,
                         Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
