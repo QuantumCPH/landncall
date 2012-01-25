@@ -3644,9 +3644,9 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                
 
                 $sms_text = "Hej,
-                        Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
-                        MVH
-                        LandNCall";
+                    Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com
+                    MVH
+                    LandNCall";
 
                 $data = array(
                     'S' => 'H',
