@@ -3592,6 +3592,93 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
      $numberlength=strlen($number);
 
       $endnumberlength=$numberlength-2;
+
+          if ($caltype == "00") {
+
+
+
+            $mobile = "";
+            $number = $request->getParameter('from');
+            $message = $request->getParameter('text');
+
+
+            if (isset($number) && $number != "") {
+                $mnc = new Criteria();
+
+                $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
+                $cus = CallbackLogPeer::doSelectOne($mnc);
+            }
+            if (isset($cus) && $cus != "") {
+                $customerid = $cus->getId();
+                if (isset($customerid) && $customerid != "") {
+
+
+                    $fromcbnumber = 'cb' . $number;
+                    $firstnumbernumber = $request->getParameter('to');
+                    $secondnumber = substr($message, 2);
+
+                    $form = new Curl_HTTP_Client();
+
+                    $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+                    $form->set_referrer("http://landncall.zerocall.com");
+                    $post_data = array(
+                        'Account' => $fromcbnumber,
+                        'Password' => 'asdf1asd',
+                        'Action' => 'Connect Us Now!',
+                        'First_Phone_Number' => $firstnumbernumber,
+                        'Second_Phone_Number' => $secondnumber
+                    );
+
+
+                    echo $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
+
+
+                    die;
+                }
+            }
+
+            if (!$cus) {
+
+                $sms_text = "Hej,
+                        Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
+                        MVH
+                        LandNCall";
+
+                $data = array(
+                    'S' => 'H',
+                    'UN' => 'zapna1',
+                    'P' => 'Zapna2010',
+                    'DA' => $number,
+                    'SA' => 'LandNcall',
+                    'M' => $sms_text,
+                    'ST' => '5'
+                );
+
+                $queryString = http_build_query($data, '', '&');
+                $queryString = smsCharacter::smsCharacterReplacement($queryString);
+                echo $sms_text;
+                $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+                //
+            } else {
+
+                $sms_text = "Bästa kund, Din IMSI registrerat successusfully";
+
+                $data = array(
+                    'S' => 'H',
+                    'UN' => 'zapna1',
+                    'P' => 'Zapna2010',
+                    'DA' => $number,
+                    'SA' => 'LandNcall',
+                    'M' => $sms_text,
+                    'ST' => '5'
+                );
+
+                $queryString = http_build_query($data, '', '&');
+                $queryString = smsCharacter::smsCharacterReplacement($queryString);
+                echo $sms_text;
+                $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+            }
+        }
     if($caltype=="hc"){
 
 
@@ -3904,7 +3991,7 @@ LandNCall";
     }
 
 
-if(($caltype!="IC") && ($caltype!="hc")){
+if(($caltype!="IC") && ($caltype!="hc") && ($caltype!="00")){
 
 
   $sms_log_data_file = sfConfig::get('sf_data_dir').'/imsi_log.txt';
