@@ -3643,8 +3643,10 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
             if (!$cus) {
                
 
-                $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
-
+               // $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
+    $sm->add(SmsTextPeer::ID, 4);
+                    $smstext = SmsTextPeer::doSelectOne($sm);
+                    $sms_text = $smstext->getMessageText();
                 $data = array(
                     'S' => 'H',
                     'UN' => 'zapna1',
@@ -3767,10 +3769,10 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                     $sm->add(SmsTextPeer::ID, 1);
                     $smstext = SmsTextPeer::doSelectOne($sm);
                     $sms_text = $smstext->getMessageText();
-                  $sms_text="Hej,
-                    Ditt Smartsim är nu aktiverat och du kan börja spara pengar på din utlandstelefoni.
-                    Med vänlig hälsning
-                    LandNCall";
+//                  $sms_text="Hej,
+//                    Ditt Smartsim är nu aktiverat och du kan börja spara pengar på din utlandstelefoni.
+//                    Med vänlig hälsning
+//                    LandNCall";
 
 //$mtnumber=923006826451;
         $data = array(
@@ -3808,10 +3810,10 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                     $sm->add(SmsTextPeer::ID, 2);
                     $smstext = SmsTextPeer::doSelectOne($sm);
                     $sms_text = $smstext->getMessageText();
-                      $sms_text="Hej,
-                    Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
-                    MVH
-                    LandNCall";
+//                      $sms_text="Hej,
+//                    Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
+//                    MVH
+//                    LandNCall";
 
 
         $data = array(
