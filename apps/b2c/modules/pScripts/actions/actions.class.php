@@ -3138,9 +3138,9 @@ Mange hilsner
 Zerocall Support";*/
 
 $sms_text="Velkommen til Zerocall out.
-Sæt Zerocall simkortet i telefonen og du er i gang med at ringe billigt til udlandet.
-Huskat registrere dig på www.zerocall.com inden for 24 timer. Dit brugernavn er ".$mobile." og password".$mobile."  
-Spørgsmål? Email: support@landncall.com eller 25998891.
+S�t Zerocall simkortet i telefonen og du er i gang med at ringe billigt til udlandet.
+Huskat registrere dig p� www.zerocall.com inden for 24 timer. Dit brugernavn er ".$mobile." og password".$mobile."  
+Sp�rgsm�l? Email: support@landncall.com eller 25998891.
 Venlig hilsen Zerocall";
 
 
@@ -3596,17 +3596,18 @@ public function getEnableCountryId($calingcode){
 
 
 public function executeSmsRegisterationwcb(sfWebrequest $request){
-    $sms_text = "";
-        $number = $request->getParameter('from');
-        $mtnumber = $request->getParameter('from');
-        $frmnumberTelinta = $request->getParameter('from');
-        $text = $request->getParameter('text');
-        $caltype = substr($text, 0, 2);
+    $sms_text="";
+   $number = $request->getParameter('from');
+    $mtnumber = $request->getParameter('from');
+    $frmnumberTelinta = $request->getParameter('from');
+	 $text = $request->getParameter('text');
+      $caltype=substr($text,0,2);
 
-        $numberlength = strlen($number);
+     $numberlength=strlen($number);
 
-        $endnumberlength = $numberlength - 2;
-        if ($caltype == "00") {
+      $endnumberlength=$numberlength-2;
+
+          if ($caltype == "00") {
 
 
 
@@ -3622,12 +3623,15 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                 $cus = CallbackLogPeer::doSelectOne($mnc);
             }
             if (isset($cus) && $cus != "") {
+
+
                 $customerid = $cus->getId();
                 if (isset($customerid) && $customerid != "") {
 
 
+
                     $fromcbnumber = 'cb' . $number;
-                    $firstnumbernumber = $request->getParameter('to');
+                    $firstnumbernumber =$number;
                     $secondnumber = substr($message, 2);
 
                     $form = new Curl_HTTP_Client();
@@ -3652,11 +3656,11 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
             if (!$cus) {
 
-                $sms_text = "Hej,
-                        Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
-                        MVH
-                        LandNCall";
 
+               // $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
+    $sm->add(SmsTextPeer::ID, 4);
+                    $smstext = SmsTextPeer::doSelectOne($sm);
+                    $sms_text = $smstext->getMessageText();
                 $data = array(
                     'S' => 'H',
                     'UN' => 'zapna1',
@@ -3672,25 +3676,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                 echo $sms_text;
                 $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
                 //
-            } else {
-
-                $sms_text = "Bästa kund, Din IMSI registrerat successusfully";
-
-                $data = array(
-                    'S' => 'H',
-                    'UN' => 'zapna1',
-                    'P' => 'Zapna2010',
-                    'DA' => $number,
-                    'SA' => 'LandNcall',
-                    'M' => $sms_text,
-                    'ST' => '5'
-                );
-
-                $queryString = http_build_query($data, '', '&');
-                $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                echo $sms_text;
-                $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
             }
+             return sfView::NONE;
         }
     if($caltype=="hc"){
 
@@ -3707,13 +3694,13 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
 
 
-             
+
                 $number="0".$number;
 		$mnc = new Criteria();
 		$mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
                 $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
 		$cus = CustomerPeer::doSelectOne($mnc);
-                 
+
 		$mnc = new Criteria();
 		$mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
                 $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
@@ -3748,7 +3735,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                        $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
                         $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
                         $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-                        
+
                         $getvoipInfo = new Criteria();
                         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
                         $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
@@ -3763,7 +3750,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                       // $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name='.$voipnumbers.'&active=Y&follow_me_number='.$frmnumberTelinta.'&type=account');
                        $deleteAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name='.$voipnumbers.'&type=account');
 
-                       
+
                         $find = '';
                         $string = $deleteAccount;
                         $find = 'ERROR';
@@ -3776,7 +3763,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
                       $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$voipnumbers.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number='.$frmnumberTelinta.'&billing_model=1&password=asdf1asd');
                       $find = '';
-                      
+
                       $string = $telintaAddAccount;
                       $find = 'ERROR';
                         if(strpos($string, $find )){
@@ -3786,20 +3773,20 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                         }else{
                         }
 
-                        
-                    
-        $sms_text="Hej,
-                    Ditt Smartsim är nu aktiverat och du kan börja spara pengar på din utlandstelefoni.
-                    Med vänlig hälsning
-                    LandNCall";
-        
-        
-                            
+
+
+
+
+
+
        $sm = new Criteria();
                     $sm->add(SmsTextPeer::ID, 1);
                     $smstext = SmsTextPeer::doSelectOne($sm);
                     $sms_text = $smstext->getMessageText();
-                     
+//                  $sms_text="Hej,
+//                    Ditt Smartsim är nu aktiverat och du kan börja spara pengar på din utlandstelefoni.
+//                    Med vänlig hälsning
+//                    LandNCall";
 
 //$mtnumber=923006826451;
         $data = array(
@@ -3813,7 +3800,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
             );
 
      echo   $queryString = http_build_query($data,'', '&');
-     
+
 		$queryString=smsCharacter::smsCharacterReplacement($queryString);
       echo $sms_text;
       echo   $queryString;
@@ -3828,18 +3815,21 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
       if($cusCount<1){
  echo 'Success else contdiont';
    echo $mtnumber;
-   
-                         
-     
-                     
-        $sms_text="Hej,
-                    Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
-                    MVH
-                    LandNCall";
+
+
+
+
+
   $sm = new Criteria();
                     $sm->add(SmsTextPeer::ID, 2);
                     $smstext = SmsTextPeer::doSelectOne($sm);
                     $sms_text = $smstext->getMessageText();
+//                      $sms_text="Hej,
+//                    Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
+//                    MVH
+//                    LandNCall";
+
+
         $data = array(
                   'S' => 'H',
                   'UN'=>'zapna1',
@@ -3870,7 +3860,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
     if($caltype=="IC"){
 	$mobile = "";
-      
+
         $number=$number;
         $mnumber= $number;
 
@@ -3884,7 +3874,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
  	if(isset($callbackq) && $callbackq>0){
 
-         
+
 		 //$customerid=$cus->getId();
 		  //$mbno =$cus->getMobileNumber();
 		//  $callCode = substr($Mobilenumber,0,2);
@@ -3926,7 +3916,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                         $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
                         $cus = CustomerPeer::doSelectOne($mnc);
                         $customerids = $cus->getId();
-                
+
                         $getvoipInfo = new Criteria();
                         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
                         $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
@@ -3962,17 +3952,19 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                       // $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$frmnumberTelinta.'&customer='.$uniqueId.'&opening_balance=-'.$telintaGetBalance.'&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number='.$TelintaMobile.'&billing_model=1&password=asdf1asd');
                       //echo  $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name='.$voipnumbers.'&active=Y&follow_me_number='.$frmnumberTelinta.'&type=account');
 
-                       
-                  
-    
-                    $sms_text="Hej,
-Ditt Smartsim är nu aktiverat och du kan börja spara pengar på din utlandstelefoni.
-Med vänlig hälsning
-LandNCall";
+
+
+
+
                     $sm = new Criteria();
                     $sm->add(SmsTextPeer::ID, 3);
                     $smstext = SmsTextPeer::doSelectOne($sm);
                     $sms_text = $smstext->getMessageText();
+
+                       $sms_text="Hej,
+Ditt Smartsim är nu aktiverat och du kan börja spara pengar på din utlandstelefoni.
+Med vänlig hälsning
+LandNCall";
         $data = array(
                   'S' => 'H',
                   'UN'=>'zapna1',
@@ -4020,17 +4012,17 @@ if(($caltype!="IC") && ($caltype!="hc") && ($caltype!="00")){
    $number = $request->getParameter('from');
    $message = $request->getParameter('text');
 
- 
+
   if(isset($number) && $number!=""){
       $mnc = new Criteria();
-	 
+
       $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
       $cus = CallbackLogPeer::doSelectOne($mnc);
- 
+
   }
  if(isset($cus) && $cus!=""){
   	 $customerid=$cus->getId();
-	 if(isset($customerid)  && $customerid!="" ){     
+	 if(isset($customerid)  && $customerid!="" ){
 	           $cus->setImsi(substr($message,0,15));
 		   $cus->save();
 
