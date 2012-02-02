@@ -49,15 +49,15 @@
                 <div class="dateBox-pt">
            <div class="formRow-pt" style="float:left;">
                     <label class="datelable">Fra:</label>
-                    <input type="text"   name="startdate" autocomplete="off" id="startdate" style="width: 110px;" value="<?php echo @$startdate ? $startdate : date('Y-m-d',strtotime('-15 days'));?>" />
+                    <input type="text"   name="startdate" autocomplete="off" id="startdate" style="width: 110px;" value="<?php echo @$fromdate ? $fromdate : date('Y-m-d',strtotime('-15 days'));?>" />
                 </div>
                 <div class="formRow-pt1" style="float:left;margin-left:7px;">
                     &nbsp;<label class="datelable">Til:</label>
-                    <input type="text"   name="enddate" autocomplete="off" id="enddate" style="width: 110px;" value="<?php echo @$enddate ? $enddate : date('Y-m-d');?>" />
+                    <input type="text"   name="enddate" autocomplete="off" id="enddate" style="width: 110px;" value="<?php echo @$todate ? $todate : date('Y-m-d');?>" />
                 </div>
                 <div class="formRow-pt1" style="float:left;margin-left:7px;">
                     
-                <span style="margin-left:10px;"><input type="submit" name="søg" value="søg" class="submitBtn" /></span>
+                <span style="margin-left:10px;"><input type="submit" name="sök" value="sök" class="submitBtn" /></span>
                 </div>
 
             </div>
