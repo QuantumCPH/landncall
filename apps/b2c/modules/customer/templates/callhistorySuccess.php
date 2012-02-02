@@ -1,6 +1,26 @@
 <?php use_helper('I18N') ?>
 <?php use_helper('Number') ?>
 <?php include_partial('dashboard_header', array('customer'=> $customer, 'section'=>__('Call History')) ) ?>
+<style>
+    input.submitBtn {
+      /*background-color:#76B55F;*/
+      background:url('../../zerocall/images/bg-login-btn.jpg') no-repeat;
+      padding:0px 5px 7px 5px;
+      color:#ffffff;
+      border:0px;
+      width:77px;
+      height:28px;
+    }
+</style>
+<script type="text/javascript">
+     jQuery(function() {
+
+ jQuery( "#startdate" ).datepicker({ minDate: '-3m +0w',maxDate: '0m +0w', dateFormat: 'yy-mm-dd' });
+ jQuery( "#enddate" ).datepicker({ minDate: '-3m +0w',maxDate: '0m +0w', dateFormat: 'yy-mm-dd'});
+
+
+});
+    </script>
 
   <div class="left-col">
     <?php include_partial('navigation', array('selected'=>'callhistory', 'customer_id'=>$customer->getId())) ?>
@@ -24,11 +44,29 @@
 </span>
 <?php endif; ?>
       <div class="split-form">
+          <form action="<?php //echo url_for(sfConfig::get('app_customer_url').'customer/callhistory') ?>" id="searchform" method="POST" name="searchform" >
+
+                <div class="dateBox-pt">
+           <div class="formRow-pt" style="float:left;">
+                    <label class="datelable">Fra:</label>
+                    <input type="text"   name="startdate" autocomplete="off" id="startdate" style="width: 110px;" value="<?php echo @$startdate ? $startdate : date('Y-m-d',strtotime('-15 days'));?>" />
+                </div>
+                <div class="formRow-pt1" style="float:left;margin-left:7px;">
+                    &nbsp;<label class="datelable">Til:</label>
+                    <input type="text"   name="enddate" autocomplete="off" id="enddate" style="width: 110px;" value="<?php echo @$enddate ? $enddate : date('Y-m-d');?>" />
+                </div>
+                <div class="formRow-pt1" style="float:left;margin-left:7px;">
+                    
+                <span style="margin-left:10px;"><input type="submit" name="søg" value="søg" class="submitBtn" /></span>
+                </div>
+
+            </div>
+
+            </form>
       <div class="fl col">
-        <form action="<?php echo url_for('customer/callhistory') ?>" method="post">
-          <ul>
+ 
 <?php ?>
-            <li>
+           
                 <?php $unid=$customer->getUniqueid();
 if((int)$unid>200000){?>
 
@@ -128,7 +166,8 @@ $cld='called-date';
 
 
                 <?php }else{   ?>
-		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
+                
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                   <tr>
                     <td class="title"><?php echo __('Date &amp; time') ?></td>
                     <td class="title" width="40%"><?php echo __('Phone Number') ?></td>
@@ -144,24 +183,7 @@ $cld='called-date';
 
 
 
-$tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
-$fromdate=date("Y-m-d", $tomorrow1);
-$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
- $todate=date("Y-m-d", $tomorrow);
 
-
-
-
-  $getFirstnumberofMobile = substr($customer->getMobileNumber(), 0,1);
-                if($getFirstnumberofMobile==0){
-                    $TelintaMobile = substr($customer->getMobileNumber(), 1);
-                    $TelintaMobile =  '46'.$TelintaMobile ;
-                }else{
-                    $TelintaMobile = '46'.$customer->getMobileNumber();
-                }
-
-               
- $numbername=$customer->getUniqueid();
 
 
 
@@ -240,9 +262,7 @@ Cb M = Callback mottaga<br/>
               </table>
 
                 <?php } ?>
-            </li>
-                    </ul>
-        </form>
+            
       </div>
     </div> <!-- end split-form -->
   </div> <!-- end left-col -->
