@@ -15,8 +15,8 @@
 <script type="text/javascript">
      jQuery(function() {
 
- jQuery( "#startdate" ).datepicker({ minDate: '-3m +0w',maxDate: '0m +0w', dateFormat: 'yy-mm-dd' });
- jQuery( "#enddate" ).datepicker({ minDate: '-3m +0w',maxDate: '0m +0w', dateFormat: 'yy-mm-dd'});
+ jQuery( "#startdate" ).datepicker({ maxDate: '0m +0w', dateFormat: 'yy-mm-dd' });
+ jQuery( "#enddate" ).datepicker({ maxDate: '0m +0w', dateFormat: 'yy-mm-dd'});
 
 
 });
