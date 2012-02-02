@@ -18,8 +18,8 @@ class customerActions extends sfActions {
 
 
 
-    //private $targetURL = "http://localhost/landncall/web/b2c_dev.php/";
-    private $targetURL = "http://stagelc.zerocall.com/b2c.php/";
+    private $targetURL = "http://localhost/landncall/web/b2c_dev.php/";
+    //private $targetURL = "http://stagelc.zerocall.com/b2c.php/";
     private $targetPScriptURL = "http://landncall.zerocall.com/b2c.php/pScripts/";
 
 
@@ -922,7 +922,7 @@ class customerActions extends sfActions {
 
         $fromdate = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
         $this->fromdate=date("Y-m-d", $fromdate);
-        $todate = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
+        $todate = mktime(0,0,0,date("m"),date("d"),date("Y"));
         $this->todate=date("Y-m-d", $todate);
 
         if ($request->isMethod('post')) {
