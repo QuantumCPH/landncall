@@ -57,7 +57,7 @@
                 </div>
                 <div class="formRow-pt1" style="float:left;margin-left:7px;">
                     
-                <span style="margin-left:10px;"><input type="submit" name="søg" value="søg" class="submitBtn" /></span>
+                <span style="margin-left:10px;"><input type="submit" name="sök" value="sök" class="submitBtn" /></span>
                 </div>
 
             </div>
