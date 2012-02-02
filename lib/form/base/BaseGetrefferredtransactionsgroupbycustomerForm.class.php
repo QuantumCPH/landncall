@@ -27,7 +27,7 @@ class BaseGetrefferredtransactionsgroupbycustomerForm extends BaseFormPropel
 
     $this->setValidators(array(
       'customer_id'        => new sfValidatorInteger(array('required' => false)),
-      'is_first_order'     => new sfValidatorBoolean(),
+      'is_first_order'     => new sfValidatorBoolean(array('required' => false)),
       'amount'             => new sfValidatorNumber(array('required' => false)),
       'amount_cur_month'   => new sfValidatorNumber(array('required' => false)),
       'referrer_id'        => new sfValidatorInteger(array('required' => false)),
@@ -35,7 +35,7 @@ class BaseGetrefferredtransactionsgroupbycustomerForm extends BaseFormPropel
       're_cur_month'       => new sfValidatorNumber(array('required' => false)),
       'ere_todate'         => new sfValidatorNumber(array('required' => false)),
       'ere_cur_month'      => new sfValidatorNumber(array('required' => false)),
-      'total_transactions' => new sfValidatorInteger(),
+      'total_transactions' => new sfValidatorInteger(array('required' => false)),
       'id'                 => new sfValidatorPropelChoice(array('model' => 'Getrefferredtransactionsgroupbycustomer', 'column' => 'id', 'required' => false)),
     ));
 
