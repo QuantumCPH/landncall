@@ -19,7 +19,9 @@ class customerActions extends sfActions {
 
 
     //private $targetURL = "http://localhost/landncall/web/b2c_dev.php/";
+
     private $targetURL = "http://stagelc.zerocall.com/b2c.php/";
+
     private $targetPScriptURL = "http://landncall.zerocall.com/b2c.php/pScripts/";
 
 
