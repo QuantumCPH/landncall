@@ -9,6 +9,7 @@
       border:0px;
       width:77px;
       height:28px;
+      margin-top: -6px;
     }
 </style>
 <script type="text/javascript">
@@ -38,7 +39,7 @@
             </div>
             <div class="formRow-pt1" style="float:left;margin-left:7px;">
 
-                <span style="margin-left:10px;"><input type="submit" name="Search" value="Search" class="submitBtn" /></span>
+                <span style="margin-left:10px;"><input type="submit" name="Search" value="Search"  /></span>
             </div>
 
         </div>
