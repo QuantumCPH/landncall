@@ -2,3 +2,8 @@ cache/
 log/
 config/databases.yml
 config/ProjectConfiguration.class.php
+nbproject/
+config/app.yml
+lib/model/om/
+lib/model/map/
+web/uploads/
