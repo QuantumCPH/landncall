@@ -21,24 +21,24 @@
 });
     </script>
 <div class="alert_bar">
-    <?php echo __('Call history is updated after every 1 minutes.') ?>
+    <?php echo __('Call history is a 5 -10 min delay.') ?>
 </div>
 <div class="left-col">
 
     <form action="" id="searchform" method="POST" name="searchform" style="float: left;" >
         <div class="dateBox-pt">
             <div class="formRow-pt" style="float:left;">
-                <label class="datelable">Från:</label>
+                <label class="datelable">From:</label>
                 <input type="text"   name="startdate" autocomplete="off" id="startdate" style="width: 110px;" value="<?php echo @$fromdate ? $fromdate : date('Y-m-d', strtotime('-15 days')); ?>" />
             </div>
             <div class="formRow-pt1" style="float:left;margin-left:7px;">
-                &nbsp;<label class="datelable">Till:</label>
+                &nbsp;<label class="datelable">To:</label>
                 <input type="text"   name="enddate" autocomplete="off" id="enddate" style="width: 110px;" value="<?php echo @$todate ? $todate : date('Y-m-d'); ?>" />
                 <input type="hidden"   name="id" value="<?php echo $customer->getId(); ?>" />
             </div>
             <div class="formRow-pt1" style="float:left;margin-left:7px;">
 
-                <span style="margin-left:10px;"><input type="submit" name="sök" value="sök" class="submitBtn" /></span>
+                <span style="margin-left:10px;"><input type="submit" name="Search" value="Search" class="submitBtn" /></span>
             </div>
 
         </div>
