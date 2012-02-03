@@ -6,3 +6,4 @@ nbproject/
 config/app.yml
 lib/model/om/
 lib/model/map/
+web/uploads/
