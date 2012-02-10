@@ -4357,15 +4357,30 @@ return sfView::NONE;
                         emailLib::sendErrorInTelinta("Error in Balance Status", "We have faced an issue in autorefill on telinta. after fetching data from the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=" . $uniqueId . "&type=customer. we are unable to find the status in the string <br/> Please Investigate.");
                         continue;
                     }
-                    $customer_balance = $Balance*(-1);
+
+
+
+                           if($Balance==0){
+            $customer_balance = $Balance;
+                     }else{
+            $customer_balance = $Balance*(-1);
                 }
-                echo $uniqueId.":".$customer_balance."<br/>";
+
+
+
+
+
+                }
+             //   echo $uniqueId.":".$customer_balance."<br/>";
+
                 // $customer_balance = Fonet::getBalance($customer);
                 //if customer balance is less than 10
                 if ($customer_balance != null && (float)$customer_balance <= (float)$customer->getAutoRefillMinBalance()) {
 
 
-                    echo $customer_balance;
+                     echo $uniqueId.":".$customer_balance."<br/>";
+
+
                     $customer_id = $customer->getId();
 
                     $this->customer = CustomerPeer::retrieveByPK($customer_id);
