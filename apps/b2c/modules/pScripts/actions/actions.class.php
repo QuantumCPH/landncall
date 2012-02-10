@@ -4359,7 +4359,7 @@ return sfView::NONE;
                     }
                     $customer_balance = $Balance*(-1);
                 }
-                echo "<br/>";
+                echo $uniqueId.":".$customer_balance."<br/>";
                 // $customer_balance = Fonet::getBalance($customer);
                 //if customer balance is less than 10
                 if ($customer_balance != null && (float)$customer_balance <= (float)$customer->getAutoRefillMinBalance()) {
