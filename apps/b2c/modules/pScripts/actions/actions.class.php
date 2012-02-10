@@ -4452,8 +4452,8 @@ return sfView::NONE;
 //echo "<br/>Baran<br/>";
 
                     $html_data = $form->send_post_data("https://payment.architrade.com/cgi-ssl/ticket_auth.cgi", $post_data);
-//echo $html_data;
-//echo "<br/>";
+echo $html_data;
+echo "<br/>";
                     // die("khan");
                 }
 
