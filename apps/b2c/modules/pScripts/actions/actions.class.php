@@ -3733,9 +3733,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
    			echo 'Success';
                         $mtnumber;
 
-                       $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
-                        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-                        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
+                       $telintaGetBalance =  Telienta::getBalance($uniqueId);
+                   
 
                         $getvoipInfo = new Criteria();
                         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerid);
@@ -3899,9 +3898,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 //                        $cus = CustomerPeer::doSelectOne($mnc);
 //                    echo     $uniqueId = $cus->getUniqueid();
                         //This is for Retrieve balance From Telinta
-                        $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
-                        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-                        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
+                        $telintaGetBalance =  Telienta::getBalance($uniqueId);
+
 
                         $mnc = new Criteria();
                         $mnc->add(CustomerPeer::UNIQUEID, $uniqueId);
@@ -4349,26 +4347,20 @@ return sfView::NONE;
                     $customer_balance = $Tes;
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
-                    $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=' . $uniqueId . '&type=customer');
-                    sleep(0.25);
-                    if(!$telintaGetBalance){
-                        //emailLib::sendErrorInTelinta("Error in Balance Fetching", "We have faced an issue in autorefill on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=" . $uniqueId . "&type=customer. <br/> Please Investigate.");
-                        continue;
-                    }
-                    parse_str($telintaGetBalance);
-                    if(isset($success) && $success!="OK"){
-                        emailLib::sendErrorInTelinta("Error in Balance Status", "We have faced an issue in autorefill on telinta. after fetching data from the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=" . $uniqueId . "&type=customer. we are unable to find the status in the string <br/> Please Investigate.");
-                        continue;
-                    }
-                    $customer_balance = $Balance*(-1);
+                   
+                   $customer_balance=Telienta::getBalance($uniqueId);
+            
                 }
-                echo "<br/>";
+             //   echo $uniqueId.":".$customer_balance."<br/>";
+
                 // $customer_balance = Fonet::getBalance($customer);
                 //if customer balance is less than 10
                 if ($customer_balance != null && (float)$customer_balance <= (float)$customer->getAutoRefillMinBalance()) {
 
 
-                    echo $customer_balance;
+                     echo $uniqueId.":".$customer_balance."<br/>";
+
+
                     $customer_id = $customer->getId();
 
                     $this->customer = CustomerPeer::retrieveByPK($customer_id);
@@ -4440,8 +4432,8 @@ return sfView::NONE;
 //echo "<br/>Baran<br/>";
 
                     $html_data = $form->send_post_data("https://payment.architrade.com/cgi-ssl/ticket_auth.cgi", $post_data);
-//echo $html_data;
-//echo "<br/>";
+echo $html_data;
+echo "<br/>";
                     // die("khan");
                 }
 
@@ -4678,10 +4670,8 @@ return sfView::NONE;
 
                        $uniqueId =$this->customer->getUniqueid();
  if(isset($uniqueId) && $uniqueId!=""){
-                       $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-         $customer_balance = $telintaGetBalance;
+                      
+         $customer_balance = Telienta::getBalance($uniqueId);
 
 
 

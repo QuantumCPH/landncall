@@ -3,7 +3,6 @@
 require_once(sfConfig::get('sf_lib_dir') . '/emailLib.php');
 require_once(sfConfig::get('sf_lib_dir') . '/smsCharacterReplacement.php');
 require_once(sfConfig::get('sf_lib_dir') . '/changeLanguageCulture.php');
-
 require_once(sfConfig::get('sf_lib_dir') . '/parsecsv.lib.php');
 require_once(sfConfig::get('sf_lib_dir').'/ForumTel.php');
 /**
@@ -476,27 +475,8 @@ class customerActions extends sfActions {
             //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
             emailLib::sendErrorTelinta($this->customer, $message_body);
         }
-        //This is for Retrieve balance From Telinta
-        $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=' . $uniqueId . '&type=customer');
-
-        $string = $telintaGetBalance;
-        $find = 'No such a customer';
-        if (strpos($string, $find)) {
-            $message_body = "No Customer Found in Telinta Against Of This Mobile Number $TelintaMobile <br / >Unique Id: $uniqueId";
-            //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-            emailLib::sendErrorTelinta($this->customer, $message_body);
-        } else {
-
-        }
-
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-        $this->customer_balance = $telintaGetBalance;
-
-
-
-        if ($this->customer_balance != null)
-            $this->customer_balance = $this->customer_balance;
+       
+        $this->customer_balance = Telienta::getBalance($uniqueId);
     }
 
     //This Function add Again new Feature Landncall --
@@ -561,14 +541,8 @@ class customerActions extends sfActions {
         $emailId = $this->customer->getEmail();
         $uniqueId = $this->customer->getUniqueid();
         //This is for Retrieve balance From Telinta
-        $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=' . $uniqueId . '&type=customer');
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-        $this->customer_balance = $telintaGetBalance;
-
-
-        if ($this->customer_balance != null)
-            $this->customer_balance = $this->customer_balance;
+              $this->customer_balance = Telienta::getBalance($uniqueId);
+     
 
             //$this->customer_balance = 100;
 
@@ -1574,11 +1548,8 @@ class customerActions extends sfActions {
         $uniqueId = $this->customer->getUniqueid();
 
         //This is for Retrieve balance From Telinta
-        $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=' . $uniqueId . '&type=customer');
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-        $this->balance = $telintaGetBalance;
-//$this->balance = (double)Fonet::getBalance($this->customer);
+        $this->balance =  Telienta::getBalance($uniqueId);
+     
 
 
         $message = $request->getParameter('message');
@@ -1638,7 +1609,7 @@ class customerActions extends sfActions {
                 $uniqueId = $this->customer->getUniqueid();
                 $OpeningBalance = $amt;
 
-                $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=' . $uniqueId . '&amount=' . $OpeningBalance);
+                $ReCharge = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=' . $uniqueId . '&amount=' . $OpeningBalance);
 
                 $data = array(
                     'S' => 'H',

@@ -54,10 +54,8 @@
    echo "USD";
                             }else{
 
-                       $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-        echo  $telintaGetBalance;
+
+        echo  $customer_balance;
           echo "Sek";
                             }
                           
@@ -87,11 +85,7 @@
 		     <th id="sf_admin_list_th_mobile_number" style="float:left;"  >Password</th>
                          <td><?php echo  $customer->getPlainText() ?></td>
                        </tr>
-                         <tr>
-
-		    <th id="sf_admin_list_th_fonet_customer" style="float:left;" >Fonet Customer ID</th>
-                     <td><?php echo  $customer->getFonetCustomerId() ?></td>
-                      </tr>
+                         
                        
 <?php
 $val="";
