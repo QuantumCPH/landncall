@@ -474,27 +474,8 @@ class customerActions extends sfActions {
             //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
             emailLib::sendErrorTelinta($this->customer, $message_body);
         }
-        //This is for Retrieve balance From Telinta
-        $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=' . $uniqueId . '&type=customer');
-
-        $string = $telintaGetBalance;
-        $find = 'No such a customer';
-        if (strpos($string, $find)) {
-            $message_body = "No Customer Found in Telinta Against Of This Mobile Number $TelintaMobile <br / >Unique Id: $uniqueId";
-            //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-            emailLib::sendErrorTelinta($this->customer, $message_body);
-        } else {
-
-        }
-
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-        $this->customer_balance = $telintaGetBalance;
-
-
-
-        if ($this->customer_balance != null)
-            $this->customer_balance = $this->customer_balance;
+       
+        $this->customer_balance = Telienta::getBalance($uniqueId);
     }
 
     //This Function add Again new Feature Landncall --
