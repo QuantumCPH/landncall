@@ -23,6 +23,7 @@ class BaseAgentCompanyFormFilter extends BaseFormFilterPropel
       'city_id'                     => new sfWidgetFormPropelChoice(array('model' => 'City', 'add_empty' => true)),
       'contact_name'                => new sfWidgetFormFilterInput(),
       'email'                       => new sfWidgetFormFilterInput(),
+      'mobile_number'               => new sfWidgetFormFilterInput(),
       'head_phone_number'           => new sfWidgetFormFilterInput(),
       'fax_number'                  => new sfWidgetFormFilterInput(),
       'website'                     => new sfWidgetFormFilterInput(),
@@ -36,6 +37,7 @@ class BaseAgentCompanyFormFilter extends BaseFormFilterPropel
       'sms_code'                    => new sfWidgetFormFilterInput(),
       'is_prepaid'                  => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'balance'                     => new sfWidgetFormFilterInput(),
+      'invoice_method_id'           => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -48,6 +50,7 @@ class BaseAgentCompanyFormFilter extends BaseFormFilterPropel
       'city_id'                     => new sfValidatorPropelChoice(array('required' => false, 'model' => 'City', 'column' => 'id')),
       'contact_name'                => new sfValidatorPass(array('required' => false)),
       'email'                       => new sfValidatorPass(array('required' => false)),
+      'mobile_number'               => new sfValidatorPass(array('required' => false)),
       'head_phone_number'           => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'fax_number'                  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'website'                     => new sfValidatorPass(array('required' => false)),
@@ -61,6 +64,7 @@ class BaseAgentCompanyFormFilter extends BaseFormFilterPropel
       'sms_code'                    => new sfValidatorPass(array('required' => false)),
       'is_prepaid'                  => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'balance'                     => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
+      'invoice_method_id'           => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('agent_company_filters[%s]');
@@ -88,6 +92,7 @@ class BaseAgentCompanyFormFilter extends BaseFormFilterPropel
       'city_id'                     => 'ForeignKey',
       'contact_name'                => 'Text',
       'email'                       => 'Text',
+      'mobile_number'               => 'Text',
       'head_phone_number'           => 'Number',
       'fax_number'                  => 'Number',
       'website'                     => 'Text',
@@ -101,6 +106,7 @@ class BaseAgentCompanyFormFilter extends BaseFormFilterPropel
       'sms_code'                    => 'Text',
       'is_prepaid'                  => 'Boolean',
       'balance'                     => 'Number',
+      'invoice_method_id'           => 'Number',
     );
   }
 }

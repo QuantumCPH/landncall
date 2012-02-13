@@ -27,17 +27,17 @@ class BaseGetrefferredtransactionsForm extends BaseFormPropel
     ));
 
     $this->setValidators(array(
-      'transaction_id'        => new sfValidatorInteger(),
-      'customer_order_id'     => new sfValidatorInteger(),
-      'amount'                => new sfValidatorInteger(),
+      'transaction_id'        => new sfValidatorInteger(array('required' => false)),
+      'customer_order_id'     => new sfValidatorInteger(array('required' => false)),
+      'amount'                => new sfValidatorInteger(array('required' => false)),
       'customer_id'           => new sfValidatorInteger(array('required' => false)),
-      'is_first_order'        => new sfValidatorBoolean(),
+      'is_first_order'        => new sfValidatorBoolean(array('required' => false)),
       'registration_earning'  => new sfValidatorNumber(array('required' => false)),
       'extra_refills_earning' => new sfValidatorNumber(array('required' => false)),
       'created_at'            => new sfValidatorDateTime(),
       'referrer_id'           => new sfValidatorInteger(array('required' => false)),
-      'name'                  => new sfValidatorString(array('max_length' => 50)),
-      'first_name'            => new sfValidatorString(array('max_length' => 255)),
+      'name'                  => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'first_name'            => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'id'                    => new sfValidatorPropelChoice(array('model' => 'Getrefferredtransactions', 'column' => 'id', 'required' => false)),
     ));
 
