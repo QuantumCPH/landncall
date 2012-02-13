@@ -4342,7 +4342,7 @@ return sfView::NONE;
                     $customer_balance = $Tes;
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
-                    $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=' . $uniqueId . '&type=customer');
+                   
                    $customer_balance=Telienta::getBalance($uniqueId);
             
                 }
@@ -4665,10 +4665,8 @@ echo "<br/>";
 
                        $uniqueId =$this->customer->getUniqueid();
  if(isset($uniqueId) && $uniqueId!=""){
-                       $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-         $customer_balance = $telintaGetBalance;
+                      
+         $customer_balance = Telienta::getBalance($uniqueId);
 
 
 
