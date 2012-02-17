@@ -207,7 +207,18 @@ class Telienta {
         return $history;
     }
 
+    public static function getCustomerInfo($uniqueId){
+        $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
+        $session = $pb->_login(self::$telintaSOAPUser,self::$telintaSOAPPassword );
 
+         $cInfo = $pb->get_customer_info(array(
+                'name' => $uniqueId ,
+        ));
+        $i_customer = $cInfo->customer_info->i_customer;
+        $pb->_logout();
+        return  $i_customer;
+
+    }
 
 
 

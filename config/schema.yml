@@ -2,6 +2,21 @@ propel:
   _attributes:
     package: lib.model
     defaultIdMethod: native
+  'Pay as you card':
+    _attributes: { phpName: 'Pay as you card' }
+    A: { type: VARCHAR, size: '19', required: false }
+    B: { type: VARCHAR, size: '19', required: false }
+    C: { type: VARCHAR, size: '21', required: false }
+    D: { type: VARCHAR, size: '21', required: false }
+    E: { type: VARCHAR, size: '19', required: false }
+    F: { type: VARCHAR, size: '17', required: false }
+    G: { type: VARCHAR, size: '19', required: false }
+    H: { type: VARCHAR, size: '12', required: false }
+    I: { type: VARCHAR, size: '4', required: false }
+    J: { type: VARCHAR, size: '8', required: false }
+    K: { type: VARCHAR, size: '4', required: false }
+    L: { type: VARCHAR, size: '8', required: false }
+    M: { type: VARCHAR, size: '10', required: false }
   accounts_new:
     _attributes: { phpName: AccountsNew }
     fonet_customer_id: { type: INTEGER, size: '10', required: false }
@@ -48,6 +63,7 @@ propel:
     city_id: { type: INTEGER, size: '11', required: false, foreignTable: city, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     contact_name: { type: VARCHAR, size: '150', required: true }
     email: { type: VARCHAR, size: '255', required: true }
+    mobile_number: { type: VARCHAR, size: '255', required: true }
     head_phone_number: { type: INTEGER, size: '11', required: true }
     fax_number: { type: INTEGER, size: '11', required: true }
     website: { type: VARCHAR, size: '255', required: false }
@@ -61,7 +77,8 @@ propel:
     sms_code: { type: VARCHAR, size: '4', required: false }
     is_prepaid: { type: boolean, required: false }
     balance: { type: FLOAT, required: false }
-    _indexes: { agent_company_FI_1: [country_id], agent_company_FI_2: [city_id], agent_company_FI_3: [status_id], agent_company_FI_4: [company_type_id], agent_company_FI_5: [commission_period_id], agent_company_FI_6: [account_manager_id], FK_agent_company_agent_commission_package: [agent_commission_package_id] }
+    invoice_method_id: { type: INTEGER, size: '11', required: true }
+    _indexes: { agent_company_FI_1: [country_id], agent_company_FI_2: [city_id], agent_company_FI_3: [status_id], agent_company_FI_4: [company_type_id], agent_company_FI_5: [commission_period_id], agent_company_FI_6: [account_manager_id], FK_agent_company_agent_commission_package: [agent_commission_package_id], invoice_method_id: [invoice_method_id] }
   agent_company_commission:
     _attributes: { phpName: AgentCompanyCommission }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -323,6 +340,17 @@ propel:
     _attributes: { phpName: CompanySize }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
     name: { type: VARCHAR, size: '50', required: true }
+  company_transaction:
+    _attributes: { phpName: CompanyTransaction }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    company_id: { type: INTEGER, size: '11', required: true }
+    amount: { type: FLOAT, required: true }
+    extra_refill: { type: FLOAT, required: true }
+    created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+    paymentType: { type: TINYINT, size: '4', required: true, defaultValue: '1' }
+    description: { type: LONGVARCHAR, required: true }
+    transaction_status_id: { type: TINYINT, size: '4', required: true, defaultValue: '1' }
+    _indexes: { FK_Copmany: [company_id] }
   company_type:
     _attributes: { phpName: CompanyType }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -379,6 +407,7 @@ propel:
     ticketval: { type: VARCHAR, size: '255', required: false }
     to_date: { type: DATE, required: false }
     from_date: { type: DATE, required: false }
+    i_customer: { type: BIGINT, size: '20', required: false }
     _indexes: { FK_customer_device: [device_id], FK_customer_country: [country_id], FK_customer_city: [city], FK_customer_event_status: [customer_status_id], FK_customer_telecom_operator: [telecom_operator_id], FK_customer: [referrer_id], FK_customer_fonet_customer: [fonet_customer_id] }
   customer_commision:
     _attributes: { phpName: CustomerCommision }
@@ -453,6 +482,14 @@ propel:
     mobile_model: { type: VARCHAR, size: '50', required: true }
     mobile_number: { type: VARCHAR, size: '50', required: true }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+    app_code: { type: VARCHAR, size: '7', required: false }
+    is_app_registered: { type: boolean, required: false }
+    password: { type: VARCHAR, size: '255', required: false }
+    registration_type: { type: VARCHAR, size: '255', required: false }
+    product_price: { type: INTEGER, size: '11', required: false }
+    product_id: { type: INTEGER, size: '11', required: false }
+    country_code: { type: VARCHAR, size: '50', required: false }
+    country_mobile_number: { type: VARCHAR, size: '250', required: false }
     _indexes: { employee_FI_1: [company_id] }
   employee_product:
     _attributes: { phpName: EmployeeProduct }
@@ -685,6 +722,13 @@ propel:
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
     module_name: { type: VARCHAR, size: '50', required: true }
     action_name: { type: VARCHAR, size: '50', required: true }
+  postal_charges:
+    _attributes: { phpName: PostalCharges }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    charges: { type: BIGINT, size: '20', required: true }
+    country: { type: INTEGER, size: '11', required: true, foreignTable: enable_country, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
+    status: { type: INTEGER, size: '11', required: true, foreignTable: status, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
+    _indexes: { country: [country], status: [status] }
   product:
     _attributes: { phpName: Product }
     id: { type: INTEGER, size: '20', primaryKey: true, autoIncrement: true, required: true }
@@ -760,8 +804,8 @@ propel:
     _attributes: { phpName: SeVoipNumber }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
     number: { type: VARCHAR, size: '16', required: false }
-    customer_id: { type: INTEGER, size: '11', required: false }
-    is_assigned: { type: INTEGER, size: '11', required: true, defaultValue: '0' }
+    customer_id: { type: VARCHAR, size: '250', required: false }
+    is_assigned: { type: boolean, required: true, defaultValue: '0' }
     updated_at: { type: TIMESTAMP, required: false }
   sip:
     _attributes: { phpName: Sip }
