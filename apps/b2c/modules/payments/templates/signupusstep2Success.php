@@ -267,7 +267,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 <div id="autorefilop" >
                     <input type="hidden" name="maketicket" value="foo" />
                 </div>
-           
+              
          <input type="hidden" name="lang" value="sv" />
 		
      <input type="hidden" name="status" value="" />
