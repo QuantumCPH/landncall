@@ -674,7 +674,7 @@ class paymentsActions extends sfActions {
         $email2->setCallurl($urlval);
         $email2->save();
         $dibs = new DibsCall();
-        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket'));
+        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket')."-ord-".$request->getParameter('orderid')."-amt-".$request->getParameter('amount'));
         $dibs->save();
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         //print_r($_REQUEST);
@@ -1037,8 +1037,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
                     $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $uniqueId . '&amount=' . $OpeningBalance . '&type=customer');
-                    //This is for Recharge the Account
-                    //this condition for if follow me is Active
+
                     $getvoipInfo = new Criteria();
                     $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $this->customers->getMobileNumber());
                     $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
