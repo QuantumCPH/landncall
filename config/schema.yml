@@ -327,6 +327,7 @@ propel:
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     updated_at: { type: TIMESTAMP, required: false }
     file_path: { type: VARCHAR, size: '255', required: false }
+    i_customer: { type: VARCHAR, size: '50', required: false }
     _indexes: { company_FI_1: [country_id], company_FI_2: [city_id], company_FI_3: [status_id], company_FI_4: [company_size_id], company_FI_5: [company_type_id], company_FI_6: [customer_type_id], company_FI_7: [apartment_form_id], company_FI_8: [invoice_method_id], company_FI_9: [account_manager_id], company_FI_10: [agent_company_id], FK_company: [package_id] }
   company_bank:
     _attributes: { phpName: CompanyBank }
@@ -877,6 +878,15 @@ propel:
     status_id: { type: INTEGER, size: '11', required: true, foreignTable: status, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     country_id: { type: INTEGER, size: '11', required: true, foreignTable: enable_country, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     _indexes: { country_id: [country_id], status_id: [status_id] }
+  telinta_accounts:
+    _attributes: { phpName: TelintaAccounts }
+    id: { type: BIGINT, size: '20', primaryKey: true, autoIncrement: true, required: true }
+    parent_table: { type: VARCHAR, size: '50', required: false }
+    parent_id: { type: INTEGER, size: '11', required: false }
+    i_account: { type: VARCHAR, size: '50', required: false }
+    account_title: { type: VARCHAR, size: '50', required: false }
+    i_customer: { type: VARCHAR, size: '50', required: false }
+    status: { type: INTEGER, size: '11', required: false, defaultValue: '3' }
   test:
     _attributes: { phpName: Test }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }

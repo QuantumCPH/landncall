@@ -4986,9 +4986,17 @@ $headers .= "From:" . $from;
        $c->addAnd(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
        $customers = CustomerPeer::doSelect($c);
        foreach ($customers as $customer){
-           $iCustomer= Telienta::getCustomerInfo($customer->getUniqueid());
-           $customer->setICustomer($iCustomer);
-           $customer->save();
+           $iAccountList= Telienta::getCustomerAccountList($customer->getICustomer());
+           echo "<pre>";
+           var_dump($iAccountList->account_list);
+           echo "</pre>";
+           foreach($iAccountList->account_list as $iAccount){
+              $telintaAccount = new TelintaAccounts();
+              $telintaAccount->setAccountTitle($v);
+              $telintaAccount->setIAccount($v);
+              //$telintaAccount->
+           }
+           die;
        }
   }
 
