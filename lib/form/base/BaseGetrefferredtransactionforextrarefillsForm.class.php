@@ -29,7 +29,7 @@ class BaseGetrefferredtransactionforextrarefillsForm extends BaseFormPropel
       'referrer_id'        => new sfValidatorInteger(array('required' => false)),
       'ere_todate'         => new sfValidatorNumber(array('required' => false)),
       'ere_cur_month'      => new sfValidatorNumber(array('required' => false)),
-      'total_transactions' => new sfValidatorInteger(array('required' => false)),
+      'total_transactions' => new sfValidatorInteger(),
       'id'                 => new sfValidatorPropelChoice(array('model' => 'Getrefferredtransactionforextrarefills', 'column' => 'id', 'required' => false)),
     ));
 
