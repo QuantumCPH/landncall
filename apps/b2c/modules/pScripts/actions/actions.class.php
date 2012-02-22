@@ -4979,4 +4979,17 @@ $headers .= "From:" . $from;
        }
   }
 
+  public function executeCreateIAccounts(sfWebRequest $request)
+  {
+       $c = new Criteria();
+       $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+       $c->addAnd(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
+       $customers = CustomerPeer::doSelect($c);
+       foreach ($customers as $customer){
+           $iCustomer= Telienta::getCustomerInfo($customer->getUniqueid());
+           $customer->setICustomer($iCustomer);
+           $customer->save();
+       }
+  }
+
 }

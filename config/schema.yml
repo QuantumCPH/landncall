@@ -402,7 +402,7 @@ propel:
     c9_customer_number: { type: VARCHAR, size: '20', required: false }
     registration_type_id: { type: INTEGER, size: '11', required: false }
     imsi: { type: VARCHAR, size: '255', required: false }
-    uniqueid: { type: INTEGER, size: '11', required: false }
+    uniqueid: { type: VARCHAR, size: '50', required: false }
     plain_text: { type: VARCHAR, size: '20', required: false }
     ticketval: { type: VARCHAR, size: '255', required: false }
     to_date: { type: DATE, required: false }
@@ -936,7 +936,7 @@ propel:
   unique_ids:
     _attributes: { phpName: UniqueIds }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
-    unique_number: { type: BIGINT, size: '20', required: true }
+    unique_number: { type: VARCHAR, size: '50', required: true }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     assigned_at: { type: TIMESTAMP, required: true }
     registration_type_id: { type: INTEGER, size: '11', required: true }
