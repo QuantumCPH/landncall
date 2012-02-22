@@ -139,7 +139,7 @@ class ForumTel {
 <password>' . $password . '</password>
 </authentication>
 <msisdn>' . $msisdn . '</msisdn>
- 
+ <iccid>' . $iccid . '</iccid>
 </get-subscriber-balance>';
 
 
@@ -166,8 +166,8 @@ class ForumTel {
         $xml_obj = new SimpleXMLElement($data);
 //var_dump($xml_obj);
 //echo "<hr/>";
-//die;
-        $data = $xml_obj->balance[0]->attributes()->amount;
+//die;$xml_obj->balance[0]->attributes()->amount;
+        $data = $xml_obj->balance[0];
 
         return $data;
     }
