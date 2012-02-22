@@ -899,7 +899,7 @@ if((int)$unid>200000){
                  $Test=ForumTel::rechargeForumtel($customerID,$amt);
 
                    $tc = new Criteria();
-        $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
+        $tc->add(UsNumberPeer::CUSTOMER_ID, $customerID);
         $usnumber = UsNumberPeer::doSelectOne($tc);
                $usnumber=$usnumber->getUsMobileNumber();
 
