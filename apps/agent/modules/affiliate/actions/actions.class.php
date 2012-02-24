@@ -559,17 +559,7 @@ public function executeRefill(sfWebRequest $request)
                                         $OpeningBalance =    $transaction->getAmount();
 
                                         if($uniqueId!=''){
-                                          $telintaRefillcustomer = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
-                                        }
-
-
-                                        $string = $telintaRefillcustomer;
-                                        $find = 'ERROR';
-                                        if(strpos($string, $find )){
-                                            $message_body = $telintaRefillcustomer."Error on Refill Customer<br / >Unique Id: $uniqueId";
-                                             //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                                            emailLib::sendErrorTelinta($this->customer,$message_body);
-                                        }else{
+                                            Telienta::recharge($customer, $OpeningBalance);      
                                         }
                         
 					//set status
@@ -1522,44 +1512,13 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
                 $callbacklog->save();
 
                  //Section For Telinta Add Cusomter
-                $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name=' . $this->customer->getUniqueid() . '&currency=SEK&opening_balance=-' . $order->getExtraRefill() . '&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&type=customer');
 
-                $string = $telintaRegisterCus;
-                $find = 'ERROR';
-                if (strpos($string, $find)) {
-                    $message_body = $telintaRegisterCus . " <br> On Registration Page Duplicate customer name within environment <br> Mobile Number: $TelintaMobile <br / >Unique Id:". $this->customer->getUniqueid();
-                    //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                    emailLib::sendErrorTelinta($this->customer, $message_body);
-                } else {
+                Telienta::ResgiterCustomer($this->customer, $order->getExtraRefill());
+                Telienta::createAAccount($TelintaMobile, $this->customer);
+                Telienta::createCBAccount($TelintaMobile, $this->customer);
 
-                }
+               
 
-                //https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name='.$uniqueId.'&currency=SEK&opening_balance=-'.$OpeningBalance.'&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&type=customer
-                // For Telinta Add Account
-                // $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$uniqueId.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=0&billing_model=1&password=asdf1asd');
-
-                $telintaAddAccountA = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a' . $TelintaMobile . '&customer=' . $this->customer->getUniqueid() . '&opening_balance=0&credit_limit=&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-                $find = '';
-                $string = $telintaAddAccountA;
-                $find = 'ERROR';
-                if (strpos($string, $find)) {
-                    $message_body = $telintaAddAccountA . " <br> On Registration Page Account Add Error within environment <br> Name :a$TelintaMobile <br / >Unique Id:".$this->customer->getUniqueid();
-                    //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                    emailLib::sendErrorTelinta($this->customer, $message_body);
-                } else {
-
-                }
-                $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb' . $TelintaMobile . '&customer=' . $this->customer->getUniqueid() . '&opening_balance=0&credit_limit=&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-                $find = '';
-                $string = $telintaAddAccountCB;
-                $find = 'ERROR';
-                if (strpos($string, $find)) {
-                    $message_body = $telintaAddAccountCB . " <br> On Registration Page Account Add Error within environment <br> Name :cb$TelintaMobile <br / >Unique Id: ".$this->customer->getUniqueid();
-                    //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                    emailLib::sendErrorTelinta($this->customer, $message_body);
-                } else {
-
-                }
 
                 //generate SMS
                 $data = array(
