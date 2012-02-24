@@ -37,21 +37,22 @@ class BaseCompanyForm extends BaseFormPropel
       'confirmed_at'           => new sfWidgetFormDate(),
       'cvr_number'             => new sfWidgetFormInput(),
       'sim_card_dispatch_date' => new sfWidgetFormDate(),
+      'package_id'             => new sfWidgetFormPropelChoice(array('model' => 'Package', 'add_empty' => false)),
       'usage_discount_pc'      => new sfWidgetFormInput(),
       'registration_date'      => new sfWidgetFormDateTime(),
       'created_at'             => new sfWidgetFormDateTime(),
       'updated_at'             => new sfWidgetFormDateTime(),
       'file_path'              => new sfWidgetFormInput(),
-      'rate_table_id'          => new sfWidgetFormInput(),
+      'i_customer'             => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
       'id'                     => new sfValidatorPropelChoice(array('model' => 'Company', 'column' => 'id', 'required' => false)),
       'name'                   => new sfValidatorString(array('max_length' => 255)),
-      'vat_no'                 => new sfValidatorString(array('max_length' => 50)),
+      'vat_no'                 => new sfValidatorInteger(),
       'ean_number'             => new sfValidatorInteger(array('required' => false)),
       'address'                => new sfValidatorString(array('max_length' => 255)),
-      'post_code'              => new sfValidatorString(array('max_length' => 255)),
+      'post_code'              => new sfValidatorInteger(),
       'country_id'             => new sfValidatorPropelChoice(array('model' => 'Country', 'column' => 'id', 'required' => false)),
       'city_id'                => new sfValidatorPropelChoice(array('model' => 'City', 'column' => 'id', 'required' => false)),
       'contact_name'           => new sfValidatorString(array('max_length' => 150)),
@@ -71,17 +72,14 @@ class BaseCompanyForm extends BaseFormPropel
       'confirmed_at'           => new sfValidatorDate(array('required' => false)),
       'cvr_number'             => new sfValidatorInteger(array('required' => false)),
       'sim_card_dispatch_date' => new sfValidatorDate(array('required' => false)),
+      'package_id'             => new sfValidatorPropelChoice(array('model' => 'Package', 'column' => 'id')),
       'usage_discount_pc'      => new sfValidatorNumber(array('required' => false)),
       'registration_date'      => new sfValidatorDateTime(array('required' => false)),
       'created_at'             => new sfValidatorDateTime(),
       'updated_at'             => new sfValidatorDateTime(array('required' => false)),
       'file_path'              => new sfValidatorString(array('max_length' => 255, 'required' => false)),
-      'rate_table_id'          => new sfValidatorInteger(),
+      'i_customer'             => new sfValidatorString(array('max_length' => 50, 'required' => false)),
     ));
-
-    $this->validatorSchema->setPostValidator(
-      new sfValidatorPropelUnique(array('model' => 'Company', 'column' => array('vat_no')))
-    );
 
     $this->widgetSchema->setNameFormat('company[%s]');
 
