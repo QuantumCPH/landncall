@@ -14,61 +14,53 @@ class CompanyEmployeActivation {
 
     //put your code here
 
-    public $CompnayId;
-
-    public $callingModel;
-    public $targetUrl;
+       //put your code here
+    private static $iParent = 74137;                //Company Resller ID on Telinta
+    private static $currency = 'SEK';
+    private static $a_iProduct = 10281;
+    private static $CBProduct = '';
+    private static $VoipProduct = '';
+    private static $telintaSOAPUrl = "https://mybilling.telinta.com";
+    private static $telintaSOAPUser = 'API_login';
+    private static $telintaSOAPPassword = 'ee4eriny';
 
    
 
-    public static function telintaRegisterCompany($companyCVR) {
+    public static function telintaRegisterCompany(Company $company) {
 
         
-        $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_landNcall_B2b&action=add&name='.$companyCVR.'&currency=SEK&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&customer_class=3332&type=customer&credit_limit=&opening_balance=-5000');
-    sleep(0.5);
-   
-                    if(!$telintaRegisterCus){
-                       emailLib::sendErrorInTelinta("Error in B2b company registration", "Unable to call. We have faced an issue in company registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_landNcall_B2b&action=add&name=".$companyCVR."&currency=SEK&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&customer_class=3332&type=customer&credit_limit=&opening_balance=5000. <br/> Please Investigate.");
-                        return false;
-                    }
-                    parse_str($telintaRegisterCus);
-                    if(isset($success) && $success!="OK"){
-                        emailLib::sendErrorInTelinta("Error in B2b company registration", "We have faced an issue on Success in company registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_landNcall_B2b&action=add&name=".$companyCVR."&currency=SEK&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&customer_class=3332&type=customer&credit_limit=&opening_balance=5000. <br/> Please Investigate.");
-                        return false;
-                    }
-
-
-                return true;      
+        $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
+        $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
+        try {
+            $tCustomer = $pb->add_customer(array('customer_info' => array(
+                            'name' => $company->getVatNo(), //75583 03344090514
+                            'iso_4217' => self::$currency,
+                            'i_parent' => self::$iParent,
+                            'i_customer_type' => 1,
+                            'opening_balance' => -(5000),
+                            'credit_limit' => null,
+                            'dialing_rules' => array('ip' => '00'),
+                            'email' => 'okh@zapna.com'
+                            )));
+        } catch (SoapFault $e) {
+            emailLib::sendErrorInTelinta("Error in Company Registration", "We have faced an issue in Company registration on telinta. this is the error for cusotmer with  id: " . $company->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
+            $pb->_logout();
+            return false;
+        }
+        $company->setICustomer($tCustomer->i_customer);
+        $company->save();
+        $pb->_logout();
+        return true;
     }
 
-    public static function telintaRegisterEmployee($employeMobileNumber, $companyCVRNumber) {
+    public static function telintaRegisterEmployeeCT($employeMobileNumber, Company $company) {
 
-   // $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=' . $employeMobileNumber . '&customer=' . $companyCVRNumber . '&opening_balance=0&product=zerocall_app_dk&outgoing_default_r_r=2039&credit_limit=&billing_model=1&password=' . $passwordVar);
-        $telintaAddAccountA = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a'.$employeMobileNumber.'&customer='.$companyCVRNumber.'&opening_balance=0&credit_limit=&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-        
-             if(!$telintaAddAccountA){
-                       emailLib::sendErrorInTelinta("Error in B2b employee  a account registration", "We have faced an issue in employee registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a".$employeMobileNumber."&customer=".$companyCVRNumber."&opening_balance=0&credit_limit=&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
-                        return false;
-                    }
-                    parse_str($telintaAddAccountA);
-                    if(isset($success) && $success!="OK"){
-                        emailLib::sendErrorInTelinta("Error in employee  a account   registration", "We have faced an issue in employee registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a".$employeMobileNumber."&customer=".$companyCVRNumber."&opening_balance=0&credit_limit=&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
-                        return false;
-                    }
-    sleep(0.25);
-         $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$employeMobileNumber.'&customer='.$companyCVRNumber.'&opening_balance=0&credit_limit=&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-  if(!$telintaAddAccountCB){
-                       emailLib::sendErrorInTelinta("Error in B2b employee CB account registration", "We have faced an issue in employee registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb".$employeMobileNumber."&customer=".$companyCVRNumber."&opening_balance=0&credit_limit=&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
-                        return false;
-                    }
-                    parse_str($telintaAddAccountCB);
-                    if(isset($success) && $success!="OK"){
-                        emailLib::sendErrorInTelinta("Error in B2b employee CB account registration", "We have faced an issue in employee registrtion on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb".$employeMobileNumber."&customer=".$companyCVRNumber."&opening_balance=0&credit_limit=&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd. <br/> Please Investigate.");
-                        return false;
-                    }
+        return self::createAccount($company, $employeMobileNumber, 'a', self::$a_iProduct);
+   }
+   public static function telintaRegisterEmployeeCB($employeMobileNumber, Company $company) {
 
-   return true;    
-    }
+        return self::createAccount($company, $employeMobileNumber, 'cb', self::$a_iProduct);
+   }
 
     public static function randomPrefix($length) {
         $random = "";
@@ -98,6 +90,48 @@ class CompanyEmployeActivation {
             $random .= substr($data, (rand() % (strlen($data))), 1);
         }
         return $random;
+    }
+
+    private static function createAccount(Company $company, $mobileNumber, $accountType, $iProduct, $followMeEnabled='N') {
+
+        $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Account');
+        $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
+
+        try {
+            $accountName = $accountType . $mobileNumber;
+            $account = $pb->add_account(array('account_info' => array(
+                            'i_customer' => $company->getICustomer(),
+                            'name' => $accountName, //75583 03344090514
+                            'id' => $accountName,
+                            'iso_4217' => self::$currency,
+                            'opening_balance' => 0,
+                            'credit_limit' => null,
+                            'i_product' => $iProduct,
+                            'i_routing_plan' => 2039,
+                            'billing_model' => 1,
+                            'password' => 'asdf1asd',
+                            'h323_password' => 'asdf1asd',
+                            'activation_date' => date('Y-m-d'),
+                            'batch_name' => $company->getVatNo(),
+                            'follow_me_enabled' => $followMeEnabled
+                            )));
+        } catch (SoapFault $e) {
+            emailLib::sendErrorInTelinta("Account Creation: " . $accountName . " Error!", "We have faced an issue in Company Account Creation on telinta. this is the error for cusotmer with  id: " . $company->getId() . " and on Account" . $accountName . " error is " . $e->faultstring . "  <br/> Please Investigate.");
+            $pb->_logout();
+            return false;
+        }
+
+        $telintaAccount = new TelintaAccounts();
+        $telintaAccount->setAccountTitle($accountName);
+        $telintaAccount->setParentId($company->getId());
+        $telintaAccount->setParentTable("company");
+        $telintaAccount->setICustomer($company->getICustomer());
+        $telintaAccount->setIAccount($account->i_account);
+        $telintaAccount->save();
+        return true;
+    }
+    public static function recharge(Company $company, $amount) {
+        return self::makeTransaction($company, "Manual payment", $amount);
     }
 
 }

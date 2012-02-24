@@ -132,12 +132,15 @@ class employeeActions extends sfActions {
      $contrymobilenumber = $this->country->getCallingCode() . $mobileNo;
      $employeMobileNumber=$contrymobilenumber;
 
-        if(!CompanyEmployeActivation::telintaRegisterEmployee($employeMobileNumber, $companyCVRNumber)){
-                 //$this->message = "employee added successfully";
-                $this->getUser()->setFlash('messageError', 'Employee is not added and  registered on Telinta please check email');
-                //$this->redirect('employee/add?message=error');
-                $this->redirect('employee/add');
-die;
+        if(!CompanyEmployeActivation::telintaRegisterEmployeeCB($employeMobileNumber, $companyCVRNumber)){
+            $this->getUser()->setFlash('messageError', 'Employee Call Through account is not registered on Telinta please check email');
+            $this->redirect('employee/add');
+            die;
+        }
+        if(!CompanyEmployeActivation::telintaRegisterEmployeeCT($employeMobileNumber, $companyCVRNumber)){
+            $this->getUser()->setFlash('messageError', 'Employee Call Back account is not registered on Telinta please check email');
+            $this->redirect('employee/add');
+            die;
         }
 
      
