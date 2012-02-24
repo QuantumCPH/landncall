@@ -607,7 +607,7 @@ class paymentsActions extends sfActions {
         $email2->setCallurl($urlval);
         $email2->save();
         $dibs = new DibsCall();
-        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket'));
+        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket')."-ord-".$request->getParameter('orderid')."-amt-".$request->getParameter('amount'));
         $dibs->save();
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         //print_r($_REQUEST);
@@ -827,12 +827,12 @@ if((int)$unid>200000){
  $customerID=$this->customer->getId();
                 $Tes=ForumTel::registerForumtel($customerID);
                   sleep(0.1);
-                  $amt=$order->getExtraRefill();
-                  $amt=CurrencyConverter::convertSekToUsd($amt);
-                 $Test=ForumTel::rechargeForumtel($customerID,$amt);
+               echo "original amout".   $amt=$order->getExtraRefill();
+                         echo "<hr/>converted amout". $amt=CurrencyConverter::convertSekToUsd($amt);
+                 echo "<hr/>ft response". $Test=ForumTel::rechargeForumtel($customerID,$amt);
 
                    $tc = new Criteria();
-        $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
+        $tc->add(UsNumberPeer::CUSTOMER_ID, $customerID);
         $usnumber = UsNumberPeer::doSelectOne($tc);
                $usnumber=$usnumber->getUsMobileNumber();
 
@@ -926,9 +926,11 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
+
                     Telienta::recharge($this->customers, $OpeningBalance);
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
+
                     $getvoipInfo = new Criteria();
                     $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $this->customers->getMobileNumber());
                     $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();

@@ -259,7 +259,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 		<input type="hidden" name="currency" value="752" />
 		<input type="hidden" name="orderid" value="<?php echo $order_id;?>" />
 		
-            
+            	               
 		
 		<input type="hidden" name="account" value="YTIP" />
 		  <input type="hidden" name="addfee" value="0" />
@@ -267,7 +267,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 <div id="autorefilop" >
                     <input type="hidden" name="maketicket" value="foo" />
                 </div>
-           
+              
          <input type="hidden" name="lang" value="sv" />
 		
      <input type="hidden" name="status" value="" />

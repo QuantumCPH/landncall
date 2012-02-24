@@ -2512,7 +2512,7 @@ protected function processFormus(sfWebRequest $request, sfForm $form , $id)
       //$this->getUser()->setAttribute('product_id', $product, 'usersignup');
 
 
-      $this->redirect('http://landncall.zerocall.com/b2c.php/customer/signupusstep2?cid='.$customer->getId().'&pid='.$product);
+      $this->redirect('http://stagelc.zerocall.com/b2c.php/customer/signupusstep2?cid='.$customer->getId().'&pid='.$product);
       //$this->redirect(sfConfig::get('app_epay_relay_script_url').$this->getController()->genUrl('@signup_step2?customer_id='.$customer->getId().'&product_id='.$product, true));
     }
   }
