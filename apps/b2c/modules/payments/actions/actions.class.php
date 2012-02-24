@@ -7,7 +7,6 @@ require_once(sfConfig::get('sf_lib_dir') . '/smsCharacterReplacement.php');
 require_once(sfConfig::get('sf_lib_dir').'/ForumTel.php');
 require_once(sfConfig::get('sf_lib_dir').'/CurrencyConverter.class.php');
 
-
 /**
  * payments actions.
  *
@@ -236,7 +235,7 @@ class paymentsActions extends sfActions {
         $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket'));
         $dibs->save();
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
-        //print_r($_REQUEST);  	
+        //print_r($_REQUEST);
         // Store data in the user session
         //$this->getUser()->setAttribute('activelanguage', $getCultue);
         ////load the thankSuccess template
@@ -388,7 +387,7 @@ class paymentsActions extends sfActions {
                 $country = EnableCountryPeer::doSelectOne($cc);
 
                 $mobile = $country->getCallingCode() . $this->customer->getMobileNumber();
-                
+
                 $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
                 if ($getFirstnumberofMobile == 0) {
                     $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
@@ -397,14 +396,14 @@ class paymentsActions extends sfActions {
                     $TelintaMobile = '46' . $this->customer->getMobileNumber();
                 }
 
-                
+
                 $uniqueId = $this->customer->getUniqueid();
                 echo $uniqueId."<br/>";
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
                 $selectedUniqueId = UniqueIdsPeer::doSelectOne($uc);
                 echo $selectedUniqueId->getStatus()."<br/>Baran";
-                
+
                 if($selectedUniqueId->getStatus()==0){
                     echo "inside";
                     $selectedUniqueId->setStatus(1);
@@ -431,31 +430,26 @@ class paymentsActions extends sfActions {
                 }
 
 
-
              $callbacklog = new CallbackLog();
                 $callbacklog->setMobileNumber($TelintaMobile);
                 $callbacklog->setuniqueId($uniqueId);
                 $callbacklog->setCheckStatus(3);
                 $callbacklog->save();
-
-
-
-
                 $emailId = $this->customer->getEmail();
                 $OpeningBalance = $order->getExtraRefill();
                 $customerPassword = $this->customer->getPlainText();
 
                 //Section For Telinta Add Cusomter
                 $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name=' . $uniqueId . '&currency=SEK&opening_balance=-' . $OpeningBalance . '&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&type=customer');
-
                 $string = $telintaRegisterCus;
+
                 $find = 'ERROR';
                 if (strpos($string, $find)) {
                     $message_body = $telintaRegisterCus . " <br> On Registration Page Duplicate customer name within environment <br> Mobile Number: $TelintaMobile <br / >Unique Id: $uniqueId";
                     //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
                     emailLib::sendErrorTelinta($this->customer, $message_body);
                 } else {
-                    
+
                 }
 
                 //https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name='.$uniqueId.'&currency=SEK&opening_balance=-'.$OpeningBalance.'&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&type=customer
@@ -481,7 +475,7 @@ class paymentsActions extends sfActions {
                     //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
                     emailLib::sendErrorTelinta($this->customer, $message_body);
                 } else {
-                    
+
                 }
                 //This is for Recharge the Customer
                 // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
@@ -820,7 +814,7 @@ class paymentsActions extends sfActions {
                 //register to fonet
                 $this->customer = $order->getCustomer();
 
-              
+
 
                 $cc = new Criteria();
                 $cc->add(EnableCountryPeer::ID, $this->customer->getCountryId());
@@ -878,19 +872,24 @@ class paymentsActions extends sfActions {
                 $callbacklog->setCheckStatus(3);
                 $callbacklog->save();
 
+
+                
+
+
+
                   $uc = new Criteria();
                 $uc->add(UsNumberPeer::ACTIVE_STATUS, 1);
                 $selectusnumber = UsNumberPeer::doSelectOne($uc);
                 $selectusnumber->setActiveStatus(3);
                 $selectusnumber->setCustomerId($this->customer->getId());
                 $selectusnumber->save();
-                
+
  $pakage=$order->getProduct()->getProductTypePackage();
                $unid= $this->customer->getUniqueid();
 if((int)$unid>200000){
 
 
-            
+
  $customerID=$this->customer->getId();
                 $Tes=ForumTel::registerForumtel($customerID);
                   sleep(0.1);
@@ -975,8 +974,8 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
 
 
 
-            
-             
+
+
 
 
                 //if the customer is invited, Give the invited customer a bonus of 10dkk
@@ -1071,7 +1070,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                             'wrap' => true
                         ));
 
-                
+
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
                 $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
                 $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
@@ -1105,9 +1104,9 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                 $this->logMessage('Error in transaction.');
             }
             //   //end else
-            
+
         }
         return sfView::NONE;
     }
- 
+
 }
