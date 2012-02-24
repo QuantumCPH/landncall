@@ -26,6 +26,17 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
 
                                 echo $Tes=ForumTel::getBalanceForumtel($customer->getId());
                               echo "USD"  ;
+                                   $getvoipInfo = new Criteria();
+        $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
+        $getvoipInfo->add(SeVoipNumberPeer::IS_ASSIGNED, 1);
+        $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
+        if(isset($getvoipInfos)){
+            $voipnumbers = $getvoipInfos->getNumber() ;
+            $voip_customer = $getvoipInfos->getCustomerId() ;
+        }else{
+           $voipnumbers =  '';
+           $voip_customer = '';
+        }
                }else{
 
 
@@ -78,7 +89,18 @@ echo " ";   echo substr($Telintambs, 13,2);
           
 
 
-         }  ?></span></div>   <?php    }else{?>
+         }  ?></span></div>  <div class="fl cb dashboard-info-text"><span><?php echo __('Resenummer ') ?>:</span><span><?php  $TelintaMobile="";    $TelintaMobile=$voipnumbers;
+
+                 $Telintambs=$TelintaMobile;
+
+ echo substr($Telintambs, 0,4); echo " ";   echo substr($Telintambs, 4,3);
+echo " ";   echo substr($Telintambs, 7,2);
+echo " ";   echo substr($Telintambs, 9,2);
+echo " ";   echo substr($Telintambs, 11,2);
+echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
+
+                ?></span></div>  <?php    }else{?>
 
 
 
