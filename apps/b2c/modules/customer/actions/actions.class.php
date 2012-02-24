@@ -651,13 +651,12 @@ class customerActions extends sfActions {
 
                     }
 
-                    //When a customer is assigned a resenummer you need to update the follow me number here is the URL
-                    // $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name='.$voipnumbers.'&active=Y&follow_me_number='.$TelintaMobile.'&type=account');
                     $OpeningBalance = '40';
-                    //https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$voipnumbers.'&customer='.$uniqueId.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number='.$TelintaMobile.'&billing_model=1&password=asdf1asd
+                    
                     //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
                     //This is for Recharge the Customer
-                    $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=' . $uniqueId . '&amount=' . $OpeningBalance);
+                    Telienta::charge($customer, $OpeningBalance);
+                    
                 }
 
 
@@ -778,7 +777,6 @@ class customerActions extends sfActions {
             $followMeNumber = $MaxUniqueRec->getMobileNumber();
             //When a customer is DeActive a resenummer you need to update the follow me number here is the URL - Telinta
             $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name=' . $voipnumbers . '&active=N&follow_me_number=' . $followMeNumber . '&type=account');
-            // echo 'https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name='.$voipnumbers.'&active=N&follow_me_number='.$followMeNumber.'&type=account';
             $string = $telintaGetBalance;
             $find = 'ERROR';
             if (strpos($string, $find)) {
@@ -789,7 +787,6 @@ class customerActions extends sfActions {
                 
             }
             $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name='.$voipnumbers.'&type=account');
-            // echo 'https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name='.$voipnumbers.'&active=N&follow_me_number='.$followMeNumber.'&type=account';
             $string = $telintaGetBalance;
             $find = 'ERROR';
             if (strpos($string, $find)) {
@@ -1606,7 +1603,7 @@ class customerActions extends sfActions {
 
                 $uniqueId = $this->customer->getUniqueid();
                 $OpeningBalance = $amt;
-
+                Telienta::charge($this->customer, $OpeningBalance);
                 $ReCharge = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=' . $uniqueId . '&amount=' . $OpeningBalance);
 
                 $data = array(
@@ -2030,7 +2027,7 @@ class customerActions extends sfActions {
             $OpeningBalance = $order->getExtraRefill();
             //This is for Recharge the Customer
             $MinuesOpeningBalance = $OpeningBalance * 3;
-            $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $uniqueId . '&amount=' . $OpeningBalance . '&type=customer');
+            Telienta::recharge($this->customer, $OpeningBalance);
             //This is for Recharge the Account
             $find = '';
             $string = $telintaAddAccountCB;
@@ -2049,18 +2046,14 @@ class customerActions extends sfActions {
             if (isset($getvoipInfos)) {
                 $voipnumbers = $getvoipInfos->getNumber();
                 $voip_customer = $getvoipInfos->getCustomerId();
-                //$telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$voipnumbers.'&amount='.$OpeningBalance.'&type=account');
             } else {
-                //$telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=account');
+              
             }
-            //$telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=a'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-            // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=cb'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-
+            
             $MinuesOpeningBalance = $OpeningBalance * 3;
             //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
             //This is for Recharge the Customer
-            //$telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name='.$uniqueId.'&amount='.$MinuesOpeningBalance);
-
+          
 
             echo "success, Amount: " . ($amount / 100) . " recharged to mobile: " . $mobile;
             return sfView::NONE;
@@ -2187,27 +2180,14 @@ if((int)$unidc>200000){
     
             //This is for Recharge the Customer
             $MinuesOpeningBalance = $OpeningBalance * 3;
-            $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $unidc . '&amount=' . $OpeningBalance . '&type=customer');
+            Telienta::recharge($this->customer, $OpeningBalance);
             $email2 = new DibsCall();
             $email2->setCallurl('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $unidc . '&amount=' . $OpeningBalance . '&type=customer');
             $email2->save();
             $email2 = new DibsCall();
             $email2->setCallurl($telintaAddAccountCB);
             $email2->save();
-            if(!$telintaAddAccountCB){
-                echo "<br/>We are not able to load the balance due to System Call";
-            }
-            $find = '';
-            $string = $telintaAddAccountCB;
-            $find = 'ERROR';
-            if (strpos($string, $find)) {
-                $message_body = " km testing     Error ON Refill Customer within Environment <br> Unique Id :$unidc <br / >Amount: $OpeningBalance";
-                //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                emailLib::sendErrorTelinta($this->customer, $message_body);
-            } else {
 
-                
-            }
                          
             //This is for Recharge the Account
             //this condition for if follow me is Active
@@ -2217,18 +2197,15 @@ if((int)$unidc>200000){
             if (isset($getvoipInfos)) {
                 $voipnumbers = $getvoipInfos->getNumber();
                 $voip_customer = $getvoipInfos->getCustomerId();
-                // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$voipnumbers.'&amount='.$OpeningBalance.'&type=account');
             } else {
-                //  $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=account');
-            }
-            // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=a'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-            // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=cb'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-}
-            $MinuesOpeningBalance = $OpeningBalance * 3;
-            //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
-            //This is for Recharge the Customer
-            // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name='.$uniqueId.'&amount='.$MinuesOpeningBalance);
+           
 
+            }
+
+
+            }
+            $MinuesOpeningBalance = $OpeningBalance * 3;
+            
 
             $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
             $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
