@@ -188,66 +188,69 @@
                     <th  width="10%"  align="left"><?php echo __('VAT') ?></th>
                     <th width="20%"   align="left"><?php echo __('Cost <small>(Incl. VAT)</small>') ?></th>
                     <th  width="20%"   align="left">Samtalstyp</th>
-                </tr>
-        <?php
-            $amount_total = 0;
-
-            $urlval = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=get_xdrs&name=" . $numbername . "&tz=Europe/Stockholm&from_date=" . $fromdate . "&to_date=" . $todate;
-
-            $res = file_get_contents($urlval);
-            $csv = new parseCSV();
-
-            $csvFileName = $res;
-# Parse '_books.csv' using automatic delimiter detection...
-            $csv->auto($csvFileName);
-
-
-            foreach ($csv->data as $key => $row) {
-
-                $timstampscsv = date('Y-m-d h:i:S');
-                $counters = 0;
-                foreach ($row as $value) {
-        ?>
+                  </tr>
+   <?php
+                $amount_total = 0;
 
 
 
-        <?php
-                    //echo $value;
-                    //$sqlInserts .= "'$value'".', ';
-//echo $csv->titles[$counters];
-                    if ($csv->titles[$counters] == 'class') {
-                        $csv->titles[$counters] = 'lstclasses';
-                    }
-                    ${$csv->titles[$counters]} = $value;
-                    $counters++;
-                } ?>
+
+$tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
+$fromdate=date("Y-m-d", $tomorrow1);
+$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
+ $todate=date("Y-m-d", $tomorrow);
 
 
-                <tr>
-                    <td><?php echo $connect_time; ?></td>
-                    <td><?php echo $CLD; ?></td>
-                    <td><?php echo number_format($charged_quantity / 60, 2); ?></td>
-                    <td><?php echo number_format($charged_amount / 4, 2); ?></td>
-                    <td><?php echo number_format($charged_amount, 2);
-                $amount_total+= number_format($charged_amount, 2); ?> SEK</td>
-            <td><?php
-                $account_id;
-                $typecall = substr($account_id, 0, 1);
-                if ($typecall == 'a') {
-                    echo "Int.";
+
+
+  $getFirstnumberofMobile = substr($customer->getMobileNumber(), 0,1);
+                if($getFirstnumberofMobile==0){
+                    $TelintaMobile = substr($customer->getMobileNumber(), 1);
+                    $TelintaMobile =  '46'.$TelintaMobile ;
+                }else{
+                    $TelintaMobile = '46'.$customer->getMobileNumber();
                 }
-                if ($typecall == '4') {
-                    echo "R";
-                }
-                if ($typecall == 'c') {
-                    if ($CLI == '**24') {
-                        echo "Cb M";
-                    } else {
-                        echo "Cb S";
-                    }
-                }
-        ?> </td>
-        </tr>
+
+
+ $numbername=$customer->getUniqueid();
+
+
+
+                            $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate, $todate);
+
+
+                            foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                            ?>
+
+
+                                <tr>
+                                    <td><?php echo $xdr->connect_time; ?></td>
+                                    <td><?php echo $xdr->CLD; ?></td>
+                                    <td><?php echo number_format($xdr->charged_quantity / 60, 2); ?></td>
+                                    <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
+                                    <td><?php echo number_format($xdr->charged_amount, 2);
+                                $amount_total+= number_format($xdr->charged_amount, 2); ?> &euro;</td>
+                                    <td><?php
+                                $typecall = substr($xdr->account_id, 0, 1);
+                                if ($typecall == 'a') {
+                                    echo "Int.";
+                                }
+                                if ($typecall == '4') {
+                                    echo "R";
+                                }
+                                if ($typecall == 'c') {
+                                    if ($CLI == '**24') {
+                                        echo "Cb M";
+                                    } else {
+                                        echo "Cb S";
+                                    }
+                                } ?> </td>
+                            </tr>
+
+<?php
+                        $callRecords=1;    }
+?>
+
 
         <?php
                 $callRecords = 1;
