@@ -640,18 +640,8 @@ class customerActions extends sfActions {
                     }
                     //------------------------------
 
+                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
 
-                    $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=' . $voipnumbers . '&customer=' . $uniqueId . '&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=' . $TelintaMobile . '&billing_model=1&password=asdf1asd');
-
-                    $string = $telintaAddAccount;
-                    $find = 'ERROR';
-                    if (strpos($string, $find)) {
-                        $message_body = "VOIP Subscribe Error:<br /> Duplicate account Id within Environment Of This Voip Against: $voipnumbers <br / >Unique Id: $uniqueId";
-                        //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                        emailLib::sendErrorTelinta($this->customer, $message_body);
-                    } else {
-
-                    }
 
                     $OpeningBalance = '40';
                     
