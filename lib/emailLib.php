@@ -1250,6 +1250,116 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         $email->save();
      }
 
+//////////////////////////////////////////////////////////////////////////////////
 
+    public static function sendCustomerRegistrationViaWebUSEmail(Customer $customer,$order)
+    {
+
+    //echo 'sending email';
+        echo '<br/>';
+        $product_price = $order->getProduct()->getPrice() - $order->getExtraRefill();
+       // echo $product_price;
+        echo '<br/>';
+	$vat = .20 * $product_price;
+       // echo $vat;
+        echo '<br/>';
+
+//        //create transaction
+//        $transaction = new Transaction();
+//        $transaction->setOrderId($order->getId());
+//        $transaction->setCustomer($customer);
+//        $transaction->setAmount($form['extra_refill']);
+
+        $tc  =new Criteria();
+        $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId() );
+        $tc->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
+        $transaction = TransactionPeer::doSelectOne($tc);
+
+
+        //This Section For Get The Agent Information
+        $agent_company_id = $customer->getReferrerId();
+        if($agent_company_id!=''){
+            $c = new Criteria();
+            $c->add(AgentCompanyPeer::ID, $agent_company_id);
+            $recepient_agent_email  = AgentCompanyPeer::doSelectOne($c)->getEmail();
+            $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
+        }else{
+            $recepient_agent_email  = '';
+            $recepient_agent_name = '';
+        }
+        //$this->renderPartial('affiliate/order_receipt', array(
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+        $message_body = get_partial('pScripts/order_receipt_us', array(
+                'customer'=>$customer,
+                'order'=>$order,
+                'transaction'=>$transaction,
+                'vat'=>$vat,
+                'agent_name'=>$recepient_agent_name,
+                'wrap'=>true,
+        ));
+
+
+        $subject = __('Registration Confirmation');
+        $recepient_email    = trim($customer->getEmail());
+        $recepient_name     = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
+        $customer_id        = trim($customer->getId());
+
+        //Support Information
+        $sender_email       = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
+        $sender_name        = sfConfig::get('app_email_sender_name', 'LandNCall AB ');
+        $sender_emailcdu       = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
+        $sender_namecdu        = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB ');
+
+        //------------------Sent The Email To Customer
+        if($recepient_email!=''){
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recepient_name);
+            $email->setReceipientEmail($recepient_email);
+            $email->setCutomerId($customer_id);
+            $email->setEmailType('LandNCall AB Customer registration via link');
+            $email->setMessage($message_body);
+            $email->save();
+        }
+        //----------------------------------------
+     sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+        $message_body = get_partial('pScripts/order_receipt_us_admin', array(
+                'customer'=>$customer,
+                'order'=>$order,
+                'transaction'=>$transaction,
+                'vat'=>$vat,
+                'agent_name'=>$recepient_agent_name,
+                'wrap'=>true,
+        ));
+        //------------------Sent the Email To Agent
+
+       //--------------Sent The Email To Support
+         if ($sender_email!=''):
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setReceipientName($sender_name);
+            $email3->setReceipientEmail($sender_email);
+            $email3->setCutomerId($customer_id);
+            $email3->setEmailType('LandNCall AB Customer registration via link');
+            $email3->setMessage($message_body);
+            $email3->save();
+        endif;
+        //-----------------------------------------
+
+         //--------------Sent The Email To Support
+         if ($sender_emailcdu!=''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($sender_namecdu);
+            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+
+    }
+///////////////////////////////////////////////////////////////////
 }
 ?>
