@@ -826,10 +826,81 @@ if((int)$unid>200000){
 
 
  $customerID=$this->customer->getId();
-                $OpeningBalance=0;
+                $OpeningBalance=40;
                   Telienta::ResgiterCustomer($this->customer, $OpeningBalance);
                 $Tes=ForumTel::registerForumtel($customerID);
-                  
+
+     //////////////////////////rese number registration ///////////////////////////////
+                $rs = new Criteria();
+                $rs->add(SeVoipNumberPeer::CUSTOMER_ID, $customerID);
+                $rs->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 3);
+                $voip_customer = '';
+                if (SeVoipNumberPeer::doCount($rs) > 0) {
+                    $voip_customer = SeVoipNumberPeer::doSelectOne($rs);
+                } else {
+
+                    $c = new Criteria();
+                    $c->setLimit(1);
+                    $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
+                    if (SeVoipNumberPeer::doCount($c) < 10) {
+                        emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                    }
+                    if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
+                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
+                        return false;
+                    }
+                }
+                // echo $voip_customer->getId()."Baran here<hr/>";
+                $voip_customer->setUpdatedAt(date('Y-m-d H:i:s'));
+                $voip_customer->setCustomerId($customerID);
+                $voip_customer->setIsAssigned(1);
+                $voip_customer->save();
+
+                //  echo $voip_customer->getId()."Baran here<hr/>";
+                // die;
+                //--------------------------Telinta------------------/
+                $getvoipInfo = new Criteria();
+                $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerID);
+                $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
+                if (isset($getvoipInfos)) {
+                    $voipnumbers = $getvoipInfos->getNumber();
+                    $voipnumbers = substr($voipnumbers, 2);
+                    $voip_customer = $getvoipInfos->getCustomerId();
+                    
+                    $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
+                    if ($getFirstnumberofMobile == 0) {
+                        $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
+                        $TelintaMobile = '46' . $TelintaMobile;
+                    } else {
+                        $TelintaMobile = '46' . $this->customer->getMobileNumber();
+                    }
+
+                    //$TelintaMobile = '46'.$this->customer->getMobileNumber();
+                    $emailId = $this->customer->getEmail();
+                    $uniqueId = $this->customer->getUniqueid();
+
+                    //This Condtion for if IC Active
+                    $tc = new Criteria();
+                    $tc->add(CallbackLogPeer::UNIQUEID, $uniqueId);
+                    $tc->addDescendingOrderByColumn(CallbackLogPeer::CREATED);
+                    $MaxUniqueRec = CallbackLogPeer::doSelectOne($tc);
+                    if (isset($MaxUniqueRec)) {
+                        $TelintaMobile = $MaxUniqueRec->getMobileNumber();
+                    }
+                    //------------------------------
+                    $TelintaMobile=$selectusnumber->getUsMobileNumber();
+                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
+
+
+                    $OpeningBalance = '40';
+
+                    //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
+                    //This is for Recharge the Customer
+                    Telienta::charge($customer, $OpeningBalance);
+                }
+
+
+///////////////////////////////////////////////////////end resenumber registration
                echo "original amout".   $amt=$order->getExtraRefill();
                          echo "<hr/>converted amout". $amt=CurrencyConverter::convertSekToUsd($amt);
                  echo "<hr/>ft response". $Test=ForumTel::rechargeForumtel($customerID,$amt);
@@ -883,20 +954,15 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                 if ($invite) {
 
                     $invite->setInviteStatus(3);
-
                     $sc = new Criteria();
                     $sc->add(CustomerCommisionPeer::ID, 1);
                     $commisionary = CustomerCommisionPeer::doSelectOne($sc);
                     $comsion = $commisionary->getCommision();
-
-
-
                     $products = new Criteria();
                     $products->add(ProductPeer::ID, 11);
                     $products = ProductPeer::doSelectOne($products);
                     $extrarefill = $products->getInitialBalance();
                     //if the customer is invited, Give the invited customer a bonus of 10dkk
-
                     $inviteOrder = new CustomerOrder();
                     $inviteOrder->setProductId(11);
                     $inviteOrder->setQuantity(1);
@@ -912,7 +978,6 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     $transaction_i->setCustomerId($invite->getCustomerId());
                     $transaction_i->setOrderId($OrderId);
                     $transaction_i->setTransactionStatusId(3);
-
                     //send fonet query to update the balance of invitee by 10dkk
                     //   Fonet::recharge(CustomerPeer::retrieveByPK($invite->getCustomerId()), $comsion);
 
@@ -926,6 +991,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     } else {
                         $TelintaMobile = '46' . $this->customers->getMobileNumber();
                     }
+                    
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
@@ -955,7 +1021,6 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     }
                 }
                 //send email
-
                 $message_body = $this->getPartial('payments/order_receipt_us', array(
                             'customer' => $this->customer,
                             'order' => $order,
@@ -963,42 +1028,32 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                             'vat' => $product_price_vat,
                             'wrap' => true
                         ));
-
-
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
                 $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
                 $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
-
-
                 //This Seciton For Make The Log History When Complete registration complete - Agent
                 //echo sfConfig::get('sf_data_dir');
                 //Send Email --- when Confirm Payment --- 01/15/11
-
                 $agentid = $this->customer->getReferrerId();
-
                 $cp = new Criteria;
                 $cp->add(CustomerProductPeer::CUSTOMER_ID, $order->getCustomerId());
                 $customerproduct = CustomerProductPeer::doSelectOne($cp);
                 $productid = $customerproduct->getId();
-
                 $transactionid = $transaction->getId();
                 if (isset($agentid) && $agentid != "") {
                     commissionLib::registrationCommissionCustomer($agentid, $productid, $transactionid);
                 }
                 //emailLib::sendCustomerConfirmPaymentEmail($this->customer,$message_body);
-                emailLib::sendCustomerRegistrationViaWebEmail($this->customer, $order);
-
-
+                emailLib::sendCustomerRegistrationViaWebUSEmail($this->customer, $order);
                 $this->order = $order;
             }//end if
             else {
                 $this->logMessage('Error in transaction.');
             }
             //   //end else
-
         }
         return sfView::NONE;
     }
