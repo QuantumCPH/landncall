@@ -44,6 +44,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'created_at'             => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
       'updated_at'             => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
       'file_path'              => new sfWidgetFormFilterInput(),
+      'i_customer'             => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -77,6 +78,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'created_at'             => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'updated_at'             => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'file_path'              => new sfValidatorPass(array('required' => false)),
+      'i_customer'             => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('company_filters[%s]');
@@ -125,6 +127,7 @@ class BaseCompanyFormFilter extends BaseFormFilterPropel
       'created_at'             => 'Date',
       'updated_at'             => 'Date',
       'file_path'              => 'Text',
+      'i_customer'             => 'Text',
     );
   }
 }

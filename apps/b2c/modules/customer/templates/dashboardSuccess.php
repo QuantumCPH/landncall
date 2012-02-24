@@ -108,6 +108,7 @@ echo "    ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
             }else{
                $TelintaMobile="00".$unumber->getMobileNumber();
 
@@ -120,7 +121,7 @@ echo " ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
-
+echo " ";   echo substr($Telintambs, 15,2);
             }
          }else{
                 $getFirstnumberofMobile = substr($customer->getMobileNumber(), 0,1);     // bcdef
@@ -134,6 +135,7 @@ echo " ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
                 }else{
                   $TelintaMobile = '0046'.$customer->getMobileNumber();
 
@@ -144,6 +146,7 @@ echo " ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
                 }
              
             
@@ -164,6 +167,7 @@ echo " ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
                 
                 ?></span> 
                 <input type="button" class="butonsigninsmall" name="button" style="margin-left:10px;" onclick="window.location.href='<?php if($voip_customer!=''){  ?>

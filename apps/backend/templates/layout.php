@@ -4,6 +4,8 @@
     <?php include_http_metas() ?>
     <?php include_metas() ?>
     <?php include_title() ?>
+      <?php use_javascript('jquery-ui-1.8.16.custom.min.js', '', array('absolute'=>true)) ?>
+      <?php use_stylesheet('ui-lightness/jquery-ui-1.8.16.custom.css', 'last', array('absolute'=>true)) ?>
     <link rel="shortcut icon" href="/favicon.ico" />
     <script type="text/javascript">
     <!--
@@ -66,6 +68,23 @@
   		
       </ul>
       <ul id="sddm">
+             <li><a href="#"
+                onmouseover="mopen('m2')"
+                onmouseout="mclosetime()">B2B</a>
+                <div id="m2"
+                    onmouseover="mcancelclosetime()"
+                    onmouseout="mclosetime()">
+
+                    <?php echo link_to('Companies list', 'company/index') ?>
+                    <?php echo link_to('Employee lists', 'employee/index') ?>
+                    <?php  echo link_to('Payment History', 'company/paymenthistory') ?>
+                    <?php echo link_to('Refill', 'company/refill'); ?>
+                    <?php //echo link_to('support activity', 'support_activity/index'); ?>
+                    <?php //echo link_to('usage', 'cdr/index'); ?>
+                    <?php //echo link_to('invoices', 'invoice/index'); ?>
+                    <?php //echo link_to('Product orders', 'product_order/index') ?>
+                </div>
+            </li>
             <li>
                 <a href="#"
                 onmouseover="mopen('m5')"
@@ -299,5 +318,195 @@
       <div style="clear:both"></div>
     <?php echo $sf_content ?>
     </div> <!--  end wrapper -->
+
+
+    <script type="text/javascript">
+jQuery(function(){
+
+	jQuery('#sf_admin_form').validate({
+	});
+jQuery('#sf_admin_edit_form').validate({
+
+     rules: {
+        "company[name]": "required",
+        "company[vat_no]": "required",
+        "company[post_code]": "required",
+        "company[address]": "required",
+        "company[contact_name]": "required",
+        "company[head_phone_number]": "required",
+        "company[fax_number]": "digits",
+        "company[created_at]": "required",
+        "company[email]": "required email"
+  }
+	});
+});
+</script>
+
+    <script type="text/javascript">
+     jQuery('#company_post_code').blur(function(){
+        var poid=jQuery("#company_post_code").val();
+        poid = poid.replace(/\s+/g, '');
+        var poidlenght=poid.length;
+        //alert(poidlenght);
+        var poida= poid.charAt(0);
+        var poidb= poid.charAt(1);
+        var poidc= poid.charAt(2);
+        var poidd= poid.charAt(3);
+        var poide= poid.charAt(4);
+        if(poidlenght>4){
+            var fulvalue=poida+poidb+poidc+" "+poidd+poide;
+        }else{
+           //var fulvalue=poida+poidb+poidc;
+        }
+       jQuery("#company_post_code").val(fulvalue);
+       //  alert(fulvalue);
+
+        });
+
+</script>
+
+    <script language="javascript" type="text/javascript">
+
+	jQuery('#company_vat_no').blur(function(){
+		//remove all the class add the messagebox classes and start fading
+		jQuery("#msgbox").removeClass().addClass('messagebox').text('Checking...').fadeIn("slow");
+
+                 var val=jQuery(this).val();
+
+                if(val==''){
+                    jQuery("#msgbox").fadeTo(200,0.1,function() //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('Enter Vat Number').addClass('messageboxerror').fadeTo(900,1);
+			});
+                        jQuery('#error').val("error");
+                }else{
+		//check the username exists or not from ajax
+		jQuery.post("http://stagelc.zerocall.com/backend.php/company/vat",{ vat_no:val } ,function(data)
+        {//alert(data);
+		  if(data=='no') //if username not avaiable
+		  {
+		  	jQuery("#msgbox").fadeTo(200,0.1,function() //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('This Vat No Already exists').addClass('messageboxerror').fadeTo(900,1);
+			});jQuery('#error').val("error");
+          }
+		  else
+		  {
+		  	jQuery("#msgbox").fadeTo(200,0.1,function()  //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('Vat No is available').addClass('messageboxok').fadeTo(900,1);
+			});jQuery('#error').val("");
+		  }
+
+        });
+                }
+	});
+
+        	jQuery('#employee_mobile_number').blur(function(){
+		//remove all the class add the messagebox classes and start fading
+		jQuery("#msgbox").removeClass().addClass('messagebox').text('Checking...').fadeIn("slow");
+		//check the username exists or not from ajax
+                var val=jQuery(this).val();
+                
+                if(val==''){
+                    jQuery("#msgbox").fadeTo(200,0.1,function() //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('Enter Mobile Number').addClass('messageboxerror').fadeTo(900,1);
+			});
+                        jQuery('#error').val("error");
+                }else{
+                    if(val.length >7){
+
+                    if(val.substr(0, 1)==0){
+                jQuery("#msgbox").fadeTo(200,0.1,function() //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('Please enter a valid mobile number not starting with 0').addClass('messageboxerror').fadeTo(900,1);
+			});
+                        jQuery('#error').val("error");
+                }else{
+                    
+		jQuery.post("http://stagelc.zerocall.com/backend.php/employee/mobile",{ mobile_no: val} ,function(data)
+        {
+		  if(data=='no') //if username not avaiable
+		  {
+		  	jQuery("#msgbox").fadeTo(200,0.1,function() //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('This Mobile No Already exists').addClass('messageboxerror').fadeTo(900,1);
+			});jQuery('#error').val("error");
+          }
+		  else
+		  {
+		  	jQuery("#msgbox").fadeTo(200,0.1,function()  //start fading the messagebox
+			{
+			  //add message and change the class of the box and start fading
+			  jQuery(this).html('Mobile No is available').addClass('messageboxok').fadeTo(900,1);
+			});jQuery('#error').val("");
+		  }
+
+        });
+                }}}
+	});
+
+    jQuery("#sf_admin_form").submit(function() {
+      if (jQuery("#error").val() == "error") {
+       
+        return false;
+      }else{
+          return true;
+      }
+     
+      
+    });
+       jQuery("#sf_admin_edit_form").submit(function() {
+      if (jQuery("#error").val() == "error") {
+
+        return false;
+      }else{
+          return true;
+      }
+
+
+    });
+
+
+</script>
+<style type="text/css">
+.messagebox{
+	position:absolute;
+	width:100px;
+	margin-left:30px;
+	border:1px solid #c93;
+	background:#ffc;
+	padding:3px;
+}
+.messageboxok{
+	position:absolute;
+	width:auto;
+	margin-left:30px;
+	border:1px solid #349534;
+	background:#C9FFCA;
+	padding:3px;
+	font-weight:bold;
+	color:#008000;
+
+}
+.messageboxerror{
+	position:absolute;
+	width:auto;
+	margin-left:30px;
+	border:1px solid #CC0000;
+	background:#F7CBCA;
+	padding:3px;
+	font-weight:bold;
+	color:#CC0000;
+}
+
+</style>
   </body>
 </html>
