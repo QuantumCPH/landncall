@@ -1,9 +1,9 @@
 <?php
 
-echo $_REQUEST['iccid'];
+
 
 $bc = new barCode('png');
-echo $bc->build($_REQUEST['iccid']);
+$bc->build($_REQUEST['iccid']);
 
 class barCode {
     public $bcHeight, $bcThinWidth, $bcThickWidth, $bcFontSize, $mode;

@@ -131,7 +131,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
             echo $vounumber->getNumber();
              } ?><br/>
                <?php echo __('ICCID Number') ?>   <?php    echo   $usnumber->getIccid();   ?><br/>
-                   <?php echo __('MSISDN Number') ?>   <?php   echo  $usnumber->getMsisdn();    ?><br/>
+               <img  src="http://stagelc.zerocall.com/barcode.php?iccid=<?php    echo   $usnumber->getIccid();   ?>" > <br/>
       <br /><br />
 
 
