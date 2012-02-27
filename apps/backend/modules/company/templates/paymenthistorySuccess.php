@@ -9,7 +9,7 @@
 	<div id="sf_admin_content">
             <a href="<?php echo url_for('employee/index').'?company_id='.$companyval."&filter=filter" ?>" class="external_link" target="_self">Employees</a>
             <a href="<?php echo url_for('company/usage').'?company_id='.$companyval; ?>" class="external_link" target="_self">Usage</a>
-            <a href="<?php echo url_for('company/Paymenthistory').'?company_id='.$companyval.'&filter=filter' ?>" class="external_link" target="_self">Payment History</a>
+            <a href="<?php echo url_for('company/paymenthistory').'?company_id='.$companyval.'&filter=filter' ?>" class="external_link" target="_self">Payment History</a>
         </div>
     </div>
 <?}?>
