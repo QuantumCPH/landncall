@@ -349,7 +349,7 @@ $companyCVR=$compny->getVatNo();
                         $employee->setRegistrationType($rtype);
                         //$resenummerCharge=file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=manual_charge&name=' . $voipnumbers . '&amount=40&customer='.$companyCVR);
 
-                        Telienta::charge($this->companys, $OpeningBalance);
+                        CompanyEmployeActivation::charge($this->companys, $OpeningBalance);
                         $transaction = new CompanyTransaction();
                         $transaction->setAmount(-40);
                         $transaction->setCompanyId($employee->getCompanyId());
