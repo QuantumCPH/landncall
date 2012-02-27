@@ -126,27 +126,27 @@
       <td> <?php  $mobileID= $employee->getCountryMobileNumber();
         $telintaGetBalance=0;
         $ct = new Criteria();
-        $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'a'.$employee->getCountryMobileNumber());
+        $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'a'.$mobileID);
         $ct->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccount = TelintaAccountsPeer::doSelectOne($ct);
         $accountInfo = CompanyEmployeActivation::getAccountInfo($telintaAccount->getIAccount());
         $telintaGetBalance = $accountInfo->account_info->balance;
-        //$telintaGetBalance;
+       
         $telintaGetBalance1=0;
         $cb = new Criteria();
-        $cb->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'cb'.$employee->getCountryMobileNumber());
+        $cb->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'cb'.$mobileID);
         $cb->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccountcb = TelintaAccountsPeer::doSelectOne($cb);
         $accountInfocb = CompanyEmployeActivation::getAccountInfo($telintaAccountcb->getIAccount());
         $telintaGetBalancecb = $accountInfocb->account_info->balance;
-        //$telintaGetBalance;
+        
 
          $regtype=$employee->getRegistrationType();
-        $telintaGetBalancerese=0;
+        
         if(isset($regtype) && $regtype==1){
         $voip = new Criteria();
 
-        $voip->add(SeVoipNumberPeer::CUSTOMER_ID, $employee->getCountryMobileNumber());
+        $voip->add(SeVoipNumberPeer::CUSTOMER_ID, $mobileID);
         $voip->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 1);
         $voipv = SeVoipNumberPeer::doSelectOne($voip);
 
