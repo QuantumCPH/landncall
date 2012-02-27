@@ -13,7 +13,7 @@ class affiliateActions extends sfActions
 {
 
     //private $targetURL = "http://localhost/landncall/web/agent_dev.php/affiliate/";
-    private $targetURL = "http://landncall.zerocall.com/agent.php/affiliate/";
+    private $targetURL = "http://stagelc.zerocall.com/agent.php/affiliate/";
     private $targetPScriptURL = "http://landncall.zerocall.com/b2c.php/pScripts/";
 
  /**
