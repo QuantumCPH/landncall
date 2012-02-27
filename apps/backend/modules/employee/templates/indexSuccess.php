@@ -164,7 +164,7 @@
 
         }
         }
-      echo  $balnc=(float)$telintaGetBalance+(float)$telintaGetBalance1+($telintaGetBalancerese>0)?(float)$telintaGetBalancerese:0;
+      echo  $balnc=(float)$telintaGetBalance+(float)$telintaGetBalancecb+($telintaGetBalancerese>0)?(float)$telintaGetBalanceres:0;
           echo " Sek";
                                                 ?></td>
 
