@@ -300,6 +300,7 @@ propel:
     updated_at: { type: TIMESTAMP, required: false }
     file_path: { type: VARCHAR, size: '255', required: false }
     rate_table_id: { type: INTEGER, size: '11', required: true, defaultValue: '1' }
+    i_customer: { type: VARCHAR, size: '50', required: true }
     _indexes: { company_FI_1: [country_id], company_FI_2: [city_id], company_FI_3: [status_id], company_FI_4: [company_size_id], company_FI_5: [company_type_id], company_FI_6: [customer_type_id], company_FI_7: [apartment_form_id], company_FI_8: [invoice_method_id], company_FI_9: [account_manager_id], company_FI_10: [agent_company_id], rate_table_id: [rate_table_id] }
     _uniques: { vat_no: [vat_no] }
   company_bank:
@@ -317,7 +318,7 @@ propel:
   company_transaction:
     _attributes: { phpName: CompanyTransaction }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
-    company_id: { type: INTEGER, size: '11', required: true }
+    company_id: { type: INTEGER, size: '11', required: true, foreignTable: company, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     amount: { type: FLOAT, required: true }
     extra_refill: { type: FLOAT, required: true }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }

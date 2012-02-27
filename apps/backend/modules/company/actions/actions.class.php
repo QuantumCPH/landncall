@@ -373,10 +373,16 @@ class companyActions extends sfActions {
 
     public function executeView($request) {
         $this->company = CompanyPeer::retrieveByPK($request->getParameter('id'));
+        $this->balance = CompanyEmployeActivation::getBalance($this->company);
     }
 
     public function executeUsage($request) {
         $this->company = CompanyPeer::retrieveByPK($request->getParameter('company_id'));
+        $tomorrow1 = mktime(0, 0, 0, date("m"), date("d") - 15, date("Y"));
+        $fromdate = date("Y-m-d", $tomorrow1);
+        $tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
+        $todate = date("Y-m-d", $tomorrow);
+        $this->callHistory = CompanyEmployeActivation::callHistory($this->company, $fromdate, $todate);
     }
 
     public function executeRefill(sfWebRequest $request)

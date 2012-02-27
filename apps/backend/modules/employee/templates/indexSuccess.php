@@ -125,14 +125,20 @@
  <?php  if(isset($companyval) && $companyval!=""){  ?>
       <td> <?php  $mobileID= $employee->getCountryMobileNumber();
         $telintaGetBalance=0;
-        $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=a'.$mobileID.'&type=account');
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
+        $ct = new Criteria();
+        $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'a'.$mobilenumber);
+        $ct->andAdd(TelintaAccountsPeer::STATUS, 3);
+        $telintaAccount = TelintaAccountsPeer::doSelectOne($ct);
+        $accountInfo = CompanyEmployeActivation::getAccountInfo($telintaAccount->getIAccount());
+        $telintaGetBalance = $accountInfo->account_info->balance;
         //$telintaGetBalance;
         $telintaGetBalance1=0;
-        $telintaGetBalance1 = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=cb'.$mobileID.'&type=account');
-        $telintaGetBalance1 = str_replace('success=OK&Balance=', '', $telintaGetBalance1);
-        $telintaGetBalance1 = str_replace('-', '', $telintaGetBalance1);
+        $cb = new Criteria();
+        $cb->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'cb'.$mobilenumber);
+        $cb->andAdd(TelintaAccountsPeer::STATUS, 3);
+        $telintaAccountcb = TelintaAccountsPeer::doSelectOne($cb);
+        $accountInfocb = CompanyEmployeActivation::getAccountInfo($telintaAccountcb->getIAccount());
+        $telintaGetBalancecb = $accountInfocb->account_info->balance;
         //$telintaGetBalance;
 
          $regtype=$employee->getRegistrationType();
@@ -146,11 +152,15 @@
 
         if(isset ($voipv)){
 
-       $resenummer=$voipv->getNumber();
-       $resenummer = substr($resenummer, 2);
-       $telintaGetBalancerese = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$resenummer.'&type=account');
-       $telintaGetBalancerese = str_replace('success=OK&Balance=', '', $telintaGetBalancerese);
-       $telintaGetBalancerese = str_replace('-', '', $telintaGetBalancerese);
+        $resenummer=$voipv->getNumber();
+        $resenummer = substr($resenummer, 2);
+
+        $res = new Criteria();
+        $res->add(TelintaAccountsPeer::ACCOUNT_TITLE, $resenummer);
+        $res->andAdd(TelintaAccountsPeer::STATUS, 3);
+        $telintaAccountres = TelintaAccountsPeer::doSelectOne($res);
+        $accountInfores = CompanyEmployeActivation::getAccountInfo($telintaAccountres->getIAccount());
+        $telintaGetBalanceres = $accountInfores->account_info->balance;
 
         }
         }
