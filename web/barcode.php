@@ -1,14 +1,13 @@
 <?php
-
-
-
-$bc = new barCode('png');
+// phpinfo();
+//die;
+$bc = new barCode('jpeg');
 $bc->build($_REQUEST['iccid']);
 
 class barCode {
     public $bcHeight, $bcThinWidth, $bcThickWidth, $bcFontSize, $mode;
 
-    function __construct($mode='gif', $height=50, $thin=1, $thick=2, $fSize=2) {
+    function __construct($mode='jpeg', $height=50, $thin=1, $thick=2, $fSize=2) {
         $this->bcHeight = $height;
         $this->bcThinWidth = $thin;
 
