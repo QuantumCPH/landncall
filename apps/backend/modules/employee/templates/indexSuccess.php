@@ -130,7 +130,7 @@
         $ct->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccount = TelintaAccountsPeer::doSelectOne($ct);
         $accountInfo = CompanyEmployeActivation::getAccountInfo($telintaAccount->getIAccount());
-       echo "a". $telintaGetBalance = $accountInfo->account_info->balance;
+        $telintaGetBalance = $accountInfo->account_info->balance;
        
         
         $cb = new Criteria();
@@ -138,7 +138,7 @@
         $cb->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccountcb = TelintaAccountsPeer::doSelectOne($cb);
         $accountInfocb = CompanyEmployeActivation::getAccountInfo($telintaAccountcb->getIAccount());
-        echo "cb". $telintaGetBalancecb = $accountInfocb->account_info->balance;
+        $telintaGetBalancecb = $accountInfocb->account_info->balance;
         
 
          $regtype=$employee->getRegistrationType();
@@ -160,10 +160,10 @@
         $res->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccountres = TelintaAccountsPeer::doSelectOne($res);
         $accountInfores = CompanyEmployeActivation::getAccountInfo($telintaAccountres->getIAccount());
-      echo "res".  $telintaGetBalanceres = $accountInfores->account_info->balance;
+        $telintaGetBalanceres = $accountInfores->account_info->balance;
 
         }
-        }echo "f.".$telintaGetBalance;
+        }
       echo  $balnc=(float)$telintaGetBalance+(float)$telintaGetBalancecb+(float)$telintaGetBalanceres;
           echo " Sek";
                                                 ?></td>
