@@ -48,7 +48,7 @@ class CompanyEmployeActivation {
             return false;
         }
         $company->setICustomer($tCustomer->i_customer);
-        $company->save();
+        //$company->save();
         $pb->_logout();
         return true;
     }
