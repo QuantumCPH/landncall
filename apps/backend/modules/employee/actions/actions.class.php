@@ -186,7 +186,12 @@ class employeeActions extends sfActions {
                 $c->setLimit(1);
                 $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
 
+                if (SeVoipNumberPeer::doCount($c) < 10) {
+                     emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                 }
+
                 if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)){
+                         emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by Employee id: " .$request->getParameter('id'));
                      $msg= "Resenummer is not activate";
                     //return false;
                 }else{
@@ -303,9 +308,12 @@ $companyCVR=$compny->getVatNo();
                 $c->setLimit(1);
                 $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
 
+                if (SeVoipNumberPeer::doCount($c) < 10) {
+                     emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                    }
                 if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)){
-                   // return false;
-                     $msg= "Resenummer is not activate";
+                   emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by Employee id: " .$request->getParameter('id'));
+                   $msg= "Resenummer is not activate";
                 }else{
                 $voip_customer->setUpdatedAt(date('Y-m-d H:i:s'));
                 $voip_customer->setCustomerId($contrymobilenumber);
@@ -382,9 +390,9 @@ $companyCVR=$compny->getVatNo();
 
 
 
-       if($rtype==3){
-         $rtype=1;  
-       }
+      // if($rtype==3){
+        // $rtype=1;
+       //}
        // $contrymobilenumber = $request->getParameter('country_code') . $request->getParameter('mobile_number');
         
       //  $employee->setCompanyId($request->getParameter('company_id'));
