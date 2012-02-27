@@ -22,89 +22,70 @@ $callRecordscb=0;
 $callRecordsrese=0;
 $amount_total = 0;
 
-$tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
-$fromdate=date("Y-m-d", $tomorrow1);
-$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
-$todate=date("Y-m-d", $tomorrow);
+foreach ($callHistory->xdr_list as $xdr) {
+        ?>
 
-$vatnumber=$companys->getVatNo();
-$mobilenumber=$employee->getCountryMobileNumber();
 
-$urlval = 'https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=get_xdrs&name=a'.$mobilenumber.'&tz=Europe/Stockholm&from_date='.$fromdate.'&to_date='.$todate.'&customer='.$vatnumber;
-//$urlval = 'https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=get_xdrs&name=a46732801013&tz=Europe/Stockholm&from_date=2010-01-01&to_date=2012-01-01&customer=100059';
+            <tr>
+                <td><?php echo $xdr->connect_time; ?></td>
+                <td><?php echo $xdr->CLD; ?></td>
+                <td><?php echo number_format($xdr->charged_quantity / 60, 2); ?></td>
+                <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
+                <td><?php echo number_format($xdr->charged_amount, 2);
+            $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
+                <td><?php
+            $typecall = substr($xdr->account_id, 0, 1);
+            if ($typecall == 'a') {
+                echo "Int.";
+            }
+            if ($typecall == '4') {
+                echo "R";
+            }
+            if ($typecall == 'c') {
+                if ($CLI == '**24') {
+                    echo "Cb M";
+                } else {
+                    echo "Cb S";
+                }
+            } ?> </td>
+        </tr>
 
-$res = file_get_contents($urlval);
-$csv = new parseCSV();
-$csvFileName = $res;
-# Parse '_books.csv' using automatic delimiter detection...
-$csv->auto($csvFileName);
-
-foreach ($csv->data as $key => $row) {
-
-    $timstampscsv = date('Y-m-d h:i:S');
-    $counters = 0;
-    foreach ($row as $value) {
-
-        if ($csv->titles[$counters] == 'class') {
-            $csv->titles[$counters] = 'lstclasses';
-        }
-            ${$csv->titles[$counters]} = $value;
-            $counters++;
-    } ?>
-
-    <tr>
-        <td><?php echo $connect_time; ?></td>
-        <td><?php echo  $CLD; ?></td>
-        <td><?php echo number_format($charged_quantity/60 ,2);  ?></td>
-        <td><?php echo  number_format($charged_amount/4,2); ?></td>
-        <td><?php echo number_format($charged_amount,2);      $amount_total+= number_format($charged_amount,2); ?> SEK</td>
-        <td><?php $account_id;    $typecall=substr($account_id,0,1);
-           if($typecall=='a'){ echo "Int.";  }
-           if($typecall=='4'){ echo "R";  }
-           if($typecall=='c'){ if($CLI=='**24'){  echo "Cb M"; }else{ echo "Cb S"; }      }  ?>
-        </td>
-   </tr>
 <?php
-$callRecords=1;
-}
-
-
-$urlvalcb = 'https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=get_xdrs&name=cb'.$mobilenumber.'&tz=Europe/Stockholm&from_date='.$fromdate.'&to_date='.$todate.'&customer='.$vatnumber;
-//$urlvalcb = 'https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=get_xdrs&name=cb34619485107&tz=Europe/Stockholm&from_date=2010-01-01&to_date=2012-01-01&customer=80020';
-$rescb = file_get_contents($urlvalcb);
-$csvcb = new parseCSV();
-$csvFileNamecb = $rescb;
-# Parse '_books.csv' using automatic delimiter detection...
-$csvcb->auto($csvFileNamecb);
-
-foreach ($csvcb->data as $keycb => $rowcb) {
-
-    $timstampscsvcb = date('Y-m-d h:i:S');
-    $counterscb = 0;
-    foreach ($rowcb as $valuecb) {
-
-        if ($csvcb->titles[$counterscb] == 'class') {
-            $csvcb->titles[$counterscb] = 'lstclasses';
+            $callRecords = 1;
         }
-            ${$csvcb->titles[$counterscb]} = $valuecb;
-            $counterscb++;
-    } ?>
 
-    <tr>
-        <td><?php echo $connect_time; ?></td>
-        <td><?php echo  $CLD; ?></td>
-        <td><?php echo number_format($charged_quantity/60 ,2);  ?></td>
-        <td><?php echo  number_format($charged_amount/4,2); ?></td>
-        <td><?php echo number_format($charged_amount,2);      $amount_total+= number_format($charged_amount,2); ?> SEK</td>
-        <td><?php $account_id;    $typecall=substr($account_id,0,1);
-           if($typecall=='a'){ echo "Int.";  }
-           if($typecall=='4'){ echo "R";  }
-           if($typecall=='c'){ if($CLI=='**24'){  echo "Cb M"; }else{ echo "Cb S"; }      }  ?>
-        </td>
-   </tr>
+        foreach ($callHistorycb->xdr_list as $xdrcb) {
+        ?>
+
+
+            <tr>
+                <td><?php echo $xdrcb->connect_time; ?></td>
+                <td><?php echo $xdrcb->CLD; ?></td>
+                <td><?php echo number_format($xdrcb->charged_quantity / 60, 2); ?></td>
+                <td><?php echo number_format($xdrcb->charged_amount / 4, 2); ?></td>
+                <td><?php echo number_format($xdrcb->charged_amount, 2);
+            $amount_total+= number_format($xdrcb->charged_amount, 2); ?> SEK</td>
+                <td><?php
+            $typecall = substr($xdrcb->account_id, 0, 1);
+            if ($typecall == 'a') {
+                echo "Int.";
+            }
+            if ($typecall == '4') {
+                echo "R";
+            }
+            if ($typecall == 'c') {
+                if ($CLI == '**24') {
+                    echo "Cb M";
+                } else {
+                    echo "Cb S";
+                }
+            } ?> </td>
+        </tr>
+
 <?php
-$callRecordscb=1;
-}
+            $callRecordscb = 1;
+        }
+
 
 $regtype=$employee->getRegistrationType();
 
@@ -117,43 +98,37 @@ $voipv = SeVoipNumberPeer::doSelectOne($voip);
 
 if(isset ($voipv)){
     
-$resenummer=$voipv->getNumber();
-$resenummer = substr($resenummer, 2);
-$urlvalrese = 'https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=get_xdrs&name='.$resenummer.'&tz=Europe/Stockholm&from_date='.$fromdate.'&to_date='.$todate.'&customer='.$vatnumber;
-$resrese = file_get_contents($urlvalrese);
-$csvrese = new parseCSV();
-$csvFileNamerese = $resrese;
-# Parse '_books.csv' using automatic delimiter detection...
-$csvrese->auto($csvFileNamerese);
+foreach ($callHistoryres->xdr_list as $xdrres) {
+        ?>
 
-foreach ($csvrese->data as $keyrese => $rowrese) {
-
-    $timstampscsvrese = date('Y-m-d h:i:S');
-    $countersrese = 0;
-    foreach ($rowrese as $valuerese) {
-
-        if ($csvrese->titles[$countersrese] == 'class') {
-            $csvrese->titles[$countersrese] = 'lstclasses';
-        }
-            ${$csvrese->titles[$countersrese]} = $valuerese;
-            $countersrese++;
-    } ?>
 
     <tr>
-        <td><?php echo $connect_time; ?></td>
-        <td><?php echo  $CLD; ?></td>
-        <td><?php echo number_format($charged_quantity/60 ,2);  ?></td>
-        <td><?php echo  number_format($charged_amount/4,2); ?></td>
-        <td><?php echo number_format($charged_amount,2);     // $amount_total+= number_format($charged_amount,2); ?> SEK</td>
-        <td><?php $account_id;    $typecall=substr($account_id,0,1);
-           if($typecall=='a'){ echo "Int.";  }
-           if($typecall=='4'){ echo "R";  }
-           if($typecall=='c'){ if($CLI=='**24'){  echo "Cb M"; }else{ echo "Cb S"; }      }  ?>
-        </td>
-   </tr>
+        <td><?php echo $xdrres->connect_time; ?></td>
+        <td><?php echo $xdrres->CLD; ?></td>
+        <td><?php echo number_format($xdrres->charged_quantity / 60, 2); ?></td>
+        <td><?php echo number_format($xdrres->charged_amount / 4, 2); ?></td>
+        <td><?php echo number_format($xdrres->charged_amount, 2);
+    $amount_total+= number_format($xdrres->charged_amount, 2); ?> SEK</td>
+        <td><?php
+    $typecall = substr($xdrcb->account_id, 0, 1);
+    if ($typecall == 'a') {
+        echo "Int.";
+    }
+    if ($typecall == '4') {
+        echo "R";
+    }
+    if ($typecall == 'c') {
+        if ($CLI == '**24') {
+            echo "Cb M";
+        } else {
+            echo "Cb S";
+        }
+    } ?> </td>
+</tr>
+
 <?php
-$callRecordsrese=1;
-}
+     $callRecordsrese = 1;
+ }
 }
 }
 ?>

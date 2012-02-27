@@ -23,13 +23,13 @@
 
 	<div class="form-row">
 				  <label class="required">Balance view: </label>
-				  <div class="content"><?php
-                                 $uniqueId=$company->getVatNo();
+				  <div class="content"><?php  echo $balance;
+                                 /*$uniqueId=$company->getVatNo();
                                  $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
         $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
         $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-        echo  $telintaGetBalance;
-          echo "Sek";
+        echo  $telintaGetBalance;*/
+          echo " Sek";
                            ?>
 				   
 				  </div>

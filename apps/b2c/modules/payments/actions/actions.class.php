@@ -824,7 +824,6 @@ class paymentsActions extends sfActions {
 if((int)$unid>200000){
 
 
-
  $customerID=$this->customer->getId();
                 $OpeningBalance=40;
                   Telienta::ResgiterCustomer($this->customer, $OpeningBalance);

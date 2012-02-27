@@ -138,7 +138,7 @@ class companyActions extends sfActions {
     protected function saveCompany($company) {
         $companyData = $this->getRequestParameter('company');
         if($company->isNew()){
-            $res = CompanyEmployeActivation::telintaRegisterCompany($companyData['vat_no']);
+            $res = CompanyEmployeActivation::telintaRegisterCompany($company);
         }
         $company->isNew().":".$res; 
 
@@ -373,10 +373,16 @@ class companyActions extends sfActions {
 
     public function executeView($request) {
         $this->company = CompanyPeer::retrieveByPK($request->getParameter('id'));
+        $this->balance = CompanyEmployeActivation::getBalance($this->company);
     }
 
     public function executeUsage($request) {
         $this->company = CompanyPeer::retrieveByPK($request->getParameter('company_id'));
+        $tomorrow1 = mktime(0, 0, 0, date("m"), date("d") - 15, date("Y"));
+        $fromdate = date("Y-m-d", $tomorrow1);
+        $tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
+        $todate = date("Y-m-d", $tomorrow);
+        $this->callHistory = CompanyEmployeActivation::callHistory($this->company, $fromdate, $todate);
     }
 
     public function executeRefill(sfWebRequest $request)
@@ -404,28 +410,11 @@ class companyActions extends sfActions {
             $transaction->save();
           
             if($companyCVR!=''){
-                $telintaRefillcustomer = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$companyCVR.'&amount='.$refill_amount.'&type=customer');
-
-                sleep(0.5);
-
-                if(!$telintaRefillcustomer){
-                   emailLib::sendErrorInTelinta("Error in B2b company Refill", "Unable to call. We have faced an issue in company refill on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$companyCVR.'&amount='.$refill_amount.'&type=customer. <br/> Please Investigate.");
-                   $this->getUser()->setFlash('message', 'Error in B2B Company Refill');
-                   $this->redirect('company/paymenthistory');
-                   return false;
-                }
-                parse_str($telintaRefillcustomer, $success);
-                if(isset($success['success']) && $success['success']!="OK"){
-                    emailLib::sendErrorInTelinta("Error in B2b company Refill", "Unable to call. We have faced an issue in company refill on telinta. this is the error on the following url https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$companyCVR.'&amount='.$refill_amount.'&type=customer. <br/> Please Investigate.");
-                    $this->getUser()->setFlash('message', 'Error in B2B Company Refill');
-                    $this->redirect('company/paymenthistory');
-                    return false;
-                }
-
-                    $transaction->setTransactionStatusId(3);
-                    $transaction->save();
-                    $this->getUser()->setFlash('message', 'B2B Company Refill Successfully');
-                    $this->redirect('company/paymenthistory');
+                CompanyEmployeActivation::recharge($this->company, $refill_amount);
+                $transaction->setTransactionStatusId(3);
+                $transaction->save();
+                $this->getUser()->setFlash('message', 'B2B Company Refill Successfully');
+                $this->redirect('company/paymenthistory');
             }else{
 
                 $this->getUser()->setFlash('message', 'Please Select B2B Company');
