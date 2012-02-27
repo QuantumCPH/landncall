@@ -224,7 +224,7 @@ class employeeActions extends sfActions {
                     
 
                     $telintaResenummerAccount=CompanyEmployeActivation::createReseNumberAccount($voipnumbers, $this->companys, $TelintaMobile);
-                    if(!$telintaResenummerAccount){
+                    if($telintaResenummerAccount){
                         $OpeningBalance=40;
                         $employee->setRegistrationType($request->getParameter('registration_type'));
                         //$resenummerCharge=file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=manual_charge&name=' . $voipnumbers . '&amount=40&customer='.$companyCVR);

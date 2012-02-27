@@ -105,7 +105,9 @@ class CompanyEmployeActivation {
                 $pb->_logout();
                 return false;
             }
+           
         }
+         return true;
     }
 
    public static function recharge(Company $company, $amount) {
