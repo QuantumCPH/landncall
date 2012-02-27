@@ -126,7 +126,7 @@
       <td> <?php  $mobileID= $employee->getCountryMobileNumber();
         $telintaGetBalance=0;
         $ct = new Criteria();
-        $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'a'.$mobilenumber);
+        $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'a'.$employee->getCountryMobileNumber());
         $ct->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccount = TelintaAccountsPeer::doSelectOne($ct);
         $accountInfo = CompanyEmployeActivation::getAccountInfo($telintaAccount->getIAccount());
@@ -134,7 +134,7 @@
         //$telintaGetBalance;
         $telintaGetBalance1=0;
         $cb = new Criteria();
-        $cb->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'cb'.$mobilenumber);
+        $cb->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'cb'.$employee->getCountryMobileNumber());
         $cb->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccountcb = TelintaAccountsPeer::doSelectOne($cb);
         $accountInfocb = CompanyEmployeActivation::getAccountInfo($telintaAccountcb->getIAccount());
