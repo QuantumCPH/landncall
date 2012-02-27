@@ -211,7 +211,7 @@
                     </li>
                     <li>
                         <label><?php echo __('Unique Id') ?>:</label>
-                        <input type="text" id="uniqueid" value="" name="uniqueid"/>
+<!--                        <input type="text" id="uniqueid" value="" name="uniqueid"/>--><input type="text" id="uniqueid" value="" name="uniqueid"/>
                     </li>
                     <li>
                         <label><?php echo $order->getProduct()->getName() ?></label>
