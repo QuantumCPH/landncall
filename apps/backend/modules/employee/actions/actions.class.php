@@ -59,14 +59,14 @@ class employeeActions extends sfActions {
         $mobilenumber= $this->employee->getCountryMobileNumber();
         $ct = new Criteria();
         $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'a'.$mobilenumber);
-        $ct->andAdd(TelintaAccountsPeer::STATUS, 3);
+        $ct->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccount = TelintaAccountsPeer::doSelectOne($ct);
         $account_info = CompanyEmployeActivation::getAccountInfo($telintaAccount->getIAccount());
         $balance = $account_info->account_info->balance;
 
         $cb = new Criteria();
         $cb->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'cb'.$mobilenumber);
-        $cb->andAdd(TelintaAccountsPeer::STATUS, 3);
+        $cb->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccountcb = TelintaAccountsPeer::doSelectOne($cb);
         $account_infocb = CompanyEmployeActivation::getAccountInfo($telintaAccountcb->getIAccount());
         $balancecb = $account_infocb->account_info->balance;
@@ -82,7 +82,7 @@ class employeeActions extends sfActions {
 
             $res = new Criteria();
             $res->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-            $res->andAdd(TelintaAccountsPeer::STATUS, 3);
+            $res->addAnd(TelintaAccountsPeer::STATUS, 3);
             $telintaAccountres = TelintaAccountsPeer::doSelectOne($res);
             $account_infores = CompanyEmployeActivation::getAccountInfo($telintaAccountres->getIAccount());
             $balanceres = $account_infores->account_info->balance;
@@ -266,7 +266,7 @@ class employeeActions extends sfActions {
         $employee->setProductId($request->getParameter('productid'));
        // $employee->setProductPrice($request->getParameter('price'));
         $employee->save();
-        $this->getUser()->setFlash('messageAdd', 'Employee has been Add Sucessfully '.(isset($msg)?"and ".$msg:''.$telintaResenummerAccount));
+        $this->getUser()->setFlash('messageAdd', 'Employee has been Add Sucessfully '.(isset($msg)?"and ".$msg:''));
         $this->redirect('employee/index?message=add');
     }
 
@@ -344,28 +344,30 @@ $companyCVR=$compny->getVatNo();
                     $telintaResenummerAccount=CompanyEmployeActivation::createReseNumberAccount($voipnumbers, $this->companys, $TelintaMobile);
                     if(!$telintaResenummerAccount){
 
+                        $OpeningBalance=40;
+                        $employee->setRegistrationType($rtype);
+                        //$resenummerCharge=file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=manual_charge&name=' . $voipnumbers . '&amount=40&customer='.$companyCVR);
+
+                        Telienta::charge($this->companys, $OpeningBalance);
+                        $transaction = new CompanyTransaction();
+                        $transaction->setAmount(-40);
+                        $transaction->setCompanyId($employee->getCompanyId());
+                        $transaction->setExtraRefill(-40);
+                        $transaction->setTransactionStatusId(3);
+                        $transaction->setPaymenttype(3);//Resenummer Charge
+                        $transaction->setDescription('Resenummer Charge');
+                        $transaction->save();
+
+                        
+
+                    }
+                    else{
                         $getvoipInfos->setUpdatedAt(Null);
                         $getvoipInfos->setCustomerId(Null);
                         $getvoipInfos->setIsAssigned(0);
                         $getvoipInfos->save();
                         $employee->setRegistrationType(0);
                         $msg= "Resenummer is not activate";
-
-                    }
-                    else{
-                        $OpeningBalance=40;
-                        $employee->setRegistrationType($rtype);
-                        //$resenummerCharge=file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=manual_charge&name=' . $voipnumbers . '&amount=40&customer='.$companyCVR);
-
-                            Telienta::charge($this->companys, $OpeningBalance);
-                            $transaction = new CompanyTransaction();
-                            $transaction->setAmount(-40);
-                            $transaction->setCompanyId($employee->getCompanyId());
-                            $transaction->setExtraRefill(-40);
-                            $transaction->setTransactionStatusId(3);
-                            $transaction->setPaymenttype(3);//Resenummer Charge
-                            $transaction->setDescription('Resenummer Charge');
-                            $transaction->save();
                     }
 
                 }
