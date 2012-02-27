@@ -113,7 +113,7 @@
 
 				  	<?php    $voip = new Criteria();
         $voip->add(SeVoipNumberPeer::CUSTOMER_ID, $employee->getCountryMobileNumber());
-        $voip->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 1);
+        $voip->andAdd(SeVoipNumberPeer::IS_ASSIGNED, 1);
         $voipv = SeVoipNumberPeer::doSelectOne($voip);
 
                          if(isset ($voipv)){echo $voipv->getNumber();} ?>
