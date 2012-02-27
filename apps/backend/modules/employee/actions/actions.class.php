@@ -225,12 +225,12 @@ class employeeActions extends sfActions {
 
                     $telintaResenummerAccount=CompanyEmployeActivation::createReseNumberAccount($voipnumbers, $this->companys, $TelintaMobile);
                     if(!$telintaResenummerAccount){
-                        $OpeningBalance=-40;
+                        $OpeningBalance=40;
                         $employee->setRegistrationType($request->getParameter('registration_type'));
                         //$resenummerCharge=file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=manual_charge&name=' . $voipnumbers . '&amount=40&customer='.$companyCVR);
                         CompanyEmployeActivation::charge($this->companys, $OpeningBalance);
                         $transaction = new CompanyTransaction();
-                        $transaction->setAmount($OpeningBalance);
+                        $transaction->setAmount(-40);
                         $transaction->setCompanyId($request->getParameter('company_id'));
                         $transaction->setExtraRefill(-40);
                         $transaction->setTransactionStatusId(3);
@@ -266,7 +266,7 @@ class employeeActions extends sfActions {
         $employee->setProductId($request->getParameter('productid'));
        // $employee->setProductPrice($request->getParameter('price'));
         $employee->save();
-        $this->getUser()->setFlash('messageAdd', 'Employee has been Add Sucessfully '.(isset($msg)?"and ".$msg:''));
+        $this->getUser()->setFlash('messageAdd', 'Employee has been Add Sucessfully '.(isset($msg)?"and ".$msg:''.$telintaResenummerAccount));
         $this->redirect('employee/index?message=add');
     }
 
@@ -353,13 +353,13 @@ $companyCVR=$compny->getVatNo();
 
                     }
                     else{
-                        $OpeningBalance=-40;
+                        $OpeningBalance=40;
                         $employee->setRegistrationType($rtype);
                         //$resenummerCharge=file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=manual_charge&name=' . $voipnumbers . '&amount=40&customer='.$companyCVR);
 
                             Telienta::charge($this->companys, $OpeningBalance);
                             $transaction = new CompanyTransaction();
-                            $transaction->setAmount($OpeningBalance);
+                            $transaction->setAmount(-40);
                             $transaction->setCompanyId($employee->getCompanyId());
                             $transaction->setExtraRefill(-40);
                             $transaction->setTransactionStatusId(3);
