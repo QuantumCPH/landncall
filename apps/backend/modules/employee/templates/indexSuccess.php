@@ -163,7 +163,7 @@
       echo "res".  $telintaGetBalanceres = $accountInfores->account_info->balance;
 
         }
-        }
+        }echo "f.".$telintaGetBalance;
       echo  $balnc=(float)$telintaGetBalance+(float)$telintaGetBalancecb+($telintaGetBalanceres>0)?(float)$telintaGetBalanceres:0;
           echo " Sek";
                                                 ?></td>
