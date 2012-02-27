@@ -296,7 +296,7 @@ $companyCVR=$compny->getVatNo();
   
             if($rtype==1){
       ////////////////////////////////////////////////
-        $this->getbalance = CompanyEmployeActivation::getBalance($companyCVRNumber);
+        $this->getbalance = CompanyEmployeActivation::getBalance($this->companys);
         if($this->getbalance>40){
         $c = new Criteria();
                 $c->setLimit(1);
