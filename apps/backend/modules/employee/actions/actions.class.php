@@ -287,7 +287,7 @@ $companyCVR=$compny->getVatNo();
   $rtype=$request->getParameter('registration_type');
 
       $employee = EmployeePeer::retrieveByPk($request->getParameter('id'));
-       $contrymobilenumber=$employee->getCuntryMobileNo();
+       $contrymobilenumber=$employee->getCountryMobileNumber();
 
       $c = new Criteria();
       $c->addAnd(CompanyPeer::ID, $employee->getCompanyId());
