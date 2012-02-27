@@ -110,7 +110,7 @@ kreditkort.
       <input type="hidden" name="customerid" value="<?php echo   $customer_form->getObject()->getId() ?>" />
   <input type="hidden" name="currency" value="752" />
   <input type="hidden" name="orderid" value="<?php echo $randomOrderId; ?>" />
- <input type="hidden" name="test" value="yes" />
+
 
   <input type="hidden" name="calcfee" value="yes" />
    <input type="hidden" name="account" value="YTIP" />
@@ -190,7 +190,7 @@ kreditkort.
         <input type="hidden" name="amount" id="total" value="" />
         <input type="hidden" name="currency" value="752" />
         <input type="hidden" name="orderid" value="<?php echo $randomOrderId; ?>" />
-       
+        <input type="hidden" name="test" value="yes" />
         <input type="hidden" name="lang" value="sv" />
         <input type="hidden" name="account" value="YTIP" />
         <input type="hidden" name="addfee" value="0" />
