@@ -188,9 +188,7 @@ if(isset($val) && $val!=""){  ?>
                            $us = new Criteria();
             $us->add(UsNumberPeer::CUSTOMER_ID, $cuid);
              $usnumber = UsNumberPeer::doSelectOne($us);
-             
-             
-             ?>
+                                       ?>
                           <tr  style="background-color:#EEEEFF">
                       <th id="sf_admin_list_th_created_at"  style="float:left;" >MSISDN No</th>
                       <td><?php echo  $usnumber->getMsisdn() ?></td>
