@@ -343,7 +343,7 @@ $companyCVR=$compny->getVatNo();
                     }
 
                     $telintaResenummerAccount=CompanyEmployeActivation::createReseNumberAccount($voipnumbers, $this->companys, $TelintaMobile);
-                    if(!$telintaResenummerAccount){
+                    if($telintaResenummerAccount){
 
                         $OpeningBalance=40;
                         $employee->setRegistrationType($rtype);
