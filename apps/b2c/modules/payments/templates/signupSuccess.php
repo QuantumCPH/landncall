@@ -263,7 +263,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 		
 		<input type="hidden" name="account" value="YTIP" />
 		  <input type="hidden" name="addfee" value="0" />
-       
+        <input type="hidden" name="test" value="yes" />
                 <div id="autorefilop" >
                     <input type="hidden" name="maketicket" value="foo" />
                 </div>
