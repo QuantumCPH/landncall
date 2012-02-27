@@ -287,13 +287,14 @@ $companyCVR=$compny->getVatNo();
   $rtype=$request->getParameter('registration_type');
 
       $employee = EmployeePeer::retrieveByPk($request->getParameter('id'));
+       $contrymobilenumber=$employee->getCuntryMobileNo();
 
       $c = new Criteria();
       $c->addAnd(CompanyPeer::ID, $employee->getCompanyId());
       $this->companys = CompanyPeer::doSelectOne($c);
       $companyCVR=$this->companys->getVatNo();
       $companyCVRNumber=$companyCVR;
-  
+ 
             if($rtype==1){
       ////////////////////////////////////////////////
         $this->getbalance = CompanyEmployeActivation::getBalance($this->companys);
