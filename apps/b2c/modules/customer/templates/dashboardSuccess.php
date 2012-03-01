@@ -24,8 +24,9 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
 
                if($pus==1){
 
-                                echo $Tes=ForumTel::getBalanceForumtel($customer->getId());
-                              echo "USD"  ;
+                                 $Tes=ForumTel::getBalanceForumtel($customer->getId());
+                                  echo   $amt=CurrencyConverter::convertUsdToSek($Tes);
+                              echo " SEK"  ;
                                    $getvoipInfo = new Criteria();
         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
         $getvoipInfo->add(SeVoipNumberPeer::IS_ASSIGNED, 1);

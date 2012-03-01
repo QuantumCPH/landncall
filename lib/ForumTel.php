@@ -171,6 +171,55 @@ class ForumTel {
 
         return $data;
     }
+//////////////////////////////////////////////////////////////////////
+     public static function getUsMobileNumber($customer) {
+
+        $customerid = $customer;
+
+            $tc = new Criteria();
+            $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
+            $usnumber = UsNumberPeer::doSelectOne($tc);
+            $username = "Zapna";
+            $password = "ZUkATradafEfA4reYeWr";
+            $msisdn = $usnumber->getMsisdn();
+            $iccid = $usnumber->getIccid();
+
+            $url = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";
+            $post_string = '<get-usa-mdn trid="5654765867867">
+            <authentication>
+            <username>' . $username . '</username>
+            <password>' . $password . '</password>
+            </authentication>
+            <msisdn>' . $msisdn . '</msisdn>
+            <iccid>' . $iccid . '</iccid>
+            </get-usa-mdn>';
+
+        $header = array();
+        $header[] = "Content-type: text/xml";
+        $header[] = "Content-length: " . strlen($post_string);
+        $header[] = "Connection: close";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+
+     echo  $data = curl_exec($ch);
+  $data = substr($data, 215);
+        $xml_obj = new SimpleXMLElement($data);
+
+//die;$data = $xml_obj->balance[0]->attributes()->amount;
+        $test = $xml_obj->xpath('usa-mdn');
+         $usnumberget=$test[0];
+$usnumber->setUsMobileNumber($usnumberget);
+
+$usnumber->save();
+         
+    }
 
 }
 
