@@ -44,9 +44,9 @@
                                    $p->add(ProductPeer::ID, $custmpr->getProductId());
                                    $products=ProductPeer::doSelectOne($p);
                                    $pus = 0;
-                                    if($uniqueId>200000){
+
                                   $pus=$products->getProductCountryUs();
-                                    }
+                                   
 
                if($pus==1){
                             $Tes=ForumTel::getBalanceForumtel($customer->getId());
