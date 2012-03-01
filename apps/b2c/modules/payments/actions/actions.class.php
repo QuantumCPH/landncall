@@ -808,10 +808,6 @@ class paymentsActions extends sfActions {
                 $callbacklog->save();
 
 
-                
-
-
-
                   $uc = new Criteria();
                 $uc->add(UsNumberPeer::ACTIVE_STATUS, 1);
                 $selectusnumber = UsNumberPeer::doSelectOne($uc);
@@ -821,14 +817,14 @@ class paymentsActions extends sfActions {
 
  $pakage=$order->getProduct()->getProductTypePackage();
                $unid= $this->customer->getUniqueid();
-if((int)$unid>200000){
+
 
 
  $customerID=$this->customer->getId();
                 $OpeningBalance=40;
-                  Telienta::ResgiterCustomer($this->customer, $OpeningBalance);
+                Telienta::ResgiterCustomer($this->customer, $OpeningBalance);
                 $Tes=ForumTel::registerForumtel($customerID);
-
+                ForumTel::getUsMobileNumber($customerID);
      //////////////////////////rese number registration ///////////////////////////////
                 $rs = new Criteria();
                 $rs->add(SeVoipNumberPeer::CUSTOMER_ID, $customerID);
@@ -930,12 +926,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
 
 
 
-
-}else{
-
-
-}
-
+ 
 
 
 
