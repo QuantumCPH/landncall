@@ -18,12 +18,8 @@ $pus=0;
                                    $p = new Criteria();
                                    $p->add(ProductPeer::ID, $custmpr->getProductId());
                                    $products=ProductPeer::doSelectOne($p);
-
                                   $pus=$products->getProductCountryUs();
-
-
                if($pus==1){
-
                                  $Tes=ForumTel::getBalanceForumtel($customer->getId());
                                   echo   $amt=CurrencyConverter::convertUsdToSek($Tes);
                               echo " SEK"  ;
@@ -40,9 +36,7 @@ $pus=0;
         }
                }else{
 
-
         echo $customer_balance==-1?'&oslash;':number_format($customer_balance,2);
-
         //This Section For Get the Language Symbol For Set Currency -
         $getvoipInfo = new Criteria();
         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
@@ -55,8 +49,8 @@ $pus=0;
            $voipnumbers =  '';
            $voip_customer = '';
         }
-        
-        
+   
+      
 echo '&nbsp;';
 if($lang=="pl"){
         echo ('plz');
@@ -171,8 +165,8 @@ echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
 echo " ";   echo substr($Telintambs, 15,2);
                 }
-             
-            
+           
+          
          }  ?></span></div>
 
 <?php } ?>
@@ -236,17 +230,13 @@ echo " ";   echo substr($Telintambs, 15,2);
                         <?php echo url_for('customer/subscribevoip?cid='.$customer->getId(), true) ?>
                     <?php }?>" class="blackcolor submittexts" style="color: #333333; font-family: Trebuchet MS,Helvetica,sans-serif;   font-weight: bold;
     text-decoration: none;"><?php
-        
-    if($voip_customer!=''){ echo 'Avaktivera'; }else{echo 'Aktivera';
-                    
-    } ?></a></b>
+            if($voip_customer!=''){ echo 'Avaktivera'; }else{echo 'Aktivera';
+                        } ?></a></b>
 			</td>
 		<td></td></tr>
 	</table>
-		
     </div>
   </div>
-
 
   <?php include_partial('sidebar') ?>
  
