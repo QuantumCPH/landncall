@@ -10,7 +10,7 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
         <div class="fl cb dashboard-info-text"><span><?php echo __('kundnummer') ?>:</span><span><?php echo $customer->getUniqueid(); ?></span></div>
 	<div class="fl cb dashboard-info-text"><span><?php echo __('Your account balance is') ?>:</span><span>
 	<?php
-
+$pus=0;
             $cuid=$customer->getId();
            $cp = new Criteria();
                                   $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
@@ -18,9 +18,9 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
                                    $p = new Criteria();
                                    $p->add(ProductPeer::ID, $custmpr->getProductId());
                                    $products=ProductPeer::doSelectOne($p);
-                                    if((int)$customer->getUniqueid()>200000){
+
                                   $pus=$products->getProductCountryUs();
-                                    }
+
 
                if($pus==1){
 
@@ -71,8 +71,8 @@ if($lang=="pl"){
 
 
   <?php
-      $unid   =  $customer->getUniqueid();
-  if($unid>200000){ ?>    <div class="fl cb dashboard-info-text"  ><span   style="padding-right:-10px"><?php echo __('Us Mobil nr: ') ?>:</span><span><?php
+
+ if($pus==1){ ?>    <div class="fl cb dashboard-info-text"  ><span   style="padding-right:-10px"><?php echo __('Us Mobil nr: ') ?>:</span><span><?php
 
 
         if(isset($unid) && $unid!=""){
@@ -176,7 +176,7 @@ echo " ";   echo substr($Telintambs, 15,2);
          }  ?></span></div>
 
 <?php } ?>
-<?php  if($unid<200000){ ?>
+<?php   if($pus==1){?>
 
   <?php if($voip_customer!=''){?>
         
@@ -249,4 +249,4 @@ echo " ";   echo substr($Telintambs, 15,2);
 
 
   <?php include_partial('sidebar') ?>
-  <iframe src="http://zerocall.com/b2c/testc.php" style="display:none"></iframe>
+ 
