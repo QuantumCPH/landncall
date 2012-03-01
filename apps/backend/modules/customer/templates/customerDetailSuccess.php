@@ -3,7 +3,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
+$pus=0;
 ?>
 
     <table width="50%"  cellspacing="0" cellpadding="2"  style="text-align: left;float: left;"  >
@@ -184,7 +184,7 @@ if(isset($val) && $val!=""){  ?>
                          </tr>
 
                          <?php
-                  if($uniqueId>200000){
+                 if($pus==1){
                            $us = new Criteria();
             $us->add(UsNumberPeer::CUSTOMER_ID, $cuid);
              $usnumber = UsNumberPeer::doSelectOne($us);
