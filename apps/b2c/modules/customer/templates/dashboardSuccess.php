@@ -10,9 +10,9 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
         <div class="fl cb dashboard-info-text"><span><?php echo __('kundnummer') ?>:</span><span><?php echo $customer->getUniqueid(); ?></span></div>
 	<div class="fl cb dashboard-info-text"><span><?php echo __('Your account balance is') ?>:</span><span>
 	<?php
-$pus=0;
+            $pus=0;
             $cuid=$customer->getId();
-           $cp = new Criteria();
+            $cp = new Criteria();
                                   $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
                                   $custmpr = CustomerProductPeer::doSelectOne($cp);
                                    $p = new Criteria();
