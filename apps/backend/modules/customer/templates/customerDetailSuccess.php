@@ -50,8 +50,8 @@
 
                if($pus==1){
              
-                               $Tes=ForumTel::getBalanceForumtel($customer->getId());
-                               echo   $amt=CurrencyConverter::convertUsdToSek($Tes);
+                            echo   $Tes=ForumTel::getBalanceForumtel($customer->getId());
+                               echo " sek balanci ".  $amt=CurrencyConverter::convertUsdToSek($Tes);
    echo " SEK";
                             }else{
 
