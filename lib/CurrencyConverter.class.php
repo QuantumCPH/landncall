@@ -143,8 +143,8 @@ $to ='SEK';
 $string = $amount."".$from."=?".$to;
 
 //Call Google API
- echo $google_url = "http://www.google.com/ig/calculator?hl=en&q=".$string;
- die;
+  $google_url = "http://www.google.com/ig/calculator?hl=en&q=".$string;
+
 
 //Get and Store API results into a variable
 $result = file_get_contents($google_url);
@@ -168,27 +168,21 @@ $conversion = round($conversion, 2);
 //Make right hand side string
   //$rhs = $conversion.$rhs_text;
   $rhs = $conversion;
-
 ################################
 # Left Hand Side
 ################################
 $google_lhs = explode(' ', $result[1]);
   $from_amount = $google_lhs[0];
-
 //Get text for converted from currency
 $from_text = ucwords(str_replace($from_amount,"",$result[1]));
-
 //Make left hand side string
 //$lhs = $amount." ".$from_text;
 $lhs = $amount;
-
 ################################
 # Make the result
 ################################
 return $rhs;
 	}
-
-
 }
 
 ?>
