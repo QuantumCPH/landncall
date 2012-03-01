@@ -67,7 +67,7 @@ if($lang=="pl"){
   <?php
 
  if($pus==1){ ?>    <div class="fl cb dashboard-info-text"  ><span   style="padding-right:-10px"><?php echo __('Us Mobil nr: ') ?>:</span><span><?php
-
+  $unid   =  $customer->getUniqueid();
 
         if(isset($unid) && $unid!=""){
               $us = new Criteria();
@@ -101,7 +101,7 @@ echo " ";   echo substr($Telintambs, 15,2);
 
         <div class="fl cb dashboard-info-text"  ><span   style="padding-right:-10px"><?php echo __('Aktivt mobil nr ') ?>:</span><span><?php
         
-        $unid   =  $customer->getUniqueid();
+      
         if(isset($unid) && $unid!=""){
             $un = new Criteria();
             $un->add(CallbackLogPeer::UNIQUEID, $unid);
