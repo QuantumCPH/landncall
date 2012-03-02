@@ -60,7 +60,7 @@ class Telienta {
         if (self::createAccount($customer, $VOIPNumber, '', self::$voip_iProduct,'Y')) {
             $ct = new Criteria();
             $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, $VOIPNumber);
-            $ct->andAdd(TelintaAccountsPeer::STATUS, 3);
+            $ct->addAnd(TelintaAccountsPeer::STATUS, 3);
             $telintaAccount = TelintaAccountsPeer::doSelectOne($ct);
             $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Account');
             $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
