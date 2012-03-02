@@ -105,7 +105,7 @@ class Telienta {
             $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
             $account = $pb->terminate_account(array('i_account' => $telintaAccount->getIAccount()));
         } catch (SoapFault $e) {
-          //  emailLib::sendErrorInTelinta("Account Deletion: " . $accountName . " Error!", "We have faced an issue in Customer Account Deletion on telinta. this is the error for cusotmer with  id: " . $customer->getId() . " error is " . $e->faultstring . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Account Deletion: " . $accountName . " Error!", "We have faced an issue in Customer Account Deletion on telinta. this is the error for cusotmer with  id: " . $customer->getId() . " error is " . $e->faultstring . "  <br/> Please Investigate.");
             $pb->_logout();
             return false;
         }
