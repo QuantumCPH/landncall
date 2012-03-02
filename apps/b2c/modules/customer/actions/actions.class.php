@@ -1085,14 +1085,46 @@ class customerActions extends sfActions {
 
         //unset($this->form['password_confirm']);
         /////////////////////////////////////
-        unset($this->form['created_at']);
-        unset($this->form['fonet_customer_id']);
-        unset($this->form['referrer_id']);
-        unset($this->form['registration_type_id']);
-        unset($this->form['plain_text']);
-        unset($this->form['plain_text']);
-        unset($this->form['manufacturer']);
-        unset($this->form['device_id']);
+       unset($this->form['first_name']);
+                    unset($this->form['last_name']);
+                    unset($this->form['country_id']);
+                    unset($this->form['city']);
+                    unset($this->form['po_box_number']);
+                    unset($this->form['mobile_number']);
+                    unset($this->form['device_id']);
+                    unset($this->form['email']);
+                    unset($this->form['is_newsletter_subscriber']);
+                    unset($this->form['created_at']);
+                    unset($this->form['updated_at']);
+                    unset($this->form['customer_status_id']);
+                    unset($this->form['address']);
+                    unset($this->form['fonet_customer_id']);
+                    unset($this->form['referrer_id']);
+                    unset($this->form['telecom_operator_id']);
+                    unset($this->form['date_of_birth']);
+                    unset($this->form['other']);
+                    unset($this->form['subscription_type']);
+                    unset($this->form['auto_refill_amount']);
+                    unset($this->form['subscription_id']);
+                    unset($this->form['last_auto_refill']);
+                    unset($this->form['auto_refill_min_balance']);
+                    unset($this->form['c9_customer_number']);
+                    unset($this->form['registration_type_id']);
+                    unset($this->form['imsi']);
+                    unset($this->form['uniqueid']);
+                    unset($this->form['plain_text']);
+                    unset($this->form['ticketval']);
+                    unset($this->form['to_date']);
+                    unset($this->form['from_date']);
+                     unset($this->form['uniqueid']);
+                    unset($this->form['plain_text']);
+                    unset($this->form['ticketval']);
+                    unset($this->form['to_date']);
+                    unset($this->form['from_date']);
+                    unset($this->form['terms_conditions']);
+                    unset($this->form['manufacturer']);
+                    unset($this->form['product']);
+                    unset($this->form['i_customer']);
 
         $this->uniqueidValue = $this->customer->getUniqueId();
         //This Section For Get the Language Symbol For Set Currency -
