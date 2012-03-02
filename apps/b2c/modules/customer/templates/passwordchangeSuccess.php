@@ -31,7 +31,7 @@
 			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
 			 </span>
 			 <?php endif; ?>
-             <div class='inline-error'><?php echo $error_mobile_number?$form['mobile_number']->renderError():'&nbsp;'?></div>
+<!--             <div class='inline-error'><?php echo $error_mobile_number?$form['mobile_number']->renderError():'&nbsp;'?></div>-->
             </li>
             <!-- end mobile_number -->
 <?php /*
