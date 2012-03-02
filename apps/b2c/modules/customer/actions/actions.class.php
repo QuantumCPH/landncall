@@ -751,9 +751,9 @@ class customerActions extends sfActions {
         //get an UnSurbise VoIP 
         $c = new Criteria();
         $c->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
-        if ($voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
-            $voip_customer->setIsAssigned(3);
-            $voip_customer->save();
+        if ($voip_customer1 = SeVoipNumberPeer::doSelectOne($c)) {
+            $voip_customer1->setIsAssigned(3);
+            $voip_customer1->save();
             $uniqueId = $this->customer->getUniqueid();
 exit;
             /*$tc = new Criteria();
