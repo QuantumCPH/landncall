@@ -645,7 +645,7 @@ class customerActions extends sfActions {
                     Telienta::charge($this->customer, $OpeningBalance);
                 }
 
-exit;
+//exit;
                 //----------------------------------------------------
                 //----------------Send Email--------------
                 //set vat
