@@ -170,7 +170,7 @@ echo " ";   echo substr($Telintambs, 15,2);
          }  ?></span></div>
 
 <?php } ?>
-<?php   if($pus==1){?>
+<?php   if($pus==0){?>
 
   <?php if($voip_customer!=''){?>
         
