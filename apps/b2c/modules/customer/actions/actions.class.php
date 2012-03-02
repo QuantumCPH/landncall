@@ -752,7 +752,7 @@ class customerActions extends sfActions {
        // $c = new Criteria();
        // $c->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
        // if ($voip_customer1 = SeVoipNumberPeer::doSelectOne($c)) {
-            $getvoipInfos->setIsAssigned(0);
+            $getvoipInfos->setIsAssigned(3);
             $getvoipInfos->save();
             //$uniqueId = $this->customer->getUniqueid();
 exit;
