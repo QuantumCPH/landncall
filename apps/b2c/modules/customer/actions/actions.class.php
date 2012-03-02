@@ -642,7 +642,7 @@ class customerActions extends sfActions {
 
                     //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
                     //This is for Recharge the Customer
-                    Telienta::charge($customer, $OpeningBalance);
+                    Telienta::charge($this->customer, $OpeningBalance);
                 }
 
 
