@@ -195,7 +195,7 @@
 
 
 
-if($_POST['startdate'] && $_POST['enddate']!=''){
+if(isset($_POST['startdate']) && isset($_POST['enddate'])){
     $fromdate=$_POST['startdate'];
     $todate=$_POST['enddate'];
 }else{
