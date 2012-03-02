@@ -737,7 +737,7 @@ class customerActions extends sfActions {
         if (isset($getvoipInfos)) {
             $voipnumbers = $getvoipInfos->getNumber();
             $voipnumbers = substr($voipnumbers, 2);
-           echo $voip_customer = $getvoipInfos->getCustomerId();
+           $voip_customer = $getvoipInfos->getCustomerId();
            /* $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
             if ($getFirstnumberofMobile == 0) {
                 $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
@@ -755,7 +755,7 @@ class customerActions extends sfActions {
             $getvoipInfos->setIsAssigned(3);
             $getvoipInfos->save();
             //$uniqueId = $this->customer->getUniqueid();
-exit;
+//exit;
             /*$tc = new Criteria();
             $tc->add(CallbackLogPeer::UNIQUEID, $uniqueId);
             $tc->addDescendingOrderByColumn(CallbackLogPeer::CREATED);
