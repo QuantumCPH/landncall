@@ -2135,11 +2135,15 @@ exit;
             }
 
             $unidc = $this->customer->getUniqueid();
-
+            $uidcount=0;
+              $uc = new Criteria;
+        $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $unidc);
+         $uc->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
+        $uidcount = UniqueIdsPeer::doCount($uc);
             echo $unidc;
             echo "<br/>";
 
-            if ((int) $unidc > 200000) {
+            if ($uidcount==1) {
                 $cuserid = $this->customer->getId();
                 $amt = $OpeningBalance;
                 $amt = CurrencyConverter::convertSekToUsd($amt);
