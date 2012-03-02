@@ -1180,7 +1180,7 @@ class customerActions extends sfActions {
 
         //disable
         //$this->form->widgetSchema['mobile_number']->setAttribute('readonly','readonly');
-        $this->form->getWidget('mobile_number')->setAttribute('readonly', 'readonly');
+       // $this->form->getWidget('mobile_number')->setAttribute('readonly', 'readonly');
         //$this->form->getWidget('mobile_number')->setAttribute('disabled','disabled');
         //	$this->form->getWidget('email')->setAttribute('readonly','readonly');
         //$this->form->getWidget('email')->setAttribute('disabled','disabled');
