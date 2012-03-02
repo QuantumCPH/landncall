@@ -737,8 +737,8 @@ class customerActions extends sfActions {
         if (isset($getvoipInfos)) {
             $voipnumbers = $getvoipInfos->getNumber();
             $voipnumbers = substr($voipnumbers, 2);
-            $voip_customer = $getvoipInfos->getCustomerId();
-            $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
+           echo $voip_customer = $getvoipInfos->getCustomerId();
+           /* $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
             if ($getFirstnumberofMobile == 0) {
                 $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
                 $TelintaMobile = '46' . $TelintaMobile;
@@ -746,15 +746,15 @@ class customerActions extends sfActions {
                 $TelintaMobile = '46' . $this->customer->getMobileNumber();
             }
         }
-
+*/
         $removecustomer = '';
         //get an UnSurbise VoIP 
-        $c = new Criteria();
-        $c->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
-        if ($voip_customer1 = SeVoipNumberPeer::doSelectOne($c)) {
-            $voip_customer1->setIsAssigned(3);
-            $voip_customer1->save();
-            $uniqueId = $this->customer->getUniqueid();
+       // $c = new Criteria();
+       // $c->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
+       // if ($voip_customer1 = SeVoipNumberPeer::doSelectOne($c)) {
+            $getvoipInfos->setIsAssigned(3);
+            $getvoipInfos->save();
+            //$uniqueId = $this->customer->getUniqueid();
 exit;
             /*$tc = new Criteria();
             $tc->add(CallbackLogPeer::UNIQUEID, $uniqueId);
