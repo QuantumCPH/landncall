@@ -761,8 +761,14 @@ class customerActions extends sfActions {
             $tc->addDescendingOrderByColumn(CallbackLogPeer::CREATED);
             $MaxUniqueRec = CallbackLogPeer::doSelectOne($tc);
             $followMeNumber = $MaxUniqueRec->getMobileNumber();
+
+             $res = new Criteria();
+                    $res->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                    $res->addAnd(TelintaAccountsPeer::STATUS, 3);
+                    $telintaAccountres = TelintaAccountsPeer::doSelectOne($res);
+                    CompanyEmployeActivation::terminateAccount($telintaAccountres);
             //When a customer is DeActive a resenummer you need to update the follow me number here is the URL - Telinta
-            $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name=' . $voipnumbers . '&active=N&follow_me_number=' . $followMeNumber . '&type=account');
+            /*$telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name=' . $voipnumbers . '&active=N&follow_me_number=' . $followMeNumber . '&type=account');
             $string = $telintaGetBalance;
             $find = 'ERROR';
             if (strpos($string, $find)) {
@@ -781,7 +787,7 @@ class customerActions extends sfActions {
                 emailLib::sendErrorTelinta($this->customer, $message_body);
             } else {
 
-            }
+            }*/
         }
     }
 
