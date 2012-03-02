@@ -747,12 +747,12 @@ class customerActions extends sfActions {
             }
         }
 */
-        $removecustomer = '';
+        //$removecustomer = '';
         //get an UnSurbise VoIP 
        // $c = new Criteria();
        // $c->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
        // if ($voip_customer1 = SeVoipNumberPeer::doSelectOne($c)) {
-            $getvoipInfos->setIsAssigned(3);
+            $getvoipInfos->setIsAssigned(0);
             $getvoipInfos->save();
             //$uniqueId = $this->customer->getUniqueid();
 exit;
