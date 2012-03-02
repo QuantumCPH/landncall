@@ -235,7 +235,7 @@ $todate=date("Y-m-d", $tomorrow);
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
                                 $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
-<!--                                    <td><?php
+                                    <td><?php
                                 $typecall = substr($xdr->account_id, 0, 1);
                                 if ($typecall == 'a') {
                                     echo "Int.";
@@ -249,7 +249,7 @@ $todate=date("Y-m-d", $tomorrow);
                                     } else {
                                         echo "Cb S";
                                     }
-                                } ?> </td>-->
+                                } ?> </td>
                             </tr>
 
 <?php
