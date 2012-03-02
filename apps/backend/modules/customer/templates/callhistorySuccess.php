@@ -195,11 +195,15 @@
 
 
 
+if($_POST['startdate'] && $_POST['enddate']!=''){
+    $fromdate=$_POST['startdate'];
+    $todate=$_POST['enddate'];
+}else{
 $tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
 $fromdate=date("Y-m-d", $tomorrow1);
 $tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
- $todate=date("Y-m-d", $tomorrow);
-
+$todate=date("Y-m-d", $tomorrow);
+}
 
 
 
@@ -216,7 +220,7 @@ $tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
 
 
 
-                            $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate, $todate);
+                          $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate, $todate);
 
 
                             foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
@@ -229,7 +233,7 @@ $tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
                                     <td><?php echo number_format($xdr->charged_quantity / 60, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
-                                $amount_total+= number_format($xdr->charged_amount, 2); ?> &euro;</td>
+                                $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
                                     <td><?php
                                 $typecall = substr($xdr->account_id, 0, 1);
                                 if ($typecall == 'a') {
