@@ -1116,29 +1116,12 @@ class customerActions extends sfActions {
                     unset($this->form['ticketval']);
                     unset($this->form['to_date']);
                     unset($this->form['from_date']);
-                     unset($this->form['uniqueid']);
-                    unset($this->form['plain_text']);
-                    unset($this->form['ticketval']);
-                    unset($this->form['to_date']);
-                    unset($this->form['from_date']);
                     unset($this->form['terms_conditions']);
                     unset($this->form['manufacturer']);
                     unset($this->form['product']);
                     unset($this->form['i_customer']);
 
-        $this->uniqueidValue = $this->customer->getUniqueId();
-        //This Section For Get the Language Symbol For Set Currency -
-        $getvoipInfo = new Criteria();
-        $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $this->customer->getId());
-        $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
-        if (isset($getvoipInfos)) {
-            $this->voipnumbers = $getvoipInfos->getNumber();
-            $this->voip_customer = $getvoipInfos->getCustomerId();
-        } else {
-            $this->voipnumbers = '';
-            $this->voip_customer = '';
-        }
-
+   
 
         /////////////////////////////////////////
         $this->oldpasswordError = '';
@@ -1175,36 +1158,6 @@ class customerActions extends sfActions {
             }
             // echo 'after';
         }
-
-
-
-        //disable
-        //$this->form->widgetSchema['mobile_number']->setAttribute('readonly','readonly');
-       // $this->form->getWidget('mobile_number')->setAttribute('readonly', 'readonly');
-        //$this->form->getWidget('mobile_number')->setAttribute('disabled','disabled');
-        //	$this->form->getWidget('email')->setAttribute('readonly','readonly');
-        //$this->form->getWidget('email')->setAttribute('disabled','disabled');
-        //$this->getValidator['mobile_number'] = new sfValidatorReadOnlyField(array('field' => 'mobile_number', 'object' => $this->form->getObject()));
-        //$this->form->getWidget('manufacturer')->setLabel('Mobile brand','Mobile brand');
-        // $this->widgetSchema->setLabel('customer_manufacturer','Mobile brand');
-        //$this->form->getWidget->('customer_manufacturer', "Yes");
-        //$this->form->getWidget('password')->setOption('always_render_empty', false);
-        //$this->form->getWidget('password_confirm')->setOption('always_render_empty', false);
-        //get default pre-requisites
-//                $c = new Criteria();
-//                $c->add(DevicePeer::ID, $this->customer->getDeviceId());
-//
-//                $device = DevicePeer::doSelectOne($c);
-//
-//                $manufacturer = $device->getManufacturer();
-//
-//                $this->form->setDefault(
-//                'manufacturer', $manufacturer->getId()
-//                );
-//
-//                $this->form->setDefault(
-//                'device_id', $device->getId()
-//                );
     }
 
     public function executeSettings(sfWebRequest $request) {
