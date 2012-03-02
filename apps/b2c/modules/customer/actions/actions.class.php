@@ -755,13 +755,13 @@ class customerActions extends sfActions {
             $voip_customer->setIsAssigned(3);
             $voip_customer->save();
             $uniqueId = $this->customer->getUniqueid();
-
-            $tc = new Criteria();
+exit;
+            /*$tc = new Criteria();
             $tc->add(CallbackLogPeer::UNIQUEID, $uniqueId);
             $tc->addDescendingOrderByColumn(CallbackLogPeer::CREATED);
             $MaxUniqueRec = CallbackLogPeer::doSelectOne($tc);
             $followMeNumber = $MaxUniqueRec->getMobileNumber();
-
+*/
              $res = new Criteria();
                     $res->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
                     $res->addAnd(TelintaAccountsPeer::STATUS, 3);
