@@ -821,8 +821,8 @@ class paymentsActions extends sfActions {
 
 
  $customerID=$this->customer->getId();
-                $OpeningBalance=40;
-                Telienta::ResgiterCustomer($this->customer, $OpeningBalance);
+                $OpeningBalance=0;
+                Telienta::ResgiterCustomer($this->customer, $OpeningBalance,null,true);
                 $Tes=ForumTel::registerForumtel($customerID);
                 ForumTel::getUsMobileNumber($customerID);
      //////////////////////////rese number registration ///////////////////////////////
@@ -887,11 +887,11 @@ class paymentsActions extends sfActions {
                     Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
 
 
-                    $OpeningBalance = '40';
+                 //   $OpeningBalance = '40';
 
                     //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
                     //This is for Recharge the Customer
-                    Telienta::charge($this->customer, $OpeningBalance);
+                  //  Telienta::charge($this->customer, $OpeningBalance);
                 }
 
 
@@ -986,7 +986,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
 
-                    Telienta::recharge($this->customers, $OpeningBalance);
+                  //  Telienta::recharge($this->customers, $OpeningBalance);
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
 

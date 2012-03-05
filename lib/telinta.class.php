@@ -14,7 +14,8 @@ require_once(sfConfig::get('sf_lib_dir') . '/telintaSoap.class.php');
 class Telienta {
 
     private static $currency = 'SEK';
-    private static $iParent = 59368;
+    private static $iParentRLandnCall = 59368;
+    private static $iParentUS = 72198;
     private static $a_iProduct = 7993;
     private static $cb_iProduct = 7992;
     private static $voip_iProduct = 7994;
@@ -22,17 +23,22 @@ class Telienta {
     private static $telintaSOAPUser = 'API_login';
     private static $telintaSOAPPassword = 'ee4eriny';
 
-    public static function ResgiterCustomer(Customer $customer, $OpeningBalance) {
+    public static function ResgiterCustomer(Customer $customer, $OpeningBalance,$creditLimit=0,$USReseller = false) {
         $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
         $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
+        if($USReseller){
+            $Parent = self::$iParentUS;
+        }else{
+            $Parent = self::$iParentRLandnCall;
+        }
         try {
             $tCustomer = $pb->add_customer(array('customer_info' => array(
                             'name' => $customer->getUniqueid(), //
                             'iso_4217' => self::$currency,
-                            'i_parent' => self::$iParent,
+                            'i_parent' => $Parent,
                             'i_customer_type' => 1,
                             'opening_balance' => -($OpeningBalance),
-                            'credit_limit' => 0,
+                            'credit_limit' => $creditLimit,
                             'dialing_rules' => array('ip' => '00'),
                             'email' => 'okh@zapna.com'
                             )));

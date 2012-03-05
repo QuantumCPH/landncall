@@ -68,7 +68,24 @@
 <?php ?>
            
                 <?php $unid=$customer->getUniqueid();
-if((int)$unid>200000){?>
+   $cuid=$customer->getId();
+
+
+
+                                  $cp = new Criteria();
+                                  $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
+                                  $custmpr = CustomerProductPeer::doSelectOne($cp);
+                                   $p = new Criteria();
+                                   $p->add(ProductPeer::ID, $custmpr->getProductId());
+                                   $products=ProductPeer::doSelectOne($p);
+                                   $pus = 0;
+
+                                  $pus=$products->getProductCountryUs();
+
+
+               if($pus==1){
+
+    ?>
 
 
   <table width="70%" cellspacing="0" cellpadding="0" class="callhistory" style="float: left;">
@@ -233,12 +250,17 @@ $cld='called-date';
                 	<td><?php echo number_format($amount_total, 2, ',', '') ?> SEK</td>
                          <td>&nbsp;</td>
                 </tr>	
-                <?php endif; ?>
+                <?php endif;
+                
+                  if($pus==0){
+                ?>
+
+
                 <tr><td colspan="6" align="left">Samtalstyp  type detail <br/> Int. = Internationella samtal<br/>
 Cb M = Callback mottaga<br/>
 	Cb S = Callback samtal<br/>
 	R = resenummer samtal<br/>
-</td></tr>
+</td></tr> <?php } ?>
               </table>
 
                 <?php } ?>
