@@ -293,13 +293,17 @@ $todate=date("Y-m-d", $tomorrow);
                         <td><?php echo number_format($amount_total, 2, ',', '') ?> SEK</td>
                     <td>&nbsp;</td>
                 </tr>
-        <?php endif; ?>
+        <?php endif;
+          if($pus==0){
+        ?>
 
                     <tr><td colspan="6" align="left">Samtalstyp  type detail <br/> Int. = Internationella samtal<br/>
                             Cb M = Callback mottaga<br/>
                         	Cb S = Callback samtal<br/>
                         	R = resenummer samtal<br/>
                         </td></tr>
+
+                    <?php } ?>
                 </table>
 
 
