@@ -50,7 +50,24 @@
 
     <?php
     $unid = $customer->getUniqueid();
-    if ((int) $unid > 200000) {
+
+      $cuid=$customer->getId();
+
+
+
+                                  $cp = new Criteria();
+                                  $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
+                                  $custmpr = CustomerProductPeer::doSelectOne($cp);
+                                   $p = new Criteria();
+                                   $p->add(ProductPeer::ID, $custmpr->getProductId());
+                                   $products=ProductPeer::doSelectOne($p);
+                                   $pus = 0;
+
+                                  $pus=$products->getProductCountryUs();
+
+
+               if($pus==1){
+    
     ?>
 
 
