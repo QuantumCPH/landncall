@@ -538,7 +538,7 @@ class customerActions extends sfActions {
         $emailId = $this->customer->getEmail();
         $uniqueId = $this->customer->getUniqueid();
         //This is for Retrieve balance From Telinta
-        $this->customer_balance = Telienta::getBalance($uniqueId);
+        $this->customer_balance = Telienta::getBalance($this->customer);
 
 
         //$this->customer_balance = 100;
