@@ -104,7 +104,7 @@
                     <th  width="20%"  align="left"><?php echo __('från Number') ?></th>
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
                     <th width="20%"   align="left"><?php echo __('Cost <small>(Incl. VAT)</small>') ?></th>
-
+                      <th width="10%"   align="left"><?php echo __('Typ') ?></th>
                   </tr>
 <?php
 
@@ -176,7 +176,10 @@ $cld='called-date';
    echo   $calls->from;   ?></td><td> <?php
    echo   $calls->duration;  ?></td><td>
             <?php
-   echo   $calls->cost;   ?></td></tr>
+   echo   $calls->cost;   ?></td>
+      <td>
+            <?php
+   echo   $calls->type;   ?></td></tr>
 <?php }  ?>
 
               </table>
