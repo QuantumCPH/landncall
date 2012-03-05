@@ -166,7 +166,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
     ?>
 	</td>
     <td><?php echo $order->getQuantity() ?></td>
-    <td><?php echo format_number($subtotal = $transaction->getAmount()-$vat) //($order->getProduct()->getPrice() - $order->getProduct()->getPrice()*.2) * $order->getQuantity()) ?></td>
+    <td><?php echo format_number($subtotal = $transaction->getAmount())  ?></td>
   </tr>
   <tr>
   	<td colspan="4" style="border-bottom: 2px solid #c0c0c0;">&nbsp;</td>
