@@ -194,11 +194,11 @@ if($pus==0){   ?>
 
                 </tr>
                 <tr>
-                    <th align="left" colspan="5">&nbsp;</th>
+                    <th align="left" colspan="6">&nbsp;</th>
 
                 </tr>
                 <tr>
-                    <th align="left" colspan="5"  style="background-color: #CCCCFF;color: #000000;text-align: left;">Call History</th>
+                    <th align="left" colspan="6"  style="background-color: #CCCCFF;color: #000000;text-align: left;">Call History</th>
 
                 </tr>
                 <tr  style="background-color: #CCCCFF;color: #000000;">
@@ -207,7 +207,7 @@ if($pus==0){   ?>
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
                     <th  width="10%"  align="left"><?php echo __('VAT') ?></th>
                     <th width="20%"   align="left"><?php echo __('Cost <small>(Incl. VAT)</small>') ?></th>
-<!--                    <th  width="20%"   align="left">Samtalstyp</th>-->
+                    <th  width="20%"   align="left">Samtalstyp</th>
                   </tr>
    <?php
                 $amount_total = 0;
@@ -255,7 +255,7 @@ $todate=date("Y-m-d", $tomorrow);
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
                                 $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
-<!--                                    <td><?php
+                                    <td><?php
                                 $typecall = substr($xdr->account_id, 0, 1);
                                 if ($typecall == 'a') {
                                     echo "Int.";
@@ -269,7 +269,7 @@ $todate=date("Y-m-d", $tomorrow);
                                     } else {
                                         echo "Cb S";
                                     }
-                                } ?> </td>-->
+                                } ?> </td>
                             </tr>
 
 <?php
