@@ -151,7 +151,16 @@ if(isset($val) && $val!=""){  ?>
 
             $un -> addDescendingOrderByColumn(CallbackLogPeer::CREATED);
             $unumber = CallbackLogPeer::doSelectOne($un);
-            echo $unumber->getMobileNumber();            
+
+               if($pus==1){
+   $us = new Criteria();
+            $us->add(UsNumberPeer::CUSTOMER_ID, $cuid);
+             $usnumber = UsNumberPeer::doSelectOne($us);
+             echo   $usnumber->getUsMobileNumber();
+               }else{
+                   echo $unumber->getMobileNumber();    
+               }
+
          }else{  }  ?> </td>
                          </tr>
                          <?php  $uid=0;
@@ -185,9 +194,7 @@ if(isset($val) && $val!=""){  ?>
 
                          <?php
                  if($pus==1){
-                           $us = new Criteria();
-            $us->add(UsNumberPeer::CUSTOMER_ID, $cuid);
-             $usnumber = UsNumberPeer::doSelectOne($us);
+                        
                                        ?>
                           <tr  style="background-color:#EEEEFF">
                       <th id="sf_admin_list_th_created_at"  style="float:left;" >MSISDN No</th>
