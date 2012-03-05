@@ -896,10 +896,17 @@ class paymentsActions extends sfActions {
 
 
 ///////////////////////////////////////////////////////end resenumber registration
-               echo "original amout".   $amt=$order->getExtraRefill();
-                         echo "<hr/>converted amout". $amt=CurrencyConverter::convertSekToUsd($amt);
-                 echo "<hr/>ft response". $Test=ForumTel::rechargeForumtel($customerID,$amt);
+               echo "original amout".$amt=$order->getExtraRefill();
+                         echo "<hr/>converted amout". $amtt=CurrencyConverter::convertSekToUsd($amt);
+                        
+                 echo "<hr/>ft response". $Test=ForumTel::rechargeForumtel($customerID,$amtt);
 
+                    $dibsf = new DibsCall();
+        $dibsf->setCallurl("original amout SEK:".$amt."converted amout".$amtt."Fr response".$Test);
+        $dibsf->save();
+
+                $amt=$amtt;
+        
                    $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerID);
         $usnumber = UsNumberPeer::doSelectOne($tc);
