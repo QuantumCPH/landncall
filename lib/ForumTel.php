@@ -220,7 +220,47 @@ $usnumber->setUsMobileNumber($usnumberget);
 $usnumber->save();
          
     }
+/////////////////////////////////////////////////////////////////
+      public static function reSetBalance($customer) {
 
+        $customerid = $customer;
+
+            $tc = new Criteria();
+            $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
+            $usnumber = UsNumberPeer::doSelectOne($tc);
+            $username = "Zapna";
+            $password = "ZUkATradafEfA4reYeWr";
+            $msisdn = $usnumber->getMsisdn();
+            $iccid = $usnumber->getIccid();
+
+            $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";
+            $post_string = '<reset-subscriber-balance trid="37543937592">
+            <authentication>
+            <username>' . $username . '</username>
+            <password>' . $password . '</password>
+            </authentication>
+            <msisdn>' . $msisdn . '</msisdn>
+            <iccid>' . $iccid . '</iccid>
+            </reset-subscriber-balance>';
+
+        $header = array();
+        $header[] = "Content-type: text/xml";
+        $header[] = "Content-length: " . strlen($post_string);
+        $header[] = "Connection: close";
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 50);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
+        curl_setopt($ch, CURLOPT_HEADER, true);
+
+      $data = curl_exec($ch);
+         curl_close($ch);
+
+    }
 }
 
 ?>
