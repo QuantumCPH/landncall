@@ -51,10 +51,10 @@ $pus=0;
                if($pus==1){
                             $Tes=ForumTel::getBalanceForumtel($customer->getId());
                                echo  $amt=CurrencyConverter::convertUsdToSek($Tes);
-   echo " SEK1";
+   echo " SEK";
                             }else{
 
-
+//$this->customer_balance =Telienta::getBalance($this->customer->getUniqueid());
         echo  $customer_balance;
           echo "Sek";
                             }
