@@ -473,7 +473,7 @@ class customerActions extends sfActions {
             emailLib::sendErrorTelinta($this->customer, $message_body);
         }
 
-        $this->customer_balance = Telienta::getBalance($uniqueId);
+        $this->customer_balance = Telienta::getBalance($this->customer);
     }
 
     //This Function add Again new Feature Landncall --
