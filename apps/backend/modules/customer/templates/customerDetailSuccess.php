@@ -54,7 +54,7 @@ $pus=0;
    echo " SEK";
                             }else{
 
-//$this->customer_balance =Telienta::getBalance($this->customer->getUniqueid());
+
         echo  $customer_balance;
           echo "Sek";
                             }

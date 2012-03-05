@@ -115,19 +115,20 @@ class Telienta {
         return true;
     }
 
-    public static function getBalance($uniqueId) {
+    public static function getBalance(Customer $customer) {
         try {
             $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
             $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
 
             $cInfo = $pb->get_customer_info(array(
-                        'name' => $uniqueId,
+                        'name' => $customer->getUniqueid(),
                     ));
             $Balance = $cInfo->customer_info->balance;
             $pb->_logout();
         } catch (SoapFault $e) {
             //if ($Balance == "") {
-                emailLib::sendErrorInTelinta("Error in getBalance", "We have faced an issue on Success in getBalnace on telinta. this is the error for cusotmer with  id: " . $uniqueId . " error is " . $e->faultstring . "  <br/> Please Investigate.");
+                emailLib::sendErrorInTelinta("Error in getBalance", "We have faced an issue on Success in getBalnace on telinta. this is the error for cusotmer with  id: " . $customer->getId() . " error is " . $e->faultstring . "  <br/> Please Investigate.");
+                $pb->_logout();
                 return false;
            // }
         }
