@@ -104,7 +104,7 @@ if($pus==0){   ?>
                 <th  width="20%"  align="left"><?php echo __('From Number') ?></th>
                 <th width="10%"   align="left"><?php echo __('Duration') ?></th>
                 <th width="20%"   align="left"><?php echo __('Cost <small>(Incl. VAT)</small>') ?></th>
-
+                <th width="10%"   align="left"><?php echo __('Typ') ?></th>
             </tr>
         <?php
         $customerid = $customer->getId();
@@ -170,7 +170,8 @@ if($pus==0){   ?>
                 <td ><?php
             $cld = 'called-date';
             echo $calls->$cld; ?></td> <td><?php echo $calls->to; ?></td><td><?php echo $calls->from; ?></td><td> <?php echo $calls->duration; ?></td><td>
-        <?php echo $calls->cost; ?></td></tr>
+        <?php echo $calls->cost; ?></td>
+             <td> <?php  echo   $calls->type;   ?></td></tr>
 <?php } ?>
 
         </table>
