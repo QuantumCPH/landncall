@@ -194,11 +194,11 @@ if($pus==0){   ?>
 
                 </tr>
                 <tr>
-                    <th align="left" colspan="5">&nbsp;</th>
+                    <th align="left" colspan="6">&nbsp;</th>
 
                 </tr>
                 <tr>
-                    <th align="left" colspan="5"  style="background-color: #CCCCFF;color: #000000;text-align: left;">Call History</th>
+                    <th align="left" colspan="6"  style="background-color: #CCCCFF;color: #000000;text-align: left;">Call History</th>
 
                 </tr>
                 <tr  style="background-color: #CCCCFF;color: #000000;">
