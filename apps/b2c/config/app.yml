@@ -16,6 +16,9 @@ all:
    sender:
      name: Zer0Call Support
      email: no-reply@zerocall.com
+ email_group:
+   admin: rs@zapna.com
+   support: rs@zapna.com
  status:
    new: 1
    verifying: 2
