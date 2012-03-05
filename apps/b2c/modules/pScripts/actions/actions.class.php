@@ -1826,7 +1826,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
    			echo 'Success';
                         $mtnumber;
 
-                       $telintaGetBalance =  Telienta::getBalance($uniqueId);
+                       $telintaGetBalance =  Telienta::getBalance($cus);
                    
 
                         $getvoipInfo = new Criteria();
@@ -1992,7 +1992,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 //                        $cus = CustomerPeer::doSelectOne($mnc);
 //                    echo     $uniqueId = $cus->getUniqueid();
                         //This is for Retrieve balance From Telinta
-                        $telintaGetBalance =  Telienta::getBalance($uniqueId);
+                        $telintaGetBalance =  Telienta::getBalance($cus);
 
 
                         $mnc = new Criteria();
@@ -2429,7 +2429,7 @@ return sfView::NONE;
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
                    
-                   $customer_balance=Telienta::getBalance($uniqueId);
+                   $customer_balance=Telienta::getBalance($customers);
             
                 }
              //   echo $uniqueId.":".$customer_balance."<br/>";
@@ -2745,7 +2745,7 @@ echo "<br/>";
                        $uniqueId =$this->customer->getUniqueid();
  if(isset($uniqueId) && $uniqueId!=""){
                       
-         $customer_balance = Telienta::getBalance($uniqueId);
+         $customer_balance = Telienta::getBalance($this->customer);
 
 
 
