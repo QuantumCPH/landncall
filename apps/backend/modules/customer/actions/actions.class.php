@@ -88,8 +88,7 @@ class customerActions extends autocustomerActions
       $response_text .= '<br/>';
 
       $response_text .= "Exiting gracefully ... done!";
-
-        Telienta::reSetBalance($customer_id);
+        ForumTel::reSetBalance($customer_id);
       $this->response_text=$response_text;
      }
      }
