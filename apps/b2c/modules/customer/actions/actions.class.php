@@ -18,9 +18,11 @@ class customerActions extends sfActions {
 
     //private $targetURL = "http://localhost/landncall/web/b2c_dev.php/";
 
-    private $targetURL = "http://stagelc.zerocall.com/b2c.php/";
-    private $targetPScriptURL = "http://landncall.zerocall.com/b2c.php/pScripts/";
-
+   // private $targetURL = "http://stagelc.zerocall.com/b2c.php/";
+   // private $targetPScriptURL = "http://landncall.zerocall.com/b2c.php/pScripts/";
+    private function getTargetUrl() {
+        return sfConfig::get('app_main_url');
+    }
     public function executeTest(sfWebRequest $request) {
 
     }
@@ -79,7 +81,7 @@ class customerActions extends sfActions {
             if ($availableUniqueCount == 0) {
                 // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
                 emailLib::sendUniqueIdsShortage();
-                $this->redirect($this->targetURL . 'customer/shortUniqueIds');
+                $this->redirect($this->getTargetUrl . 'customer/shortUniqueIds');
             }
             $uniqueId = $availableUniqueId->getUniqueNumber();
 
@@ -133,7 +135,7 @@ class customerActions extends sfActions {
             //$this->getUser()->setAttribute('product_id', $product, 'usersignup');
 
 
-            $this->redirect($this->targetURL . 'signup/step2?cid=' . $customer->getId() . '&pid=' . $product);
+            $this->redirect($this->getTargetUrl . 'signup/step2?cid=' . $customer->getId() . '&pid=' . $product);
             //$this->redirect(sfConfig::get('app_epay_relay_script_url').$this->getController()->genUrl('@signup_step2?customer_id='.$customer->getId().'&product_id='.$product, true));
         }
     }
@@ -193,8 +195,8 @@ class customerActions extends sfActions {
             //$this->getUser()->setAttribute('customer_id', $customer->getId(), 'usersignup');
             //$this->getUser()->setAttribute('product_id', $product, 'usersignup');
 
-
-            $this->redirect('http://landncall.zerocall.com/b2c.php/customer/signupStep2?cid=' . $customer->getId() . '&pid=' . $product);
+            $this->redirect($this->getTargetUrl .'customer/signupStep2?cid=' . $customer->getId() . '&pid=' . $product);
+            //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/signupStep2?cid=' . $customer->getId() . '&pid=' . $product);
             //$this->redirect(sfConfig::get('app_epay_relay_script_url').$this->getController()->genUrl('@signup_step2?customer_id='.$customer->getId().'&product_id='.$product, true));
         }
     }
@@ -692,7 +694,8 @@ class customerActions extends sfActions {
                 emailLib::sendvoipemail($this->customer, $order, $transaction);
 
                 //------------------------------
-                $this->redirect('http://landncall.zerocall.com/b2c.php/customer/voippurchased');
+                //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/voippurchased');
+                $this->redirect($this->getTargetUrl .'customer/voippurchased');
             }
         }
     }
@@ -1259,7 +1262,7 @@ class customerActions extends sfActions {
     public function executeLogin(sfWebRequest $request) {
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         changeLanguageCulture::languageCulture($request, $this);
-        $this->target = $this->targetURL;
+        $this->target = $this->getTargetUrl;
         //-----------------------
 
         if ($request->isMethod('post') &&
@@ -1700,7 +1703,7 @@ class customerActions extends sfActions {
             $subject = $this->getContext()->getI18N()->__("LandNCall AB inbjudan");
             $name = $this->customer->getFirstName() . ' ' . $this->customer->getLastName();
             $message_body = 'Hej ' . $recepient_name . ',<br /> ' . $this->getContext()->getI18N()->__("This invitation is sent to you with the refrence of") . ' ' . $name . ', ' . $this->getContext()->getI18N()->__("en användare av Smartsim från Landncall.");
-            $message_body_end = 'Vänligen klicka på acceptera för att börja spara pengar direkt med Smartsim du ocksåg' . '<a  href="http://landncall.zerocall.com/b2c.php/customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a><br/> Läs mer på <a href="www.landncall.com">www.landncall.com</a>';
+            $message_body_end = 'Vänligen klicka på acceptera för att börja spara pengar direkt med Smartsim du ocksåg' . '<a  href="'.$this->getTargetUrl .'customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a><br/> Läs mer på <a href="www.landncall.com">www.landncall.com</a>';
             //send email
             if ($recepient_name != ''):
                 $email = new EmailQueue();
@@ -2416,7 +2419,8 @@ class customerActions extends sfActions {
             if ($availableUniqueCount == 0) {
                 // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
                 emailLib::sendUniqueIdsShortage();
-                $this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+               $this->redirect($this->getTargetUrl .'customer/shortUniqueIds');
+                 //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
             }
             $uniqueId = $availableUniqueId->getUniqueNumber();
 
