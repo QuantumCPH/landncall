@@ -2149,10 +2149,15 @@ class customerActions extends sfActions {
             if ($uidcount==1) {
                 $cuserid = $this->customer->getId();
                 $amt = $OpeningBalance;
-                $amt = CurrencyConverter::convertSekToUsd($amt);
-                $Test = ForumTel::rechargeForumtel($cuserid, $amt);
+                $amtt = CurrencyConverter::convertSekToUsd($amt);
+                $Test = ForumTel::rechargeForumtel($cuserid, $amtt);
 
+                $dibsf = new DibsCall();
+        $dibsf->setCallurl("refill  original amout SEK:".$amt."converted amout".$amtt."Fr response".$Test);
+        $dibsf->save();
 
+                $amt=$amtt;
+                
                 $email2 = new DibsCall();
                 $email2->setCallurl($amt . $cuserid);
 

@@ -1994,13 +1994,11 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                         //This is for Retrieve balance From Telinta
                         $telintaGetBalance =  Telienta::getBalance($cus);
 
-
                         $mnc = new Criteria();
                         $mnc->add(CustomerPeer::UNIQUEID, $uniqueId);
                         $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
                         $cus = CustomerPeer::doSelectOne($mnc);
                         $customerids = $cus->getId();
-
                         $getvoipInfo = new Criteria();
                         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
                         $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
