@@ -1,60 +1,40 @@
-<?php 
-echo $_SERVER['PHP_SELF']; 
-?><div id="sf_admin_container">
 
-<h1>Documents list</h1>
-
-<div id="sf_admin_header">
-
-
-</div>
-
-<div id="sf_admin_bar">
-</div>
-<div id="sf_admin_content" style="margin-right:670px">
-<table cellspacing="0" class="sf_admin_list">
-<thead>
-<tr>
-  <th id="sf_admin_list_th_id"><a href="javascript:;">Id</a></th>
-  <th id="sf_admin_list_th_question">Document Title</th>
-  <th id="sf_admin_list_th_answer">File</th>
-  <th id="sf_admin_list_th_status">Downlaod</th>
-  <th id="sf_admin_list_th_sf_actions">Actions</th>
-</tr>
-</thead>
-<tfoot>
-<tr>
-</tr>
-</tfoot>
-<?php 
-
-$Qry = mysql_query("select * from clientdocuments");
-if(mysql_num_rows($Qry)){
-while($qryObj = mysql_fetch_object($Qry)){?>
-<tr class="sf_admin_row_0">
-    <td><a href="<?php echo $_SERVER['PHP_SELF'];?>/edit/id/<?php echo $qryObj->id;?>"><?php echo $qryObj->id;?></a></td>
-    <td><?php echo $qryObj->title;?></td>
+ <div id="sf_admin_container"><h1><?php echo  __('Userguide List') ?></h1>
       
-      <td><?php echo $qryObj->filename;?></td>
-      <td><a href="http://localhost/landncall_new/web/uploads/documents/<?php echo $qryObj->filename;?>" target="_blank">DOWNLOAD DOCUMENT</a></td>
-  <td>
-<ul class="sf_admin_td_actions">
-  <li><a href="<?php echo $_SERVER['PHP_SELF'];?>/delete/id/<?php echo $qryObj->id;?>" onclick="if (confirm('Are you sure?')) { var f = document.createElement('form'); f.style.display = 'none'; this.parentNode.appendChild(f); f.method = 'post'; f.action = this.href;f.submit(); };return false;"><img src="/landncall_new/web/sf/sf_admin/images/delete_icon.png" title="delete" alt="delete"></a></li>
-  <li><a href="<?php echo $_SERVER['PHP_SELF'];?>/edit/id/<?php echo $qryObj->id;?>"><img src="/landncall_new/web/sf/sf_admin/images/edit_icon.png" title="edit" alt="edit"></a></li>
-</ul>
-</td>
-</tr>
-<?php }}else{
-		echo '<tr class="sf_admin_row_0">
-    <td colspan=5><b>No Record Exist<b></td></tr>';
-} ?>
+<?php if($userguide_list){?>
+     <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign">
+  <thead>
+    <tr class="headings">
+      <th><?php echo  __('Id') ?></th>
+      <th><?php echo  __('Title') ?></th>
+      <th><?php echo  __('Description') ?></th>
+      <!--<th><?php echo  __('Country') ?></th>
+      <th><?php echo  __('Status') ?></th>
+      <th><?php echo  __('Image') ?></th>
+      <th><?php echo  __('Create at') ?></th>-->
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach ($userguide_list as $userguide): ?>
+    <tr>
+      <td><a href="<?php echo url_for('userguide/edit?id='.$userguide->getId()) ?>"><?php echo $userguide->getId() ?></a></td>
+      <td><?php echo $userguide->getTitle() ?></td>
+      <td><?php echo $userguide->getDescription() ?></td>
+      <!--<td><?php echo $userguide->getCountryId() ?></td>
+       <td><?php echo $userguide->getStatusId() ?></td>
+     <td><?php echo $userguide->getImage() ?></td>
+      <td><?php echo $userguide->getCreateAt() ?></td>-->
+    </tr>
+    <?php endforeach; ?>
+  </tbody>
 </table>
-<ul class="sf_admin_actions">
-  <li><input type="button" onclick="document.location.href='client_documents/create';" value="create" class="sf_admin_action_create"></li>
-</ul>
-</div>
-
-<div id="sf_admin_footer">
-</div>
-
+ 
+     <?php }else{
+      ?>
+     <p style="font-size: 12px;"><?php echo __('No Result Found') ?></p>
+     <?php   
+     } ?>
+ <div id="sf_admin_header">
+  <a  class="external_link" href="<?php echo url_for('userguide/new') ?>"><?php echo __('New') ?></a>
+ </div>
 </div>
