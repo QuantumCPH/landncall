@@ -1682,7 +1682,7 @@ class customerActions extends sfActions {
 
         $invite = new Invite();
 
-echo '<a  href="'.$this->getTargetUrl() .'customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a>';
+//echo '<a  href="'.$this->getTargetUrl() .'customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a>';
         if ($request->isMethod('post')) {
 
             //$this->form = new ContactForm();
