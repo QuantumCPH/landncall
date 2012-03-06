@@ -268,7 +268,8 @@
                         <?php echo link_to('Usage Alert Sender', 'usage_alert_sender/index') ?>
                         <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
                         <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
-                        <a href="client_documents">Upload Client Document</a>
+                         <?php echo link_to('Upload Client Document', 'client_documents/index') ?>
+<!--                        <a href="/client_documents/index">Upload Client Document</a>-->
                         <?php //echo link_to('global setting', 'global_setting/index') ?>
                         <?php //echo link_to('employee products', 'employee_product/index') ?>
 
