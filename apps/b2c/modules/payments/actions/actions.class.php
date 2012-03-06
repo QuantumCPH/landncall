@@ -22,6 +22,9 @@ class paymentsActions extends sfActions {
      *
      * @param sfRequest $request A request object
      */
+    private function getTargetUrl() {
+        return sfConfig::get('app_main_url');
+    }
     public function executeIndex(sfWebRequest $request) {
         $this->forward('default', 'module');
     }
@@ -419,7 +422,8 @@ class paymentsActions extends sfActions {
                         if($availableUniqueCount  == 0){
                             // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
                             emailLib::sendUniqueIdsShortage();
-                            $this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+                            $this->redirect($this->getTargetUrl .'customer/shortUniqueIds');
+                            //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
                         }
                         $uniqueId = $availableUniqueId->getUniqueNumber();
                         $this->customer->setUniqueid($uniqueId);
@@ -787,7 +791,8 @@ class paymentsActions extends sfActions {
                         if($availableUniqueCount  == 0){
                             // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
                             emailLib::sendUniqueIdsShortage();
-                            $this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+                            $this->redirect($this->getTargetUrl .'customer/shortUniqueIds');
+                            //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
                         }
                         $uniqueId = $availableUniqueId->getUniqueNumber();
                         $this->customer->setUniqueid($uniqueId);
