@@ -422,7 +422,7 @@ class paymentsActions extends sfActions {
                         if($availableUniqueCount  == 0){
                             // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
                             emailLib::sendUniqueIdsShortage();
-                            $this->redirect($this->getTargetUrl .'customer/shortUniqueIds');
+                            $this->redirect($this->getTargetUrl() .'customer/shortUniqueIds');
                             //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
                         }
                         $uniqueId = $availableUniqueId->getUniqueNumber();
@@ -791,7 +791,7 @@ class paymentsActions extends sfActions {
                         if($availableUniqueCount  == 0){
                             // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
                             emailLib::sendUniqueIdsShortage();
-                            $this->redirect($this->getTargetUrl .'customer/shortUniqueIds');
+                            $this->redirect($this->getTargetUrl() .'customer/shortUniqueIds');
                             //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
                         }
                         $uniqueId = $availableUniqueId->getUniqueNumber();
