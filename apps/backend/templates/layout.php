@@ -148,7 +148,7 @@
 
                 </div>
             </li> -->
-            <li>
+<!--            <li>
                 <a href="#"
                 onmouseover="mopen('m9')"
                 onmouseout="mclosetime()">Revenue</a>
@@ -159,7 +159,7 @@
 
 
                 </div>
-            </li>
+            </li>-->
 
  <!--         <li>
 				<a href="#"
@@ -244,12 +244,12 @@
                         <?php echo link_to('Mobile Models', 'device/index'); ?>
                         <?php echo link_to('Mobile Brands', 'manufacturer/index'); ?>
                         <?php echo link_to('Mobile Operator', 'telecom_operator/index') ?>
-                        <?php echo link_to('Postal charges', 'postal_charges/index') ?>
+                        <?php //echo link_to('Postal charges', 'postal_charges/index') ?>
                         <?php
                         // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
                         // echo link_to('<b></b>', '') ?>
-                        <a href="javascript:;"><b>Agent Setting</b></a>
-                         <?php echo link_to('Agent commission Invoices Note', 'invoice_note/index') ?>
+<!--                        <a href="javascript:;"><b>Agent Setting</b></a>-->
+                         <?php //echo link_to('Agent commission Invoices Note', 'invoice_note/index') ?>
                         <?php //echo link_to('apartment form', 'apartment_form/index') ?>
                         <?php //echo link_to('commission period', 'commission_period/index') ?>
                         <?php //echo link_to('revenue interval', 'revenue_interval/index') ?>
@@ -268,7 +268,8 @@
                         <?php echo link_to('Usage Alert Sender', 'usage_alert_sender/index') ?>
                         <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
                         <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
-                        <a href="http://landncall.zerocall.com/backend_dev.php/client_documents">Upload Client Document</a>
+                         <?php echo link_to('Upload Client Document', 'client_documents/index') ?>
+<!--                        <a href="/client_documents/index">Upload Client Document</a>-->
                         <?php //echo link_to('global setting', 'global_setting/index') ?>
                         <?php //echo link_to('employee products', 'employee_product/index') ?>
 

@@ -7,17 +7,12 @@
  * @subpackage userguide
  * @author     Your name here
  */
- 
-class client_documentsActions extends sfActions
-{	
+ class userguideActions extends sfActions
+//class userguideActions extends autouserguideActions
+{
   public function executeIndex(sfWebRequest $request)
   {
-  	$DB_Server 	= "localhost";
-	$DB_Username 	= "root";
-	$DB_Password 	= "1Qazxsw@";
-	$DB_DBName   	= "landncall";
-	$success= mysql_pconnect($DB_Server, $DB_Username, $DB_Password);	
-	mysql_select_db($DB_DBName);	
+    $this->userguide_list = UserguidePeer::doSelect(new Criteria());
   }
 
   public function executeNew(sfWebRequest $request)
@@ -27,65 +22,19 @@ class client_documentsActions extends sfActions
 
   public function executeCreate(sfWebRequest $request)
   {
-  	
-	$DB_Server 	= "localhost";
-	$DB_Username 	= "root";
-	$DB_Password 	= "1Qazxsw@";
-	$DB_DBName   	= "landncall";
-	$success= mysql_pconnect($DB_Server, $DB_Username, $DB_Password);	
-	mysql_select_db($DB_DBName);
-	
-  	//echo sfConfig::get('sf_root_dir');
-  	//
-	//echo sfConfig::get('sf_environment');
-    $this->setTemplate('new');	
-	$error = '';
-	$this->error = '';
-	if(isset($_REQUEST['save']) && $_FILES['documentfile']['name']!=''){
-		//echo sfConfig::get('sf_upload_dir');
-		
-		$uploaddir = sfConfig::get('sf_upload_dir').'/documents/';
-		//Upload Image
-		$resultQry = date('Y-m-d-h-s');
-		$FILE_NAME = $resultQry.'_'.$_FILES['documentfile']['name'];
-		$uploadfile = $uploaddir . $resultQry.'_'.basename($_FILES['documentfile']['name']);
-		move_uploaded_file($_FILES['documentfile']['tmp_name'], $uploadfile);		
-		mysql_query("INSERT INTO clientdocuments (title ,filename ,status) VALUES ('".$_REQUEST['docTitle']."', '".$FILE_NAME."','".$_REQUEST['DocStatus']."')");
-		$this->redirect('client_documents/index');
-	}elseif(isset($_REQUEST['save']) && $_FILES['documentfile']['name']==''){
-		$error = 'fileerror';
-		$this->error = 'Error';
-	}
+    $this->forward404Unless($request->isMethod('post'));
+
+    $this->form = new UserguideForm();
+
+    $this->processForm($request, $this->form);
+
+    $this->setTemplate('new');
   }
 
   public function executeEdit(sfWebRequest $request)
   {
-  	$EditId = $request->getParameter('id');
-	$this->editId = $EditId;
-  	$DB_Server 	= "localhost";
-	$DB_Username 	= "root";
-	$DB_Password 	= "1Qazxsw@";
-	$DB_DBName   	= "landncall";
-	$success= mysql_pconnect($DB_Server, $DB_Username, $DB_Password);	
-	mysql_select_db($DB_DBName);
-	$editid = $request->getParameter('id');	
-	if(isset($_REQUEST['update']) && $_FILES['documentfile']['name']!=''){
-			
-		$uploaddir = sfConfig::get('sf_upload_dir').'/documents/';
-		//Upload Image
-		$resultQry = date('Y-m-d-h-s');
-		$FILE_NAME = $resultQry.'_'.$_FILES['documentfile']['name'];
-		$uploadfile = $uploaddir . $resultQry.'_'.basename($_FILES['documentfile']['name']);
-		move_uploaded_file($_FILES['documentfile']['tmp_name'], $uploadfile);
-				
-		mysql_query("UPDATE clientdocuments SET title = '".$_REQUEST['docTitle']."' ,
-		filename = '".$FILE_NAME."'
-		WHERE id ='".$editid."' ");
-		$this->redirect('client_documents/index');
-	}elseif(isset($_REQUEST['update']) && $_FILES['documentfile']['name']==''){
-		mysql_query("UPDATE clientdocuments SET title = '".$_REQUEST['docTitle']."' WHERE id ='".$editid."' ");		
-		$this->redirect('client_documents/index');
-	}
+    $this->forward404Unless($userguide = UserguidePeer::retrieveByPk($request->getParameter('id')), sprintf('Object userguide does not exist (%s).', $request->getParameter('id')));
+    $this->form = new UserguideForm($userguide);
   }
 
   public function executeUpdate(sfWebRequest $request)
@@ -101,18 +50,12 @@ class client_documentsActions extends sfActions
 
   public function executeDelete(sfWebRequest $request)
   {
-  	$DB_Server 	= "localhost";
-	$DB_Username 	= "root";
-	$DB_Password 	= "1Qazxsw@";
-	$DB_DBName   	= "landncall";
-	$success= mysql_pconnect($DB_Server, $DB_Username, $DB_Password);	
-	mysql_select_db($DB_DBName);
-	
     $request->checkCSRFProtection();
-	$deleteId = $request->getParameter('id');	
-	mysql_query("DELETE FROM clientdocuments WHERE id = '".$deleteId."' ");
-	
-    $this->redirect('client_documents/index');
+
+    $this->forward404Unless($userguide = UserguidePeer::retrieveByPk($request->getParameter('id')), sprintf('Object userguide does not exist (%s).', $request->getParameter('id')));
+    $userguide->delete();
+
+    $this->redirect('userguide/index');
   }
 
   protected function processForm(sfWebRequest $request, sfForm $form)
@@ -126,10 +69,10 @@ class client_documentsActions extends sfActions
 //        $file->save($path.'.'.$extension);
 
         //$this->form->updateObject();
-                        
+
       $userguide = $form->save();
 
-      $this->redirect('client_documents/edit?id='.$userguide->getId());
+      $this->redirect('userguide/edit?id='.$userguide->getId());
     }
   }
 }
