@@ -4106,7 +4106,7 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
 
       $endnumberlength=$numberlength-2;
 
-          if ($caltype == "00") {
+
 
 
 
@@ -4131,7 +4131,7 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
 
                     $fromcbnumber = 'cb' . $number;
                     $firstnumbernumber =$number;
-                    $secondnumber = substr($message, 2);
+                    $secondnumber =$message;
 
                     $form = new Curl_HTTP_Client();
 
@@ -4177,7 +4177,7 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
                die;
             }
             
-        }
+
  
  return sfView::NONE;
 
