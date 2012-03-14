@@ -3582,6 +3582,19 @@ public function getEnableCountryId($calingcode){
 
 
 public function executeSmsRegisterationwcb(sfWebrequest $request){
+
+
+
+     $urlval = "WCR-" . $request->getURI();
+
+        $email2 = new DibsCall();
+        $email2->setCallurl($urlval);
+
+        $email2->save();
+
+
+
+       
     $sms_text="";
    $number = $request->getParameter('from');
     $mtnumber = $request->getParameter('from');
