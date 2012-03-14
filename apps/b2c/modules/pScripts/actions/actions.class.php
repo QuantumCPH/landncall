@@ -4174,12 +4174,12 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
                 $queryString = smsCharacter::smsCharacterReplacement($queryString);
                 echo $sms_text;
                 $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
-                //
+               die;
             }
-             return sfView::NONE;
+            
         }
  
-
+ return sfView::NONE;
 
 }
 
