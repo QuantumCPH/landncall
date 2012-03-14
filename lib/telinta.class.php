@@ -32,8 +32,9 @@ class Telienta {
             $Parent = self::$iParentRLandnCall;
         }
         try {
+               $uniqueId="LCB2C".$customer->getUniqueid();
             $tCustomer = $pb->add_customer(array('customer_info' => array(
-                            'name' => $customer->getUniqueid(), //
+                            'name' => $uniqueId, 
                             'iso_4217' => self::$currency,
                             'i_parent' => $Parent,
                             'i_customer_type' => 1,

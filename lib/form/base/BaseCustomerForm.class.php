@@ -21,7 +21,7 @@ class BaseCustomerForm extends BaseFormPropel
       'mobile_number'            => new sfWidgetFormInput(),
       'device_id'                => new sfWidgetFormPropelChoice(array('model' => 'Device', 'add_empty' => true)),
       'email'                    => new sfWidgetFormInput(),
-      'password'                 => new sfWidgetFormInputPassword(),
+      'password'                 => new sfWidgetFormInput(),
       'is_newsletter_subscriber' => new sfWidgetFormInputCheckbox(),
       'created_at'               => new sfWidgetFormDateTime(),
       'updated_at'               => new sfWidgetFormDateTime(),
@@ -82,7 +82,7 @@ class BaseCustomerForm extends BaseFormPropel
       'ticketval'                => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'to_date'                  => new sfValidatorDate(array('required' => false)),
       'from_date'                => new sfValidatorDate(array('required' => false)),
-      'i_customer'               => new sfValidatorInteger(array('required' => false)),
+      'i_customer'               => new sfValidatorString(array('max_length' => 50, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('customer[%s]');

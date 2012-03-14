@@ -29,9 +29,6 @@
  $unid = $customer->getUniqueid();
 
       $cuid=$customer->getId();
-
-
-
                                   $cp = new Criteria();
                                   $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
                                   $custmpr = CustomerProductPeer::doSelectOne($cp);
@@ -39,8 +36,9 @@
                                    $p->add(ProductPeer::ID, $custmpr->getProductId());
                                    $products=ProductPeer::doSelectOne($p);
                                    $pus = 0;
-
                                   $pus=$products->getProductCountryUs();
+
+                                  
 
 if($pus==0){   ?>
     <form action="" id="searchform" method="POST" name="searchform" style="float: left;" >
