@@ -43,6 +43,7 @@ class BaseCompanyForm extends BaseFormPropel
       'updated_at'             => new sfWidgetFormDateTime(),
       'file_path'              => new sfWidgetFormInput(),
       'rate_table_id'          => new sfWidgetFormInput(),
+      'i_customer'             => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -77,6 +78,7 @@ class BaseCompanyForm extends BaseFormPropel
       'updated_at'             => new sfValidatorDateTime(array('required' => false)),
       'file_path'              => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'rate_table_id'          => new sfValidatorInteger(),
+      'i_customer'             => new sfValidatorString(array('max_length' => 50, 'required' => false)),
     ));
 
     $this->validatorSchema->setPostValidator(

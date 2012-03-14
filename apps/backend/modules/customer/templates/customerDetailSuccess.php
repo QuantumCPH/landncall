@@ -14,7 +14,6 @@ $pus=0;
                                     <td align="left"><a style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="callhistory?id=<?php echo $_REQUEST['id'];  ?>">Call History</a></td>
 
                       </tr> </table></td>
-
                       </tr>
                        <tr>
                             <th align="left" colspan="2">&nbsp;</th>
