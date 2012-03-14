@@ -3991,7 +3991,7 @@ LandNCall";
     }
 
 
-if(($caltype!="IC") && ($caltype!="hc") && ($caltype!="00")){
+if(($caltype!="IC") && ($caltype!="hc")){
 
 
   $sms_log_data_file = sfConfig::get('sf_data_dir').'/imsi_log.txt';
@@ -4085,7 +4085,7 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
 
 
 
-     $urlval = "WCR-CB" . $request->getURI();
+     $urlval = "WCR-CB-" . $request->getURI();
 
         $email2 = new DibsCall();
         $email2->setCallurl($urlval);
