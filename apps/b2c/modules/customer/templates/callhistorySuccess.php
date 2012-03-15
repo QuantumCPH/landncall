@@ -103,7 +103,7 @@
                     <th  width="20%"  align="left"><?php echo __('till Number') ?></th>
                     <th  width="20%"  align="left"><?php echo __('från Number') ?></th>
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
-                    <th width="20%"   align="left"><?php echo __('Cost <small>(Incl. VAT)</small>') ?></th>
+                    <th width="20%"   align="left"><?php echo __('Cost') ?></th>
                       <th width="10%"   align="left"><?php echo __('Typ') ?></th>
                   </tr>
 <?php
@@ -193,7 +193,7 @@ $cld='called-date';
                     <td class="title" width="40%"><?php echo __('Phone Number') ?></td>
                     <td class="title"><?php echo __('Duration') ?></td>
                     <td class="title"><?php echo __('VAT') ?></td>
-                    <td class="title"><?php echo __('Cost <small>(Incl. VAT)</small>') ?></td>
+                    <td class="title"><?php echo __('Cost') ?></td>
                      <td class="title"><?php echo __('Samtalstyp') ?></td>
                   </tr>
 
@@ -215,7 +215,7 @@ $cld='called-date';
                                 <tr>
                                     <td><?php echo $xdr->connect_time; ?></td>
                                     <td><?php echo $xdr->CLD; ?></td>
-                                    <td><?php echo number_format($xdr->charged_quantity / 60, 2); ?></td>
+                                    <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
                                 $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>

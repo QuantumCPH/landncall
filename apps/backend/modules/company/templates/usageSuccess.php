@@ -15,7 +15,7 @@
                     <th  width="20%"  align="left"><?php echo __('Phone Number') ?></th>
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
                     <th  width="10%"  align="left"><?php echo __('VAT') ?></th>
-                    <th width="20%"   align="left"><?php echo __('Cost <small>(Incl. VAT)</small>') ?></th>
+                    <th width="20%"   align="left"><?php echo __('Cost') ?></th>
                     <th  width="20%"   align="left">Samtalstyp</th>
                   </tr>
    <?php
@@ -33,7 +33,7 @@ foreach ($callHistory->xdr_list as $xdr) {
             <tr>
                 <td><?php echo $xdr->connect_time; ?></td>
                 <td><?php echo $xdr->CLD; ?></td>
-                <td><?php echo number_format($xdr->charged_quantity / 60, 2); ?></td>
+                <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
                 <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                 <td><?php echo number_format($xdr->charged_amount, 2);
             $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
