@@ -51,13 +51,13 @@
           <?php echo $form['status_id'] ?>
         </td>
       </tr>
-<!--      <tr>
+      <tr>
         <th class="noBorder"><b><?php echo $form['image']->renderLabel() ?></b></th>
         <td class="noBorder">
           <?php echo $form['image']->renderError() ?>
           <?php echo $form['image'] ?>
         </td>
-      </tr>-->
+      </tr>
       <tr>
         <th class="noBorder"><b><?php echo $form['create_at']->renderLabel() ?></b></th>
         <td class="noBorder">
