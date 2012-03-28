@@ -2716,14 +2716,14 @@ public function executeUsageAlert(sfWebRequest $request) {
 
          foreach ($customers as $customer) {
             $customer_balance = (double) Telienta::getBalance($customer);
-            $actual_balance = $customer_balance;
+            echo $actual_balance = $customer_balance."<br>";
             if($customer_balance < 1){
                 $customer_balance = 0;
             }
             foreach($usageAlerts as $usageAlert){
-                if($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax() && $customer->getFonetCustomerId()!='' ){
+                if($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax() ){
 
-                    $regType =  RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId());
+                    $regType =  RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId());// && $customer->getFonetCustomerId()!=''
                     $referer = $customer->getReferrerId();
                     if (isset($referer) && $referer > 0) {
                         $Cname = new Criteria();
@@ -2738,7 +2738,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                     $Prod->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
                     $Product = ProductPeer::doSelectOne($Prod);
 
-                    if($usageAlert->getSmsActive()){
+                    if($usageAlert->getSmsActive()){echo "SMS Active";
                         $msgSent = new SmsAlertSent();
                         $msgSent->setCustomerId($customer->getId());
                         $msgSent->setCustomerName($customer->getFirstName());
@@ -2747,13 +2747,13 @@ public function executeUsageAlert(sfWebRequest $request) {
                         $msgSent->setAgentName($comName);
                         $msgSent->setCustomerEmail($customer->getEmail());
                         $msgSent->setMobileNumber($customer->getMobileNumber());
-                        $msgSent->setFonetCustomerId($customer->getFonetCustomerId());
+                      //$msgSent->setFonetCustomerId($customer->getFonetCustomerId());
                         $msgSent->setMessageDescerption("Current Balance: ".$actual_balance);
                         //$msgSent->save();
                         /**
                          * SMS Sending Code
                          **/
-                       if($customer->getUsageAlertSMS()){
+                       /*if($customer->getUsageAlertSMS()){
                         $customerMobileNumber = $CallCode . $customer->getMobileNumber();
                         $sms_text = $usageAlert->getSmsAlertMessage();
                         $data = array(
@@ -2777,10 +2777,10 @@ public function executeUsageAlert(sfWebRequest $request) {
                             $msgSent->setAlertSent(1);
                         }
 			sleep(0.15);
-                       }
+                       }*/
                        $msgSent->save();
                     }
-                    if($usageAlert->getEmailActive()){
+                    if($usageAlert->getEmailActive()){echo "Email Active";
                         $msgSentE = new EmailAlertSent();
                         $msgSentE->setCustomerId($customer->getId());
                         $msgSentE->setCustomerName($customer->getFirstName());
@@ -2789,7 +2789,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                         $msgSentE->setAgentName($comName);
                         $msgSentE->setCustomerEmail($customer->getEmail());
                         $msgSentE->setMobileNumber($customer->getMobileNumber());
-                        $msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
+                      //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
                         $msgSentE->setMessageDescerption("Current Balance: ".$actual_balance);
                         //$msgSentE->save();
                       if($customer->getUsageAlertSMS()){
