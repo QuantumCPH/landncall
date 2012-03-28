@@ -148,18 +148,18 @@
 
                 </div>
             </li> -->
-<!--            <li>
+            <li>
                 <a href="#"
                 onmouseover="mopen('m9')"
-                onmouseout="mclosetime()">Revenue</a>
+                onmouseout="mclosetime()">Reports</a>
                 <div id="m9"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
-		    <?php echo link_to('Revenue Report', 'invoice/selectIntervalCompanyList') ?>
+		     <?php echo link_to('Alert Usage Report ', 'invoice/selectIntervalAlert'); ?>
 
 
                 </div>
-            </li>-->
+            </li>
 
  <!--         <li>
 				<a href="#"

@@ -175,15 +175,6 @@ propel:
     c9_number: { type: VARCHAR, size: '15', required: false }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
     is_assigned: { type: boolean, required: false, defaultValue: '0' }
-  call_history:
-    _attributes: { phpName: CallHistory }
-    id: { type: VARCHAR, size: '255', required: false }
-    mobile_number: { type: VARCHAR, size: '255', required: true, defaultValue: '' }
-    call_date: { type: TIMESTAMP, required: false }
-    call_duration: { type: VARCHAR, size: '13', required: false }
-    destination: { type: VARCHAR, size: '255', required: false }
-    user_charge: { type: VARCHAR, size: '255', required: false }
-    vendor: { type: VARCHAR, size: '5', required: true, defaultValue: '' }
   call_log:
     _attributes: { phpName: CallLog }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -409,6 +400,8 @@ propel:
     to_date: { type: DATE, required: false }
     from_date: { type: DATE, required: false }
     i_customer: { type: VARCHAR, size: '50', required: false }
+    usage_alert_sms: { type: TINYINT, size: '4', required: false, defaultValue: '1' }
+    usage_alert_email: { type: TINYINT, size: '4', required: false, defaultValue: '1' }
     _indexes: { FK_customer_device: [device_id], FK_customer_country: [country_id], FK_customer_city: [city], FK_customer_event_status: [customer_status_id], FK_customer_telecom_operator: [telecom_operator_id], FK_customer: [referrer_id], FK_customer_fonet_customer: [fonet_customer_id] }
   customer_commision:
     _attributes: { phpName: CustomerCommision }
@@ -459,6 +452,21 @@ propel:
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
     callurl: { type: VARCHAR, size: '255', required: false }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+  email_alert_sent:
+    _attributes: { phpName: EmailAlertSent }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    customer_id: { type: INTEGER, size: '11', required: false }
+    customer_name: { type: VARCHAR, size: '255', required: false }
+    mobile_number: { type: VARCHAR, size: '255', required: false }
+    customer_email: { type: VARCHAR, size: '255', required: false }
+    customer_product: { type: VARCHAR, size: '255', required: false }
+    agent_name: { type: VARCHAR, size: '255', required: false }
+    registration_type: { type: VARCHAR, size: '255', required: false }
+    fonet_customer_id: { type: VARCHAR, size: '255', required: false }
+    message_descerption: { type: VARCHAR, size: '255', required: false }
+    status: { type: boolean, required: true, defaultValue: '1' }
+    created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+    alert_sent: { type: boolean, required: false, defaultValue: '0' }
   email_queue:
     _attributes: { phpName: EmailQueue }
     id: { type: BIGINT, size: '20', primaryKey: true, autoIncrement: true, required: true }
@@ -541,63 +549,6 @@ propel:
     activated_on: { type: TIMESTAMP, required: false }
     sip_name: { type: VARCHAR, size: '255', required: false }
     sip_pwd: { type: VARCHAR, size: '255', required: false }
-  getrefferredtransactionforextrarefills:
-    _attributes: { phpName: Getrefferredtransactionforextrarefills }
-    amount: { type: DECIMAL, size: '41', scale: '0', required: false }
-    amount_cur_month: { type: DECIMAL, size: '41', scale: '0', required: false }
-    customer_id: { type: BIGINT, size: '20', required: false }
-    referrer_id: { type: INTEGER, size: '11', required: false }
-    ere_todate: { type: DOUBLE, required: false }
-    ere_cur_month: { type: DOUBLE, required: false }
-    total_transactions: { type: BIGINT, size: '21', required: true, defaultValue: '0' }
-  getrefferredtransactionforregistrations:
-    _attributes: { phpName: Getrefferredtransactionforregistrations }
-    amount: { type: DECIMAL, size: '41', scale: '0', required: false }
-    amount_cur_month: { type: DECIMAL, size: '41', scale: '0', required: false }
-    customer_id: { type: BIGINT, size: '20', required: false }
-    created_at: { type: TIMESTAMP, required: true, defaultValue: '0000-00-00 00:00:00' }
-    referrer_id: { type: INTEGER, size: '11', required: false }
-    re_todate: { type: DOUBLE, required: false }
-    re_cur_month: { type: DOUBLE, required: false }
-  getrefferredtransactions:
-    _attributes: { phpName: Getrefferredtransactions }
-    transaction_id: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
-    customer_order_id: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
-    amount: { type: BIGINT, size: '20', required: true }
-    customer_id: { type: BIGINT, size: '20', required: false }
-    is_first_order: { type: boolean, required: true, defaultValue: '0' }
-    registration_earning: { type: DOUBLE, required: false }
-    extra_refills_earning: { type: DOUBLE, required: false }
-    created_at: { type: TIMESTAMP, required: true, defaultValue: '0000-00-00 00:00:00' }
-    referrer_id: { type: INTEGER, size: '11', required: false }
-    name: { type: VARCHAR, size: '50', required: true }
-    first_name: { type: VARCHAR, size: '255', required: true }
-  getrefferredtransactionsgroupbycustomer:
-    _attributes: { phpName: Getrefferredtransactionsgroupbycustomer }
-    customer_id: { type: BIGINT, size: '20', required: false }
-    is_first_order: { type: boolean, required: true, defaultValue: '0' }
-    amount: { type: DECIMAL, size: '41', scale: '0', required: false }
-    amount_cur_month: { type: DECIMAL, size: '41', scale: '0', required: false }
-    referrer_id: { type: INTEGER, size: '11', required: false }
-    re_todate: { type: DOUBLE, required: false }
-    re_cur_month: { type: DOUBLE, required: false }
-    ere_todate: { type: DOUBLE, required: false }
-    ere_cur_month: { type: DOUBLE, required: false }
-    total_transactions: { type: BIGINT, size: '21', required: true, defaultValue: '0' }
-  getrefferredtransactionsplitted:
-    _attributes: { phpName: Getrefferredtransactionsplitted }
-    transaction_id: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
-    customer_order_id: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
-    amount: { type: BIGINT, size: '20', required: true }
-    amount_cur_month: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
-    customer_id: { type: BIGINT, size: '20', required: false }
-    is_first_order: { type: boolean, required: true, defaultValue: '0' }
-    referrer_id: { type: INTEGER, size: '11', required: false }
-    re_todate: { type: DOUBLE, required: false }
-    re_cur_month: { type: DOUBLE, required: false }
-    ere_todate: { type: DOUBLE, required: false }
-    ere_cur_month: { type: DOUBLE, required: false }
-    created_at: { type: TIMESTAMP, required: true, defaultValue: '0000-00-00 00:00:00' }
   global_setting:
     _attributes: { phpName: GlobalSetting }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -822,6 +773,21 @@ propel:
     customer_id: { type: INTEGER, size: '11', required: false }
     created_at: { type: TIMESTAMP, required: false }
     assigned: { type: boolean, required: false }
+  sms_alert_sent:
+    _attributes: { phpName: SmsAlertSent }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    customer_id: { type: INTEGER, size: '11', required: false }
+    customer_name: { type: VARCHAR, size: '255', required: false }
+    mobile_number: { type: VARCHAR, size: '255', required: false }
+    customer_email: { type: VARCHAR, size: '255', required: false }
+    customer_product: { type: VARCHAR, size: '255', required: false }
+    agent_name: { type: VARCHAR, size: '255', required: false }
+    registration_type: { type: VARCHAR, size: '255', required: false }
+    fonet_customer_id: { type: VARCHAR, size: '255', required: false }
+    message_descerption: { type: VARCHAR, size: '255', required: false }
+    status: { type: boolean, required: true, defaultValue: '1' }
+    created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+    alert_sent: { type: boolean, required: false, defaultValue: '0' }
   sms_text:
     _attributes: { phpName: SmsText }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -969,7 +935,8 @@ propel:
   usage_alert:
     _attributes: { phpName: UsageAlert }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
-    alert_amount: { type: INTEGER, size: '11', required: true }
+    alert_amount_min: { type: INTEGER, size: '11', required: true }
+    alert_amount_max: { type: INTEGER, size: '11', required: true }
     sms_alert_message: { type: LONGVARCHAR, required: true }
     sms_active: { type: boolean, required: true }
     email_alert_message: { type: LONGVARCHAR, required: true }
