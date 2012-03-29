@@ -15,7 +15,6 @@
         <link rel="shortcut icon" href="/favicon.ico" />
         <style>
 .error{
-color:!important:#F00000;
 margin-left:150px;
 color:#F00000;
 

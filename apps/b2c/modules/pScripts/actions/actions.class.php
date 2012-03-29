@@ -2753,10 +2753,11 @@ public function executeUsageAlert(sfWebRequest $request) {
                         /**
                          * SMS Sending Code
                          **/
-                       /*if($customer->getUsageAlertSMS()){
+                       if($customer->getUsageAlertSMS()){
                         $customerMobileNumber = $CallCode . $customer->getMobileNumber();
                         $sms_text = $usageAlert->getSmsAlertMessage();
-                        $data = array(
+                        CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,"LandNcall");
+                        /*$data = array(
                             'S'     => 'H',
                             'UN'    => 'zapna1',
                             'P'     => 'Zapna2010',
@@ -2772,12 +2773,12 @@ public function executeUsageAlert(sfWebRequest $request) {
 
                         $queryString = smsCharacter::smsCharacterReplacement($queryString);
 
-                        if ($this->response_text = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString)) {
-                            echo $this->response_text;
+                        if ($this->response_text = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString)) {*/
+                           // echo $this->response_text;
                             $msgSent->setAlertSent(1);
-                        }
-			sleep(0.15);
-                       }*/
+                        //}
+			//sleep(0.15);
+                       }
                        $msgSent->save();
                     }
                     if($usageAlert->getEmailActive()){echo "Email Active";
