@@ -77,7 +77,7 @@ color:#F00000;
                 
                     <li><?php echo link_to(__('Overview'), 'affiliate/report?show_summary=1');?></li>
                     <li><?php echo link_to(__('Register a Customer'), '@customer_registration_step1');?></li>
-                    <li><?php echo link_to(__('Refill'), 'affiliate/refill') ?></li>
+                    <li><?php echo link_to(__('Services'), 'affiliate/refill') ?></li>
                     <li><?php echo link_to(__('Receipts'), 'affiliate/receipts');?></li>
                     
                     <li><?php echo link_to(__('My Earnings'), 'affiliate/report?show_details=1');?></li>
