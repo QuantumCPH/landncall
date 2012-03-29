@@ -2738,7 +2738,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                     $Prod->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
                     $Product = ProductPeer::doSelectOne($Prod);
 
-                    if($usageAlert->getSmsActive()){echo "SMS Active";
+                    if($usageAlert->getSmsActive()){
                         $msgSent = new SmsAlertSent();
                         $msgSent->setCustomerId($customer->getId());
                         $msgSent->setCustomerName($customer->getFirstName());
@@ -2753,7 +2753,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                         /**
                          * SMS Sending Code
                          **/
-                       if($customer->getUsageAlertSMS()){
+                       if($customer->getUsageAlertSMS()){echo "SMS Active";
                         $customerMobileNumber = $CallCode . $customer->getMobileNumber();
                         $sms_text = $usageAlert->getSmsAlertMessage();
                         $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,"LandNcall");
@@ -2781,7 +2781,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                        }
                        $msgSent->save();
                     }
-                    if($usageAlert->getEmailActive()){echo "Email Active";
+                    if($usageAlert->getEmailActive()){
                         $msgSentE = new EmailAlertSent();
                         $msgSentE->setCustomerId($customer->getId());
                         $msgSentE->setCustomerName($customer->getFirstName());
@@ -2793,7 +2793,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                       //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
                         $msgSentE->setMessageDescerption("Current Balance: ".$actual_balance);
                         //$msgSentE->save();
-                      if($customer->getUsageAlertSMS()){
+                      if($customer->getUsageAlertSMS()){echo "Email Active";
                         emailLib::sendCustomerBalanceEmail($customer, $usageAlert->getEmailAlertMessage());
                         $msgSentE->setAlertSent(1);
                       }
