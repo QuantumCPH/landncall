@@ -2737,7 +2737,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                     $Prod->addJoin(ProductPeer::ID, CustomerProductPeer::PRODUCT_ID, Criteria::LEFT_JOIN);
                     $Prod->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
                     $Product = ProductPeer::doSelectOne($Prod);
-
+                    echo $usageAlert->getSmsActive."<br>";
                     if($usageAlert->getSmsActive()){
                         $msgSent = new SmsAlertSent();
                         $msgSent->setCustomerId($customer->getId());
@@ -2752,7 +2752,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                         //$msgSent->save();
                         /**
                          * SMS Sending Code
-                         **/
+                         **/echo $customer->getUsageAlertSMS()."<br>";
                        if($customer->getUsageAlertSMS()){echo "SMS Active";
                         $customerMobileNumber = $CallCode . $customer->getMobileNumber();
                         $sms_text = $usageAlert->getSmsAlertMessage();
