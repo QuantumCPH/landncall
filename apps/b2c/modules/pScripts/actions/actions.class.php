@@ -2737,7 +2737,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                     $Prod->addJoin(ProductPeer::ID, CustomerProductPeer::PRODUCT_ID, Criteria::LEFT_JOIN);
                     $Prod->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
                     $Product = ProductPeer::doSelectOne($Prod);
-                    echo $usageAlert->getSmsActive."<br>";
+                    
                     if($usageAlert->getSmsActive()){
                         $msgSent = new SmsAlertSent();
                         $msgSent->setCustomerId($customer->getId());
@@ -2793,6 +2793,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                       //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
                         $msgSentE->setMessageDescerption("Current Balance: ".$actual_balance);
                         //$msgSentE->save();
+                        echo $customer->getUsageAlertSMS()."<br>";
                       if($customer->getUsageAlertSMS()){echo "Email Active";
                         emailLib::sendCustomerBalanceEmail($customer, $usageAlert->getEmailAlertMessage());
                         $msgSentE->setAlertSent(1);
