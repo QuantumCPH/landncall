@@ -2752,7 +2752,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                         //$msgSent->save();
                         /**
                          * SMS Sending Code
-                         **/echo $customer->getUsageAlertSMS()."<br>";
+                         **/
                        if($customer->getUsageAlertSMS()){echo "SMS Active";
                         $customerMobileNumber = $CallCode . $customer->getMobileNumber();
                         $sms_text = $usageAlert->getSmsAlertMessage();
@@ -2793,8 +2793,8 @@ public function executeUsageAlert(sfWebRequest $request) {
                       //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
                         $msgSentE->setMessageDescerption("Current Balance: ".$actual_balance);
                         //$msgSentE->save();
-                        echo $customer->getUsageAlertSMS()."<br>";
-                      if($customer->getUsageAlertSMS()){echo "Email Active";
+                       
+                      if($customer->getUsageAlertEmail()){echo "Email Active";
                         emailLib::sendCustomerBalanceEmail($customer, $usageAlert->getEmailAlertMessage());
                         $msgSentE->setAlertSent(1);
                       }
