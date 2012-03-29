@@ -2042,16 +2042,16 @@ public function executeAgentOrder(sfRequest $request){
                             $callbacklog->save();
 
                         
-
+                         $number = $countrycode . $mobile_number;
                         $sms_text = "Dear customer
                             We have changed your number from: $mobile_number to: $newnumber, you can now use zerocall. If you have further questions please be free to contact the support on: support@zerocall.com";
-                       // CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
+                        CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
 
                         //Send SMS ----
                         $number = $newMobileNo;
                         $sms_text = "Dear customer
                             We have changed your number from: $mobile_number to: $newnumber, you can now use zerocall. If you have further questions please be free to contact the support on: support@zerocall.com";
-                       //CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
+                       CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
                        
                     }
 //exit;
