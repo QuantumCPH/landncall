@@ -205,6 +205,61 @@
 	</table>
 <?php endif; ?>
 
+
+<?php if (count($number_changes)>0): ?>
+	<h2><?php echo __('Mobile Number Change Earnings') ?></h2>
+	<table cellspacing="0" width="100%"  style="text-align:center;">
+		<tr>
+			<th>&nbsp;</th>
+			<th><?php echo __('Date') ?> </th>
+			<th><?php echo __('Customer name') ?></th>
+			<th><?php echo __('Number Change Amount') ?></th>
+			<th><?php echo __('Commission Earned') ?></th>
+		</tr>
+		<?php
+		$i = 0;
+		foreach($number_changes as $number_change):
+		?>
+		<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+			<td><?php echo ++$i ?>.</td>
+                        <td><?php echo $number_change->getCreatedAt() ?></td>
+			<td><?php
+				$customer = CustomerPeer::retrieveByPK($number_change->getCustomerId());
+				//$customer2 = CustomerPeer::retrieveByPK(72);
+				//echo $customer2->getFirstName();
+				echo sprintf("%s %s", $customer->getFirstName(), $customer->getLastName());
+				?>
+			</td>
+
+
+
+			<td >
+			<?php echo BaseUtil::format_number($number_change->getAmount()) ?>
+			</td>
+                        <?php if ( $number_change->getAmount() == 0) {?>
+                            <td ><?php echo '10.00' ?>
+			</td>
+                        <?php }else{ ?>
+
+			<td ><?php echo BaseUtil::format_number($number_change->getCommissionAmount()) ?>
+			</td>
+                        <?php } ?>
+
+		</tr>
+		<?php endforeach; ?>
+        <tr>
+		<td colspan="3" align="right"><?php echo __('Total Number Change Sales:') ?></td><td colspan="2"> <?php echo $i ?></td>
+		</tr>
+		<tr>
+		<td colspan="3" align="right"><?php echo __('Total Earnings:') ?></td><td colspan="2"> <?php echo $numberChange_earnings; ?></td>
+		</tr>
+		<tr>
+		<td colspan="3" align="right"><?php echo __('Total Commission Earned:') ?> </td><td colspan="2"> <?php echo $numberChange_commission; ?></td>
+		</tr>
+	</table>
+	<?php endif; ?>
+
+
         <?php else: ?>
         <h2><?php echo __('Earning Summary') ?></h2>
 <table cellspacing="0" width="60%" class="summary">

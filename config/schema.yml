@@ -255,6 +255,14 @@ propel:
     description: { type: VARCHAR, size: '200', required: true }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     _indexes: { FK_cdr_log: [from_employee_id], FK_cdr_log_destination_rate: [to_destination_rate_id] }
+  change_number_detail:
+    _attributes: { phpName: ChangeNumberDetail }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    customer_id: { type: INTEGER, size: '11', required: true }
+    old_number: { type: VARCHAR, size: '255', required: true }
+    new_number: { type: VARCHAR, size: '255', required: true }
+    status: { type: boolean, required: true, defaultValue: '1' }
+    created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
   city:
     _attributes: { phpName: City }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }

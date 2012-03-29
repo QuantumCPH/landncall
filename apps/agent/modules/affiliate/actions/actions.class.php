@@ -46,6 +46,7 @@ class affiliateActions extends sfActions
 		$c = new Criteria();
 		$agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession');
 		$c->add(AgentCompanyPeer::ID, $agent_company_id);
+                $agent = AgentCompanyPeer::doSelectOne($c);
 
 		$this->forward404Unless(AgentCompanyPeer::doSelectOne($c));
 
@@ -83,9 +84,18 @@ class affiliateActions extends sfActions
 		$ar = new Criteria();
 		$ar->add(TransactionPeer::AGENT_COMPANY_ID,$agent_company_id);
                 $ar->add(TransactionPeer::DESCRIPTION,'Registrering inkl. taletid', Criteria::NOT_EQUAL);
+                $ar->addAnd(TransactionPeer::DESCRIPTION,'Avgift för förändring nummer (' . $agent->getName() . ')', Criteria::NOT_EQUAL);
 		$ar->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
                 $ar->addAnd(TransactionPeer::TRANSACTION_STATUS_ID,3);
                 $refills = TransactionPeer::doSelect($ar);
+
+
+                $cn = new Criteria();
+                $cn->add(TransactionPeer::AGENT_COMPANY_ID, $agent_company_id);
+                $cn->addAnd(TransactionPeer::DESCRIPTION, 'Avgift för förändring nummer (' . $agent->getName() . ')', Criteria::EQUAL);
+                $cn->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
+                $cn->addAnd(TransactionPeer::TRANSACTION_STATUS_ID, 3);
+                $numberchange = TransactionPeer::doSelect($cn);
 
 //                foreach ($refills as $refill){
 //                    $transactions[$i]=$refill;
@@ -94,6 +104,7 @@ class affiliateActions extends sfActions
 
 		$this->registrations = $registrations;
                 $this->refills = $refills;
+                $this->numberchanges = $numberchange;
                 $this->counter = $i - 1;
 		
   }
@@ -340,6 +351,27 @@ public function executePrintReceipt(sfWebRequest $request)
                        $this->sms_registrations = $sms_registrations;
                        $this->sms_registration_earnings = $sms_registration_earnings;
                        $this->sms_commission_earnings = $sms_commission_earnings;
+
+
+                       $nc = new Criteria();
+            $nc->add(TransactionPeer::AGENT_COMPANY_ID, $agent_company_id);
+            $nc->addAnd(TransactionPeer::DESCRIPTION, 'Avgift för förändring nummer (' . $agent->getName() . ')');
+            $nc->addAnd(TransactionPeer::TRANSACTION_STATUS_ID, 3);
+            $nc->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
+            $number_changes = TransactionPeer::doSelect($nc);
+
+            $numberChange_earnings = 0.00;
+            $numberChange_commission = 0.00;
+            foreach ($number_changes as $number_change) {
+                $numberChange_earnings = $numberChange_earnings + $number_change->getAmount();
+                $numberChange_commission = $numberChange_commission + $number_change->getCommissionAmount();
+            }
+
+
+
+            $this->number_changes = $number_changes;
+            $this->numberChange_earnings = $numberChange_earnings;
+            $this->numberChange_commission = $numberChange_commission;
                        
 ////////// End SMS registrations
                   $this->sf_request = $request;
@@ -1784,4 +1816,279 @@ public function executeAgentOrder(sfRequest $request){
         return sfView::NONE;
    }
 
+
+   public function executeChangenumber(sfWebRequest $request) {
+        changeLanguageCulture::languageCulture($request, $this);
+
+        $mobile = "";
+        $existingNumber = $request->getParameter('existingNumber');
+        $this->newNumber = $request->getParameter('newNumber');
+        $this->countrycode = $request->getParameter('countrycode');
+        if (isset($_REQUEST['existingNumber']) && $_REQUEST['existingNumber'] != "") {
+            $mobile = $_REQUEST['existingNumber'];
+            $product = $_REQUEST['product'];
+            $cc = new Criteria();
+            $cc->add(CustomerPeer::MOBILE_NUMBER, $mobile);
+            $cc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+
+            $c = new Criteria();
+            $c->add(ProductPeer::ID, $product);
+            $product = ProductPeer::doSelectOne($c);
+
+            if (CustomerPeer::doCount($cc) == 0) {
+                $this->getUser()->setFlash('message', 'Customer Does not exist');
+                $this->redirect('affiliate/refill');
+            }
+
+            $customer = CustomerPeer::doSelectOne($cc);
+            if ($customer) {
+                $this->customer = $customer;
+                $this->product = $product;
+            } else {
+                $this->getUser()->setFlash('message', 'Customer Does not exist');
+                $this->redirect('affiliate/refill');
+            }
+        }
+    }
+
+    public function executeNumberProcess(sfWebRequest $request) {
+
+        //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 03/09/11 - Ahtsham
+        changeLanguageCulture::languageCulture($request, $this);
+
+        $this->browser = new Browser();
+        $this->form = new AccountRefillAgent();
+
+        $this->error_msg = "";
+        $this->error_mobile_number = "";
+        $validated = false;
+
+        //get Agent
+        $ca = new Criteria();
+        $ca->add(AgentCompanyPeer::ID, $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+        $agent = AgentCompanyPeer::doSelectOne($ca);
+
+        //get Agent commission package
+        $cpc = new Criteria();
+        $cpc->add(AgentCommissionPackagePeer::ID, $agent->getAgentCommissionPackageId());
+        $commission_package = AgentCommissionPackagePeer::doSelectOne($cpc);
+
+        if ($request->getParameter('balance_error')) {
+            $this->balance_error = $request->getParameter('balance_error');
+        } else {
+            $this->balance_error = 0;
+        }
+
+        if ($request->isMethod('post')) {
+            $mobile_number = $request->getParameter('mobile_number');
+            $productid = $request->getParameter('productid');
+            $extra_refill = $request->getParameter('extra_refill');
+            $newnumber = $request->getParameter('newnumber');
+            $countrycode = $request->getParameter('countrycode');
+
+            $is_recharged = true;
+            $transaction = new Transaction();
+            $order = new CustomerOrder();
+            $customer = NULL;
+            $cc = new Criteria();
+            $cc->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
+            $cc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+           
+            $customer = CustomerPeer::doSelectOne($cc);
+         
+            if ($customer and $mobile_number != "") {
+                $validated = true;
+            } else {
+                $validated = false;
+                $is_recharged = false;
+                $this->error_mobile_number = 'invalid mobile number';
+                return;
+            }
+
+            if ($validated) {
+               
+///////////////////////////////change number process///////////////////////////////////////////////////////////////////
+////////////////////////chena number process end//////////////////////////////////////////////////////////
+
+
+
+
+                $order->setCustomerId($customer->getId());
+                $order->setProductId($productid);
+                $order->setQuantity(1);
+                $order->setExtraRefill($extra_refill);
+                $order->setOrderStatusId(sfConfig::get('app_status_new'));
+               
+                $order->save();
+
+                //create transaction
+                $transaction->setOrderId($order->getId());
+                $transaction->setCustomerId($customer->getId());
+                $transaction->setAmount($extra_refill);
+                //get agent nam
+                $transaction->setDescription('Avgift för förändring nummer (' . $agent->getName() . ')');
+                $transaction->setAgentCompanyId($agent->getId());
+                //assign commission to transaction;
+                
+                /////////////////////////////////////////////////////////////////////////////////////////////////
+                $order->setAgentCommissionPackageId($agent->getAgentCommissionPackageId());
+                    ///////////////////////////commision calculation by agent product ///////////////////////////////////////
+                $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession');
+                $cp = new Criteria;
+                $cp->add(AgentProductPeer::AGENT_ID, $agent_company_id);
+                $cp->add(AgentProductPeer::PRODUCT_ID, $order->getProductId());
+                $agentproductcount = AgentProductPeer::doCount($cp);
+                if ($agentproductcount > 0) {
+                    $p = new Criteria;
+                    $p->add(AgentProductPeer::AGENT_ID, $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+                    $p->add(AgentProductPeer::PRODUCT_ID, $order->getProductId());
+
+                    $agentproductcomesion = AgentProductPeer::doSelectOne($p);
+                    $agentcomession = $agentproductcomesion->getExtraPaymentsShareEnable();
+                }
+
+                ////////   commission setting  through  agent commision//////////////////////
+
+                if (isset($agentcomession) && $agentcomession != "") {
+
+                    if ($agentproductcomesion->getIsExtraPaymentsShareValuePc()) {
+                        $transaction->setCommissionAmount(($transaction->getAmount() / 100) * $agentproductcomesion->getExtraPaymentsShareValue());
+                    } else {
+                        $transaction->setCommissionAmount($agentproductcomesion->getExtraPaymentsShareValue());
+                    }
+                } else {
+                    if ($commission_package->getIsExtraPaymentsShareValuePc()) {
+                        $transaction->setCommissionAmount(($transaction->getAmount() / 100) * $commission_package->getExtraPaymentsShareValue());
+                    } else {
+                        $transaction->setCommissionAmount($commission_package->getExtraPaymentsShareValue());
+                    }
+                }
+                //calculated amount for agent commission
+                if ($agent->getIsPrepaid() == true) {
+                    if ($agent->getBalance() < ($transaction->getAmount() - $transaction->getCommissionAmount())) {
+                        $is_recharged = false;
+                        $balance_error = 1;
+                    }
+                }
+                          // var_dump($customer);exit;
+                if ($is_recharged) {
+
+                    $transaction->save();
+                    if ($customer) {
+                        $newMobileNo=$countrycode.$newnumber;
+                        $customerids = $customer->getId();
+                        $uniqueId=$customer->getUniqueid();
+                        $customer->setMobileNumber($newnumber);
+                        $customer->save();
+
+                        $changenumberdetail = new ChangeNumberDetail();
+                        $changenumberdetail->setOldNumber($mobile_number);
+                        $changenumberdetail->setNewNumber($newnumber);
+                        $changenumberdetail->setCustomerId($customerids);
+                        $changenumberdetail->setStatus(3);
+                        $changenumberdetail->save();
+
+                        $un = new Criteria();
+                        $un->add(CallbackLogPeer::UNIQUEID, $uniqueId);
+                        $un -> addDescendingOrderByColumn(CallbackLogPeer::CREATED);
+                        $activeNumber = CallbackLogPeer::doSelectOne($un);
+
+                           // As each customer have a single account search the previous account and terminate it.
+                            $cp = new Criteria;
+                            $cp->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'a'. $activeNumber->getMobileNumber());
+                            $cp->addAnd(TelintaAccountsPeer::STATUS, 3);
+
+                            if(TelintaAccountsPeer::doCount($cp)>0){
+                                $telintaAccount = TelintaAccountsPeer::doSelectOne($cp);
+                                Telienta::terminateAccount($telintaAccount);
+                            }
+
+                            Telienta::createAAccount($newMobileNo, $customer);
+
+                            $cb = new Criteria;
+                            $cb->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'cb'. $activeNumber->getMobileNumber());
+                            $cb->addAnd(TelintaAccountsPeer::STATUS, 3);
+
+                            if(TelintaAccountsPeer::doCount($cb)>0){
+                                $telintaAccountsCB = TelintaAccountsPeer::doSelectOne($cb);
+                                Telienta::terminateAccount($telintaAccountsCB);
+                            }
+                            Telienta::createCBAccount($newMobileNo, $customer);
+
+                            $getvoipInfo = new Criteria();
+                            $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
+                            $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
+                            if(isset($getvoipInfos)){
+                                $voipnumbers = $getvoipInfos->getNumber() ;
+                                $voipnumbers =  substr($voipnumbers,2);
+                            }else{
+                            }
+
+                            $tc = new Criteria();
+                            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                            $tc->add(TelintaAccountsPeer::STATUS,3);
+                            if(TelintaAccountsPeer::doCount($tc)>0){
+                                $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
+                                Telienta::terminateAccount($telintaAccountR);
+                            }
+
+                            Telienta::createReseNumberAccount($voipnumbers, $customer, $newMobileNo);
+                        }
+
+                            $callbacklog = new CallbackLog();
+                            $callbacklog->setMobileNumber($newMobileNo);
+                            $callbacklog->setuniqueId($uniqueId);
+                            $callbacklog->setcallingCode($countrycode);
+                            $callbacklog->save();
+
+                        
+
+                        $sms_text = "Dear customer
+                            We have changed your number from: $mobile_number to: $newnumber, you can now use zerocall. If you have further questions please be free to contact the support on: support@zerocall.com";
+                       // CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
+
+                        //Send SMS ----
+                        $number = $newMobileNo;
+                        $sms_text = "Dear customer
+                            We have changed your number from: $mobile_number to: $newnumber, you can now use zerocall. If you have further questions please be free to contact the support on: support@zerocall.com";
+                       //CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
+                       
+                    }
+//exit;
+                    if ($agent->getIsPrepaid() == true) {
+                        $agent->setBalance($agent->getBalance() - ($transaction->getAmount() - $transaction->getCommissionAmount()));
+                        $agent->save();
+                        $remainingbalance = $agent->getBalance();
+                        $amount = $transaction->getAmount() - $transaction->getCommissionAmount();
+                        $amount = -$amount;
+                        $aph = new AgentPaymentHistory();
+                        $aph->setAgentId($this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+                        $aph->setCustomerId($transaction->getCustomerId());
+                        $aph->setExpeneseType(6);
+                        $aph->setAmount($amount);
+                        $aph->setRemainingBalance($remainingbalance);
+                        $aph->save();
+                    }
+                    //set status
+                    $order->setOrderStatusId(sfConfig::get('app_status_completed'));
+                    $transaction->setTransactionStatusId(sfConfig::get('app_status_completed'));
+                    $order->save();
+                    $transaction->save();
+                    $this->customer = $order->getCustomer();
+                    emailLib::sendRefillEmail($this->customer, $order);
+                    $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__('%1% Mobile Number is changed successfully  with %2% dkk.', array("%1%" => $customer->getMobileNumber(), "%2%" => $transaction->getAmount())));
+
+                    $this->redirect('affiliate/receipts');
+                } else {
+
+                    $this->balance_error = 1;
+                    $this->getUser()->setFlash('error', 'You do not have enough balance, please recharge');
+                } //end else
+            } else {
+
+                $this->balance_error = 1;
+                $is_recharged = false;
+                $this->error_mobile_number = 'invalid mobile number';
+            }
+        }
 }
