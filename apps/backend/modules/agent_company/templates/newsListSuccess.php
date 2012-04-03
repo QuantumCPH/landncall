@@ -5,15 +5,16 @@
 
 <div id="sf_admin_content">
 
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="sf_admin_list">
+<table width="100%" cellspacing="0" cellpadding="2" class="tblAlign">
+  
 
-    <thead><tr>
-    <td>ID</td>
-	<td>Active?</td>
-    <td>Starting Date</td>
-    <td>Heading</td>
-    <td>Message</td>
-    <td> </td>
+    <thead><tr class="headings">
+<th>ID</th>
+<th>Active</th>
+<th>Starting Date</th>
+<th>Heading</th>
+<th>Message</th>
+<th>Action</th>
     
     </tr>
     </thead><tbody>
