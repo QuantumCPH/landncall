@@ -305,4 +305,40 @@ public function executePaymenthistory(sfWebRequest $request)
         $this->numbername = $this->customer->getUniqueid();
     }
 
+    public function executeEditcustomer(sfWebRequest $request)
+    {
+     if($request->getParameter('id')){
+         $customer = new Criteria();
+         $customer->add(CustomerPeer::ID, $request->getParameter('id'));
+         $this->editCust = CustomerPeer::doSelectOne($customer);
+
+     }
+     if($request->getParameter('customerID')){
+      $dob = $request->getParameter('dy')."-".$request->getParameter('dm')."-".$request->getParameter('dd');
+      $dob = date('Y-m-d',strtotime($dob));
+
+      $usage_email = $request->getParameter('usage_email');
+      ($usage_email=="")?$usage_email = 0:$usage_email = 1;
+
+      $usage_sms = $request->getParameter('usage_sms');
+      ($usage_sms=="")?$usage_sms = 0:$usage_sms = 1;
+
+      $customer = CustomerPeer::retrieveByPK($request->getParameter('customerID'));
+      $customer->setFirstName($request->getParameter('firstName'));
+      $customer->setLastName($request->getParameter('lastName'));
+      $customer->setAddress($request->getParameter('address'));
+      $customer->setCity($request->getParameter('city'));
+      $customer->setPoBoxNumber($request->getParameter('pob'));
+      $customer->setEmail($request->getParameter('email'));
+      $customer->setDateOfBirth($dob);
+      $customer->setUsageAlertEmail($usage_email);
+      $customer->setUsageAlertSMS($usage_sms);
+
+      $customer->save();
+
+          $this->message = "Customer has been updated.";
+
+     }
+    }
+
 }

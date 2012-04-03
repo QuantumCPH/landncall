@@ -1,9 +1,7 @@
 <?php use_helper('I18N') ?>
 <?php use_helper('Number') ?>
 <?php if ($sf_user->hasFlash('message')): ?>
-<div style="color:#FF0000">
- <?php echo __($sf_user->getFlash('message')) ?>
-</div>
+
 <?php endif; ?>
 <?Php if($companyval!=''){?><div id="sf_admin_container">
 	<div id="sf_admin_content">
@@ -14,13 +12,15 @@
     </div>
 <?}?>
 
-<table width="75%" cellspacing="0" cellpadding="0" class="callhistory" style="float: left;">
-
-<tr>
-    <th colspan="4"  style="text-align: left; height: 35px">Payment History</th>
-</tr>
-
-<tr style="background-color: #CCCCFF;color: #000000;">
+<div id="sf_admin_container"><h1><?php echo __('Payment History') ?></h1>
+<?php if ($sf_user->hasFlash('message')): ?>
+<div class="save-ok">
+  <h2><?php echo __($sf_user->getFlash('message')) ?></h2>
+</div>
+<?php endif; ?>
+</div>
+<table width="75%" cellspacing="0" cellpadding="2" class="tblAlign">
+<tr class="headings">
     <th align="left"><?php echo __('Date &amp; Time') ?></th>
     <th align="left"><?php echo __('Company &amp; Name') ?></th>
     <th align="left"><?php echo __('Description') ?></th>
@@ -32,14 +32,14 @@ $incrment=1;
 foreach($transactions as $transaction):
 
 if($incrment%2==0){
-$colorvalue="#FFFFFF";
+$class= 'class="even"';
 }else{
 
-$colorvalue="#EEEEFF";
+$class= 'class="odd"';
 }
 $incrment++;
 ?>
-<tr  style="background-color:<?php echo $colorvalue;?>">
+<tr <?php echo $class;?> >
     <td><?php echo  $transaction->getCreatedAt() ?></td>
     <td><?php echo ($transaction->getCompany()?$transaction->getCompany():'N/A')?></td>
     <td><?php echo $transaction->getDescription() ?></td>
@@ -54,7 +54,7 @@ $incrment++;
 <tr>
     <td colspan="3" align="right"><strong>Total:&nbsp;&nbsp;</strong></td>
     <td><?php echo format_number($amount_total); echo ('SEK'); ?></td>
-    <td>&nbsp;</td>
+    
 </tr>	
 <?php endif; ?>
 </table>

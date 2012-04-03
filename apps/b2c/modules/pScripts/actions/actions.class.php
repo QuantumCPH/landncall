@@ -2716,14 +2716,14 @@ public function executeUsageAlert(sfWebRequest $request) {
 
          foreach ($customers as $customer) {
             $customer_balance = (double) Telienta::getBalance($customer);
-            $actual_balance = $customer_balance;
+            echo $actual_balance = $customer_balance."<br>";
             if($customer_balance < 1){
                 $customer_balance = 0;
             }
             foreach($usageAlerts as $usageAlert){
-                if($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax() && $customer->getFonetCustomerId()!='' ){
+                if($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax() ){
 
-                    $regType =  RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId());
+                    $regType =  RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId());// && $customer->getFonetCustomerId()!=''
                     $referer = $customer->getReferrerId();
                     if (isset($referer) && $referer > 0) {
                         $Cname = new Criteria();
@@ -2737,7 +2737,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                     $Prod->addJoin(ProductPeer::ID, CustomerProductPeer::PRODUCT_ID, Criteria::LEFT_JOIN);
                     $Prod->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
                     $Product = ProductPeer::doSelectOne($Prod);
-
+                    
                     if($usageAlert->getSmsActive()){
                         $msgSent = new SmsAlertSent();
                         $msgSent->setCustomerId($customer->getId());
@@ -2747,16 +2747,17 @@ public function executeUsageAlert(sfWebRequest $request) {
                         $msgSent->setAgentName($comName);
                         $msgSent->setCustomerEmail($customer->getEmail());
                         $msgSent->setMobileNumber($customer->getMobileNumber());
-                        $msgSent->setFonetCustomerId($customer->getFonetCustomerId());
+                      //$msgSent->setFonetCustomerId($customer->getFonetCustomerId());
                         $msgSent->setMessageDescerption("Current Balance: ".$actual_balance);
                         //$msgSent->save();
                         /**
                          * SMS Sending Code
                          **/
-                       if($customer->getUsageAlertSMS()){
+                       if($customer->getUsageAlertSMS()){echo "SMS Active";
                         $customerMobileNumber = $CallCode . $customer->getMobileNumber();
                         $sms_text = $usageAlert->getSmsAlertMessage();
-                        $data = array(
+                        $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,"LandNCall");
+                        /*$data = array(
                             'S'     => 'H',
                             'UN'    => 'zapna1',
                             'P'     => 'Zapna2010',
@@ -2772,11 +2773,11 @@ public function executeUsageAlert(sfWebRequest $request) {
 
                         $queryString = smsCharacter::smsCharacterReplacement($queryString);
 
-                        if ($this->response_text = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString)) {
-                            echo $this->response_text;
-                            $msgSent->setAlertSent(1);
-                        }
-			sleep(0.15);
+                        if ($this->response_text = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString)) {*/
+                           // echo $this->response_text;
+                            if($response){$msgSent->setAlertSent(1);}
+                        //}
+			//sleep(0.15);
                        }
                        $msgSent->save();
                     }
@@ -2789,11 +2790,13 @@ public function executeUsageAlert(sfWebRequest $request) {
                         $msgSentE->setAgentName($comName);
                         $msgSentE->setCustomerEmail($customer->getEmail());
                         $msgSentE->setMobileNumber($customer->getMobileNumber());
-                        $msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
+                      //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
                         $msgSentE->setMessageDescerption("Current Balance: ".$actual_balance);
                         //$msgSentE->save();
-                      if($customer->getUsageAlertSMS()){
-                        emailLib::sendCustomerBalanceEmail($customer, $usageAlert->getEmailAlertMessage());
+                       
+                      if($customer->getUsageAlertEmail()){echo "Email Active";
+                      $message='<img src="http://landncall.zapna.com/images/logo.gif" /><br>'.$usageAlert->getEmailAlertMessage();
+                        emailLib::sendCustomerBalanceEmail($customer, $message);
                         $msgSentE->setAlertSent(1);
                       }
                       $msgSentE->save();

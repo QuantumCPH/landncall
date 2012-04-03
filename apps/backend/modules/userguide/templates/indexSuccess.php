@@ -2,9 +2,9 @@
  <div id="sf_admin_container"><h1><?php echo  __('Userguide List') ?></h1>
       
 <?php if($userguide_list){?>
-     <table width="95%" cellspacing="0" cellpadding="2" class="sf_admin_list" border="1" align="center" style="border-collapse: collapse;">
+     <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign">
   <thead>
-    <tr>
+    <tr class="headings">
       <th><?php echo  __('Id') ?></th>
       <th><?php echo  __('Title') ?></th>
       <th><?php echo  __('Description') ?></th>
@@ -34,7 +34,7 @@
      <p style="font-size: 12px;"><?php echo __('No Result Found') ?></p>
      <?php   
      } ?>
- <div id="sf_admin_header" style="padding-top:10px; padding-left: 35px">
-  <a  class="external_link" href="<?php echo url_for('userguide/new') ?>"><?php echo __('New') ?></a>
- </div>
+ <ul class="sf_admin_actions">
+     <li><a  class="external_link" href="<?php echo url_for('userguide/new') ?>" style="color: #fff; padding: 25px"><?php echo __('New') ?></a></li>
+ </ul>
 </div>

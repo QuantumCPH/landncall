@@ -4,13 +4,11 @@
 	<a href="<?php echo url_for('employee/index').'?company_id='.$company->getId()."&filter=filter" ?>" class="external_link" target="_self">Employees (<?php echo count($company->getEmployees()) ?>)</a>
 	<a href="<?php echo url_for('company/usage').'?company_id='.$company->getId(); ?>" class="external_link" target="_self">Usage</a>
         <a href="<?php echo url_for('company/paymenthistory').'?company_id='.$company->getId().'&filter=filter' ?>" class="external_link" target="_self">Payment History</a>
-        </div></div>
-	 <table>
-                        <tr>
-                            <th align="left" colspan="6"  style="background-color: #CCCCFF;color: #000000;text-align: left;">Call History</th>
+        </div> <h1><?php echo __('Call History'); ?></h1>
+    <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign" border='0'>
 
-                      </tr>
-                    <tr  style="background-color: #CCCCFF;color: #000000;">
+
+        <tr class="headings">
                     <th width="20%"   align="left"><?php echo __('Date &amp; time') ?></th>
                     <th  width="20%"  align="left"><?php echo __('Phone Number') ?></th>
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
@@ -77,4 +75,4 @@ Cb M = Callback mottaga<br/>
 	Cb S = Callback samtal<br/>
 	R = resenummer samtal<br/>
 </td></tr>
-              </table>
+              </table></div>

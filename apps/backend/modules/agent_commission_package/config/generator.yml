@@ -3,6 +3,7 @@ generator:
   param:
     model_class:      AgentCommissionPackage
     theme:            default
+    css:             /sf/sf_admin/css/admin_main.css
     list:
       title: Agent Commission Package List
       display: [name, reg_share_value, is_reg_share_value_pc, extra_payments_share_value, is_extra_payments_share_value_pc]

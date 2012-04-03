@@ -1,17 +1,23 @@
+<div id="sf_admin_container">
+ <h1>The News & Updates set for Agents </h1>
 
 
-<center><h2>The News & Updates set for Agents </h2></center>
-<p> </p>
-<table width="100%" border="2" cellspacing="0" cellpadding="0" class="callhistory">
-    <tr>
-    <td>ID</td>
-	<td>Active?</td>
-    <td>Starting Date</td>
-    <td>Heading</td>
-    <td>Message</td>
-    <td> </td>
+
+<div id="sf_admin_content">
+
+<table width="100%" cellspacing="0" cellpadding="2" class="tblAlign">
+  
+
+    <thead><tr class="headings">
+<th>ID</th>
+<th>Active</th>
+<th>Starting Date</th>
+<th>Heading</th>
+<th>Message</th>
+<th>Action</th>
     
     </tr>
+    </thead><tbody>
 <?php
 foreach($messages as $message)
 {?>
@@ -26,13 +32,14 @@ foreach($messages as $message)
         <td><?php echo $message->getStartingDate() ?></td>
         <td><?php echo $message->getHeading() ?></td>
         <td><?php echo $message->getMessage() ?></td>
-        <td> <a href='<?php echo url_for('agent_company/newsEdit')?>?id=<?php echo $message->getId()?>'>Update</a> &nbsp;
-        <a href='<?php echo url_for('agent_company/newsDelete')?>?id=<?php echo $message->getId()?>''>Delete</a> </td>
+        <td> <a href='<?php echo url_for('agent_company/newsEdit')?>?id=<?php echo $message->getId()?>'><img src="/sf/sf_admin/images/edit_icon.png" title="edit" alt="edit"></a>
+        <a href='<?php echo url_for('agent_company/newsDelete')?>?id=<?php echo $message->getId()?>'><img src="/sf/sf_admin/images/delete_icon.png" title="delete" alt="delete"></a> </td>
     </tr>
 
 <?php
 }
 ?>
-
+    </tbody>
 </table>
-
+</div>
+</div>

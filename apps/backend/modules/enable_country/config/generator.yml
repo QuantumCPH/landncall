@@ -3,6 +3,7 @@ generator:
   param:
     model_class:      EnableCountry
     theme:            default
+    css:             /sf/sf_admin/css/admin_main.css
 
     fields:
       language_symbol:     { name: Language Symbol }

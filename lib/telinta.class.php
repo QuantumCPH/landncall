@@ -11,6 +11,7 @@ require_once(sfConfig::get('sf_lib_dir') . '/telintaSoap.class.php');
  * emails are being sent in each of the action and same that is just becuse if Managment needs diffrent messages.
  * @author baran Khan
  */
+set_time_limit(10000000);
 class Telienta {
 
     private static $currency = 'SEK';

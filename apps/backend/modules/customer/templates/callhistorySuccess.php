@@ -1,115 +1,51 @@
 <?php use_helper('I18N') ?>
 <?php use_helper('Number') ?>
-<style>
-    input.submitBtn {
-      /*background-color:#76B55F;*/
-      background:url('../../zerocall/images/bg-login-btn.jpg') no-repeat;
-      padding:0px 5px 7px 5px;
-      color:#ffffff;
-      border:0px;
-      width:77px;
-      height:28px;
-      margin-top: -6px;
-    }
-</style>
-<script type="text/javascript">
-     jQuery(function() {
-     
- jQuery( "#startdate" ).datepicker({ maxDate: '0m +0w', dateFormat: 'yy-mm-dd' });
- jQuery( "#enddate" ).datepicker({ maxDate: '0m +0w', dateFormat: 'yy-mm-dd'});
 
-
-});
-    </script>
+<div id="sf_admin_container">
 <div class="alert_bar">
     <?php echo __('Call history is a 5 -10 min delay.') ?>
 </div>
-<div class="left-col">
+
 <?php
- $unid = $customer->getUniqueid();
+$unid = $customer->getUniqueid();
 
-      $cuid=$customer->getId();
-                                  $cp = new Criteria();
-                                  $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
-                                  $custmpr = CustomerProductPeer::doSelectOne($cp);
-                                   $p = new Criteria();
-                                   $p->add(ProductPeer::ID, $custmpr->getProductId());
-                                   $products=ProductPeer::doSelectOne($p);
-                                   $pus = 0;
-                                  $pus=$products->getProductCountryUs();
+    $cuid=$customer->getId();
+    $cp = new Criteria();
+    $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
+    $custmpr = CustomerProductPeer::doSelectOne($cp);
+    $p = new Criteria();
+    $p->add(ProductPeer::ID, $custmpr->getProductId());
+    $products=ProductPeer::doSelectOne($p);
+    $pus = 0;
+    $pus=$products->getProductCountryUs();
 
-                                  
+if($pus==1){
 
-if($pus==0){   ?>
-    <form action="" id="searchform" method="POST" name="searchform" style="float: left;" >
-        <div class="dateBox-pt">
-            <div class="formRow-pt" style="float:left;">
-                <label class="datelable">From:</label>
-                <input type="text"   name="startdate" autocomplete="off" id="startdate" style="width: 110px;" value="<?php echo @$fromdate ? $fromdate : date('Y-m-d', strtotime('-15 days')); ?>" />
-            </div>
-            <div class="formRow-pt1" style="float:left;margin-left:7px;">
-                &nbsp;<label class="datelable">To:</label>
-                <input type="text"   name="enddate" autocomplete="off" id="enddate" style="width: 110px;" value="<?php echo @$todate ? $todate : date('Y-m-d'); ?>" />
-                <input type="hidden"   name="id" value="<?php echo $customer->getId(); ?>" />
-            </div>
-            <div class="formRow-pt1" style="float:left;margin-left:7px;">
-
-                <span style="margin-left:10px;"><input type="submit" name="Search" value="Search"  /></span>
-            </div>
-
-        </div>
-
-    </form>
-<?php  } ?>
-    <div style="clear:both;">&nbsp;</div>
-
-    <?php
-   
+?>
 
 
-               if($pus==1){
-    
-    ?>
-
-
-        <table width="70%" cellspacing="0" cellpadding="0" class="callhistory" style="float: left;">
-            <tr>
-                <th align="left"colspan="5">&nbsp; </th>
-
-            </tr>
-            <tr>
-                <th align="left" colspan="5">
-                    <table border="0" cellspacing="4" cellpadding="4" >  <tr  style="background-color: #838483;color:#FFFFFF;padding: 5px;">
-                            <td align="left" ><a  style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="allRegisteredCustomer">View All Customer</a></td>
-                            <td align="left"><a style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="paymenthistory?id=<?php echo $_REQUEST['id']; ?>">Payment History</a></td>
-                            <td align="left"><a style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="customerDetail?id=<?php echo $_REQUEST['id']; ?>">Customer Detail</a></td>
-
-
-                        </tr> </table></th>
-
-            </tr>
-            <tr>
-                <th align="left" colspan="5">&nbsp;</th>
-
-            </tr>
-            <tr>
-                <th align="left" colspan="5"  style="background-color: #CCCCFF;color: #000000;text-align: left;">Call History</th>
-
-            </tr>
-            <tr  style="background-color: #CCCCFF;color: #000000;">
-                <th width="20%"   align="left"><?php echo __('Date &amp; time') ?></th>
-                <th  width="20%"  align="left"><?php echo __('To Number') ?></th>
-                <th  width="20%"  align="left"><?php echo __('From Number') ?></th>
-                <th width="10%"   align="left"><?php echo __('Duration') ?></th>
-                <th width="20%"   align="left"><?php echo __('Cost') ?></th>
-                <th width="10%"   align="left"><?php echo __('Typ') ?></th>
-            </tr>
+    <div id="sf_admin_content">
+        <ul class="customerMenu" style="margin:10px 0;">
+            <li><a class="external_link" href="allRegisteredCustomer">View All Customer</a></li>
+            <li><a class="external_link" href="paymenthistory?id=<?php echo $_REQUEST['id']; ?>">Payment History</a></li>
+            <li><a class="external_link" href="customerDetail?id=<?php echo $_REQUEST['id']; ?>">Customer Detail</a></li>
+        </ul>
+    </div>
+    <h1>Call History</h1>
+    <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign" border='0'>
+    <tr class="headings">
+        <th width="20%"   align="left"><?php echo __('Date &amp; time') ?></th>
+        <th  width="20%"  align="left"><?php echo __('To Number') ?></th>
+        <th  width="20%"  align="left"><?php echo __('From Number') ?></th>
+        <th width="10%"   align="left"><?php echo __('Duration') ?></th>
+        <th width="20%"   align="left"><?php echo __('Cost') ?></th>
+        <th width="10%"   align="left"><?php echo __('Typ') ?></th>
+    </tr>
         <?php
         $customerid = $customer->getId();
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-
 
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
@@ -123,16 +59,15 @@ if($pus==0){   ?>
 
         $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";
         $post_string = '<get-subscriber-call-history trid="37543937592">
-<authentication>
-<username>' . $username . '</username>
-<password>' . $password . '</password>
-</authentication>
-<msisdn>' . $msisdn . '</msisdn>
-<iccid>' . $iccid . '</iccid>
-<start-date>' . $fromdate . '</start-date>
-<end-date>' . $todate . '</end-date>
-</get-subscriber-call-history>';
-
+        <authentication>
+        <username>' . $username . '</username>
+        <password>' . $password . '</password>
+        </authentication>
+        <msisdn>' . $msisdn . '</msisdn>
+        <iccid>' . $iccid . '</iccid>
+        <start-date>' . $fromdate . '</start-date>
+        <end-date>' . $todate . '</end-date>
+        </get-subscriber-call-history>';
 
         $header = array();
         $header[] = "Content-type: text/xml";
@@ -151,8 +86,6 @@ if($pus==0){   ?>
 
 
         $data = curl_exec($ch);
-
-
 
         $pieces = explode("<get-subscriber-call-history-response", $data);
         // piece1
@@ -174,33 +107,55 @@ if($pus==0){   ?>
 
         </table>
 
-    <?php } else { ?>
+    <?php } else {
+        
+    if(isset($_POST['startdate']) && isset($_POST['enddate'])){
+        $fromdate=$_POST['startdate'];
+        $todate=$_POST['enddate'];
+    }else{
+        $tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
+        $fromdate=date("Y-m-d", $tomorrow1);
+        $tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
+        $todate=date("Y-m-d", $tomorrow);
+    }
+        
+        ?>
+    <div id="sf_admin_content">
+                <ul class="customerMenu" style="margin:10px 0;">
+                    <li><a class="external_link" href="allRegisteredCustomer">View All Customer</a></li>
+                    <li><a class="external_link" href="paymenthistory?id=<?php echo $_REQUEST['id']; ?>">Payment History</a></li>
+                    <li><a class="external_link" href="customerDetail?id=<?php echo $_REQUEST['id']; ?>">Customer Detail</a></li>
+                </ul></div>
+        <div class="sf_admin_filters">
+            <form action="" id="searchform" method="POST" name="searchform">
+                <fieldset>
+                    <div class="form-row">
+                        <label><?php echo __('From');?>:</label>
+                        <div class="content">
 
-            <table width="70%" cellspacing="0" cellpadding="0" class="callhistory" style="float: left;">
-                <tr>
-                    <th align="left"colspan="6">&nbsp; </th>
+                            <?php echo input_date_tag('startdate', $fromdate, 'rich=true') ?>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label><?php echo __('To');?>:</label>
+                        <div class="content">
 
-                </tr>
-                <tr>
-                    <th align="left" colspan="6">
-                        <table border="0" cellspacing="4" cellpadding="4" >  <tr  style="background-color: #838483;color:#FFFFFF;padding: 5px;">
-                                <td align="left" ><a  style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="allRegisteredCustomer">View All Customer</a></td>
-                                <td align="left"><a style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="paymenthistory?id=<?php echo $_REQUEST['id']; ?>">Payment History</a></td>
-                                <td align="left"><a style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="customerDetail?id=<?php echo $_REQUEST['id']; ?>">Customer Detail</a></td>
+                            <?php echo input_date_tag('enddate', $todate, 'rich=true') ?>
+                        </div>
+                    </div>
 
+                </fieldset>
 
-                            </tr> </table></th>
+                <ul class="sf_admin_actions">
+                   <li><input type="submit" class="sf_admin_action_filter" value="filter" name="filter"></li>
+                </ul>
+            </form>
+        </div>
+            
+                <h1>Call History</h1>
 
-                </tr>
-                <tr>
-                    <th align="left" colspan="6">&nbsp;</th>
-
-                </tr>
-                <tr>
-                    <th align="left" colspan="6"  style="background-color: #CCCCFF;color: #000000;text-align: left;">Call History</th>
-
-                </tr>
-                <tr  style="background-color: #CCCCFF;color: #000000;">
+                <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign" border='0'>
+                <tr class="headings">
                     <th width="20%"   align="left"><?php echo __('Date &amp; time') ?></th>
                     <th  width="20%"  align="left"><?php echo __('Phone Number') ?></th>
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
@@ -214,28 +169,18 @@ if($pus==0){   ?>
 
 
 
-if(isset($_POST['startdate']) && isset($_POST['enddate'])){
-    $fromdate=$_POST['startdate'];
-    $todate=$_POST['enddate'];
+
+
+
+
+$getFirstnumberofMobile = substr($customer->getMobileNumber(), 0,1);
+if($getFirstnumberofMobile==0){
+    $TelintaMobile = substr($customer->getMobileNumber(), 1);
+    $TelintaMobile =  '46'.$TelintaMobile ;
 }else{
-$tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
-$fromdate=date("Y-m-d", $tomorrow1);
-$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
-$todate=date("Y-m-d", $tomorrow);
+    $TelintaMobile = '46'.$customer->getMobileNumber();
 }
-
-
-
-  $getFirstnumberofMobile = substr($customer->getMobileNumber(), 0,1);
-                if($getFirstnumberofMobile==0){
-                    $TelintaMobile = substr($customer->getMobileNumber(), 1);
-                    $TelintaMobile =  '46'.$TelintaMobile ;
-                }else{
-                    $TelintaMobile = '46'.$customer->getMobileNumber();
-                }
-
-
- $numbername=$customer->getUniqueid();
+$numbername=$customer->getUniqueid();
 
 
 

@@ -20,14 +20,14 @@
                              
 <!--[if IE]>
  <link href="<?php echo stylesheet_path('../zerocall/style/ie-7.css', true) ?>" rel="stylesheet" type="text/css" />
-<?php use_stylesheet('admin.css', '', array('absolute'=>true)) ?>
+<?php //use_stylesheet('admin.css', '', array('absolute'=>true)) ?>
 <?php use_stylesheet('../zerocall/style/styleie.css', 'last', array('absolute'=>true)) ?>
  <?php use_stylesheet('ui-lightness/jquery-ui-1.8.16.custom.css', 'last', array('absolute'=>true)) ?>
 
 <![endif]-->
   <!--[if !IE]><!-->
       <?php use_stylesheet('../zerocall/style/style.css', 'last', array('absolute'=>true)) ?>
-<?php use_stylesheet('admin.css', '', array('absolute'=>true)) ?>
+<?php //use_stylesheet('admin.css', '', array('absolute'=>true)) ?>
 <?php use_stylesheet('../sf/sf_admin/css/main.css', '', array('absolute'=>true)) ?>
   <?php use_stylesheet('js/jquery-ui-1.8.16.custom.min.js', '', array('absolute'=>true)) ?>
   <!--<![endif]-->
