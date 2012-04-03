@@ -840,7 +840,7 @@ class paymentsActions extends sfActions {
                 } else {
 
                     $c = new Criteria();
-                    $c->setLimit(1);
+                    //$c->setLimit(1);
                     $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
                     if (SeVoipNumberPeer::doCount($c) < 10) {
                         emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");

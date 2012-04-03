@@ -2723,6 +2723,12 @@ public function executeUsageAlert(sfWebRequest $request) {
             foreach($usageAlerts as $usageAlert){
                 if($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax() ){
 
+                        $sender = new Criteria();
+                        $sender->add(UsageAlertSenderPeer::ID, $usageAlert->getSenderName());
+                        $senders = UsageAlertSenderPeer::doSelectOne($sender);
+                        echo $senderName = $senders->getName().'<br>';
+
+
                     $regType =  RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId());// && $customer->getFonetCustomerId()!=''
                     $referer = $customer->getReferrerId();
                     if (isset($referer) && $referer > 0) {
@@ -2756,7 +2762,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                        if($customer->getUsageAlertSMS()){echo "SMS Active";
                         $customerMobileNumber = $CallCode . $customer->getMobileNumber();
                         $sms_text = $usageAlert->getSmsAlertMessage();
-                        $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,"LandNCall");
+                        $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,$senderName);
                         /*$data = array(
                             'S'     => 'H',
                             'UN'    => 'zapna1',
@@ -2795,7 +2801,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                         //$msgSentE->save();
                        
                       if($customer->getUsageAlertEmail()){echo "Email Active";
-                      $message='<img src="http://landncall.zapna.com/images/logo.gif" /><br>'.$usageAlert->getEmailAlertMessage();
+                      $message='<img src="http://landncall.zerocall.com/images/logo.gif" /><br>'.$usageAlert->getEmailAlertMessage().'<br>Support<br>'.$senderName;
                         emailLib::sendCustomerBalanceEmail($customer, $message);
                         $msgSentE->setAlertSent(1);
                       }
