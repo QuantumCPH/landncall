@@ -32,7 +32,7 @@ foreach($messages as $message)
         <td><?php echo $message->getStartingDate() ?></td>
         <td><?php echo $message->getHeading() ?></td>
         <td><?php echo $message->getMessage() ?></td>
-        <td> <a href='<?php echo url_for('agent_company/newsEdit')?>?id=<?php echo $message->getId()?>'><img src="/sf/sf_admin/images/edit_icon.png" title="edit" alt="edit"></a> &nbsp;
+        <td> <a href='<?php echo url_for('agent_company/newsEdit')?>?id=<?php echo $message->getId()?>'><img src="/sf/sf_admin/images/edit_icon.png" title="edit" alt="edit"></a>
         <a href='<?php echo url_for('agent_company/newsDelete')?>?id=<?php echo $message->getId()?>'><img src="/sf/sf_admin/images/delete_icon.png" title="delete" alt="delete"></a> </td>
     </tr>
 

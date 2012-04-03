@@ -317,10 +317,10 @@
                 <?php echo link_to('Logout', 'user/logout'); ?>
             </li>
         </ul>
-     </div>
+     </div><div style="clear:both"></div><br>
       <?php endif; ?>
 
-      <div style="clear:both"></div>
+      
     <?php echo $sf_content ?>
     </div> <!--  end wrapper -->
 
