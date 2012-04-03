@@ -1,8 +1,9 @@
-
+<?php use_helper('I18N') ?><?php use_helper('Number') ?><div  id="sf_admin_container">
+<h1><?php echo __('My employee List') ?></h1><br />
 <?php if(isset($_REQUEST['message']) && $_REQUEST['message']=="edit"){  ?>
 
 <?php if ($sf_user->hasFlash('messageEdit')): ?>
-<div style="color:#FF0000">
+<div class="save-ok">
  <?php echo __($sf_user->getFlash('messageEdit')) ?>
 </div>
 <?php endif; ?>
@@ -10,29 +11,19 @@
 
 <?php if(isset($_REQUEST['message']) && $_REQUEST['message']=="add"){  ?>
 <?php if ($sf_user->hasFlash('messageAdd')): ?>
-<div style="color:#FF0000">
+<div class="save-ok">
  <?php echo __($sf_user->getFlash('messageAdd')) ?>
 </div>
 <?php endif; ?>
 <?php  }   ?>
 
 
-
-
-
-
-
-
-<div  id="sf_admin_container">
-<h1>My employee List</h1>
-</div>
-
 <div id="sf_admin_header">
 <a target="_self" class="external_link" href="<?php echo url_for('employee/add'); if(isset($companyval) && $companyval!=""){echo "?company_id=".$companyval;} ?>" style="text-decoration:none;">Create New</a>
 </div>
 <br>
 <?php if ($sf_user->hasFlash('message')): ?>
-<div style="color:#FF0000">
+<div class="save-ok">
  <?php echo __($sf_user->getFlash('message')) ?>
 </div>
 <?php endif; ?>
@@ -40,7 +31,7 @@
 <br/>
 <table width="950"  style="border: 1px;" class="sf_admin_list" cellspacing="0">
   <thead>
-      <tr style="background-color:#CCCCFF;">
+      <tr>
       
       <th align="left"  id="sf_admin_list_th_name">Company</th>
       <th align="left"  id="sf_admin_list_th_name">First name</th>
@@ -69,14 +60,14 @@
 
        <?php
                   if($incrment%2==0){
-                  $colorvalue="#FFFFFF";
+                  $class= 'class="even"';
                   }else{
 
-                      $colorvalue="#EEEEFF";
+                       $class= 'class="odd"';
                       }
  $incrment++;
                   ?>
-    <tr  style="background-color:<?php echo $colorvalue; ?>">
+    <tr <?php echo $class; ?>>
     
       <td><?php  $comid=$employee->getCompanyId();
       if(isset($comid) && $comid!=""){

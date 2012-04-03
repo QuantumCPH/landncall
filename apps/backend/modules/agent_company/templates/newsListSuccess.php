@@ -1,9 +1,13 @@
+<div id="sf_admin_container">
+ <h1>The News & Updates set for Agents </h1>
 
 
-<center><h2>The News & Updates set for Agents </h2></center>
-<p> </p>
-<table width="100%" border="2" cellspacing="0" cellpadding="0" class="callhistory">
-    <tr>
+
+<div id="sf_admin_content">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" class="sf_admin_list">
+
+    <thead><tr>
     <td>ID</td>
 	<td>Active?</td>
     <td>Starting Date</td>
@@ -12,6 +16,7 @@
     <td> </td>
     
     </tr>
+    </thead><tbody>
 <?php
 foreach($messages as $message)
 {?>
@@ -27,12 +32,13 @@ foreach($messages as $message)
         <td><?php echo $message->getHeading() ?></td>
         <td><?php echo $message->getMessage() ?></td>
         <td> <a href='<?php echo url_for('agent_company/newsEdit')?>?id=<?php echo $message->getId()?>'>Update</a> &nbsp;
-        <a href='<?php echo url_for('agent_company/newsDelete')?>?id=<?php echo $message->getId()?>''>Delete</a> </td>
+        <a href='<?php echo url_for('agent_company/newsDelete')?>?id=<?php echo $message->getId()?>'>Delete</a> </td>
     </tr>
 
 <?php
 }
 ?>
-
+    </tbody>
 </table>
-
+</div>
+</div>

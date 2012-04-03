@@ -11,8 +11,7 @@
 
 <form id="sf_admin_form" name="sf_admin_edit_form" method="post" enctype="multipart/form-data" action="Refill">
     <div id="sf_admin_content">
-    <fieldset id="sf_fieldset_none" class="">
-    <table style="padding: 0px;"  id="sf_admin_container" >
+   <table style="padding: 0px;"  id="sf_admin_container" class="tblAlign" cellspacing="0" cellpadding="2" >
     <tr>
         <td style="padding: 5px;">Company:</td>
         <td style="padding: 5px;">
@@ -36,14 +35,13 @@
             </select>-->
         </td>
     </tr>
-    <tr>
-       <td colspan="2">
+
+    </table>
+           <div id="sf_admin_container">
            <ul class="sf_admin_actions">
            <li><input type="submit" name="save" value="save" class="sf_admin_action_save" /></li>
-           </ul>
-      </td>
-    </tr>
-    </table>
-    </fieldset>
+           </ul></div>
+   
+    
     </div>
     </form>

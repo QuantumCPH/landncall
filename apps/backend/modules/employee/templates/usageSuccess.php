@@ -2,12 +2,10 @@
     <div id="sf_admin_content">
         <a href="<?php echo url_for('employee/view').'?id='.$employee->getId() ?>" class="external_link" target="_self">Employee Detail</a>
     </div>
-</div><br>
-<table width="75%">
-    <tr>
-        <th align="left" colspan="6"  style="background-color: #CCCCFF;color: #000000;text-align: left;">Call History</th>
-    </tr>
-    <tr  style="background-color: #CCCCFF;color: #000000;">
+<br>
+<h1><?php echo __('Call History') ?></h1>
+    <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign" border='0'>
+        <tr class="headings">
         <th width="20%"   align="left"><?php echo __('Date &amp; time') ?></th>
         <th  width="20%"  align="left"><?php echo __('Phone Number') ?></th>
         <th width="10%"   align="left"><?php echo __('Duration') ?></th>
@@ -152,4 +150,4 @@ foreach ($callHistoryres->xdr_list as $xdrres) {
             R = resenummer samtal<br/>
         </td>
     </tr>
-</table>
+</table></div>

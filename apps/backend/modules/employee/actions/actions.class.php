@@ -543,13 +543,13 @@ $companyCVR=$compny->getVatNo();
         $mobilenumber = $this->employee->getCountryMobileNumber();
         $ct = new Criteria();
         $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'a'.$mobilenumber);
-        $ct->andAdd(TelintaAccountsPeer::STATUS, 3);
+        $ct->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccount = TelintaAccountsPeer::doSelectOne($ct);
         $this->callHistory = CompanyEmployeActivation::getAccountCallHistory($telintaAccount->getIAccount(), $fromdate, $todate);
         
         $cb = new Criteria();
         $cb->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'cb'.$mobilenumber);
-        $cb->andAdd(TelintaAccountsPeer::STATUS, 3);
+        $cb->addAnd(TelintaAccountsPeer::STATUS, 3);
         $telintaAccountcb = TelintaAccountsPeer::doSelectOne($cb);
         $this->callHistorycb = CompanyEmployeActivation::getAccountCallHistory($telintaAccountcb->getIAccount(), $fromdate, $todate);
 
@@ -563,7 +563,7 @@ $companyCVR=$compny->getVatNo();
 
             $res = new Criteria();
             $res->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-            $res->andAdd(TelintaAccountsPeer::STATUS, 3);
+            $res->addAnd(TelintaAccountsPeer::STATUS, 3);
             $telintaAccountres = TelintaAccountsPeer::doSelectOne($res);
             $this->callHistoryres = CompanyEmployeActivation::getAccountCallHistory($telintaAccountres->getIAccount(), $fromdate, $todate);
         }

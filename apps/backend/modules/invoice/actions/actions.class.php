@@ -701,8 +701,8 @@ return number_format($bill_charge/100.00, 2);
          function executeUsageAlertReport(sfRequest $request)
 	{
 
-                 $billing_start_date = $request->getParameter('start_date');
-		 $billing_end_date  = $request->getParameter('end_date');
+                 $billing_start_date = $request->getParameter('startdate');
+		 $billing_end_date  = $request->getParameter('enddate');
                  $billing_start_date = date("Y-m-d", strtotime($billing_start_date));
 		 $billing_end_date  = date("Y-m-d", strtotime($billing_end_date));
                  //$billing_start_date = $this->formatDate($billing_start_date);

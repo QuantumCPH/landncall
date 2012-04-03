@@ -7,7 +7,7 @@
 
 <?php echo object_input_hidden_tag($company, 'getId') ?>
 
-<fieldset id="sf_fieldset_none" class="">
+<fieldset>
 
 <div class="form-row">
   <?php echo label_for('company[name]', __($labels['company{name}']), 'class="required" ') ?>
