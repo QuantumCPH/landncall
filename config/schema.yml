@@ -862,6 +862,15 @@ propel:
     status: { type: boolean, required: true, defaultValue: '1' }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     alert_sent: { type: boolean, required: false, defaultValue: '0' }
+  sms_log:
+    _attributes: { phpName: SmsLog }
+    id: { type: INTEGER, size: '10', primaryKey: true, autoIncrement: true, required: true }
+    mobile_number: { type: VARCHAR, size: '50', required: true }
+    message: { type: VARCHAR, size: '255', required: true }
+    sender_name: { type: VARCHAR, size: '30', required: true }
+    status: { type: VARCHAR, size: '20', required: true }
+    created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+    customer_id: { type: INTEGER, size: '11', required: false }
   sms_text:
     _attributes: { phpName: SmsText }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
