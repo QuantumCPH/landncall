@@ -16,7 +16,7 @@ class ForumTel {
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
         $tarif_name = "PayAsYouGo-Sub";
-        $xml_data = '<activate-account trid="37543937592">
+        $xml_data = '<activate-account trid="15230658952155811">
 <authentication>
 <username>' . $username . '</username>
 <password>' . $password . '</password>
