@@ -2756,7 +2756,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                        if($customer->getUsageAlertSMS()){echo "SMS Active";
                         $customerMobileNumber = $CallCode . $customer->getMobileNumber();
                         $sms_text = $usageAlert->getSmsAlertMessage();
-                        $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,"LandNcall");
+                        $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,"LandNCall");
                         /*$data = array(
                             'S'     => 'H',
                             'UN'    => 'zapna1',
@@ -2795,7 +2795,8 @@ public function executeUsageAlert(sfWebRequest $request) {
                         //$msgSentE->save();
                        
                       if($customer->getUsageAlertEmail()){echo "Email Active";
-                        emailLib::sendCustomerBalanceEmail($customer, $usageAlert->getEmailAlertMessage());
+                      $message='<img src="http://landncall.zapna.com/images/logo.gif" /><br>'.$usageAlert->getEmailAlertMessage();
+                        emailLib::sendCustomerBalanceEmail($customer, $message);
                         $msgSentE->setAlertSent(1);
                       }
                       $msgSentE->save();

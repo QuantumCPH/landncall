@@ -4,8 +4,8 @@
     <?php include_http_metas() ?>
     <?php include_metas() ?>
     <?php include_title() ?>
-      <?php use_javascript('jquery-ui-1.8.16.custom.min.js', '', array('absolute'=>true)) ?>
-      <?php use_stylesheet('ui-lightness/jquery-ui-1.8.16.custom.css', 'last', array('absolute'=>true)) ?>
+      <?php //use_javascript('jquery-ui-1.8.16.custom.min.js', '', array('absolute'=>true)) ?>
+      <?php //use_stylesheet('ui-lightness/jquery-ui-1.8.16.custom.css', 'last', array('absolute'=>true)) ?>
     <link rel="shortcut icon" href="/favicon.ico" />
     <script type="text/javascript">
     <!--
@@ -59,14 +59,17 @@
   <body>
   	<div id="wrapper">
   	<div id="header">
-  		<p style="float: right">
+         <div class="logo">
   		<?php echo image_tag('/images/zapna_logo_small.png') ?>
-  		</p>
+            </div>
+            <div class="clr"></div>
+
   	</div>
     <?php if($sf_user->isAuthenticated()): ?>
-      <ul class="admin-navigation">
-  		
-      </ul>
+      <div id="slogan">
+           <h1><?php echo __('Admin Portal'); ?></h1>
+        </div>
+     <div class="topNav" align="center">  
       <ul id="sddm">
              <li><a href="#"
                 onmouseover="mopen('m2')"
@@ -97,7 +100,7 @@
                     <?php echo link_to('Registered Customer(Agent)', 'customer/registeredByAgent'); ?>
                     <?php echo link_to('Registered Customer(Agent Link)', 'customer/registeredByAgentLink'); ?>
                     <?php echo link_to('Registered Customer(Agent SMS)', 'customer/registeredBySms'); ?>
-                    <?php echo link_to('Registered Customer(Mobile App)', 'customer/registeredByApp'); ?>
+                    <?php //echo link_to('Registered Customer(Mobile App)', 'customer/registeredByApp'); ?>
                     <?php echo link_to('Partial Registeration(Web)', 'customer/partialRegisteredByWeb'); ?>
                     <?php echo link_to('Partial Registeration(Agent)', 'customer/partialRegisteredByAgent'); ?>
                     <?php echo link_to('Partial Registeration(Agent Link)', 'customer/partialRegisteredByAgentLink'); ?>
@@ -310,10 +313,11 @@
             </li>
 
 
-			<li>
+			<li class="last">
                 <?php echo link_to('Logout', 'user/logout'); ?>
             </li>
         </ul>
+     </div>
       <?php endif; ?>
 
       <div style="clear:both"></div>
@@ -383,7 +387,7 @@ jQuery('#sf_admin_edit_form').validate({
                         jQuery('#error').val("error");
                 }else{
 		//check the username exists or not from ajax
-		jQuery.post("http://stagelc.zerocall.com/backend.php/company/vat",{ vat_no:val } ,function(data)
+		jQuery.post("<?PHP echo sfConfig::get('app_backend_url')?>company/vat",{ vat_no:val } ,function(data)
         {//alert(data);
 		  if(data=='no') //if username not avaiable
 		  {
@@ -431,7 +435,7 @@ jQuery('#sf_admin_edit_form').validate({
                         jQuery('#error').val("error");
                 }else{
                     
-		jQuery.post("http://stagelc.zerocall.com/backend.php/employee/mobile",{ mobile_no: val} ,function(data)
+		jQuery.post("<?PHP echo sfConfig::get('app_backend_url')?>employee/mobile",{ mobile_no: val} ,function(data)
         {
 		  if(data=='no') //if username not avaiable
 		  {

@@ -21,11 +21,10 @@
 </div>
 <?php endif; ?>
 <div id="sf_admin_container">
-<h1>New My employee</h1></div>
+<h1>New My employee</h1>
 <form id="sf_admin_form" name="sf_admin_edit_form" method="post" enctype="multipart/form-data" action="saveEmployee">
     <div id="sf_admin_content">
-    <fieldset id="sf_fieldset_none" class="">
-    <table style="padding: 0px;"  id="sf_admin_container" >
+  <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign" border='0'>
         <tr>
         <td style="padding: 5px;">First name:</td>
         <td style="padding: 5px;"><input type="text" name="first_name" id="employee_first_name"  class="required"  size="25" /></td>
@@ -88,11 +87,9 @@
 <option value="<?php echo $product->getId();   ?>"><?php echo $product->getName()   ?></option>
 <?php   }  ?>
 </select></td>
-                </tr>
+                </tr></table>
               
-   <tr>
-
-       <td colspan="2"><ul class="sf_admin_actions"><input type="hidden" value="" id="error" name="error">
+ <ul class="sf_admin_actions"><input type="hidden" value="" id="error" name="error">
 
   <li>  <input class="sf_admin_action_list" value="list" type="button" onclick="document.location.href='../employee';" /></li>
   <li><input type="submit" name="save" value="save" class="sf_admin_action_save" /> </li>
@@ -100,8 +97,7 @@
 </ul>
            
 
-        </td>
-                </tr>
-    </table></fieldset>
+    
     </div>
 </form>
+</div>

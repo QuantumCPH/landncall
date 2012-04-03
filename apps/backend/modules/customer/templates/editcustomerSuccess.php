@@ -1,51 +1,50 @@
-<form method="post" action="" name="edit" enctype="multipart/form-data" >
+<div id="sf_admin_container"><form method="post" action="" name="edit" enctype="multipart/form-data" >
     <input type="hidden" name="customerID" value="<?php echo $editCust->getId();?>" />
 <p><?php echo @$message;?></p>
-<table border="0" cellspacing="4" cellpadding="4" >  <tr  style="background-color: #838483;color:#FFFFFF;padding: 5px;">
-    <td align="left" ><a  style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="../../allRegisteredCustomer">View All Customer</a></td>
-    <td align="left"><a style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="../../paymenthistory?id=<?php echo $editCust->getId();  ?>">Payment History</a></td>
-    <td align="left"><a style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="../../callhistory?id=<?php echo $editCust->getId();  ?>">Call History</a></td>
-     <td align="left"><a style="background-color: #838483;color:#FFFFFF;text-decoration: none;" href="../../customerDetail?id=<?php echo $editCust->getId();  ?>">Customer Detail</a></td>
- </tr> </table>
-    <table style="margin-left:10px;">
-         <tr >
-             <th colspan="2"> </th>
+<div id="sf_admin_content">
+                <ul class="customerMenu" style="margin:10px 0;">
+                    <li><a class="external_link"  href="../../allRegisteredCustomer">View All Customer</a></li>
+                    <li><a class="external_link"  href="../../paymenthistory?id=<?php echo $editCust->getId();  ?>">Payment History</a></li>
+                    <li><a class="external_link"  href="../../callhistory?id=<?php echo $editCust->getId();  ?>">Call History</a></li>
+                    <li><a class="external_link"  href="../../customerDetail?id=<?php echo $editCust->getId();  ?>">Customer Detail</a></li>
+                </ul></div>
+   <h1>Edit Customer</h1>
+<table width="100%" cellspacing="0" cellpadding="2" class="tblAlign" border='0'>
 
-                      </tr>
-        <tr><td colspan="2"><h2>Edit Customer</h2></td></tr>
+        
         <tr>
-            <td>First Name</td>
-            <td><input type="text" name="firstName" value="<?php echo $editCust->getFirstName();?>" />
+            <td style="padding: 5px;">First Name</td>
+            <td style="padding: 5px;"><input type="text" name="firstName" value="<?php echo $editCust->getFirstName();?>" />
             </td>
         </tr>
         <tr>
-            <td>Last Name</td>
-            <td><input type="text" name="lastName" value="<?php echo $editCust->getLastName();?>" />
+            <td style="padding: 5px;">Last Name</td>
+            <td style="padding: 5px;"><input type="text" name="lastName" value="<?php echo $editCust->getLastName();?>" />
             </td>
         </tr>
         <tr>
-            <td>Address</td>
-            <td><input type="text" name="address" value="<?php echo $editCust->getAddress();?>" />
+            <td style="padding: 5px;">Address</td>
+            <td style="padding: 5px;"><input type="text" name="address" value="<?php echo $editCust->getAddress();?>" />
             </td>
         </tr>
         <tr>
-            <td>City</td>
-            <td><input type="text" name="city" value="<?php echo $editCust->getCity();?>" />
+            <td style="padding: 5px;">City</td>
+            <td style="padding: 5px;"><input type="text" name="city" value="<?php echo $editCust->getCity();?>" />
             </td>
         </tr>
         <tr>
-            <td>PO-BOX Number</td>
-            <td><input type="text" name="pob" value="<?php echo $editCust->getPoBoxNumber();?>" />
+            <td style="padding: 5px;">PO-BOX Number</td>
+            <td style="padding: 5px;"><input type="text" name="pob" value="<?php echo $editCust->getPoBoxNumber();?>" />
             </td>
         </tr>
         <tr>
-            <td>Email</td>
-            <td><input type="text" name="email" value="<?php echo $editCust->getEmail();?>" />
+            <td style="padding: 5px;">Email</td>
+            <td style="padding: 5px;"><input type="text" name="email" value="<?php echo $editCust->getEmail();?>" />
             </td>
         </tr> 
         <tr>
-            <td>Date Of Birth</td>
-            <td>
+            <td style="padding: 5px;">Date Of Birth</td>
+            <td style="padding: 5px;">
                 <?php
                 $dt = "";
                 $dd = "";
@@ -91,32 +90,30 @@
             </td>
         </tr>
         <tr>
-            <td>Usage Email Alerts</td>
-            <td>
+            <td style="padding: 5px;">Usage Email Alerts</td>
+            <td style="padding: 5px;">
                 <input type="checkbox" name="usage_email" <?php if($editCust->getUsageAlertEmail()) echo" checked=checked"?> />&nbsp;
                 
             </td>
         </tr>
         <tr>
-            <td>Usage SMS Alerts</td>
-            <td>
+            <td style="padding: 5px;">Usage SMS Alerts</td>
+            <td style="padding: 5px;">
                 <input type="checkbox" name="usage_sms" <?php if($editCust->getUsageAlertSMS()) echo" checked=checked"?> />&nbsp;
                 
             </td>
         </tr>
+        </table>
+        <ul class="sf_admin_actions"><li><input type="submit" name="submit"  value="update"></li></ul>
         
-        <tr>
-
-            <td colspan="2"><br /><input type="submit" name="submit"  value="update"></td>
-        </tr>
 
 
 
 
-    </table>
+    
 
 
 
 
 
-</form>
+</form></div>

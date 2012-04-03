@@ -3,3 +3,4 @@ generator:
   param:
     model_class:      Manufacturer
     theme:            default
+    css:             /sf/sf_admin/css/admin_main.css

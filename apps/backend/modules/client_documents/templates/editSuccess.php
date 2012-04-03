@@ -42,7 +42,7 @@ $qryObj = mysql_fetch_object($Qry);
 </fieldset>
 
 <ul class="sf_admin_actions">
-  <li><input type="button" onclick="document.location.href='http://landncall.zerocall.com/backend_dev.php/client_documents';" value="list" class="sf_admin_action_list"></li>
+  <li><input type="button" onclick="document.location.href='<?PHP sfConfig::get('backend_url')?>client_documents';" value="list" class="sf_admin_action_list"></li>
   <li><input type="submit" class="sf_admin_action_save" value="update" name="update"></li>
 </ul>
 
