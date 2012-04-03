@@ -7,21 +7,7 @@
         <input type="hidden" name="sf_method" value="put" />
 <?php endif; ?>
   <table cellspacing="0" cellpadding="2" class="tblUserguide" width="100%">
-    <tfoot>
-      <tr>
-        <td class="noBorder"></td><td class="noBorder" align="left"><br />
-            <?php echo $form->renderHiddenFields() ?>
-
-          <a href="<?php echo url_for('userguide/index') ?>" class="user_external_link"><?php echo __('Cancel');?></a>
-          <?php if (!$form->getObject()->isNew()): ?>
-            &nbsp;<?php echo link_to(__('Delete'), 'userguide/delete?id='.$form->getObject()->getId(), array('class'=>'user_external_link','method' => 'delete', 'confirm' => __('Are you sure?'))) ?>
-          <?php endif; ?> &nbsp;
-            <input type="submit" value="<?php echo __('Save');?>" class="saveUserGuide" />
-            <p>&nbsp;</p>
-        </td>
-      </tr>
-    </tfoot>
-    <tbody>
+      <tbody>
       <?php echo $form->renderGlobalErrors() ?>
       <tr>
         <th class="noBorder"><b><?php echo $form['title']->renderLabel() ?></b></th>
@@ -67,6 +53,16 @@
       </tr>
     </tbody>
   </table>
+          <ul class="sf_admin_actions">
+            <?php echo $form->renderHiddenFields() ?>
+
+          <li><a href="<?php echo url_for('userguide/index') ?>" class="user_external_link"><?php echo __('Cancel');?></a></li>
+          <?php if (!$form->getObject()->isNew()): ?>
+            <li><?php echo link_to(__('Delete'), 'userguide/delete?id='.$form->getObject()->getId(), array('class'=>'user_external_link','method' => 'delete', 'confirm' => __('Are you sure?'))) ?>
+          <?php endif; ?></li>
+            <li><input type="submit" value="<?php echo __('Save');?>" class="saveUserGuide" />
+          </li>
+          </ul>
         </div>
 </form>
 <br />

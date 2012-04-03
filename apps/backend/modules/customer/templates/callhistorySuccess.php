@@ -120,7 +120,12 @@ if($pus==1){
     }
         
         ?>
-    
+    <div id="sf_admin_content">
+                <ul class="customerMenu" style="margin:10px 0;">
+                    <li><a class="external_link" href="allRegisteredCustomer">View All Customer</a></li>
+                    <li><a class="external_link" href="paymenthistory?id=<?php echo $_REQUEST['id']; ?>">Payment History</a></li>
+                    <li><a class="external_link" href="customerDetail?id=<?php echo $_REQUEST['id']; ?>">Customer Detail</a></li>
+                </ul></div>
         <div class="sf_admin_filters">
             <form action="" id="searchform" method="POST" name="searchform">
                 <fieldset>
@@ -146,12 +151,7 @@ if($pus==1){
                 </ul>
             </form>
         </div>
-            <div id="sf_admin_content">
-                <ul class="customerMenu" style="margin:10px 0;">
-                    <li><a class="external_link" href="allRegisteredCustomer">View All Customer</a></li>
-                    <li><a class="external_link" href="paymenthistory?id=<?php echo $_REQUEST['id']; ?>">Payment History</a></li>
-                    <li><a class="external_link" href="customerDetail?id=<?php echo $_REQUEST['id']; ?>">Customer Detail</a></li>
-                </ul>
+            
                 <h1>Call History</h1>
 
                 <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign" border='0'>
@@ -173,16 +173,14 @@ if($pus==1){
 
 
 
-  $getFirstnumberofMobile = substr($customer->getMobileNumber(), 0,1);
-                if($getFirstnumberofMobile==0){
-                    $TelintaMobile = substr($customer->getMobileNumber(), 1);
-                    $TelintaMobile =  '46'.$TelintaMobile ;
-                }else{
-                    $TelintaMobile = '46'.$customer->getMobileNumber();
-                }
-
-
- $numbername=$customer->getUniqueid();
+$getFirstnumberofMobile = substr($customer->getMobileNumber(), 0,1);
+if($getFirstnumberofMobile==0){
+    $TelintaMobile = substr($customer->getMobileNumber(), 1);
+    $TelintaMobile =  '46'.$TelintaMobile ;
+}else{
+    $TelintaMobile = '46'.$customer->getMobileNumber();
+}
+$numbername=$customer->getUniqueid();
 
 
 
