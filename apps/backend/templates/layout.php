@@ -456,13 +456,13 @@ jQuery('#sf_admin_edit_form').validate({
 
     jQuery("#sf_admin_form").submit(function() {
       if (jQuery("#error").val() == "error") {
-       
+
         return false;
       }else{
           return true;
       }
-     
-      
+
+
     });
        jQuery("#sf_admin_edit_form").submit(function() {
       if (jQuery("#error").val() == "error") {
