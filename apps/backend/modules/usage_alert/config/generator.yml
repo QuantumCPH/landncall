@@ -6,6 +6,10 @@ generator:
     css:             /sf/sf_admin/css/admin_main.css
     list:
             title: 'Usage Alert'
+            display: [id, alert_amount_min, alert_amount_max, sms_alert_message, sms_active, email_alert_message, email_active, enable_country, usage_alert_sender, status]
+            fields:
+              enable_country: {name: Country}
+              usage_alert_sender: {name: Sender Name}
             object_actions:
               _delete: ~
               _edit: ~
