@@ -56,9 +56,9 @@
           <ul class="sf_admin_actions">
             <?php echo $form->renderHiddenFields() ?>
 
-          <li><a href="<?php echo url_for('userguide/index') ?>" class="user_external_link"><?php echo __('Cancel');?></a></li>
+          <li><a href="<?php echo url_for('userguide/index') ?>" class="user_external_link" style="color: #fff; padding: 25px"><?php echo __('Cancel');?></a></li>
           <?php if (!$form->getObject()->isNew()): ?>
-            <li><?php echo link_to(__('Delete'), 'userguide/delete?id='.$form->getObject()->getId(), array('class'=>'user_external_link','method' => 'delete', 'confirm' => __('Are you sure?'))) ?>
+            <li><?php echo link_to(__('Delete'), 'userguide/delete?id='.$form->getObject()->getId(), array('class'=>'user_external_link','method' => 'delete', 'confirm' => __('Are you sure?'), 'style'=>'color: #fff; padding: 25px')) ?>
           <?php endif; ?></li>
             <li><input type="submit" value="<?php echo __('Save');?>" class="saveUserGuide" />
           </li>
