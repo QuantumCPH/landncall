@@ -6,7 +6,7 @@
 
 ?>
 
-<div id="sf_admin_container"><h1><?php echo  __('Registered Customer by SMS') ?></h1></div>
+<div id="sf_admin_container"><h1><?php echo  __('Registered Customer by Agent SMS') ?></h1></div>
 <table width="75%" cellspacing="0" cellpadding="2" class="tblAlign">
     <thead>
         <tr class="headings">
