@@ -4157,7 +4157,8 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
                
 
                // $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
-    $sm->add(SmsTextPeer::ID, 4);
+                $sm = new Criteria();
+                $sm->add(SmsTextPeer::ID, 4);
                     $smstext = SmsTextPeer::doSelectOne($sm);
                     $sms_text = $smstext->getMessageText();
                 $data = array(
