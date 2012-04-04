@@ -4100,6 +4100,21 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
     $mtnumber = $request->getParameter('from');
     $frmnumberTelinta = $request->getParameter('from');
 	 $text = $request->getParameter('text');
+
+
+          if(isset($number) && $number!=""){
+
+
+        }else{
+echo "Cannot make callback! from number is missing ";
+    }
+     if(isset($text) && $text!=""){
+
+
+        }else{
+echo "Cannot make callback! To number is missing ";
+    }
+
       $caltype=substr($text,0,2);
 
      $numberlength=strlen($number);
@@ -4173,7 +4188,7 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
 
                 $queryString = http_build_query($data, '', '&');
                 $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                echo  "text is missing: Cannot make callback! Will be displayed";
+                echo  "Cannot make callback!";
                 $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
                die;
             }
