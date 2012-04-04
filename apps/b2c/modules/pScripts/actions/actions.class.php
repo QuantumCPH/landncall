@@ -2726,7 +2726,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                         $sender = new Criteria();
                         $sender->add(UsageAlertSenderPeer::ID, $usageAlert->getSenderName());
                         $senders = UsageAlertSenderPeer::doSelectOne($sender);
-                        echo $senderName = $senders->getName().'<br>';
+                        echo $senderName = $senders->getName();
 
 
                     $regType =  RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId());// && $customer->getFonetCustomerId()!=''
