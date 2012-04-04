@@ -40,7 +40,7 @@
             $class= 'class="odd"';
         }
         ?>
-                 <tr>
+                 <tr <?php echo $class;?>>
                   <td><?php  echo $customer->getId() ?></td>
                   <td><?php echo  $customer->getFirstName() ?></td>
                   <td><?php echo  $customer->getLastName() ?></td>
