@@ -4173,7 +4173,7 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
 
                 $queryString = http_build_query($data, '', '&');
                 $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                echo $sms_text;
+                echo  "text is missing: Cannot make callback! Will be displayed";
                 $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
                die;
             }
