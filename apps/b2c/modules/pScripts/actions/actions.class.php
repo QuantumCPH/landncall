@@ -4190,7 +4190,7 @@ die;
 
                 $queryString = http_build_query($data, '', '&');
                 $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                echo  "Cannot make callback!";
+                echo  "Error,Cannot make callback!";
                 $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
                die;
             }
