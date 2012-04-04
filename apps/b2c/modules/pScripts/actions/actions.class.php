@@ -4106,13 +4106,15 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
 
 
         }else{
-echo "Cannot make callback! from number is missing ";
+echo "Error,Cannot make callback! from number is missing";
+die;
     }
      if(isset($text) && $text!=""){
 
 
         }else{
-echo "Cannot make callback! To number is missing ";
+echo "Error,Cannot make callback! To number is missing";
+die;
     }
 
       $caltype=substr($text,0,2);
