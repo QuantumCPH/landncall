@@ -29,7 +29,7 @@ jQuery(function(){
 });
 </script>
 <style>
-    li{float: none!important;}
+    /*li{float: none!important;}*/
     form{padding-left: 0px !important; height: auto; min-height: 0px!important;}
 </style>
 <form method="post"  class="split-form-sign-up" id="refill_form" action="<?php url_for('affiliate/refill') ?>">
