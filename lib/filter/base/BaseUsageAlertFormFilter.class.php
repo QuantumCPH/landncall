@@ -14,7 +14,8 @@ class BaseUsageAlertFormFilter extends BaseFormFilterPropel
   public function setup()
   {
     $this->setWidgets(array(
-      'alert_amount'        => new sfWidgetFormFilterInput(),
+      'alert_amount_min'    => new sfWidgetFormFilterInput(),
+      'alert_amount_max'    => new sfWidgetFormFilterInput(),
       'sms_alert_message'   => new sfWidgetFormFilterInput(),
       'sms_active'          => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'email_alert_message' => new sfWidgetFormFilterInput(),
@@ -25,7 +26,8 @@ class BaseUsageAlertFormFilter extends BaseFormFilterPropel
     ));
 
     $this->setValidators(array(
-      'alert_amount'        => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'alert_amount_min'    => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'alert_amount_max'    => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'sms_alert_message'   => new sfValidatorPass(array('required' => false)),
       'sms_active'          => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'email_alert_message' => new sfValidatorPass(array('required' => false)),
@@ -51,7 +53,8 @@ class BaseUsageAlertFormFilter extends BaseFormFilterPropel
   {
     return array(
       'id'                  => 'Number',
-      'alert_amount'        => 'Number',
+      'alert_amount_min'    => 'Number',
+      'alert_amount_max'    => 'Number',
       'sms_alert_message'   => 'Text',
       'sms_active'          => 'Boolean',
       'email_alert_message' => 'Text',
