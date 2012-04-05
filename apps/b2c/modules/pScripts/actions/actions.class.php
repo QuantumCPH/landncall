@@ -3045,7 +3045,9 @@ $headers .= "From:" . $from;
 
         $dialerIdLenght = strlen($splitedText[0]);
         $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
-
+        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
+        echo "$mobileNumber".":::::".$uniqueId;
+        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
         $c = new Criteria();
         $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
         $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
