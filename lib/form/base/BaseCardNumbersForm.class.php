@@ -18,6 +18,8 @@ class BaseCardNumbersForm extends BaseFormPropel
       'card_price'  => new sfWidgetFormInput(),
       'status'      => new sfWidgetFormInput(),
       'created_at'  => new sfWidgetFormDateTime(),
+      'used_at'     => new sfWidgetFormDateTime(),
+      'customer_id' => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -27,6 +29,8 @@ class BaseCardNumbersForm extends BaseFormPropel
       'card_price'  => new sfValidatorInteger(),
       'status'      => new sfValidatorInteger(),
       'created_at'  => new sfValidatorDateTime(),
+      'used_at'     => new sfValidatorDateTime(),
+      'customer_id' => new sfValidatorInteger(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('card_numbers[%s]');

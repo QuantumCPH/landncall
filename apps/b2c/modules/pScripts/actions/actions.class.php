@@ -2913,114 +2913,334 @@ $headers .= "From:" . $from;
        }
   }
 
- public function executeCardNumber(sfWebRequest $request)
-  {
+ public function executeCardNumber(sfWebRequest $request) {
 
 
- function random($len) {
+        function random($len) {
 
 
-    $return='';
-    for ($i=0;$i<$len;++$i) {
-        if (!isset($urandom)) {
-            if ($i%2==0) mt_srand(time()%2147 * 1000000 + (double)microtime() * 1000000);
-            $rand=48+mt_rand()%64;
-        } else $rand=48+ord($urandom[$i])%64;
+            $return = '';
+            for ($i = 0; $i < $len; ++$i) {
+                if (!isset($urandom)) {
+                    if ($i % 2 == 0)
+                        mt_srand(time() % 2147 * 1000000 + (double) microtime() * 1000000);
+                    $rand = 48 + mt_rand() % 64;
+                } else
+                    $rand=48 + ord($urandom[$i]) % 64;
 
-        if ($rand>57)
-            $rand+=7;
-        if ($rand>90)
-            $rand+=6;
-          if ($rand>80)
-            $rand-=5;
-
-
-        if ($rand==123) $rand=45;
-        if ($rand==124) $rand=46;
-        $return.=$rand;
-    }
-    return $return;
-}
+                if ($rand > 57)
+                    $rand+=7;
+                if ($rand > 90)
+                    $rand+=6;
+                if ($rand > 80)
+                    $rand-=5;
 
 
-   
-$cardcount=0;
-$serial=100000;
-$i=1;
-while($i<=20000)
-  {
-
-
-  $val=random(20);
-
-     $randLength=strlen($val);
-
-if($randLength>9){
-   $resultvalue=(int)$randLength-9;
-
- $rtvalue=mt_rand(1, $resultvalue);
-
-      $resultvalue=substr($val,$rtvalue,9);
-
-$cardnumber="00880".$resultvalue;
-
-}
-
-$CRcardcount=0;
-$cq = new Criteria();
-  	$cq->add(CardNumbersPeer::CARD_NUMBER,$cardnumber);
-       $CRcardcount = CardNumbersPeer::doCount($cq);
-
-if($CRcardcount==1){
-    
-}else{
-
-        $cardTotalcount=0;
-        $ct = new Criteria();
-       $cardTotalcount = CardNumbersPeer::doCount($ct);
-         if($cardTotalcount<10000){
-             $cardcount=0;
-
-  	$c = new Criteria();
-  	$c->add(CardNumbersPeer::CARD_PRICE,50 );
-       $cardcount = CardNumbersPeer::doCount($c);
-            if($cardcount<5000){
-
-                $price=50;
-                    $cr = new CardNumbers();
-                    $cr->setCardNumber($cardnumber);
-                    $cr->setCardPrice($price);
-                    $cr->setCardSerial($serial);
-                    $cr->save();
-                    $serial++;
-
-
-
-
-
-
-            }else{
-
-                    $price=100;
-                    $crp = new CardNumbers();
-                    $crp->setCardNumber($cardnumber);
-                    $crp->setCardPrice($price);
-                    $crp->setCardSerial($serial);
-                   $crp->save();
-                    $serial++;
-
-
+                if ($rand == 123)
+                    $rand = 45;
+                if ($rand == 124)
+                    $rand = 46;
+                $return.=$rand;
             }
- 
-         }else{
-        $i=20000;    
-         }
-}
- $i++;
-  }
-   
+            return $return;
+        }
 
-  	return sfView::NONE;
-  }
+        $cardcount = 0;
+        $serial = 100000;
+        $i = 1;
+        while ($i <= 20000) {
+
+
+            $val = random(20);
+
+            $randLength = strlen($val);
+
+            if ($randLength > 9) {
+                $resultvalue = (int) $randLength - 9;
+
+                $rtvalue = mt_rand(1, $resultvalue);
+
+                $resultvalue = substr($val, $rtvalue, 9);
+
+                $cardnumber = "00880" . $resultvalue;
+            }
+
+            $CRcardcount = 0;
+            $cq = new Criteria();
+            $cq->add(CardNumbersPeer::CARD_NUMBER, $cardnumber);
+            $CRcardcount = CardNumbersPeer::doCount($cq);
+
+            if ($CRcardcount == 1) {
+                
+            } else {
+
+                $cardTotalcount = 0;
+                $ct = new Criteria();
+                $cardTotalcount = CardNumbersPeer::doCount($ct);
+                if ($cardTotalcount < 10000) {
+                    $cardcount = 0;
+
+                    $c = new Criteria();
+                    $c->add(CardNumbersPeer::CARD_PRICE, 50);
+                    $cardcount = CardNumbersPeer::doCount($c);
+                    if ($cardcount < 5000) {
+
+                        $price = 50;
+                        $cr = new CardNumbers();
+                        $cr->setCardNumber($cardnumber);
+                        $cr->setCardPrice($price);
+                        $cr->setCardSerial($serial);
+                        $cr->save();
+                        $serial++;
+                    } else {
+
+                        $price = 100;
+                        $crp = new CardNumbers();
+                        $crp->setCardNumber($cardnumber);
+                        $crp->setCardPrice($price);
+                        $crp->setCardSerial($serial);
+                        $crp->save();
+                        $serial++;
+                    }
+                } else {
+                    $i = 20000;
+                }
+            }
+            $i++;
+        }
+
+
+        return sfView::NONE;
+    }
+  /*
+   * This method will be used for refill via scratch card, Registration and for getting balance exectued by the sim card(customer)
+   *
+   */
+  public function executeSmsRegisterationsmscb(sfWebrequest $request) {
+
+        $urlval = "WCR-CB-" . $request->getURI();
+        $dibsCall = new DibsCall();
+        $dibsCall->setCallurl($urlval);
+        $dibsCall->save();
+        $number = $request->getParameter('from');
+        $text = $this->hextostr($request->getParameter('text'));
+        $splitedText = explode(";", $text);
+        if ($splitedText[3] != sfConfig::get("app_dialer_pin")) {
+            echo "Invalid Request<br/>";
+            $sms = SmsTextPeer::retrieveByPK(7);
+            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+            die;
+        }
+        $mobileNumber = substr($number, 2, strlen($number) - 2);
+        if ($mobileNumber[0] != "0") {
+            $mobileNumber = "0" . $mobileNumber;
+        }
+
+        $dialerIdLenght = strlen($splitedText[0]);
+        $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+
+        $c = new Criteria();
+        $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+        $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
+
+
+        if ($dialerIdLenght == 10) {
+            echo "Register Customer<br/>";
+            //Registration Call, Register Customer In this block
+            $uc = new Criteria();
+            $uc->addAnd(UniqueIdsPeer::STATUS, 0);
+            $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
+
+
+            $cc = new Criteria();
+            $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+            $cc->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+
+            if(CustomerPeer::doCount($cc)>0){
+                $sms = SmsTextPeer::retrieveByPK(10);
+                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                die;
+            }
+
+
+
+
+            if (UniqueIdsPeer::doCount($uc) > 0) {
+                $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+
+                $pc = new Criteria();
+                $pc->add(ProductPeer::SMS_CODE, "50");
+                $product = ProductPeer::doSelectOne($pc);
+
+                $calingcode = sfConfig::get('app_country_code');
+                $password = $this->randomNumbers(6);
+                $customer = new Customer();
+                $customer->setFirstName($mobileNumber);
+                $customer->setLastName($mobileNumber);
+                $customer->setMobileNumber($mobileNumber);
+                $customer->setPassword($password);
+                $customer->setEmail("retail@example.com");
+                $customer->setCountryId(182);
+                $customer->setCity("");
+                $customer->setAddress("");
+                $customer->setTelecomOperatorId(1);
+                $customer->setDeviceId(1474);
+                $customer->setUniqueId($uniqueId);
+                $customer->setCustomerStatusId(3);
+                $customer->setPlainText($password);
+                $customer->setRegistrationTypeId(6);
+                $customer->save();
+
+
+                $order = new CustomerOrder();
+                $order->setProductId($product->getId());
+                $order->setCustomerId($customer->getId());
+                $order->setExtraRefill($order->getProduct()->getInitialBalance());
+                $order->setIsFirstOrder(1);
+                $order->setOrderStatusId(3);
+                $order->save();
+
+                $transaction = new Transaction();
+                $transaction->setAgentCompanyId($customer->getReferrerId());
+                $transaction->setAmount($order->getProduct()->getPrice());
+                $transaction->setDescription('Registration of Retail');
+                $transaction->setOrderId($order->getId());
+                $transaction->setCustomerId($customer->getId());
+                $transaction->setTransactionStatusId(3);
+                $transaction->save();
+
+                $customer_product = new CustomerProduct();
+                $customer_product->setCustomer($order->getCustomer());
+                $customer_product->setProduct($order->getProduct());
+                $customer_product->save();
+
+
+
+                $callbacklog = new CallbackLog();
+                $callbacklog->setMobileNumber($number);
+                $callbacklog->setuniqueId($uniqueId);
+                $callbacklog->setCheckStatus(3);
+                $callbacklog->save();
+
+                if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
+                    $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
+                    $availableUniqueId->setStatus(1);
+                    $availableUniqueId->setRegistrationTypeId(3);
+                    $availableUniqueId->save();
+                    Telienta::createAAccount($number, $customer);
+                }
+                $sms = SmsTextPeer::retrieveByPK(9);
+                $smsText = $sms->getMessageText();
+                $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
+                CARBORDFISH_SMS::Send($number, $smsText);
+                emailLib::sendCustomerRegistrationViaRetail($customer, $order);
+            } else {
+                $sms = SmsTextPeer::retrieveByPK(6);
+                $smsText = $sms->getMessageText();
+                CARBORDFISH_SMS::Send($number, $smsText);
+                die;
+            }
+
+
+
+
+            //End of Registration.
+        } else {
+            if (CustomerPeer::doCount($c) > 0) {
+                $command = substr($splitedText[0], 0, 2);
+                $command = strtolower($command);
+                $customer = CustomerPeer::doSelectOne($c);
+                if ($command == "cb") {
+                    echo "Check Balance Request<br/>";
+                    $balance = Telienta::getBalance($customer);
+                    $sms = SmsTextPeer::retrieveByPK(5);
+                    $smsText = $sms->getMessageText();
+                    $smsText = str_replace("(balance)", $balance, $smsText);
+                    CARBORDFISH_SMS::Send($number, $smsText);
+                } elseif ($command == "re") {
+                    echo "Recharge Request<br/>";
+                    $cc = new Criteria();
+                    $cc->add(CardNumbersPeer::CARD_NUMBER, $splitedText[4]);
+                    $cc->addAnd(CardNumbersPeer::STATUS, 0);
+                    if (CardNumbersPeer::doCount($cc) == 1) {
+                        $scratchCard = CardNumbersPeer::doSelectOne($cc);
+                        //new order
+                        $order = new CustomerOrder();
+                        $customer_products = $customer->getProducts();
+                        $order->setProduct($customer_products[0]);
+                        $order->setCustomer($customer);
+                        $order->setQuantity(1);
+                        $order->setExtraRefill($scratchCard->getCardPrice());
+                        $order->save();
+
+                        //new transaction
+                        $transaction = new Transaction();
+                        $transaction->setAmount($scratchCard->getCardPrice());
+                        $transaction->setDescription('Refill Via Pin Sr #' . $scratchCard->getCardSerial());
+                        $transaction->setOrderId($order->getId());
+                        $transaction->setCustomerId($order->getCustomerId());
+                        $transaction->save();
+
+                        if (Telienta::recharge($customer, $scratchCard->getCardPrice())) {
+                            $scratchCard->setStatus(1);
+                            $scratchCard->setUsedAt(date("Y-m-d H:i:s"));
+                            $scratchCard->setCustomerId($customer->getId());
+                            $scratchCard->save();
+                            $order->setOrderStatusId(3);
+                            $order->save();
+                            $transaction->setTransactionStatusId(3);
+                            $transaction->save();
+
+                            // Send Customer Balance SMS after succesful recharge
+                            $balance = Telienta::getBalance($customer);
+                            $sms = SmsTextPeer::retrieveByPK(5);
+                            $smsText = $sms->getMessageText();
+                            $smsText = str_replace("(balance)", $balance, $smsText);
+                            CARBORDFISH_SMS::Send($number, $smsText);
+                            // Send email to Support after Recharge
+                            emailLib::sendRetailRefillEmail($customer, $order);
+                        } else {
+                            $sms = SmsTextPeer::retrieveByPK(8);
+                            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                        }
+                    } else {
+                        echo "CARD ALREADY USED<br/>";
+                        $sms = SmsTextPeer::retrieveByPK(7);
+                        CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                    }
+
+
+                    die;
+                }
+            } else {
+                $sms = SmsTextPeer::retrieveByPK(7);
+                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                die;
+            }
+        }
+
+
+        return sfView::NONE;
+    }
+
+    private function hextostr($hex) {
+        $str = '';
+        for ($i = 0; $i < strlen($hex) - 1; $i+=2) {
+            $str .= chr(hexdec($hex[$i] . $hex[$i + 1]));
+        }
+        return $str;
+    }
+
+    private function randomNumbers($length) {
+        $random = "";
+        srand((double) microtime() * 1000000);
+        $data = "0123456789";
+        for ($i = 0; $i < $length; $i++) {
+            $random .= substr($data, (rand() % (strlen($data))), 1);
+        }
+        return $random;
+    }
+
 
 }

@@ -34,3 +34,4 @@ all:
    - { module: payments,  action: signup}
    - { module: payments,  action: accept}
    - { module: payments,  action: reject}
+ dialer_pin: 9998889999

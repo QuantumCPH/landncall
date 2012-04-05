@@ -235,8 +235,10 @@ propel:
     card_number: { type: VARCHAR, size: '255', required: true }
     card_serial: { type: VARCHAR, size: '255', required: true }
     card_price: { type: INTEGER, size: '11', required: true }
-    status: { type: INTEGER, size: '11', required: true, defaultValue: '1' }
+    status: { type: INTEGER, size: '11', required: true, defaultValue: '0' }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+    used_at: { type: TIMESTAMP, required: true, defaultValue: '0000-00-00 00:00:00' }
+    customer_id: { type: INTEGER, size: '11', required: false }
   cbf:
     _attributes: { phpName: Cbf }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
