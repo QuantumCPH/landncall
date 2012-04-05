@@ -266,7 +266,7 @@
                         <?php echo link_to('products', 'product/index') ?>
                         <?php echo link_to('Language Type', 'enable_country/index') ?>
                         <?php echo link_to('Cities', 'city/index') ?>
-                        <?php echo link_to('SMS TEXT', 'sms_text/index') ?>
+                        <?php //echo link_to('SMS TEXT', 'sms_text/index') ?>
                         <?php echo link_to('Usage Alert', 'usage_alert/index') ?>
                         <?php echo link_to('Usage Alert Sender', 'usage_alert_sender/index') ?>
                         <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
