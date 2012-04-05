@@ -19,6 +19,8 @@ class BaseCardNumbersFormFilter extends BaseFormFilterPropel
       'card_price'  => new sfWidgetFormFilterInput(),
       'status'      => new sfWidgetFormFilterInput(),
       'created_at'  => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
+      'used_at'     => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
+      'customer_id' => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -27,6 +29,8 @@ class BaseCardNumbersFormFilter extends BaseFormFilterPropel
       'card_price'  => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'status'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'created_at'  => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'used_at'     => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'customer_id' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('card_numbers_filters[%s]');
@@ -50,6 +54,8 @@ class BaseCardNumbersFormFilter extends BaseFormFilterPropel
       'card_price'  => 'Number',
       'status'      => 'Number',
       'created_at'  => 'Date',
+      'used_at'     => 'Date',
+      'customer_id' => 'Number',
     );
   }
 }
