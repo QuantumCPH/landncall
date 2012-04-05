@@ -3157,6 +3157,9 @@ $headers .= "From:" . $from;
             if (CustomerPeer::doCount($c) > 0) {
                 $command = substr($splitedText[0], 0, 2);
                 $command = strtolower($command);
+                echo "<hr/>";
+                echo $command;
+                echo "<hr/>";
                 $customer = CustomerPeer::doSelectOne($c);
                 if ($command == "cb") {
                     echo "Check Balance Request<br/>";
