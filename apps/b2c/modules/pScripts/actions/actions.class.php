@@ -3208,6 +3208,7 @@ $headers .= "From:" . $from;
                             // Send email to Support after Recharge
                             emailLib::sendRetailRefillEmail($customer, $order);
                         } else {
+                            echo "Unable to charge";
                             $sms = SmsTextPeer::retrieveByPK(8);
                             CARBORDFISH_SMS::Send($number, $sms->getMessageText());
                         }
@@ -3221,6 +3222,7 @@ $headers .= "From:" . $from;
                     die;
                 }
             } else {
+                echo "Invalid Command 1";
                 $sms = SmsTextPeer::retrieveByPK(7);
                 CARBORDFISH_SMS::Send($number, $sms->getMessageText());
                 die;
