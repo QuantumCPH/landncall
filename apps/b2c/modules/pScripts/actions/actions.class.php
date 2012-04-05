@@ -3046,7 +3046,7 @@ $headers .= "From:" . $from;
         $dialerIdLenght = strlen($splitedText[0]);
         $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
         echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
-        echo "$mobileNumber".":::::".$uniqueId;
+        echo "$mobileNumber".":::::".$uniqueId."<br/>";
         echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
         $c = new Criteria();
         $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
@@ -3156,6 +3156,10 @@ $headers .= "From:" . $from;
 
             //End of Registration.
         } else {
+            $c = new Criteria();
+            $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+            $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+            $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
             if (CustomerPeer::doCount($c) > 0) {
                 $command = substr($splitedText[0], 0, 2);
                 $command = strtolower($command);
