@@ -91,10 +91,12 @@ class customerActions extends autocustomerActions
         ForumTel::reSetBalance($customer_id);
 
          $tc = new Criteria();
-            $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
+            $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
             $usnumber = UsNumberPeer::doSelectOne($tc);
             $usnumber->setActiveStatus(1);
+            $usnumber->setUsMobileNumber(null);
             $usnumber->setCustomerId(null);
+
              $usnumber->save();
 
 
