@@ -21,7 +21,7 @@ class BaseCustomerForm extends BaseFormPropel
       'mobile_number'            => new sfWidgetFormInput(),
       'device_id'                => new sfWidgetFormPropelChoice(array('model' => 'Device', 'add_empty' => true)),
       'email'                    => new sfWidgetFormInput(),
-      'password'                 => new sfWidgetFormInputPassword(),
+      'password'                 => new sfWidgetFormInput(),
       'is_newsletter_subscriber' => new sfWidgetFormInputCheckbox(),
       'created_at'               => new sfWidgetFormDateTime(),
       'updated_at'               => new sfWidgetFormDateTime(),
@@ -46,6 +46,8 @@ class BaseCustomerForm extends BaseFormPropel
       'to_date'                  => new sfWidgetFormDate(),
       'from_date'                => new sfWidgetFormDate(),
       'i_customer'               => new sfWidgetFormInput(),
+      'usage_alert_sms'          => new sfWidgetFormInput(),
+      'usage_alert_email'        => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -83,6 +85,8 @@ class BaseCustomerForm extends BaseFormPropel
       'to_date'                  => new sfValidatorDate(array('required' => false)),
       'from_date'                => new sfValidatorDate(array('required' => false)),
       'i_customer'               => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'usage_alert_sms'          => new sfValidatorInteger(array('required' => false)),
+      'usage_alert_email'        => new sfValidatorInteger(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('customer[%s]');
