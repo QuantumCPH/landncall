@@ -2173,7 +2173,7 @@ class customerActions extends sfActions {
                 //echo "<br/>";
                 //This is for Recharge the Customer
                 $MinuesOpeningBalance = $OpeningBalance * 3;
-                Telienta::recharge($this->customer, $OpeningBalance);
+                Telienta::recharge($this->customer, $OpeningBalance);echo "heelo";exit;
                 $email2 = new DibsCall();
                 $email2->setCallurl('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $unidc . '&amount=' . $OpeningBalance . '&type=customer');
                 $email2->save();
