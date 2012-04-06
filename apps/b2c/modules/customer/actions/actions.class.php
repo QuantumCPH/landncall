@@ -839,7 +839,7 @@ class customerActions extends sfActions {
     public function executeRefillAccept(sfWebRequest $request) {
 
 
-        $this->redirect('customer/dashboard');
+//        /$this->redirect('customer/dashboard');
     }
 
     public function executeRefillReject(sfWebRequest $request) {
