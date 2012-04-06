@@ -3090,7 +3090,7 @@ $headers .= "From:" . $from;
                 $customer->setMobileNumber($mobileNumber);
                 $customer->setPassword($password);
                 $customer->setEmail("retail@example.com");
-                $customer->setCountryId(182);
+                $customer->setCountryId(2);
                 $customer->setCity("");
                 $customer->setAddress("");
                 $customer->setTelecomOperatorId(1);
@@ -3138,6 +3138,7 @@ $headers .= "From:" . $from;
                     $availableUniqueId->setRegistrationTypeId(3);
                     $availableUniqueId->save();
                     Telienta::createAAccount($number, $customer);
+                    Telienta::createCBAccount($number, $customer);
                 }
                 $sms = SmsTextPeer::retrieveByPK(9);
                 $smsText = $sms->getMessageText();
