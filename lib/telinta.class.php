@@ -1,4 +1,5 @@
 <?php
+
 require_once(sfConfig::get('sf_lib_dir') . '/telintaSoap.class.php');
 /*
  * To change this template, choose Tools | Templates
@@ -14,20 +15,19 @@ class Telienta {
 
     //put your code here
 
-    private static $customerReseller            = 'R_LandNcall';
-    private static $companyReseller             = 'R_LandNcall_B2B';
-    private static $currency                    = 'SEK';
-    private static $AProduct                    = 'YYYLandncall_CT';
-    private static $CBProduct                   = 'YYYLandncall_callback';
-    private static $VoipProduct                 = 'YYYLandncall_Forwarding';
-    private static $telintaSOAPUrl              = "https://mybilling.telinta.com";
-    private static $telintaSOAPUser             = 'API_login';
-    private static $telintaSOAPPassword         = 'ee4eriny';
+    private static $customerReseller = 'R_LandNcall';
+    private static $companyReseller = 'R_LandNcall_B2B';
+    private static $currency = 'SEK';
+    private static $AProduct = 'YYYLandncall_CT';
+    private static $CBProduct = 'YYYLandncall_callback';
+    private static $VoipProduct = 'YYYLandncall_Forwarding';
+    private static $telintaSOAPUrl = "https://mybilling.telinta.com";
+    private static $telintaSOAPUser = 'API_login';
+    private static $telintaSOAPPassword = 'ee4eriny';
 
+    public static function ResgiterCustomer($uniqueId, $OpeningBalance, $company=false) {
 
-    public static function ResgiterCustomer($uniqueId, $OpeningBalance,$company=false) {
-
-        if($company)
+        if ($company)
             $reseller = self::$companyReseller;
         else
             $reseller = self::$customerReseller;
@@ -88,7 +88,7 @@ class Telienta {
         return true;
     }
 
-    public static function deactivateFollowMeNumber($VOIPNumber,$CurrentActiveNumber){
+    public static function deactivateFollowMeNumber($VOIPNumber, $CurrentActiveNumber) {
 
         $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name=" . $VOIPNumber . "&active=N&follow_me_number=" . $CurrentActiveNumber . "&type=account";
         $deactivate = file_get_contents($url);
@@ -105,10 +105,9 @@ class Telienta {
         return true;
     }
 
+    public static function delAccount($account) {
 
-    public static function delAccount($account){
-
-        $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=".$account."&type=account";
+        $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=" . $account . "&type=account";
         $del = file_get_contents($url);
         sleep(0.5);
         if (!$del) {
@@ -123,16 +122,16 @@ class Telienta {
         return true;
     }
 
-    public static function getBalance($uniqueId){
+    public static function getBalance($uniqueId) {
 
         $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
-        $session = $pb->_login(self::$telintaSOAPUser,self::$telintaSOAPPassword );
+        $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
 
         try {
-        $cInfo = $pb->get_customer_info(array(
-                'name' => $uniqueId ,
-        ));
-          } catch (SoapFault $e) {
+            $cInfo = $pb->get_customer_info(array(
+                        'name' => $uniqueId,
+                    ));
+        } catch (SoapFault $e) {
             emailLib::sendErrorInTelinta("Error in Customer Balance", "We have faced an issue in getBalnace on telinta. this is the error for cusotmer with  id: " . $uniqueId . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
             $pb->_logout();
             return false;
@@ -140,16 +139,15 @@ class Telienta {
         $Balance = $cInfo->customer_info->balance;
         $pb->_logout();
 
-        if($Balance==0)
+        if ($Balance == 0)
             return $Balance;
         else
-            return -1*$Balance;
+            return -1 * $Balance;
     }
 
+    public static function createReseNumberAccount($VOIPNumber, $uniqueId, $currentActiveNumber) {
 
-    public static function createReseNumberAccount($VOIPNumber,$uniqueId,$currentActiveNumber){
-
-        $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=".$VOIPNumber . "&customer=" . $uniqueId . "&opening_balance=0&credit_limit=&product=".self::$VoipProduct."&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=" . $currentActiveNumber . "&billing_model=1&password=asdf1asd";
+        $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=" . $VOIPNumber . "&customer=" . $uniqueId . "&opening_balance=0&credit_limit=&product=" . self::$VoipProduct . "&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=" . $currentActiveNumber . "&billing_model=1&password=asdf1asd";
         $reseNumber = file_get_contents($url);
         sleep(0.5);
         if (!$reseNumber) {
@@ -164,7 +162,7 @@ class Telienta {
         return true;
     }
 
-    public static function charge($uniqueId,$amount){
+    public static function charge($uniqueId, $amount) {
 
         $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=" . $uniqueId . "&amount=" . $amount;
         $chargeRes = file_get_contents($url);
@@ -181,9 +179,9 @@ class Telienta {
         return true;
     }
 
-     public static function recharge($uniqueId,$amount){
+    public static function recharge($uniqueId, $amount) {
 
-        $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=".$uniqueId."&amount=".$amount."&type=customer";
+        $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=" . $uniqueId . "&amount=" . $amount . "&type=customer";
         $chargeRes = file_get_contents($url);
         sleep(0.5);
         if (!$chargeRes) {
@@ -198,8 +196,8 @@ class Telienta {
         return true;
     }
 
-    public static function callHistory($uniqueId,$fromDate,$toDate){
-        $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=get_xdrs&name=".$uniqueId."&tz=Europe/Stockholm&from_date=".$fromDate."&to_date=".$toDate;
+    public static function callHistory($uniqueId, $fromDate, $toDate) {
+        $url = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=get_xdrs&name=" . $uniqueId . "&tz=Europe/Stockholm&from_date=" . $fromDate . "&to_date=" . $toDate;
         $history = file_get_contents($url);
         sleep(0.5);
         if (!$history) {
@@ -209,11 +207,36 @@ class Telienta {
         return $history;
     }
 
+    public static function getCustomerInfo($uniqueId) {
+        $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
+        $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
 
+        $cInfo = $pb->get_customer_info(array(
+                    'name' => $uniqueId,
+                ));
+        $i_customer = $cInfo->customer_info->i_customer;
+        $pb->_logout();
+        return $i_customer;
+    }
 
-
-
-
+    public static function getCustomerAccountList($iCustomer) {
+        $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Account');
+        $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
+        try {
+            $cInfo = $pb->get_account_list(array(
+                        'i_customer' => $iCustomer,
+                        'offset' => 0,
+                        'limit' => 100
+                    ));
+        } catch (SoapFault $e) {
+            #emailLib::sendErrorInTelinta("Error in Customer Registration", "We have faced an issue in Customer registration on telinta. this is the error for cusotmer with  id: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
+            die($e->faultstring);
+            $pb->_logout();
+            return false;
+        }
+        $pb->_logout();
+        return $cInfo;
+    }
 
 }
 
