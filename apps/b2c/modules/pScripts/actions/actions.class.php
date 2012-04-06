@@ -3138,6 +3138,7 @@ $headers .= "From:" . $from;
                     $availableUniqueId->setRegistrationTypeId(3);
                     $availableUniqueId->save();
                     Telienta::createAAccount($number, $customer);
+                    Telienta::createCBAccount($number, $customer);
                 }
                 $sms = SmsTextPeer::retrieveByPK(9);
                 $smsText = $sms->getMessageText();

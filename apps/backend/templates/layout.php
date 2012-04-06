@@ -91,7 +91,7 @@
             <li>
                 <a href="#"
                 onmouseover="mopen('m5')"
-                onmouseout="mclosetime()">Landncall</a>
+                onmouseout="mclosetime()">B2C</a>
                 <div id="m5"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
@@ -200,7 +200,7 @@
             <li>
                 <a href="#"
                 onmouseover="mopen('m4')"
-                onmouseout="mclosetime()">Security</a>
+                onmouseout="mclosetime()">Admin Users</a>
                 <div id="m4"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
