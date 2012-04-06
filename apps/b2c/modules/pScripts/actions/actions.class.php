@@ -3135,7 +3135,7 @@ $headers .= "From:" . $from;
                 if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
                     $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
                     $availableUniqueId->setStatus(1);
-                    $availableUniqueId->setRegistrationTypeId(3);
+                    $availableUniqueId->setRegistrationTypeId(4);
                     $availableUniqueId->save();
                     Telienta::createAAccount($number, $customer);
                     Telienta::createCBAccount($number, $customer);
