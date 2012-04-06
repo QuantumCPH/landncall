@@ -4,3 +4,7 @@ generator:
     model_class:      UsageAlertSender
     theme:            default
     css:             /sf/sf_admin/css/admin_main.css
+    list:
+            title: 'Low Credit Alert Sender'
+    edit:
+            title: 'Edit Low Credit Alert Sender'

@@ -255,10 +255,10 @@
                         <?php
                         // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
                          //echo link_to('<b>Zerocall Setting</b>', '') ?>
-                        <a href="javascript:;"><b>LandnCall Setting</b></a>
-                        <?php echo link_to('Mobile Models', 'device/index'); ?>
-                        <?php echo link_to('Mobile Brands', 'manufacturer/index'); ?>
-                        <?php echo link_to('Mobile Operator', 'telecom_operator/index') ?>
+<!--                        <a href="javascript:;"><b>LandnCall Setting</b></a>-->
+                        <?php //echo link_to('Mobile Models', 'device/index'); ?>
+                        <?php //echo link_to('Mobile Brands', 'manufacturer/index'); ?>
+                        <?php //echo link_to('Mobile Operator', 'telecom_operator/index') ?>
                         <?php //echo link_to('Postal charges', 'postal_charges/index') ?>
                         <?php
                         // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
