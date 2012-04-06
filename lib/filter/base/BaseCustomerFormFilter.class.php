@@ -46,6 +46,7 @@ class BaseCustomerFormFilter extends BaseFormFilterPropel
       'ticketval'                => new sfWidgetFormFilterInput(),
       'to_date'                  => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
       'from_date'                => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
+      'i_customer'               => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -81,6 +82,7 @@ class BaseCustomerFormFilter extends BaseFormFilterPropel
       'ticketval'                => new sfValidatorPass(array('required' => false)),
       'to_date'                  => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'from_date'                => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
+      'i_customer'               => new sfValidatorPass(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('customer_filters[%s]');
@@ -131,6 +133,7 @@ class BaseCustomerFormFilter extends BaseFormFilterPropel
       'ticketval'                => 'Text',
       'to_date'                  => 'Date',
       'from_date'                => 'Date',
+      'i_customer'               => 'Text',
     );
   }
 }

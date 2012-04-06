@@ -43,6 +43,7 @@ class BaseCompanyForm extends BaseFormPropel
       'created_at'             => new sfWidgetFormDateTime(),
       'updated_at'             => new sfWidgetFormDateTime(),
       'file_path'              => new sfWidgetFormInput(),
+      'i_customer'             => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -77,6 +78,7 @@ class BaseCompanyForm extends BaseFormPropel
       'created_at'             => new sfValidatorDateTime(),
       'updated_at'             => new sfValidatorDateTime(array('required' => false)),
       'file_path'              => new sfValidatorString(array('max_length' => 255, 'required' => false)),
+      'i_customer'             => new sfValidatorString(array('max_length' => 50, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('company[%s]');

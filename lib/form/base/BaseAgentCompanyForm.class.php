@@ -22,6 +22,7 @@ class BaseAgentCompanyForm extends BaseFormPropel
       'city_id'                     => new sfWidgetFormPropelChoice(array('model' => 'City', 'add_empty' => true)),
       'contact_name'                => new sfWidgetFormInput(),
       'email'                       => new sfWidgetFormInput(),
+      'mobile_number'               => new sfWidgetFormInput(),
       'head_phone_number'           => new sfWidgetFormInput(),
       'fax_number'                  => new sfWidgetFormInput(),
       'website'                     => new sfWidgetFormInput(),
@@ -35,6 +36,7 @@ class BaseAgentCompanyForm extends BaseFormPropel
       'sms_code'                    => new sfWidgetFormInput(),
       'is_prepaid'                  => new sfWidgetFormInputCheckbox(),
       'balance'                     => new sfWidgetFormInput(),
+      'invoice_method_id'           => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -48,6 +50,7 @@ class BaseAgentCompanyForm extends BaseFormPropel
       'city_id'                     => new sfValidatorPropelChoice(array('model' => 'City', 'column' => 'id', 'required' => false)),
       'contact_name'                => new sfValidatorString(array('max_length' => 150)),
       'email'                       => new sfValidatorString(array('max_length' => 255)),
+      'mobile_number'               => new sfValidatorString(array('max_length' => 255)),
       'head_phone_number'           => new sfValidatorInteger(),
       'fax_number'                  => new sfValidatorInteger(),
       'website'                     => new sfValidatorString(array('max_length' => 255, 'required' => false)),
@@ -61,6 +64,7 @@ class BaseAgentCompanyForm extends BaseFormPropel
       'sms_code'                    => new sfValidatorString(array('max_length' => 4, 'required' => false)),
       'is_prepaid'                  => new sfValidatorBoolean(array('required' => false)),
       'balance'                     => new sfValidatorNumber(array('required' => false)),
+      'invoice_method_id'           => new sfValidatorInteger(),
     ));
 
     $this->widgetSchema->setNameFormat('agent_company[%s]');
