@@ -158,7 +158,7 @@
                 <div id="m9"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
-		     <?php echo link_to('Alert Usage Report ', 'invoice/selectIntervalAlert'); ?>
+		     <?php echo link_to('Low Credit Alert Report ', 'invoice/selectIntervalAlert'); ?>
 
 
                 </div>
@@ -279,8 +279,8 @@
                         <?php echo link_to('Language Type', 'enable_country/index') ?>
                         <?php echo link_to('Cities', 'city/index') ?>
                         <?php echo link_to('SMS TEXT', 'sms_text/index') ?>
-                        <?php echo link_to('Usage Alert', 'usage_alert/index') ?>
-                        <?php echo link_to('Usage Alert Sender', 'usage_alert_sender/index') ?>
+                        <?php echo link_to('Low Credit Alert', 'usage_alert/index') ?>
+                        <?php echo link_to('Low Credit Alert Sender', 'usage_alert_sender/index') ?>
                         <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
                         <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
                          <?php //echo link_to('Upload Client Document', 'client_documents/index') ?>
