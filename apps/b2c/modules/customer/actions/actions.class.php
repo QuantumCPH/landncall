@@ -2124,7 +2124,7 @@ class customerActions extends sfActions {
 
         //TODO ask if recharge to be done is same as the transaction amount
         //die;
-        $exest = $order->getExeStatus();
+        echo $exest = $order->getExeStatus();echo "heelo";exit;
         if ($exest == 1) {
             
         } else {
@@ -2173,7 +2173,7 @@ class customerActions extends sfActions {
                 //echo "<br/>";
                 //This is for Recharge the Customer
                 $MinuesOpeningBalance = $OpeningBalance * 3;
-                Telienta::recharge($this->customer, $OpeningBalance);echo "heelo";exit;
+                Telienta::recharge($this->customer, $OpeningBalance);
                 $email2 = new DibsCall();
                 $email2->setCallurl('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $unidc . '&amount=' . $OpeningBalance . '&type=customer');
                 $email2->save();
