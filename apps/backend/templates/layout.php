@@ -276,7 +276,7 @@
                          //echo link_to('<b>General Setting</b>', '') ?>
                         <a href="javascript:;"><b>General Setting</b></a>
                         <?php echo link_to('products', 'product/index') ?>
-                        <?php echo link_to('Language Type', 'enable_country/index') ?>
+                        <?php echo link_to('Country List', 'enable_country/index') ?>
                         <?php echo link_to('Cities', 'city/index') ?>
                         <?php echo link_to('SMS TEXT', 'sms_text/index') ?>
                         <?php echo link_to('Low Credit Alert', 'usage_alert/index') ?>
