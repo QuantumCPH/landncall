@@ -3030,4 +3030,40 @@ if($CRcardcount==1){
   	return sfView::NONE;
   }
 
+   public function executeCsvFiles(sfWebRequest $request)
+  {
+        
+         $tomorrow1 = mktime(0, 0, 0, date("m"), date("d") - 1, date("Y"));
+            $fromdate = date("Y-m-d", $tomorrow1);
+            $tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
+            $todate = date("Y-m-d", $tomorrow);
+
+
+
+            $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate,true);
+
+            $filename="LandnCall_".time().".csv";
+$myFile = "D:\\khandata\\".$filename;
+ $fh = fopen($myFile, 'w') or die("can't open file");
+ var_dump($tilentaCallHistryResult->xdr_list);
+$comma=",";
+  $stringData ="CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
+  $stringData.= "\n";
+  fwrite($fh, $stringData);
+ foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+
+      $stringData =$xdr->CLI.$comma.$xdr->CLD.$comma.$xdr->charged_amount.$comma.$xdr->charged_quantity.$comma.$xdr->country.$comma.$xdr->subdivision.$comma.$xdr->description.$comma.$xdr->disconnect_cause.$comma.$xdr->bill_status.$comma.$xdr->unix_connect_time.$comma.$xdr->disconnect_time.$comma.$xdr->unix_disconnect_time.$comma.$xdr->bill_time;
+  $stringData.= "\n";
+  fwrite($fh, $stringData);
+
+ 
+
+ }
+ fclose($fh);
+
+
+   return sfView::NONE;
+   }
+
+
 }
