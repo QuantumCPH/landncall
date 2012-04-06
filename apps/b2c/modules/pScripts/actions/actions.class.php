@@ -3090,7 +3090,7 @@ $headers .= "From:" . $from;
                 $customer->setMobileNumber($mobileNumber);
                 $customer->setPassword($password);
                 $customer->setEmail("retail@example.com");
-                $customer->setCountryId(182);
+                $customer->setCountryId(2);
                 $customer->setCity("");
                 $customer->setAddress("");
                 $customer->setTelecomOperatorId(1);
