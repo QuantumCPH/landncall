@@ -1202,6 +1202,7 @@ class customerActions extends sfActions {
         unset($this->form['manufacturer']);
         unset($this->form['device_id']);
         unset($this->form['ticketval']);
+        unset($this->form['i_customer']);
         $this->uniqueidValue = $this->customer->getUniqueId();
         //This Section For Get the Language Symbol For Set Currency -
         $getvoipInfo = new Criteria();
