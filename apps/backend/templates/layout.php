@@ -171,7 +171,7 @@
                 <div id="m6"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
-                    <?php echo link_to('Get Info', 'fonetAmin/info'); ?>
+             -       <?php echo link_to('Get Info', 'fonetAmin/info'); ?>
                     <?php echo link_to('Recharge', 'fonetAmin/recharge'); ?>
                     <?php echo link_to('Activate', 'fonetAmin/activate'); ?>
                     <?php echo link_to('DeActivate', 'fonetAmin/delete'); ?>
@@ -211,7 +211,19 @@
                 </div>
             </li>
             
-            
+             <li>
+				<a href="#"
+                onmouseover="mopen('m6')"
+                onmouseout="mclosetime()">Download</a>
+                <div id="m6"
+                    onmouseover="mcancelclosetime()"
+                    onmouseout="mclosetime()">
+             <?php echo link_to('Downlaod User Guide', 'client_documents/index') ?>
+                    
+                </div>
+
+
+            </li>
 			
 			
           
@@ -271,7 +283,7 @@
                         <?php echo link_to('Usage Alert Sender', 'usage_alert_sender/index') ?>
                         <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
                         <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
-                         <?php echo link_to('Upload Client Document', 'client_documents/index') ?>
+                         <?php //echo link_to('Upload Client Document', 'client_documents/index') ?>
 <!--                        <a href="/client_documents/index">Upload Client Document</a>-->
                         <?php //echo link_to('global setting', 'global_setting/index') ?>
                         <?php //echo link_to('employee products', 'employee_product/index') ?>
