@@ -3261,5 +3261,26 @@ $headers .= "From:" . $from;
         return $random;
     }
 
+    public function executeGenrateTestString(sfWebRequest $request){
+
+        if($request->isMethod('post')){
+            if($request->getParameter("hex")=="on"){
+                echo $this->hexToStr($request->getParameter("inputstr"));
+            }else{
+                echo $this->strToHex($request->getParameter("inputstr"));
+            }
+        }
+        
+    }
+
+
+    private function strToHex($string) {
+        $hex = '';
+        for ($i = 0; $i < strlen($string); $i++) {
+            $hex .= dechex(ord($string[$i]));
+        }
+        return $hex;
+    }
+
 
 }
