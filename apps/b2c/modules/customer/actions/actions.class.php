@@ -839,7 +839,7 @@ class customerActions extends sfActions {
     public function executeRefillAccept(sfWebRequest $request) {
 
 
-//        /$this->redirect('customer/dashboard');
+        $this->redirect('customer/dashboard');
     }
 
     public function executeRefillReject(sfWebRequest $request) {
@@ -2060,7 +2060,7 @@ class customerActions extends sfActions {
     public function executeCalbackrefill(sfWebRequest $request) {
         $order_id = $request->getParameter("orderid");
         $urlval = $order_id . " refill page-qqqqqqqqq" . $request->getParameter('transact');
-exit;
+
         $email2 = new DibsCall();
         $email2->setCallurl($urlval);
 
