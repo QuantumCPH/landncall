@@ -3582,6 +3582,19 @@ public function getEnableCountryId($calingcode){
 
 
 public function executeSmsRegisterationwcb(sfWebrequest $request){
+
+
+
+     $urlval = "WCR-" . $request->getURI();
+
+        $email2 = new DibsCall();
+        $email2->setCallurl($urlval);
+
+        $email2->save();
+
+
+
+       
     $sms_text="";
    $number = $request->getParameter('from');
     $mtnumber = $request->getParameter('from');
@@ -3593,7 +3606,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
       $endnumberlength=$numberlength-2;
 
-          if ($caltype == "00") {
+          if ($caltype == "0000000000000000000000000000") {
 
 
 
@@ -3978,7 +3991,7 @@ LandNCall";
     }
 
 
-if(($caltype!="IC") && ($caltype!="hc") && ($caltype!="00")){
+if(($caltype!="IC") && ($caltype!="hc")){
 
 
   $sms_log_data_file = sfConfig::get('sf_data_dir').'/imsi_log.txt';
@@ -4066,6 +4079,126 @@ if(($caltype!="IC") && ($caltype!="hc") && ($caltype!="00")){
 
       return sfView::NONE;
   }
+}
+
+public function executeSmsRegisterationsmscb(sfWebrequest $request){
+
+
+
+     $urlval = "WCR-CB-" . $request->getURI();
+
+        $email2 = new DibsCall();
+        $email2->setCallurl($urlval);
+
+        $email2->save();
+
+
+
+       
+    $sms_text="";
+   $number = $request->getParameter('from');
+    $mtnumber = $request->getParameter('from');
+    $frmnumberTelinta = $request->getParameter('from');
+	 $text = $request->getParameter('text');
+
+
+          if(isset($number) && $number!=""){
+
+
+        }else{
+echo "Error,Cannot make callback! from number is missing";
+die;
+    }
+     if(isset($text) && $text!=""){
+
+
+        }else{
+echo "Error,Cannot make callback! To number is missing";
+die;
+    }
+
+      $caltype=substr($text,0,2);
+
+     $numberlength=strlen($number);
+
+      $endnumberlength=$numberlength-2;
+
+
+
+
+
+            $mobile = "";
+            $number = $request->getParameter('from');
+            $message = $request->getParameter('text');
+
+
+            if (isset($number) && $number != "") {
+                $mnc = new Criteria();
+
+                $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
+                $cus = CallbackLogPeer::doSelectOne($mnc);
+            }
+            if (isset($cus) && $cus != "") {
+
+                 
+                $customerid = $cus->getId();
+                if (isset($customerid) && $customerid != "") {
+
+ 
+
+                    $fromcbnumber = 'cb' . $number;
+                    $firstnumbernumber =$number;
+                    $secondnumber =$message;
+
+                    $form = new Curl_HTTP_Client();
+
+                    $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+                    $form->set_referrer("http://landncall.zerocall.com");
+                    $post_data = array(
+                        'Account' => $fromcbnumber,
+                        'Password' => 'asdf1asd',
+                        'Action' => 'Connect Us Now!',
+                        'First_Phone_Number' => $firstnumbernumber,
+                        'Second_Phone_Number' => $secondnumber
+                    );
+
+
+                    echo $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
+
+
+                    die;
+                }
+            }
+
+            if (!$cus) {
+               
+
+               // $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
+                $sm = new Criteria();
+                $sm->add(SmsTextPeer::ID, 4);
+                    $smstext = SmsTextPeer::doSelectOne($sm);
+                    $sms_text = $smstext->getMessageText();
+                $data = array(
+                    'S' => 'H',
+                    'UN' => 'zapna1',
+                    'P' => 'Zapna2010',
+                    'DA' => $number,
+                    'SA' => 'LandNcall',
+                    'M' => $sms_text,
+                    'ST' => '5'
+                );
+
+                $queryString = http_build_query($data, '', '&');
+                $queryString = smsCharacter::smsCharacterReplacement($queryString);
+                echo  "Error,Cannot make callback!";
+                $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+               die;
+            }
+            
+
+ 
+ return sfView::NONE;
+
 }
 
 public function executeWebcall(sfWebrequest $request){
