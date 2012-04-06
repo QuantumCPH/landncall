@@ -4963,6 +4963,42 @@ $headers .= "From:" . $from;
   	return sfView::NONE;
   }
 
+  public function executeAssignICustomerNumber(sfWebRequest $request)
+  {
+       $c = new Criteria();
+       $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+       $c->addAnd(CustomerPeer::UNIQUEID, null, Criteria::ISNOTNULL);
+       $c->addAnd(CustomerPeer::I_CUSTOMER, null, Criteria::ISNULL);
+       //echo CustomerPeer::doCount($c);
+      // die;
+       $customers = CustomerPeer::doSelect($c);
+       foreach ($customers as $customer){
+           $iCustomer= Telienta::getCustomerInfo($customer->getUniqueid());
+           $customer->setICustomer($iCustomer);
+           $customer->save();
+       }
+  }
+
+  public function executeCreateIAccounts(sfWebRequest $request)
+  {
+       $c = new Criteria();
+       $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+       $c->addAnd(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
+       $customers = CustomerPeer::doSelect($c);
+       foreach ($customers as $customer){
+           $iAccountList= Telienta::getCustomerAccountList($customer->getICustomer());
+
+           foreach($iAccountList->account_list as $iAccount){
+              $telintaAccount = new TelintaAccounts();
+              $telintaAccount->setAccountTitle($iAccount->id);
+              $telintaAccount->setIAccount($iAccount->i_account);
+              $telintaAccount->setICustomer($iAccount->i_customer);
+              $telintaAccount->setParentId($customer->getId());
+              $telintaAccount->setParentTable('customer');
+              $telintaAccount->save();
+           }
+       }
+  }
 
 
 }
