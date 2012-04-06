@@ -2060,7 +2060,7 @@ class customerActions extends sfActions {
     public function executeCalbackrefill(sfWebRequest $request) {
         $order_id = $request->getParameter("orderid");
         $urlval = $order_id . " refill page-qqqqqqqqq" . $request->getParameter('transact');
-
+exit;
         $email2 = new DibsCall();
         $email2->setCallurl($urlval);
 
@@ -2124,7 +2124,7 @@ class customerActions extends sfActions {
 
         //TODO ask if recharge to be done is same as the transaction amount
         //die;
-        echo $exest = $order->getExeStatus();echo "heelo";exit;
+        $exest = $order->getExeStatus();
         if ($exest == 1) {
             
         } else {
