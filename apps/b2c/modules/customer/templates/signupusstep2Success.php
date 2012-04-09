@@ -140,7 +140,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                  if(document.getElementById('user_attr_1').checked){
                 $('#idcallbackurl').val(callbackurlstr);
                  }else{
-                     var callbackurlstrs = "<?php echo $relay_script_url.url_for('@dibs_accept_url', true);  ?>?accept=yes&subscriptionid=1&orderid=<?php echo $order_id; ?>&amount="+total*100;
+                     var callbackurlstrs = "<?php echo $relay_script_url.url_for('@dibs_us_accept_url', true);  ?>?accept=yes&subscriptionid=1&orderid=<?php echo $order_id; ?>&amount="+total*100;
                     $('#idcallbackurl').val(callbackurlstrs);
                  }
 	}
