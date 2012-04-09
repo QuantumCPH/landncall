@@ -2599,6 +2599,8 @@ return sfView::NONE;
 //    'callbackurl' => "http://landncall.zerocall.com/b2c_dev.php/pScripts/autorefilconfirmation?accept=yes&subscriptionid=&orderid=$order_id&amount=$total",
 //    'accepturl' => "http://landncall.zerocall.com/b2c.php/"
 //);
+
+                    //  'textreply' => true,
                     $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
                     $form->set_referrer("http://landncall.zerocall.com");
                     $post_data = array(
@@ -2606,7 +2608,7 @@ return sfView::NONE;
                         'amount' => $total,
                         'currency' => '752',
                         'orderid' => $order_id,
-                        'textreply' => true,
+                  
                         'account' => 'YTIP',
                         'status' => '',
                         'ticket' => $tickvalue,
