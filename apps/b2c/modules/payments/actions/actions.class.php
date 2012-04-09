@@ -7,7 +7,6 @@ require_once(sfConfig::get('sf_lib_dir') . '/smsCharacterReplacement.php');
 require_once(sfConfig::get('sf_lib_dir').'/ForumTel.php');
 require_once(sfConfig::get('sf_lib_dir').'/CurrencyConverter.class.php');
 
-
 /**
  * payments actions.
  *
@@ -23,6 +22,9 @@ class paymentsActions extends sfActions {
      *
      * @param sfRequest $request A request object
      */
+    private function getTargetUrl() {
+        return sfConfig::get('app_main_url');
+    }
     public function executeIndex(sfWebRequest $request) {
         $this->forward('default', 'module');
     }
@@ -236,7 +238,7 @@ class paymentsActions extends sfActions {
         $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket'));
         $dibs->save();
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
-        //print_r($_REQUEST);  	
+        //print_r($_REQUEST);
         // Store data in the user session
         //$this->getUser()->setAttribute('activelanguage', $getCultue);
         ////load the thankSuccess template
@@ -388,7 +390,7 @@ class paymentsActions extends sfActions {
                 $country = EnableCountryPeer::doSelectOne($cc);
 
                 $mobile = $country->getCallingCode() . $this->customer->getMobileNumber();
-                
+
                 $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
                 if ($getFirstnumberofMobile == 0) {
                     $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
@@ -397,14 +399,14 @@ class paymentsActions extends sfActions {
                     $TelintaMobile = '46' . $this->customer->getMobileNumber();
                 }
 
-                
+
                 $uniqueId = $this->customer->getUniqueid();
                 echo $uniqueId."<br/>";
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
                 $selectedUniqueId = UniqueIdsPeer::doSelectOne($uc);
                 echo $selectedUniqueId->getStatus()."<br/>Baran";
-                
+
                 if($selectedUniqueId->getStatus()==0){
                     echo "inside";
                     $selectedUniqueId->setStatus(1);
@@ -420,7 +422,8 @@ class paymentsActions extends sfActions {
                         if($availableUniqueCount  == 0){
                             // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
                             emailLib::sendUniqueIdsShortage();
-                            $this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+                            $this->redirect($this->getTargetUrl() .'customer/shortUniqueIds');
+                            //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
                         }
                         $uniqueId = $availableUniqueId->getUniqueNumber();
                         $this->customer->setUniqueid($uniqueId);
@@ -431,90 +434,21 @@ class paymentsActions extends sfActions {
                 }
 
 
-
              $callbacklog = new CallbackLog();
                 $callbacklog->setMobileNumber($TelintaMobile);
                 $callbacklog->setuniqueId($uniqueId);
                 $callbacklog->setCheckStatus(3);
                 $callbacklog->save();
-
-
-
-
                 $emailId = $this->customer->getEmail();
                 $OpeningBalance = $order->getExtraRefill();
                 $customerPassword = $this->customer->getPlainText();
 
                 //Section For Telinta Add Cusomter
-                $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name=' . $uniqueId . '&currency=SEK&opening_balance=-' . $OpeningBalance . '&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&type=customer');
 
-                $string = $telintaRegisterCus;
-                $find = 'ERROR';
-                if (strpos($string, $find)) {
-                    $message_body = $telintaRegisterCus . " <br> On Registration Page Duplicate customer name within environment <br> Mobile Number: $TelintaMobile <br / >Unique Id: $uniqueId";
-                    //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                    emailLib::sendErrorTelinta($this->customer, $message_body);
-                } else {
-                    
-                }
+                Telienta::ResgiterCustomer($this->customer, $OpeningBalance);
+                Telienta::createAAccount($TelintaMobile, $this->customer);
+                Telienta::createCBAccount($TelintaMobile, $this->customer);
 
-                //https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name='.$uniqueId.'&currency=SEK&opening_balance=-'.$OpeningBalance.'&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&type=customer
-                // For Telinta Add Account
-                // $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$uniqueId.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=0&billing_model=1&password=asdf1asd');
-                $telintaAddAccountA = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a' . $TelintaMobile . '&customer=' . $uniqueId . '&opening_balance=0&credit_limit=&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-                $find = '';
-                $string = $telintaAddAccountA;
-                $find = 'ERROR';
-                if (strpos($string, $find)) {
-                    $message_body = $telintaAddAccountA . " <br> On Registration Page Account Add Error within environment <br> Name :a$TelintaMobile <br / >Unique Id: $uniqueId";
-                    //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                    emailLib::sendErrorTelinta($this->customer, $message_body);
-                } else {
-
-                }
-                $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb' . $TelintaMobile . '&customer=' . $uniqueId . '&opening_balance=0&credit_limit=&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-                $find = '';
-                $string = $telintaAddAccountCB;
-                $find = 'ERROR';
-                if (strpos($string, $find)) {
-                    $message_body = $telintaAddAccountCB . " <br> On Registration Page Account Add Error within environment <br> Name :cb$TelintaMobile <br / >Unique Id: $uniqueId";
-                    //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                    emailLib::sendErrorTelinta($this->customer, $message_body);
-                } else {
-                    
-                }
-                //This is for Recharge the Customer
-                // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
-//              if(strlen($mobile)==11){
-////                 echo 'mobile # = 11' ;
-//                 $mobile = '00'.$mobile;
-//             }
-//              $IMdata = array(
-//                      'type' => 'add',
-//                      'secret'=>'rnRQSRD0',
-//                      'username'=>$mobile,
-//                      'password'=>$this->customer->getPlainText(),
-//                      'name' =>$this->customer->getFirstName(),
-//                      'email'=>$this->customer->getEmail()
-//                );
-//               $queryString = http_build_query($IMdata,'', '&');
-//               $res2 = file_get_contents('http://im.zerocall.com:9090/plugins/userService/userservice?'.$queryString);
-                // Assign C9 number
-//                if ($order->getProduct()->getId() == '3') {
-
-//          $c = new Criteria();
-//  		  $c->add(C9NumbersPeer::IS_ASSIGNED, false);
-//          $c9number = C9NumbersPeer::doSelectOne($c);
-//
-//          $this->customer->setC9CustomerNumber($c9number->getC9Number() );
-//
-//          $c9number->setIsAssigned(true);
-//          $c9number->save();
-//          //$customer = $form->save();
-//          $this->customer->save();
-//
-//         c9Wrapper::equateBalance($this->customer);
- //               }
 
 
 
@@ -585,7 +519,7 @@ class paymentsActions extends sfActions {
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
-                    $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $uniqueId . '&amount=' . $OpeningBalance . '&type=customer');
+                    Telienta::recharge($this->customers, $OpeningBalance);
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
                     $getvoipInfo = new Criteria();
@@ -594,13 +528,12 @@ class paymentsActions extends sfActions {
                     if (isset($getvoipInfos)) {
                         $voipnumbers = $getvoipInfos->getNumber();
                         $voip_customer = $getvoipInfos->getCustomerId();
-                        // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$voipnumbers.'&amount='.$OpeningBalance.'&type=account');
+                       
                     } else {
-                        //$telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=account');
+                        
                     }
 
-                    // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=a'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-                    // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=cb'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
+            
                     //save transaction & Invite
                     $transaction_i->save();
                     $invite->save();
@@ -674,7 +607,7 @@ class paymentsActions extends sfActions {
         $email2->setCallurl($urlval);
         $email2->save();
         $dibs = new DibsCall();
-        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket'));
+        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket')."-ord-".$request->getParameter('orderid')."-amt-".$request->getParameter('amount'));
         $dibs->save();
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         //print_r($_REQUEST);
@@ -820,7 +753,7 @@ class paymentsActions extends sfActions {
                 //register to fonet
                 $this->customer = $order->getCustomer();
 
-              
+
 
                 $cc = new Criteria();
                 $cc->add(EnableCountryPeer::ID, $this->customer->getCountryId());
@@ -858,7 +791,8 @@ class paymentsActions extends sfActions {
                         if($availableUniqueCount  == 0){
                             // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
                             emailLib::sendUniqueIdsShortage();
-                            $this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+                            $this->redirect($this->getTargetUrl() .'customer/shortUniqueIds');
+                            //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
                         }
                         $uniqueId = $availableUniqueId->getUniqueNumber();
                         $this->customer->setUniqueid($uniqueId);
@@ -878,25 +812,106 @@ class paymentsActions extends sfActions {
                 $callbacklog->setCheckStatus(3);
                 $callbacklog->save();
 
+
                   $uc = new Criteria();
                 $uc->add(UsNumberPeer::ACTIVE_STATUS, 1);
                 $selectusnumber = UsNumberPeer::doSelectOne($uc);
                 $selectusnumber->setActiveStatus(3);
                 $selectusnumber->setCustomerId($this->customer->getId());
                 $selectusnumber->save();
-                
+
  $pakage=$order->getProduct()->getProductTypePackage();
                $unid= $this->customer->getUniqueid();
-if((int)$unid>200000){
 
-            
+
+
  $customerID=$this->customer->getId();
+                $OpeningBalance=0;
+                Telienta::ResgiterCustomer($this->customer, $OpeningBalance,null,true);
                 $Tes=ForumTel::registerForumtel($customerID);
-                  sleep(0.1);
-                  $amt=$order->getExtraRefill();
-                  $amt=CurrencyConverter::convertSekToUsd($amt);
-                 $Test=ForumTel::rechargeForumtel($customerID,$amt);
+                ForumTel::getUsMobileNumber($customerID);
+     //////////////////////////rese number registration ///////////////////////////////
+                $rs = new Criteria();
+                $rs->add(SeVoipNumberPeer::CUSTOMER_ID, $customerID);
+                $rs->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 3);
+                $voip_customer = '';
+                if (SeVoipNumberPeer::doCount($rs) > 0) {
+                    $voip_customer = SeVoipNumberPeer::doSelectOne($rs);
+                } else {
 
+                    $c = new Criteria();
+                    //$c->setLimit(1);
+                    $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
+                    if (SeVoipNumberPeer::doCount($c) < 10) {
+                        emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                    }
+                    if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
+                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
+                        return false;
+                    }
+                }
+                // echo $voip_customer->getId()."Baran here<hr/>";
+                $voip_customer->setUpdatedAt(date('Y-m-d H:i:s'));
+                $voip_customer->setCustomerId($customerID);
+                $voip_customer->setIsAssigned(1);
+                $voip_customer->save();
+
+                //  echo $voip_customer->getId()."Baran here<hr/>";
+                // die;
+                //--------------------------Telinta------------------/
+                $getvoipInfo = new Criteria();
+                $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerID);
+                $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
+                if (isset($getvoipInfos)) {
+                    $voipnumbers = $getvoipInfos->getNumber();
+                    $voipnumbers = substr($voipnumbers, 2);
+                    $voip_customer = $getvoipInfos->getCustomerId();
+                    
+                    $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
+                    if ($getFirstnumberofMobile == 0) {
+                        $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
+                        $TelintaMobile = '46' . $TelintaMobile;
+                    } else {
+                        $TelintaMobile = '46' . $this->customer->getMobileNumber();
+                    }
+
+                    //$TelintaMobile = '46'.$this->customer->getMobileNumber();
+                    $emailId = $this->customer->getEmail();
+                    $uniqueId = $this->customer->getUniqueid();
+
+                    //This Condtion for if IC Active
+                    $tc = new Criteria();
+                    $tc->add(CallbackLogPeer::UNIQUEID, $uniqueId);
+                    $tc->addDescendingOrderByColumn(CallbackLogPeer::CREATED);
+                    $MaxUniqueRec = CallbackLogPeer::doSelectOne($tc);
+                    if (isset($MaxUniqueRec)) {
+                        $TelintaMobile = $MaxUniqueRec->getMobileNumber();
+                    }
+                    //------------------------------
+                    $TelintaMobile=$selectusnumber->getUsMobileNumber();
+                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
+
+
+                 //   $OpeningBalance = '40';
+
+                    //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
+                    //This is for Recharge the Customer
+                  //  Telienta::charge($this->customer, $OpeningBalance);
+                }
+
+
+///////////////////////////////////////////////////////end resenumber registration
+               echo "original amout".$amt=$order->getExtraRefill();
+                         echo "<hr/>converted amout". $amtt=CurrencyConverter::convertSekToUsd($amt);
+                        
+                 echo "<hr/>ft response". $Test=ForumTel::rechargeForumtel($customerID,$amtt);
+
+                    $dibsf = new DibsCall();
+        $dibsf->setCallurl("original amout SEK:".$amt."converted amout".$amtt."Fr response".$Test);
+        $dibsf->save();
+
+                $amt=$amtt;
+        
                    $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerID);
         $usnumber = UsNumberPeer::doSelectOne($tc);
@@ -923,59 +938,11 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
 
 
 
-
-}else{
-
-
-
-//                $emailId = $this->customer->getEmail();
-//                $OpeningBalance = $order->getExtraRefill();
-//                $customerPassword = $this->customer->getPlainText();
-//
-//                //Section For Telinta Add Cusomter
-//                $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name=' . $uniqueId . '&currency=SEK&opening_balance=-' . $OpeningBalance . '&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&email=okh@zapna.com&type=customer');
-//
-//                $string = $telintaRegisterCus;
-//                $find = 'ERROR';
-//                if (strpos($string, $find)) {
-//                    $message_body = $telintaRegisterCus . " <br> On Registration Page Duplicate customer name within environment <br> Mobile Number: $TelintaMobile <br / >Unique Id: $uniqueId";
-//                    //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-//                    emailLib::sendErrorTelinta($this->customer, $message_body);
-//                } else {
-//
-//                }
-//
-//                //https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name='.$uniqueId.'&currency=SEK&opening_balance=-'.$OpeningBalance.'&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&type=customer
-//                // For Telinta Add Account
-//                // $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$uniqueId.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=0&billing_model=1&password=asdf1asd');
-//                $telintaAddAccountA = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a' . $TelintaMobile . '&customer=' . $uniqueId . '&opening_balance=0&credit_limit=&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-//                $find = '';
-//                $string = $telintaAddAccountA;
-//                $find = 'ERROR';
-//                if (strpos($string, $find)) {
-//                    $message_body = $telintaAddAccountA . " <br> On Registration Page Account Add Error within environment <br> Name :a$TelintaMobile <br / >Unique Id: $uniqueId";
-//                    //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-//                    emailLib::sendErrorTelinta($this->customer, $message_body);
-//                } else {
-//
-//                }
-//                $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb' . $TelintaMobile . '&customer=' . $uniqueId . '&opening_balance=0&credit_limit=&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-//                $find = '';
-//                $string = $telintaAddAccountCB;
-//                $find = 'ERROR';
-//                if (strpos($string, $find)) {
-//                    $message_body = $telintaAddAccountCB . " <br> On Registration Page Account Add Error within environment <br> Name :cb$TelintaMobile <br / >Unique Id: $uniqueId";
-//                    //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-//                    emailLib::sendErrorTelinta($this->customer, $message_body);
-//                } else {
-//
-//                }
-}
+ 
 
 
 
-            
-             
+
 
 
                 //if the customer is invited, Give the invited customer a bonus of 10dkk
@@ -989,20 +956,15 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                 if ($invite) {
 
                     $invite->setInviteStatus(3);
-
                     $sc = new Criteria();
                     $sc->add(CustomerCommisionPeer::ID, 1);
                     $commisionary = CustomerCommisionPeer::doSelectOne($sc);
                     $comsion = $commisionary->getCommision();
-
-
-
                     $products = new Criteria();
                     $products->add(ProductPeer::ID, 11);
                     $products = ProductPeer::doSelectOne($products);
                     $extrarefill = $products->getInitialBalance();
                     //if the customer is invited, Give the invited customer a bonus of 10dkk
-
                     $inviteOrder = new CustomerOrder();
                     $inviteOrder->setProductId(11);
                     $inviteOrder->setQuantity(1);
@@ -1018,7 +980,6 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     $transaction_i->setCustomerId($invite->getCustomerId());
                     $transaction_i->setOrderId($OrderId);
                     $transaction_i->setTransactionStatusId(3);
-
                     //send fonet query to update the balance of invitee by 10dkk
                     //   Fonet::recharge(CustomerPeer::retrieveByPK($invite->getCustomerId()), $comsion);
 
@@ -1032,37 +993,36 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     } else {
                         $TelintaMobile = '46' . $this->customers->getMobileNumber();
                     }
+                    
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
-                    $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $uniqueId . '&amount=' . $OpeningBalance . '&type=customer');
+
+                  //  Telienta::recharge($this->customers, $OpeningBalance);
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
+
                     $getvoipInfo = new Criteria();
                     $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $this->customers->getMobileNumber());
                     $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
                     if (isset($getvoipInfos)) {
                         $voipnumbers = $getvoipInfos->getNumber();
                         $voip_customer = $getvoipInfos->getCustomerId();
-                        // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$voipnumbers.'&amount='.$OpeningBalance.'&type=account');
                     } else {
-                        //$telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=account');
-                    }
 
-                    // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=a'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-                    // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=cb'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-                    //save transaction & Invite
+
+                     }
+
+                    
                     $transaction_i->save();
                     $invite->save();
-//                $invite2 .= "transaction & invite saved  \r\n";
-//                file_put_contents($invite_data_file, $invite2, FILE_APPEND);
+
                     $invitevar = $invite->getCustomerId();
                     if (isset($invitevar)) {
                         emailLib::sendCustomerConfirmRegistrationEmail($invite->getCustomerId());
                     }
                 }
                 //send email
-
                 $message_body = $this->getPartial('payments/order_receipt_us', array(
                             'customer' => $this->customer,
                             'order' => $order,
@@ -1070,44 +1030,34 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                             'vat' => $product_price_vat,
                             'wrap' => true
                         ));
-
-                
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
                 $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
                 $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
-
-
                 //This Seciton For Make The Log History When Complete registration complete - Agent
                 //echo sfConfig::get('sf_data_dir');
                 //Send Email --- when Confirm Payment --- 01/15/11
-
                 $agentid = $this->customer->getReferrerId();
-
                 $cp = new Criteria;
                 $cp->add(CustomerProductPeer::CUSTOMER_ID, $order->getCustomerId());
                 $customerproduct = CustomerProductPeer::doSelectOne($cp);
                 $productid = $customerproduct->getId();
-
                 $transactionid = $transaction->getId();
                 if (isset($agentid) && $agentid != "") {
                     commissionLib::registrationCommissionCustomer($agentid, $productid, $transactionid);
                 }
                 //emailLib::sendCustomerConfirmPaymentEmail($this->customer,$message_body);
-                emailLib::sendCustomerRegistrationViaWebEmail($this->customer, $order);
-
-
+                emailLib::sendCustomerRegistrationViaWebUSEmail($this->customer, $order);
                 $this->order = $order;
             }//end if
             else {
                 $this->logMessage('Error in transaction.');
             }
             //   //end else
-            
         }
         return sfView::NONE;
     }
- 
+
 }

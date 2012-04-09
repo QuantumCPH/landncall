@@ -1,0 +1,1 @@
+select * from transaction t, customer_order o, customer c where c.id=o.customer_id and t.order_id=o.id and c.id=1828 and transaction_status_id=3 order by o.id

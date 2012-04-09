@@ -68,7 +68,24 @@
 <?php ?>
            
                 <?php $unid=$customer->getUniqueid();
-if((int)$unid>200000){?>
+   $cuid=$customer->getId();
+
+
+
+                                  $cp = new Criteria();
+                                  $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
+                                  $custmpr = CustomerProductPeer::doSelectOne($cp);
+                                   $p = new Criteria();
+                                   $p->add(ProductPeer::ID, $custmpr->getProductId());
+                                   $products=ProductPeer::doSelectOne($p);
+                                   $pus = 0;
+
+                                  $pus=$products->getProductCountryUs();
+
+
+               if($pus==1){
+
+    ?>
 
 
   <table width="70%" cellspacing="0" cellpadding="0" class="callhistory" style="float: left;">
@@ -86,8 +103,8 @@ if((int)$unid>200000){?>
                     <th  width="20%"  align="left"><?php echo __('till Number') ?></th>
                     <th  width="20%"  align="left"><?php echo __('från Number') ?></th>
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
-                    <th width="20%"   align="left"><?php echo __('Cost <small>(Incl. VAT)</small>') ?></th>
-
+                    <th width="20%"   align="left"><?php echo __('Cost') ?></th>
+                      <th width="10%"   align="left"><?php echo __('Typ') ?></th>
                   </tr>
 <?php
 
@@ -159,7 +176,10 @@ $cld='called-date';
    echo   $calls->from;   ?></td><td> <?php
    echo   $calls->duration;  ?></td><td>
             <?php
-   echo   $calls->cost;   ?></td></tr>
+   echo   $calls->cost;   ?></td>
+      <td>
+            <?php
+   echo   $calls->type;   ?></td></tr>
 <?php }  ?>
 
               </table>
@@ -173,7 +193,7 @@ $cld='called-date';
                     <td class="title" width="40%"><?php echo __('Phone Number') ?></td>
                     <td class="title"><?php echo __('Duration') ?></td>
                     <td class="title"><?php echo __('VAT') ?></td>
-                    <td class="title"><?php echo __('Cost <small>(Incl. VAT)</small>') ?></td>
+                    <td class="title"><?php echo __('Cost') ?></td>
                      <td class="title"><?php echo __('Samtalstyp') ?></td>
                   </tr>
 
@@ -185,60 +205,40 @@ $cld='called-date';
 
 
 
+                            $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate, $todate);
 
 
-  $urlval = "https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=get_xdrs&name=".$numbername."&tz=Europe/Stockholm&from_date=".$fromdate."&to_date=".$todate;
+                            foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                            ?>
 
 
-
-
-$res = file_get_contents($urlval);
-$csv = new parseCSV();
-
-$csvFileName = $res;
-# Parse '_books.csv' using automatic delimiter detection...
-$csv->auto($csvFileName);
-
-
-foreach ($csv->data as $key => $row) {
-
-    $timstampscsv = date('Y-m-d h:i:S');
-    $counters = 0;
-    foreach ($row as $value) {
-?>
-
-
+                                <tr>
+                                    <td><?php echo $xdr->connect_time; ?></td>
+                                    <td><?php echo $xdr->CLD; ?></td>
+                                    <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
+                                    <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
+                                    <td><?php echo number_format($xdr->charged_amount, 2);
+                                $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
+                                    <td><?php
+                                $typecall = substr($xdr->account_id, 0, 1);
+                                if ($typecall == 'a') {
+                                    echo "Int.";
+                                }
+                                if ($typecall == '4') {
+                                    echo "R";
+                                }
+                                if ($typecall == 'c') {
+                                    if ($CLI == '**24') {
+                                        echo "Cb M";
+                                    } else {
+                                        echo "Cb S";
+                                    }
+                                } ?> </td>
+                            </tr>
 
 <?php
-
-        //echo $value;
-        //$sqlInserts .= "'$value'".', ';
-//echo $csv->titles[$counters];
-        if ($csv->titles[$counters] == 'class') {
-            $csv->titles[$counters] = 'lstclasses';
-        }
-        ${$csv->titles[$counters]} = $value;
-        $counters++;
-    } ?>
-
-
-    <tr>
-        <td><?php echo $connect_time; ?></td>
-        <td><?php echo  $CLD; ?></td>
-        <td><?php echo number_format($charged_quantity/60 ,2);  ?></td>
-         <td><?php echo  number_format($charged_amount/4,2); ?></td>
-        <td><?php echo number_format($charged_amount,2);      $amount_total+= number_format($charged_amount,2); ?> SEK</td>
-         <td><?php $account_id;    $typecall=substr($account_id,0,1);
-           if($typecall=='a'){ echo "Int.";  }
-           if($typecall=='4'){ echo "R";  }
-           if($typecall=='c'){ if($CLI=='**24'){  echo "Cb M"; }else{ echo "Cb S"; }      }  ?> </td>
-            </tr>
- 
-<?php
-$callRecords=1;
-}
+                        $callRecords=1;    }
 ?>
-
 
                 <?php if(count($callRecords)==0): ?>
                 <tr>
@@ -253,12 +253,17 @@ $callRecords=1;
                 	<td><?php echo number_format($amount_total, 2, ',', '') ?> SEK</td>
                          <td>&nbsp;</td>
                 </tr>	
-                <?php endif; ?>
+                <?php endif;
+                
+                  if($pus==0){
+                ?>
+
+
                 <tr><td colspan="6" align="left">Samtalstyp  type detail <br/> Int. = Internationella samtal<br/>
 Cb M = Callback mottaga<br/>
 	Cb S = Callback samtal<br/>
 	R = resenummer samtal<br/>
-</td></tr>
+</td></tr> <?php } ?>
               </table>
 
                 <?php } ?>

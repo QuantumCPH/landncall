@@ -1,20 +1,29 @@
-
+<div id="sf_admin_container">
 <form method="post" action="">
     
+    <?php  if(isset($message)){
+   ?>
     <div class="save-ok">
-  <h2><?php  if(isset($message)){ echo  $message;  } ?></h2>
-</div>
+     <h2> <?php echo  __($message); ?> </h2>
+    </div>
+  <?php } ?> 
 
-    <table>
-
-        <tr bgcolor="#5970B2" style="color:#FFF;"><th  colspan="8" align="left" > Product For Agent: <?php
+    <h1> Product For Agent: <?php
                  
              echo  $agenttdata->getName();
                 
-                  ?> </th></tr>
-        <tr bgcolor="#5970B2" style="color:#FFF;"><th width="20%" align="left">Product Name  </th> <th  width="10%" align="left"> Action</th><th  width="10%" align="left"> Reg share value</th><th  width="10%" align="left"> Reg. share value %</th><th  width="10%" align="left"> Reg share enable</th><th  width="10%" align="left"> Extra payments share value</th><th  width="10%" align="left"> extra refill share value %</th><th  width="10%" align="left"> Extra payments share enable</th></tr>
-
-<input type="hidden" name="agentid" value="<?php echo $agentid; ?>" />
+                  ?> </h1>
+        <table cellspacing="0" cellpadding="2" class="tblAlign">
+            <tr class="headings"><th width="20%" align="left"><?php echo __('Product Name') ?>  </th>
+            <th  width="10%" align="left"><?php echo __('Action') ?></th>
+            <th  width="10%" align="left"><?php echo __('Reg share value') ?></th>
+            <th  width="10%" align="left"><?php echo __('Reg. share value %') ?></th>
+            <th  width="10%" align="left"><?php echo __('Reg share enable') ?></th>
+            <th  width="10%" align="left"><?php echo __('Extra payments share value') ?></th>
+            <th  width="10%" align="left"><?php echo __('extra refill share value %') ?></th>
+            <th  width="10%" align="left"><?php echo __('Extra payments share enable') ?></th>
+        </tr>
+        <input type="hidden" name="agentid" value="<?php echo $agentid; ?>" />
  <?php    foreach($products as $product){?>
  
 <tr><td><?php  echo $product->getName() ?></td> <td><input name="product['<?php echo  $product->getId() ?>']" value="<?php echo  $product->getId() ?>" type="checkbox"  <?php
@@ -56,7 +65,7 @@
 </td>
 
 </tr>
-    <?php } ?><tr><td colspan="2" align="center">&nbsp; </td></tr> <tr><td colspan="8" align="center">
-<input  type="submit" name="submit" value="Update" />
-      </td></tr> </table>
-</form>
+    <?php } ?></table><div class="submitBtn">
+<input  type="submit" name="submit" value="Update" class="UpdateBtn" style="float:right;"  />
+      </div>
+</form></div>

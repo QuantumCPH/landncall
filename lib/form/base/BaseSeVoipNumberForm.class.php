@@ -15,7 +15,7 @@ class BaseSeVoipNumberForm extends BaseFormPropel
       'id'          => new sfWidgetFormInputHidden(),
       'number'      => new sfWidgetFormInput(),
       'customer_id' => new sfWidgetFormInput(),
-      'is_assigned' => new sfWidgetFormInputCheckbox(),
+      'is_assigned' => new sfWidgetFormInput(),
       'updated_at'  => new sfWidgetFormDateTime(),
     ));
 
@@ -23,7 +23,7 @@ class BaseSeVoipNumberForm extends BaseFormPropel
       'id'          => new sfValidatorPropelChoice(array('model' => 'SeVoipNumber', 'column' => 'id', 'required' => false)),
       'number'      => new sfValidatorString(array('max_length' => 16, 'required' => false)),
       'customer_id' => new sfValidatorString(array('max_length' => 250, 'required' => false)),
-      'is_assigned' => new sfValidatorBoolean(),
+      'is_assigned' => new sfValidatorInteger(),
       'updated_at'  => new sfValidatorDateTime(array('required' => false)),
     ));
 

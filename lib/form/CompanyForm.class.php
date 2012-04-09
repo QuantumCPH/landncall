@@ -13,8 +13,8 @@ class CompanyForm extends BaseCompanyForm
   public function configure()
   {
       // build city criteria
-   	$cityC = new Criteria();
-  	$cityC->add(CityPeer::COUNTRY_ID, $this->getObject()->getCountryId());
+   	//$cityC = new Criteria();
+  	//$cityC->add(CityPeer::COUNTRY_ID, $this->getObject()->getCountryId());
 
         $this->widgetSchema['created_at']               = new sfWidgetFormInputHidden();
         $this->widgetSchema['confirmed_at']             = new sfWidgetFormInputHidden();
@@ -22,10 +22,10 @@ class CompanyForm extends BaseCompanyForm
         $this->widgetSchema['agent_company_id']         = new sfWidgetFormInputHidden();
         $this->widgetSchema['account_manager_id']       = new sfWidgetFormInputHidden();
 
-  	$this->widgetSchema['country_id']               = new sfWidgetFormPropelSelect(array('model'=>'Country','add_empty'=>'Select Country','order_by'=>array('Name','asc')));
-  	$this->widgetSchema['city_id']                  = new sfWidgetFormPropelSelect(array('model'=>'City','add_empty'=>'Select City','order_by'=>array('Name','asc'),'criteria'=>$cityC));
+   /*  	$this->widgetSchema['country_id']               = new sfWidgetFormPropelSelect(array('model'=>'Country','add_empty'=>'Select Country','order_by'=>array('Name','asc')));
+  	$this->widgetSchema['city_id']                  = new sfWidgetFormPropelSelect(array('model'=>'City','add_empty'=>'Select City','order_by'=>array('Name','asc')));
 
-        $this->validatorSchema['country_id'] = new sfValidatorPropelChoice(array(
+       $this->validatorSchema['country_id'] = new sfValidatorPropelChoice(array(
     								'model'		=> 'Country',
     								'column'	=> 'id',
     							),array(
@@ -35,14 +35,14 @@ class CompanyForm extends BaseCompanyForm
         $this->validatorSchema['city_id'] =  new sfValidatorPropelChoice(array(
                                                                 'model'		=> 'City',
                                                                 'column'	=> 'id',
-                                                                'criteria'	=> clone $cityC,
+                                                               
                                                         ),array(
                                                                 'required'	=> 'Please choose city',
                                                                 'invalid'	=> 'Invalid city',
                                                         ));
 
      
-        /*$this->validatorSchema->setPostValidator(new sfValidatorAnd(array(new sfValidatorPropelUnique(
+      $this->validatorSchema->setPostValidator(new sfValidatorAnd(array(new sfValidatorPropelUnique(
     							array(
     								'model' => 'company',
     								'column' => 'cvr_number'

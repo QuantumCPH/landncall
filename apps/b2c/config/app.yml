@@ -2,6 +2,7 @@
 #all:
 
 all:
+ main_url: http://stagelc.zerocall.com/b2c.php/
  epay:
    merchant_number: 5116449
    currency: 208
@@ -16,6 +17,9 @@ all:
    sender:
      name: Zer0Call Support
      email: no-reply@zerocall.com
+ email_group:
+   admin: rs@zapna.com
+   support: rs@zapna.com
  status:
    new: 1
    verifying: 2
@@ -30,3 +34,4 @@ all:
    - { module: payments,  action: signup}
    - { module: payments,  action: accept}
    - { module: payments,  action: reject}
+ dialer_pin: 9998889999

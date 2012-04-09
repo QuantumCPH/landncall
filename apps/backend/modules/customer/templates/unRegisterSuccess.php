@@ -1,7 +1,3 @@
-<link rel="stylesheet" type="text/css" media="screen" href="/zapnacrm2/css/admin.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="/zapnacrm2/css/../sf/sf_admin/css/main.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="/zapnacrm2/css/backend.css" />
-<link rel="stylesheet" type="text/css" media="screen" href="/zapnacrm2/sf/sf_admin/css/main.css" />
 <ul>
             <li>
 		<table width="100%" border="2" cellspacing="0" cellpadding="0" >

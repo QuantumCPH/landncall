@@ -46,6 +46,8 @@ class BaseCustomerForm extends BaseFormPropel
       'to_date'                  => new sfWidgetFormDate(),
       'from_date'                => new sfWidgetFormDate(),
       'i_customer'               => new sfWidgetFormInput(),
+      'usage_alert_sms'          => new sfWidgetFormInput(),
+      'usage_alert_email'        => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -77,12 +79,14 @@ class BaseCustomerForm extends BaseFormPropel
       'c9_customer_number'       => new sfValidatorString(array('max_length' => 20, 'required' => false)),
       'registration_type_id'     => new sfValidatorInteger(array('required' => false)),
       'imsi'                     => new sfValidatorString(array('max_length' => 255, 'required' => false)),
-      'uniqueid'                 => new sfValidatorInteger(array('required' => false)),
+      'uniqueid'                 => new sfValidatorString(array('max_length' => 50, 'required' => false)),
       'plain_text'               => new sfValidatorString(array('max_length' => 20, 'required' => false)),
       'ticketval'                => new sfValidatorString(array('max_length' => 255, 'required' => false)),
       'to_date'                  => new sfValidatorDate(array('required' => false)),
       'from_date'                => new sfValidatorDate(array('required' => false)),
       'i_customer'               => new sfValidatorString(array('max_length' => 50, 'required' => false)),
+      'usage_alert_sms'          => new sfValidatorInteger(array('required' => false)),
+      'usage_alert_email'        => new sfValidatorInteger(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('customer[%s]');

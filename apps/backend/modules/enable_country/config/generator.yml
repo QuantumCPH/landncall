@@ -3,6 +3,7 @@ generator:
   param:
     model_class:      EnableCountry
     theme:            default
+    css:             /sf/sf_admin/css/admin_main.css
 
     fields:
       language_symbol:     { name: Language Symbol }
@@ -10,10 +11,10 @@ generator:
 
     edit:
       title: Create/Edit Country
-      display: [name, language, language_symbol, currency , currency_symbol, status, base_url,refill,calling_code,cbf_rate]
+      display: [name, language, language_symbol]
 
     list:
-      display: [name, language, language_symbol, currency , currency_symbol, status, base_url,refill,calling_code,cbf_rate]
+      display: [name, language, language_symbol]
       max_per_page: 100
       object_actions:
         _edit: ~

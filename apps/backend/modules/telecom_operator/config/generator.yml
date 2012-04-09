@@ -3,6 +3,7 @@ generator:
   param:
     model_class:      TelecomOperator
     theme:            default
+    css:             /sf/sf_admin/css/admin_main.css
     
     list:
             title: 'Telecom Operator'
