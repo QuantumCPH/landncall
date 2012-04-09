@@ -12,7 +12,7 @@
         jq("#payment").validate({
             rules: {
                 uniqueid: {
-                    remote: "<?php echo $target; ?>validateUniqueId"
+                    remote: "<?php echo $target; ?>affiliate/validateUniqueId"
                 }
             }
         });
