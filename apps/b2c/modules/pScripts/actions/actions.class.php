@@ -2536,7 +2536,7 @@ return sfView::NONE;
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
                    
-                   $customer_balance=Telienta::getBalance($customers);
+                   $customer_balance=Telienta::getBalance($customer);
             
                 }
              //   echo $uniqueId.":".$customer_balance."<br/>";
