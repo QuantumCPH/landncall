@@ -8,9 +8,7 @@ class ForumTel {
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-        $transactionid= "901".mt_rand(100000000,999999999);
-
-
+        $transactionid= "466".mt_rand(100000000,999999999);
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
         $msisdn = $usnumber->getMsisdn();
@@ -65,7 +63,7 @@ class ForumTel {
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-        $transactionid= "901".mt_rand(100000000,999999999);
+           $transactionid= "466".mt_rand(100000000,999999999);
 
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
@@ -112,7 +110,7 @@ class ForumTel {
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-        $transactionid= "901".mt_rand(100000000,999999999);
+        $transactionid= "466".mt_rand(100000000,999999999);
 
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
@@ -162,7 +160,7 @@ class ForumTel {
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-        $transactionid= "901".mt_rand(100000000,999999999);
+              $transactionid= "466".mt_rand(100000000,999999999);
 
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
@@ -228,7 +226,7 @@ class ForumTel {
             $tc = new Criteria();
             $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
             $usnumber = UsNumberPeer::doSelectOne($tc);
-            $transactionid= "901".mt_rand(100000000,999999999);
+                 $transactionid= "466".mt_rand(100000000,999999999);
             $username = "Zapna";
             $password = "ZUkATradafEfA4reYeWr";
             $msisdn = $usnumber->getMsisdn();
@@ -292,7 +290,7 @@ $usnumber->save();
             $tc = new Criteria();
             $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
             $usnumber = UsNumberPeer::doSelectOne($tc);
-            $transactionid= "901".mt_rand(100000000,999999999);
+                 $transactionid= "466".mt_rand(100000000,999999999);
             $username = "Zapna";
             $password = "ZUkATradafEfA4reYeWr";
             $msisdn = $usnumber->getMsisdn();
