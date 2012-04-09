@@ -12,7 +12,7 @@
         jq("#payment").validate({
             rules: {
                 uniqueid: {
-                    remote: "<?php echo getTargetUrl(); ?>affiliate/validateUniqueId"
+                    remote: "<?php echo sfConfig::get('app_agent_url'); ?>affiliate/validateUniqueId"
                 }
             }
         });
