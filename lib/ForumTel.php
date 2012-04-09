@@ -197,8 +197,8 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
         curl_setopt($ch, CURLOPT_HEADER, true);
 
-        $data = curl_exec($ch);
-
+       echo  $data = curl_exec($ch);
+       $output=$data;
         $data = substr($data, 215);
         $xml_obj = new SimpleXMLElement($data);
 //var_dump($xml_obj);
@@ -208,7 +208,7 @@ class ForumTel {
 
              $ftr = new ForumTelRequests();
                     $ftr->setRequestid($transactionid);
-                    $ftr->setResponse($data);
+                    $ftr->setResponse($output);
                     $ftr->setRequestType('get balance');
                     $ftr->setIccid($iccid);
                     $ftr->setMsisdn($msisdn);
