@@ -16,14 +16,14 @@ class BaseSeVoipNumberFormFilter extends BaseFormFilterPropel
     $this->setWidgets(array(
       'number'      => new sfWidgetFormFilterInput(),
       'customer_id' => new sfWidgetFormFilterInput(),
-      'is_assigned' => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
+      'is_assigned' => new sfWidgetFormFilterInput(),
       'updated_at'  => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => true)),
     ));
 
     $this->setValidators(array(
       'number'      => new sfValidatorPass(array('required' => false)),
       'customer_id' => new sfValidatorPass(array('required' => false)),
-      'is_assigned' => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
+      'is_assigned' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'updated_at'  => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
     ));
 
@@ -45,7 +45,7 @@ class BaseSeVoipNumberFormFilter extends BaseFormFilterPropel
       'id'          => 'Number',
       'number'      => 'Text',
       'customer_id' => 'Text',
-      'is_assigned' => 'Boolean',
+      'is_assigned' => 'Number',
       'updated_at'  => 'Date',
     );
   }
