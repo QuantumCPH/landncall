@@ -25,6 +25,11 @@ class customerActions extends sfActions {
     }
     public function executeTest(sfWebRequest $request) {
 
+        var_dump($_REQUEST);
+
+        die;
+  return sfView::NONE;
+
     }
 
     protected function processForm(sfWebRequest $request, sfForm $form, $id) {

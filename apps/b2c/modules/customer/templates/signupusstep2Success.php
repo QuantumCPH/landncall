@@ -149,8 +149,8 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 	
 	
 </script>
-
-<form action="https://payment.architrade.com/paymentweb/start.action"   method="post" id="payment" onsubmit="return checkForm()">
+<!--https://payment.architrade.com/paymentweb/start.action-->
+<form action="<?php url_for('customer/test') ?>"   method="post" id="payment" onsubmit="return checkForm()">
   <div class="left-col">
     <div class="split-form-sign-up">
       <div class="step-details"> <strong><?php echo __('Become a Customer') ?> <span class="inactive">- <?php echo __('Step 1') ?>: <?php echo __('Registrera') ?> </span><span class="active">- <?php echo __('Step 2') ?>: <?php echo __('Payment') ?></span></strong> </div>
@@ -245,14 +245,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
           </ul>
         <!-- hidden fields -->
 		<?php echo $form->renderHiddenFields() ?>
-		<?php 
-			
-			define("DIBS_MD5KEY2","r!oRvYT8}L5%,7XFj~Rlr$+Y[W3t3vho");
-			define("DIBS_MD5KEY1","cBI&R8y*KsGD.o}1z^WF]HqK5,*R[Y^w");
-			//define("PATH_WEB","http://landncall.zerocall.com/");
-			$md5key   =  md5(DIBS_MD5KEY2.md5(DIBS_MD5KEY1.'merchant=90049676&orderid='.$order_id.'&currency=752&amount='.$total));
-		?>
-
+		 
 		
 		<input type="hidden" name="merchant" value="90049676" />
 		<input type="hidden" name="amount" id="total" value="<?php echo $total;?>" />
