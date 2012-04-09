@@ -150,7 +150,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 	
 </script>
 <!--https://payment.architrade.com/paymentweb/start.action-->
-<form action="<?php url_for('customer/test') ?>"   method="post" id="payment" onsubmit="return checkForm()">
+<form action="http://landncall.zerocall.com/b2c_dev.php/customer/test"   method="post" id="payment" onsubmit="return checkForm()">
   <div class="left-col">
     <div class="split-form-sign-up">
       <div class="step-details"> <strong><?php echo __('Become a Customer') ?> <span class="inactive">- <?php echo __('Step 1') ?>: <?php echo __('Registrera') ?> </span><span class="active">- <?php echo __('Step 2') ?>: <?php echo __('Payment') ?></span></strong> </div>
