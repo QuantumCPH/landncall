@@ -4,7 +4,7 @@
 
 <?php if ($sf_user->hasFlash('messageEdit')): ?>
 <div class="save-ok">
- <?php echo __($sf_user->getFlash('messageEdit')) ?>
+    <h2><?php echo __($sf_user->getFlash('messageEdit')) ?></h2>
 </div>
 <?php endif; ?>
 <?php  }   ?>
@@ -12,7 +12,7 @@
 <?php if(isset($_REQUEST['message']) && $_REQUEST['message']=="add"){  ?>
 <?php if ($sf_user->hasFlash('messageAdd')): ?>
 <div class="save-ok">
- <?php echo __($sf_user->getFlash('messageAdd')) ?>
+    <h2><?php echo __($sf_user->getFlash('messageAdd')) ?></h2>
 </div>
 <?php endif; ?>
 <?php  }   ?>
