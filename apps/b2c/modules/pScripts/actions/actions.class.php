@@ -1964,48 +1964,23 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
         $number="0".$number;
         $mnc = new Criteria();
-        $mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
+        $mnc->add(CustomerPeer::UNIQUEID, $uniqueId);
         $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
         $cus = CustomerPeer::doSelectOne($mnc);
 
  	if(isset($callbackq) && $callbackq>0){
 
 
-		 //$customerid=$cus->getId();
-		  //$mbno =$cus->getMobileNumber();
-		//  $callCode = substr($Mobilenumber,0,2);
-	 		//echo $uniqueId;
-		   //$cus->setUniqueid($uniqueId);
-		   //$cus->save();
-		   //------save the callback data
-		   //echo $mobnum = $Mobilenumber;
 		   	$callbacklog = new CallbackLog();
 			$callbacklog->setMobileNumber($mnumber);
 			$callbacklog->setuniqueId($uniqueId);
-			$callbacklog->setcallingCode(45);
+			$callbacklog->setcallingCode(46);
 			$callbacklog->save();
    			echo 'Success';
-
+                        $frmnumberTelinta=$request->getParameter('from');
                            Telienta::createCBAccount($frmnumberTelinta, $cus);
 
-                        /*
-                        $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$frmnumberTelinta.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-                        $find = '';
-                        $string = $telintaAddAccountCB;
-                        $find = 'ERROR';
-                        if(strpos($string, $find )){
-                            $message_body = "On IC Registration Page Call Back Account Add Error within environment <br> Name :cb$frmnumberTelinta <br / >Unique Id: $uniqueId";
-                             //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                            emailLib::sendErrorTelinta($this->customer,$message_body);
-                        }else{
-                        }
-                        */
-//                        $mnc = new Criteria();
-//                        $mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
-//                        $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
-//                        $cus = CustomerPeer::doSelectOne($mnc);
-//                    echo     $uniqueId = $cus->getUniqueid();
-                        //This is for Retrieve balance From Telinta
+                       
                         $telintaGetBalance =  Telienta::getBalance($cus);
 
                         $mnc = new Criteria();

@@ -145,8 +145,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                  }
 	}
 	
-	
-	
+
 	
 </script>
 <!---->
