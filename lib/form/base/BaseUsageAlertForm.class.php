@@ -13,7 +13,8 @@ class BaseUsageAlertForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'id'                  => new sfWidgetFormInputHidden(),
-      'alert_amount'        => new sfWidgetFormInput(),
+      'alert_amount_min'    => new sfWidgetFormInput(),
+      'alert_amount_max'    => new sfWidgetFormInput(),
       'sms_alert_message'   => new sfWidgetFormTextarea(),
       'sms_active'          => new sfWidgetFormInputCheckbox(),
       'email_alert_message' => new sfWidgetFormTextarea(),
@@ -25,7 +26,8 @@ class BaseUsageAlertForm extends BaseFormPropel
 
     $this->setValidators(array(
       'id'                  => new sfValidatorPropelChoice(array('model' => 'UsageAlert', 'column' => 'id', 'required' => false)),
-      'alert_amount'        => new sfValidatorInteger(),
+      'alert_amount_min'    => new sfValidatorInteger(),
+      'alert_amount_max'    => new sfValidatorInteger(),
       'sms_alert_message'   => new sfValidatorString(),
       'sms_active'          => new sfValidatorBoolean(),
       'email_alert_message' => new sfValidatorString(),

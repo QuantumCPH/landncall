@@ -1,9 +1,9 @@
 global_settings:
   class: sfPropelRouteCollection
   options:
-    model:                GlobalSettings
-    module:               global_settings
-    prefix_path:          global_settings
+    model:                GlobalSetting
+    module:               global_setting
+    prefix_path:          global_setting
     column:               id
     with_wildcard_routes: true
 

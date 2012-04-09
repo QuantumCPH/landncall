@@ -1,3 +1,4 @@
+
 <?php echo form_tag('company/save', array(
   'id'        => 'sf_admin_edit_form',
   'name'      => 'sf_admin_edit_form',
@@ -6,7 +7,7 @@
 
 <?php echo object_input_hidden_tag($company, 'getId') ?>
 
-<fieldset id="sf_fieldset_none" class="">
+<fieldset>
 
 <div class="form-row">
   <?php echo label_for('company[name]', __($labels['company{name}']), 'class="required" ') ?>
@@ -21,20 +22,30 @@
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
+
 <div class="form-row">
   <?php echo label_for('company[vat_no]', __($labels['company{vat_no}']), 'class="required" ') ?>
   <div class="content<?php if ($sf_request->hasError('company{vat_no}')): ?> form-error<?php endif; ?>">
   <?php if ($sf_request->hasError('company{vat_no}')): ?>
     <?php echo form_error('company{vat_no}', array('class' => 'form-error-msg')) ?>
   <?php endif; ?>
-
+<?php if ($company->isNew()){ ?>
   <?php $value = object_input_tag($company, 'getVatNo', array (
   'size' => 7,
   'control_name' => 'company[vat_no]',
 )); echo $value ? $value : '&nbsp;' ?>
+      <?php }else{
+
+          $value = object_input_tag($company, 'getVatNo', array (
+  'size' => 7,
+  'readonly'=>'true',
+  'control_name' => 'company[vat_no]',
+)); echo $value ? $value : '&nbsp;' ;
+
+      }?>
+ <span id="msgbox" style="display:none"></span>
     </div>
 </div>
-
 
 <div class="form-row">
   <?php echo label_for('company[address]', __($labels['company{address}']), 'class="required" ') ?>
@@ -58,22 +69,51 @@
   <?php endif; ?>
 
   <?php $value = object_input_tag($company, 'getPostCode', array (
-  'size' => 7,
+  'size' => 80,
   'control_name' => 'company[post_code]',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
 
-    <div id="countrycity">
-	<?php  //include_partial('resort/countrycity', array('resort' => $resort, 'labels' => $labels)) ?>
-	<?php echo javascript_tag(
-  			remote_function(array(
-    			'update'  => 'countrycity',
-    			'url'     => 'company/countrycity'. ($company->getCountryId() != ''? '?country_id='.$company->getCountryId().'&city_id='.$company->getCityId() : ''),
-  			))
-		) ?>
+
+<div class="form-row">
+   <?php echo label_for('company[country_id]', __($labels['company{country_id}']), '') ?>
+          <div class="content<?php if ($sf_request->hasError('company{country_id}')): ?> form-error<?php endif; ?>">
+              <?php if ($sf_request->hasError('company{country_id}')): ?>
+                <?php echo form_error('company{country_id}', array('class' => 'form-error-msg')) ?>
+              <?php endif; ?>
+              <?php $value = object_select_tag($company, 'getCountryId', array (
+                      'related_class' => 'Country',
+                      'control_name' => 'company[country_id]',
+                      'peer_method'=>'getSortedCountries',
+                      //'include_blank' => true,
+                      'onchange'=> remote_function(array(
+                                'update'  => 'citySelectList',
+                                'url'     => 'company/countrycity',
+                                        'with' => "'country_id=' + this.options[this.selectedIndex].value"
+                                ))
+                    ),182); echo $value ? $value : '&nbsp;' ?>
+          </div>
+</div>
+    
+<div id="countrylist">
+    <div class="form-row">
+      <?php echo label_for('company[city_id]', __($labels['company{city_id}']), '') ?>
+      <div class="content<?php if ($sf_request->hasError('company{city_id}')): ?> form-error<?php endif; ?>">
+      <?php if ($sf_request->hasError('company{city_id}')): ?>
+        <?php echo form_error('company{city_id}', array('class' => 'form-error-msg')) ?>
+      <?php endif; ?>
+          <div id="citySelectList">
+    <?php $value = object_select_tag($company, 'getCityId', array (
+      'related_class' => 'City',
+      'control_name' => 'company[city_id]',
+         'peer_method'=>'getSortedSweedishCities',
+      'include_custom' => 'Select City',
+    )); echo $value ? $value : '&nbsp;' ?>
+     </div>
+        </div>
     </div>
-  
+</div>
 
 <div class="form-row">
   <?php echo label_for('company[contact_name]', __($labels['company{contact_name}']), 'class="required" ') ?>
@@ -82,13 +122,13 @@
     <?php echo form_error('company{contact_name}', array('class' => 'form-error-msg')) ?>
   <?php endif; ?>
 
-  <?php $value = object_input_tag($company, 'getContactName', array (
-  'size' => 80,
-  'control_name' => 'company[contact_name]',
-)); echo $value ? $value : '&nbsp;' ?>
-    </div>
+ 
+ <?php $value = object_input_tag($company, 'getContactName', array (
+      'size' => 80,
+      'control_name' => 'company[contact_name]',
+    )); echo $value ? $value : '&nbsp;' ?>
+   </div>
 </div>
-
 <div class="form-row">
   <?php echo label_for('company[email]', __($labels['company{email}']), 'class="required" ') ?>
   <div class="content<?php if ($sf_request->hasError('company{email}')): ?> form-error<?php endif; ?>">
@@ -118,7 +158,7 @@
 </div>
 
 <div class="form-row">
-  <?php echo label_for('company[fax_number]', __($labels['company{fax_number}']), 'class="required" ') ?>
+  <?php echo label_for('company[fax_number]', __($labels['company{fax_number}']), '') ?>
   <div class="content<?php if ($sf_request->hasError('company{fax_number}')): ?> form-error<?php endif; ?>">
   <?php if ($sf_request->hasError('company{fax_number}')): ?>
     <?php echo form_error('company{fax_number}', array('class' => 'form-error-msg')) ?>
@@ -155,7 +195,7 @@
   <?php $value = object_select_tag($company, 'getStatusId', array (
   'related_class' => 'Status',
   'control_name' => 'company[status_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Status',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -170,7 +210,7 @@
   <?php $value = object_select_tag($company, 'getCompanySizeId', array (
   'related_class' => 'CompanySize',
   'control_name' => 'company[company_size_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Company Size',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -185,7 +225,7 @@
   <?php $value = object_select_tag($company, 'getCompanyTypeId', array (
   'related_class' => 'CompanyType',
   'control_name' => 'company[company_type_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Company Type',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -200,13 +240,13 @@
   <?php $value = object_select_tag($company, 'getCustomerTypeId', array (
   'related_class' => 'CustomerType',
   'control_name' => 'company[customer_type_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Customer Type',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
 
 <div class="form-row">
-  <?php echo label_for('company[invoice_method_id]', __($labels['company{invoice_method_id}']), 'class="required"') ?>
+  <?php echo label_for('company[invoice_method_id]', __($labels['company{invoice_method_id}'])) ?>
   <div class="content<?php if ($sf_request->hasError('company{invoice_method_id}')): ?> form-error<?php endif; ?>">
   <?php if ($sf_request->hasError('company{invoice_method_id}')): ?>
     <?php echo form_error('company{invoice_method_id}', array('class' => 'form-error-msg')) ?>
@@ -215,22 +255,6 @@
   <?php $value = object_select_tag($company, 'getInvoiceMethodId', array (
   'related_class' => 'InvoiceMethod',
   'control_name' => 'company[invoice_method_id]',
-  'include_blank' => true,
-)); echo $value ? $value : '&nbsp;' ?>
-    </div>
-</div>
-
-<div class="form-row">
-  <?php echo label_for('company[account_manager_id]', __($labels['company{account_manager_id}']), '') ?>
-  <div class="content<?php if ($sf_request->hasError('company{account_manager_id}')): ?> form-error<?php endif; ?>">
-  <?php if ($sf_request->hasError('company{account_manager_id}')): ?>
-    <?php echo form_error('company{account_manager_id}', array('class' => 'form-error-msg')) ?>
-  <?php endif; ?>
-
-  <?php $value = object_select_tag($company, 'getAccountManagerId', array (
-  'related_class' => 'User',
-  'control_name' => 'company[account_manager_id]',
-  'include_blank' => true,
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -245,7 +269,7 @@
   <?php $value = object_select_tag($company, 'getAgentCompanyId', array (
   'related_class' => 'AgentCompany',
   'control_name' => 'company[agent_company_id]',
-  'include_blank' => true,
+  'include_custom' => 'Select Agent Company',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -259,15 +283,16 @@
 
   <?php $value = object_input_date_tag($company, 'getRegistrationDate', array (
   'rich' => true,
-  'withtime' => false,
+  'withtime' => true,
   'calendar_button_img' => '/sf/sf_admin/images/date.png',
   'control_name' => 'company[registration_date]',
+  'readonly' => 'true',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
-<!-- 
+
 <div class="form-row">
-  <?php echo label_for('company[created_at]', __($labels['company{created_at}']), '') ?>
+  <?php echo label_for('company[created_at]', __($labels['company{created_at}']), 'class="required" ') ?>
   <div class="content<?php if ($sf_request->hasError('company{created_at}')): ?> form-error<?php endif; ?>">
   <?php if ($sf_request->hasError('company{created_at}')): ?>
     <?php echo form_error('company{created_at}', array('class' => 'form-error-msg')) ?>
@@ -275,68 +300,10 @@
 
   <?php $value = object_input_date_tag($company, 'getCreatedAt', array (
   'rich' => true,
-  'withtime' => false,
+  'withtime' => true,
   'calendar_button_img' => '/sf/sf_admin/images/date.png',
   'control_name' => 'company[created_at]',
-)); echo $value ? $value : '&nbsp;' ?>
-    </div>
-</div>
- -->
- 
-<div class="form-row">
-  <?php echo label_for('company[confirmed_at]', __($labels['company{confirmed_at}']), '') ?>
-  <div class="content<?php if ($sf_request->hasError('company{confirmed_at}')): ?> form-error<?php endif; ?>">
-  <?php if ($sf_request->hasError('company{confirmed_at}')): ?>
-    <?php echo form_error('company{confirmed_at}', array('class' => 'form-error-msg')) ?>
-  <?php endif; ?>
-
-  <?php $value = object_input_date_tag($company, 'getConfirmedAt', array (
-  'rich' => true,
-  'withtime' =>true,
-  'calendar_button_img' => '/sf/sf_admin/images/date.png',
-  'control_name' => 'company[confirmed_at]',
-)); echo $value ? $value : '&nbsp;' ?>
-    </div>
-</div>
-
-<div class="form-row">
-  <?php echo label_for('company[sim_card_dispatch_date]', __($labels['company{sim_card_dispatch_date}']), '') ?>
-  <div class="content<?php if ($sf_request->hasError('company{sim_card_dispatch_date}')): ?> form-error<?php endif; ?>">
-  <?php if ($sf_request->hasError('company{sim_card_dispatch_date}')): ?>
-    <?php echo form_error('company{sim_card_dispatch_date}', array('class' => 'form-error-msg')) ?>
-  <?php endif; ?>
-
-  <?php $value = object_input_date_tag($company, 'getSimCardDispatchDate', array (
-  'rich' => true,
-  'calendar_button_img' => '/sf/sf_admin/images/date.png',
-  'control_name' => 'company[sim_card_dispatch_date]',
-)); echo $value ? $value : '&nbsp;' ?>
-    </div>
-</div>
-<div class="form-row">
-  <?php echo label_for('company[package_id]', __($labels['company{package_id}']), 'class="required" ') ?>
-  <div class="content<?php if ($sf_request->hasError('company{package_id}')): ?> form-error<?php endif; ?>">
-  <?php if ($sf_request->hasError('company{package_id}')): ?>
-    <?php echo form_error('company{package_id}', array('class' => 'form-error-msg')) ?>
-  <?php endif; ?>
-
-  <?php $value = object_select_tag($company, 'getPackageId', array (
-  'related_class' => 'Package',
-  'control_name' => 'company[package_id]',
-)); echo $value ? $value : '&nbsp;' ?>
-    </div>
-</div>
-
-<div class="form-row">
-  <?php echo label_for('company[usage_discount_pc]', __($labels['company{usage_discount_pc}']), '') ?>
-  <div class="content<?php if ($sf_request->hasError('company{usage_discount_pc}')): ?> form-error<?php endif; ?>">
-  <?php if ($sf_request->hasError('company{usage_discount_pc}')): ?>
-    <?php echo form_error('company{usage_discount_pc}', array('class' => 'form-error-msg')) ?>
-  <?php endif; ?>
-
-  <?php $value = object_input_tag($company, 'getUsageDiscountPc', array (
-  'size' => 7,
-  'control_name' => 'company[usage_discount_pc]',
+  'readonly' => 'true',
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
@@ -355,19 +322,18 @@
 )); echo $value ? $value : '&nbsp;' ?>
     </div>
 </div>
-
+<?php if ($company->isNew()){ ?>
+<input type="hidden" value="" id="error" name="error">
+<? }?>
 </fieldset>
 
 <?php include_partial('edit_actions', array('company' => $company)) ?>
 
 </form>
 
-<ul class="sf_admin_actions">
-      <li class="float-left"><?php if ($company->getId()): ?>
-<?php echo button_to(__('delete'), 'company/delete?id='.$company->getId(), array (
-  'post' => true,
-  'confirm' => __('Are you sure?'),
-  'class' => 'sf_admin_action_delete',
-)) ?><?php endif; ?>
+<!--<ul class="sf_admin_actions">
+      <li class="float-left"> <?php //if ($company->getId()): ?>
+        <?php //echo button_to(__('delete'), 'company/delete?id='.$company->getId(), array (  'post' => true,  'confirm' => __('Are you sure?'),  'class' => 'sf_admin_action_delete',)) ?><?php //endif; ?>
 </li>
   </ul>
+-->

@@ -16,7 +16,8 @@ require_once(sfConfig::get('sf_lib_dir').'/smsCharacterReplacement.php');
  */
 class pScriptsActions extends sfActions
 {
- 
+
+    
     /**
   * Executes index action
   *
@@ -130,819 +131,11 @@ class pScriptsActions extends sfActions
         }
 
 
-  public function executeAppWebSMS(sfWebrequest $request){
 
-  $sender = $request->getParameter('sender')    ;
-  $message = $request->getParameter('message');
-  $destination_code = $request->getParameter('code');
-  $number = $request->getParameter('number');
-  $destination = $destination_code."".$number;
 
 
-                $mobile = "";
-                $customer = NULL;
-                $country_code="";
 
-             
-               
-   if (strlen($sender) == 10 ){
-                $country_code = substr($sender,0,2);
-                $mobile =  substr($sender,2,8);
 
-            }
-         else if (strlen($sender) == 13 ){
-                $country_code = substr($sender,0,3);
-                $usnumber=true;
-                $mobile =  substr($sender,3,10);
-         }
-
-
-
-
-                $cr = new Criteria();
-                $cr->add(CustomerPeer::MOBILE_NUMBER, $mobile);
-                $cr->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-		$customer = CustomerPeer::doSelectOne($cr);
-
-                if(!$customer){
-                echo 'error, Mobile Number Not Registered';
-                return sfView::NONE;
-                }
-
-
-      $cct = new Criteria();
-      $cct->add(CountryPeer::CALLING_CODE,$destination_code);
-      $country = CountryPeer::doSelectOne($cct);
-      if(!$country){
-          echo 'error, Country code: '.$destination_code.' not recgnized';
-          return sfView::NONE;;
-      }
-
-  if($customer){
-      if($sender and $message and $country_code and $number){
-
-
-
-      //echo $country;
-
-      $messages = array();
-
-      if(strlen($message) < 142 ){
-          $messages[1] = $message."-Sent by zer0call-";
-      }
-      else if (strlen($message) > 142 and strlen($message) < 302){
-
-            $messages[1]=substr($message,1,142)."-Sent by zer0call-";
-            $messages[2]=substr($message,143)."-Sent by zer0call-";
-
-      }else if (strlen($message) > 382){
-         $messages[1]=substr($message,1,142)."-Sent by zer0call-";
-         $messages[2]=substr($message,143,302)."-Sent by zer0call-";
-         $messages[3]=substr($message,303,432)."-Sent by zer0call-";
-
-      }
-
-      $cc = CurrencyConversionPeer::retrieveByPK(1);
-
-      foreach($messages as $sms_text){
-          $cbf = new Cbf();
-          $cbf->setS('H');
-          $cbf->setDa($destination);
-          $cbf->setMessage($sms_text);
-          $cbf->setCountryId($country->getId());
-          $cbf->setMobileNumber($customer->getMobileNumber());
-
-
-          $cbf->save();
-
-          //recharge fonet
-
-          
-          $balance = Fonet::getBalance($customer);
-          $amt = number_format($cc->getBppDkk()*$country->getCbfRate(),2);
-
-//          echo '<br/>';
-//          echo 'SMS Amount: '.$amt;
-//          echo '<br/>';
-//          echo 'Balance: '.$balance;
-//          echo '<br/>';
-          
-          if($balance < $amt){
-              echo "error, Not Enough Balance, Please Recharge";
-              return sfView::NONE;
-          }else{
-            Fonet::recharge($customer, -($amt));
-
-            $this->customer = $customer;
-            $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0,1);     // bcdef
-            if($getFirstnumberofMobile==0){
-              $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-              $TelintaMobile =  '46'.$TelintaMobile ;
-            }else{
-              $TelintaMobile = '46'.$this->customer->getMobileNumber();
-            }
-            $uniqueId = $this->customer->getUniqueid();
-            $OpeningBalance = '40';
-            //This is for Recharge the Customer
-            $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name='.$uniqueId.'&amount='.$OpeningBalance);
-                       
-         
-          }
-          
-
-          $data = array(
-                  'S' => 'H',
-                  'UN'=>'zapna1',
-                  'P'=>'Zapna2010',
-                  'DA'=>$destination,
-                  'SA' =>$country_code.$mobile,
-                  'M'=>$sms_text,
-                  'ST'=>'5'
-            );
-
-
-                    $queryString = http_build_query($data,'', '&');
-  					$queryString=smsCharacter::smsCharacterReplacement($queryString);
-                    $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-                    //echo $res;
-
-
-
-
-
-
-      }
-
-      if(substr($res,0,2)=="OK"){
-
-                    echo "success";
-                   /* $this->getResponse()->setContentType("text/xml");
-                    $this->getResponse()->setContent("<?xml version=\"1.0\"?>
-                    <zerocall>
-                    <status>ok</status>
-                    <message>sms sent</message>
-                    </zerocall>");*/
-
-
-                }else {
-
-                    echo "sms could not be sent";
-                    /*$this->getResponse()->setContentType("text/xml");
-                    $this->getResponse()->setContent("<?xml version=\"1.0\"?>
-                    <zerocall>
-                    <status>error</status>
-                    <message>sms could not be sent</message>
-                    </zerocall>");*/
-
-                }
-
-      }else {
-
-          echo "sms could not be sent";
-          /*$this->getResponse()->setContentType("text/xml");
-                    $this->getResponse()->setContent("<?xml version=\"1.0\"?>
-                    <zerocall>
-                    <status>error</status>
-                    <message>sms could not be sent</message>
-                    </zerocall>");*/
-      }
-
-        return sfView::NONE;
-            }
-                    echo "sms could not be sent";
-                   /* $this->getResponse()->setContentType("text/xml");
-                    $this->getResponse()->setContent("<?xml version=\"1.0\"?>
-                    <zerocall>
-                    <status>error</status>
-                    <message>mobile number is not registered</message>
-                    </zerocall>");
-                    return sfView::NONE;*/
-                    return sfView::NONE;
-}
-
-
-public function executeAppLogin(sfWebrequest $request){
-
-
-        $mobile_number = $request->getParameter('mobile_number');
-        $password = sha1($request->getParameter('password'));
-
-        $mobile = "";
-        $country_code="";
-
-
-         if (strlen($mobile_number) == 10 ){
-                $country_code = substr($mobile_number,0,2);
-                $mobile =  substr($mobile_number,2,8);
-
-            }
-         else if (strlen($mobile_number) == 13 ){
-                $country_code = substr($mobile_number,0,3);
-                $mobile =  substr($mobile_number,3,10);
-         }
-
-
-         $c = new Criteria();
-	 $c->add(CustomerPeer::MOBILE_NUMBER, $mobile);
-	 $c->add(CustomerPeer::PASSWORD, $password);
-	 $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-	 $customer = CustomerPeer::doSelectOne($c);
-
-
-
-
-
-        if ($customer){
-
-                $sc = new Criteria();
-                $sc->add(SipPeer::CUSTOMER_ID, $customer->getId());
-                $sip = SipPeer::doSelectOne($sc);
-
-                if($sip){
-                echo "OK,".$sip->getUser().",",$sip->getPwd();
-                }
-
-
-        }
-        else {
-
-
-        echo "failure, invalid phone number";
-
-        }
-
-        return sfView::NONE;
-        }
-        public function executeAppGetBalance(sfWebRequest $request){
-
-            $mobile_number = $request->getParameter('mobile_number');
-//            echo $mobile_number;
-//            echo '<br/>';
-            if(strlen($mobile_number)==13){
-//                    echo 'number is 13 digit';
-//                    echo '<br/>';
-                    $arr  = explode("001", $mobile_number);
-                    foreach($arr as $ar){
-//                    echo $ar;
-//                    echo '<br/>';
-                    if ($ar!="")
-                        $mobile_number = $ar;
-                    }
-                }else if (strlen($mobile_number) == 10 ){
-//                     echo 'number is 10 digit';
-//                     echo '<br/>';
-
-                    $arr  = explode("45", $mobile_number);
-
-                foreach($arr as $ar){
-//                    echo $ar;
-//                    echo '<br/>';
-                    if ($ar!="")
-                        $mobile_number = $ar;
-                }
-
-                }
-//                echo $mobile_number;
-//                echo '<br/>';
-                $c = new Criteria();
-                $c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
-                $c->add(CustomerPeer::CUSTOMER_STATUS_ID, sfConfig::get('app_status_completed'));
-                $customer = CustomerPeer::doSelectOne($c);
-               // echo  $customer->
-                  //  echo $customer;
-                if($customer){
-//                echo 'got customer';
-//                    echo '<br/>';
-//                echo $customer->getId();
-//                 echo '<br/>';
-                $fonetBalance = Fonet::getBalance($customer);
-                echo number_format($fonetBalance,2);
-                }else{
-                    echo "error, mobile number is not registered";
-                }
-
-                
-
-
-
-
-
-            return sfView::NONE;
-
-        }
-
-
-
-
-
-
-
-
-public function executeAppRegistration(sfWebrequest $request){
-
-
-   //validation patterns
-   $den_pattern = "/^[0-9]{10}$/";
-   $us_pattern = "/^[0-9]{13}$/";
-   $code_pattern = "/^[0-9]{6}$/";
-   $agent_pattern = "/^[0-9]{4}$/";
-   $product_pattern = "/^[0-9]{2}$/";
-
-   //initialize flags
-   $us_num_flag=false;
-   $den_num_flag=false;
-   $alreadyRegistered = true;
-   $invalidMobile = true;
-   $invalidEmail = false;
-   $is_agent = false;
-   $is_product = false;
-   $valid_code = true;
-   $customer_registered=false;
-
-   //initialize parameter variables
-   $full_mobile_number = "";
-   $mobile = "";
-   $code="";
-   $product_code="";
-   $agent_code="";
-   $name = "";
-   $password = "";
-   $email = "";
-
-   //initialize object variables
-   $agent=NULL;
-   $product=NULL;
-   $customer= new Customer();
-   $order = new CustomerOrder();
-   $customer_product = new CustomerProduct();
-   $transaction = new Transaction();
-
-   //start function execution
-   try{
-
-  //get request parameters
-   $name = $request->getParameter('name');
-   $full_mobile_number = $request->getParameter('mobile_number');
-   $password = $request->getParameter('password');
-   $email = $request->getParameter('email');
-   $code = $request->getParameter('code');
-
-  //validate code
-  if(preg_match($code_pattern,$code)){
-
-//      echo "code pattern matched";
-//      echo '<br/>';
-
-      $agent_code = substr($code,0,4);
-      $product_code = substr($code,4,5);
-
-//      echo $agent_code;
-//      echo '<br/>';
-//      echo $product_code;
-//      echo '<br/>';
-
-    
-      // echo $referrer_cvr;
-      if(preg_match($agent_pattern,$agent_code)){
-      $c = new Criteria();
-      $c->add(AgentCompanyPeer::SMS_CODE,  $agent_code);
-      $agent = AgentCompanyPeer::doSelectOne($c);
-
-
-      }//end if(preg_match($agent_pattern,$agent_code))
-
-
-     //geting product sms code
-     if(preg_match($product_pattern,$product_code)){
-     $pc = new Criteria();
-     $pc->add(ProductPeer::SMS_CODE, $product_code);
-     $product = ProductPeer::doSelectOne($pc);
-
-         if($product and $agent){
-             $is_product = true;
-             $is_agent = true;
-             $valid_code =true;
-         }//end if($product and $agent)
-     }//end if(preg_match($product_pattern,$product_code))
-  }else if ($code!=""){
-         $valid_code =false;
-  }//if ($code!="")
-
-  if(preg_match($den_pattern,$full_mobile_number)){
-
-      $mobile = substr($full_mobile_number,2,8);
-
-      $invalidMobile = false;
-      $mnc = new Criteria();
-      $mnc->add(CustomerPeer::MOBILE_NUMBER, $mobile);
-      $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-      $cus = CustomerPeer::doSelectOne($mnc);
-
-      //This Function For Get the Enable Country Id =
-      $calingcode = substr($full_mobile_number,0,2);
-      $countryId = $this->getEnableCountryId($calingcode);
-     
-      
-      if(!$cus){
-
-      $alreadyRegistered = false;
-      $customer->setCountryId($countryId);
-      $customer->setMobileNumber($mobile);
-      }
-
-      // if(preg_match($den_pattern,$full_mobile_number))
-      }else if(preg_match($us_pattern,$full_mobile_number)){
-
-      $invalidMobile = false;
-      $mobile = substr($full_mobile_number,3,10);
-      $mnc = new Criteria();
-      $mnc->add(CustomerPeer::MOBILE_NUMBER, $mobile);
-      $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-      $cus = CustomerPeer::doSelectOne($mnc);
-
-      //This Function For Get the Enable Country Id =
-      $calingcode = substr($full_mobile_number,0,3);
-      $countryId = $this->getEnableCountryId($calingcode);
-     
-     
-          if(!$cus){
-
-//          echo $mobile;
-//          echo '<br/>';
-          $alreadyRegistered = false;
-          $customer->setCountryId($countryId);
-          $customer->setMobileNumber($mobile);
-
-          }// if(!$cus)
-
-  }// if(preg_match($us_pattern,$full_mobile_number))
-
-
-//    Listing flags
-//   $us_num_flag=false;
-//   $den_num_flag=false;
-//   $alreadyRegistered = true;
-//   $invalidMobile = true;
-//   $invalidEmail = true;
-//   $is_agent = false;
-//   $is_product = false;
-//   $valid_code = true;
-
- if(!$invalidMobile and !$alreadyRegistered and $valid_code and !$invalidEmail){
-
- //echo 'saving customer';
-
-//        echo "inside if(invalidMobile and !alreadyRegistered and valid_code and !invalidEmail)";
-
-        $customer->setFirstName($name);
-        $customer->setLastName(".");
-        $customer->setMobileNumber($mobile);
-        $customer->setPassword($password);
-        $customer->setEmail($email);
-            if($is_agent){
-            $customer->setReferrerId($agent->getId());
-            }
-        $customer->setCity("Application");
-        $customer->setAddress("not given");
-        $customer->setTelecomOperatorId(13);
-        $customer->setDeviceId(2191);
-        $customer->setCustomerStatusId(sfConfig::get('app_status_completed'));
-        $customer->setRegistrationTypeId(5);
-        $customer->setPlainText($password);
-        $customer->save();
-//        echo '<br/>';
-//        echo 'customer'.$customer->save();
-//        echo '<br/>';
-
-        if($is_product){
-
-            $order->setProductId($product->getId());
-            $order->setCustomerId($customer->getId());
-            $order->setExtraRefill($order->getProduct()->getInitialBalance());
-            $order->setIsFirstOrder(1);
-            $order->setOrderStatusId(3);
-            $order->save();
-//            echo 'order with product'.$order->save();
-//            echo '<br/>';
-        }else{
-
-             $order->setProductId(8);
-            $order->setCustomerId($customer->getId());
-            $order->setExtraRefill($order->getProduct()->getInitialBalance());
-            $order->setIsFirstOrder(1);
-            $order->setOrderStatusId(3);
-            $order->save();
-//            echo 'order without product'.$order->save();
-//            echo '<br/>';
-        }// if($is_product)
-
-//        echo "product saved, moving to customer_product";
-//        echo $order->getId();
-//        echo $order->getCustomerId();
-//        echo $order->getProductId();
-
-        $customer_product->setCustomerId($order->getCustomerId());
-	$customer_product->setProductId($order->getProductId());
-        $customer_product->save();
-//	echo 'customer_product'.$customer_product->save();
-//        echo '<br/>';
-
-
-        $transaction->setAgentCompanyId($customer->getReferrerId() );
-    	$transaction->setAmount($order->getProduct()->getPrice() - $order->getProduct()->getInitialBalance() + $order->getExtraRefill());
-    	$transaction->setDescription($this->getContext()->getI18N()->__('Registrering inkl. taletid'));
-    	$transaction->setOrderId($order->getId());
-    	$transaction->setCustomerId($customer->getId());
-        $transaction->setTransactionStatusId(3);
-        $transaction->save();
-//        echo 'transaction'.$transaction->save();
-//        echo '<br/>';
-
-        $customer_registered=true;
-
- if($is_product){
-
-        if($product->getSmsCode()!='01'){
-
-
-$sms_text="Velkommen til Zerocall, dit nummer er hermed aktiveret til at kunne benytte Zerocall Out, og du kan nu ringe til de billigste priser til hele verden.
-Din login informationer er:
-Brugernavn:".$mobile."  Adgangskode: ".$mobile."
-Har du behov for hj?lp er ud velkommen til at kontakte vores kunde service p?: support@landncall.com
-
-Mange hilsner
-LandNCall AB ? Support?
-";
-
-             //Fonet::registerFonet($customer);
-                $c = new Criteria();
-		$c->add(FonetCustomerPeer::ACTIVATED_ON, NULL);
-		$fonet_customer = FonetCustomerPeer::doSelectOne($c);
-                $customer->setFonetCustomerId($fonet_customer->getFonetCustomerId());
-                $fonet_customer->setActivatedOn("2011-02-10 09:40:53");
-                $fonet_customer->save();
-                $customer->save();
-
-
-
-         }// end if($product->getSmsCode()!='01')
-         else if($product->getSmsCode()=='01'){
-             echo 'product found'.$product->getSmsCode();
-             $sms_text="Velkommen til Zerocall, dit nummer er hermed aktiveret til at kunne benytte Zerocall Free, og du kan nu ringe til 60 destinationer. Har du behov for hj?lp er ud velkommen til at kontakte vores kunde service p?: support@landncall.com";
-             $sms_text.="Mange hilsner";
-             $sms_text.= "LandNCall AB ? Support";
-
-
-
-
-
-             $query_vars = array(
-			'Action'=>'CustUpdate',
-			'ParentCustomID'=>1393238,
-                        'AniNo'=>$mobile,
-	  		'DdiNo'=>25969696,
-                        'RateTableName'=>'ZapnaB2Cfree',
-                        'Trace'=>1,
-			'CustomID'=>$customer->getFonetCustomerId()
-	  	);
-
-		$query_string = http_build_query($query_vars);
-		$resp = file_get_contents('http://fax.fonet.dk/cgi-bin/ZeroCallV2Control.pl?'.$query_string);
-   $customer->save();
-
-   //////////////////////////////////////////////////////////////////////////////////////
-                $this->customer =$customer;
-                $gentid=$customer->getReferrerId();
-                $productid=$product->getId();
-                $transactionid=$transaction->getId();
-                if(isset($gentid) && $gentid!=""){
-               $massage=commissionLib::registrationCommission($gentid,$productid,$transactionid);
-               if(isset($massage)&& $massage=="balance_error" ){
-
-                   $sms_text = "your balance is low";
-         echo "error, your balance is low";
-
-die;
-
-               }
-                }
-
-
-           //////////////////////////////////////////////////////////////////////////     /
-                Fonet::registerFonet($customer);
-                Fonet::recharge($customer, $order->getExtraRefill());
-                   $customer->setCustomerStatusId(3);
-                $customer->save();
-
-
-                $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0,1);     // bcdef
-                if($getFirstnumberofMobile==0){
-                  $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-                  $TelintaMobile =  '46'.$TelintaMobile ;
-                }else{
-                  $TelintaMobile = '46'.$this->customer->getMobileNumber();
-                }
-                $uniqueId = $this->customer->getUniqueid();
-              $emailId = $this->customer->getEmail();
-              $OpeningBalance = $order->getExtraRefill();
-              $customerPassword = $this->customer->getPlainText();
-
-              //Section For Telinta Add Cusomter
-              $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name='.$uniqueId.'&currency=SEK&opening_balance=0&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&email='.$emailId.'&type=customer');
-
-              // For Telinta Add Account
-              $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$uniqueId.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=0&billing_model=1&password=asdf1asd');
-              $telintaAddAccountA = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a'.$TelintaMobile.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-              $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$TelintaMobile.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
-
-              //This is for Recharge the Customer
-              //$telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
-
-                //echo 'fonet id: ';
-                //echo $customer->getFonetId();
-//             echo "zerocall free";
-//             echo $resp;
-//             echo 'zerocall free customer registered';
-
-         }//end if($product->getSmsCode()=='01')
-
-
-         }else{
-             //echo 'product not found';
-             $sms_text="Velkommen til Zerocall, dit nummer er hermed aktiveret til at kunne benytte Zerocall Out, og du kan nu ringe til de billigste priser til hele verden.
-Din login informationer er:
-Brugernavn:".$mobile."  Adgangskode: ".$mobile."
-Har du behov for hj?lp er ud velkommen til at kontakte vores kunde service p?: support@landncall.com
-
-Mange hilsner
-Zerocall ? Support?
-";
-////////////////////////////////////////////////////////////////////////////////////
-               $this->customer =$customer;
-                $gentid=$customer->getReferrerId();
-                $productid=$product->getId();
-                $transactionid=$transaction->getId();
-                if(isset($gentid) && $gentid!=""){
-               $massage=commissionLib::registrationCommission($gentid,$productid,$transactionid);
-               if(isset($massage)&& $massage=="balance_error" ){
-
-                   $sms_text = "your balance is low";
-         echo "error, your balance is low";
-
-die;
-         
-               }
-                }
-
-                /////////////////////////////////////////////////////////////////////////////////////
-             Fonet::registerFonet($customer);
-             Fonet::recharge($customer, $order->getExtraRefill());
-//           echo "zerocall paid without promo";
-//           echo "<br/>";
-            $customer->save();
-//                echo 'fonet id: ';
-//                echo $customer->getFonetId();
-
-            $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0,1);     // bcdef
-            if($getFirstnumberofMobile==0){
-              $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-              $TelintaMobile =  '46'.$TelintaMobile ;
-            }else{
-              $TelintaMobile = '46'.$this->customer->getMobileNumber();
-            }
-            $uniqueId = $this->customer->getUniqueid();
-              $emailId = $this->customer->getEmail();
-              $OpeningBalance = $order->getExtraRefill();
-              $customerPassword = $this->customer->getPlainText();
-
-              //Section For Telinta Add Cusomter
-              $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name='.$uniqueId.'&currency=SEK&opening_balance=0&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&email='.$emailId.'&type=customer');
-
-              // For Telinta Add Account
-              $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$uniqueId.'&customer='.$uniqueId.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=0&billing_model=1&password='.$customerPassword);
-              $telintaAddAccountA = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a'.$TelintaMobile.'&customer='.$TelintaMobile.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password='.$customerPassword);
-              $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$TelintaMobile.'&customer='.$TelintaMobile.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password='.$customerPassword);
-
-              //This is for Recharge the Customer
-              $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
-              
-    }
-
-      // Assign SIP user / pwd
-             //echo "SIP is being Assigned 1";
-              $sc = new Criteria();
-              $sc->add(SipPeer::ASSIGNED, false);
-              $sip = SipPeer::doSelectOne($sc);
-
-              //echo "SIP is being Assigned 2";
-
-              $sip->setCustomerId($customer->getId());
-              $sip->setAssigned(true);
-              $sip->save();
-
-              $cc = new Criteria();
-              $cc->add(CountryPeer::ID, $customer->getCountryId());
-              $country = CountryPeer::doSelectOne($cc);
-
-              $mobile = $country->getCallingCode().$customer->getMobileNumber();
-
-//              if(strlen($mobile)==11){
-////                 echo 'mobile # = 11' ;
-//                 $mobile = '00'.$mobile;
-//             }
-
-              $IMdata = array(
-                      'type' => 'add',
-                      'secret'=>'rnRQSRD0',
-                      'username'=>$mobile,
-                      'password'=>$customer->getPlainText(),
-                      'name' =>$customer->getFirstName(),
-                      'email'=>$customer->getEmail()
-                );
-
-              
-                emailLib::sendCustomerRegistrationViaAgentAPPEmail($this->customer,$order);
-               $queryString = http_build_query($IMdata,'', '&');
-               $res2 = file_get_contents('http://im.zerocall.com:9090/plugins/userService/userservice?'.$queryString);
-
-//               echo 'http://im.zerocall.com:9090/plugins/userService/userservice?'.$queryString;
-//               echo '<br/>';
-
-              //echo "SIP is being Assigned 3";
-              //echo $res2;
-              echo "OK,".$sip->getUser().",".$sip->getPwd();
- //end of if(!$invalidMobile and !$alreadyRegistered and $valid_code and !$invalidEmail)
- }else{
-
-
-//     //initialize flags
-//   $us_num_flag=false;
-//   $den_num_flag=false;
-//   $alreadyRegistered = true;
-//   $invalidMobile = true;
-//   $invalidEmail = false;
-//   $is_agent = false;
-//   $is_product = false;
-//   $valid_code = true;
-//   $customer_registered=false;
-
-     $sms_text = "Customer not registered, please retry. ";
-     if($invalidMobile){
-         $sms_text = "error, invalid Mobile Number";
-         echo 'error, invalid Mobile Number';
-     }else if ($invalidEmail){
-         $sms_text = "error, invalid Email";
-         echo 'customer not found';
-     }else if($alreadyRegistered){
-         $sms_text = "error, Number Already Registered";
-         echo "error, Number Already Registered";
-     }else if(!$valid_code){
-         $sms_text = "error, invalid promo code";
-         echo "error, invalid promo code";
-     }
-
-
- }
-
-
-
-
-
-
-//         $cc = new Criteria();
-//         $cc->add(CountryPeer::ID, $customer->getCountryId());
-//         $country_code = CountryPeer::doSelectOne($cc)->getCallingCode();
-//
-//        $data = array(
-//                  'S' => 'H',
-//                  'UN'=>'zapna1',
-//                  'P'=>'Zapna2010',
-//                  'DA'=>$country_code.$mobile,
-//                  'SA' =>'zer0call',
-//                  'M'=>$sms_text,
-//                  'ST'=>'5'
-//            );
-
-//        $queryString = http_build_query($data,'', '&');
-//        echo $sms_text;
-//        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-//        echo $res;
-
-
-
-     //log registration
-//      $app_log .= $sms_text;
-//      $app_log .= "\n";
-//      file_put_contents($app_log_data_file, $app_log, FILE_APPEND);
-  }catch(Exception $e){
-//      $app_log .= $e->getMessage();
-//      $app_log .= "\n";
-//      file_put_contents($app_log_data_file, $app_log, FILE_APPEND);
-  }//end try catch
-
- return sfView::NONE;
-
-}
 //
     public function executeMobAccepted(sfWebRequest $request)
 	{
@@ -1363,7 +556,7 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
                         $uniqueId = $this->customer->getUniqueid();
                       //This is for Recharge the Customer
                        $MinuesOpeningBalance = $OpeningBalance*3;
-                      $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
+                       Telienta::recharge($this->customer, $OpeningBalance);
                       //This is for Recharge the Account
                       //this condition for if follow me is Active
                         $getvoipInfo = new Criteria();
@@ -1372,19 +565,14 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
                         if(isset($getvoipInfos)){
                             $voipnumbers = $getvoipInfos->getNumber() ;
                             $voip_customer = $getvoipInfos->getCustomerId() ;
-                            //$telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$voipnumbers.'&amount='.$OpeningBalance.'&type=account');
                         }else{
-                           // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=account');
-                        }
+
+
+                           }
                       
-                     // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=a'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-                     // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=cb'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-
+                     
                       $MinuesOpeningBalance = $OpeningBalance*3;
-                      //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
-                      //This is for Recharge the Customer
-                     // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name='.$uniqueId.'&amount='.$MinuesOpeningBalance);
-
+                      
 
 			//update cloud 9
 			c9Wrapper::equateBalance($customer);
@@ -1427,335 +615,24 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
 
         return sfView::NONE;
   }
-public function executeConfirmPayment(sfWebRequest $request)
-  {
 
-print_r($_REQUEST);
-
-die;
-  	$this->logMessage(print_r($_GET, true));
-
-        $is_transaction_ok = false;
-        $subscription_id = '';
-        $order_id = "";
-        $order_amount = "";
- 	//get the order_id from the session
-  	//change the status of that order to complete,
-  	//change the customer status to compete too
-
-  	$order_id = $request->getParameter('orderid');
-        $ticket_id = $request->getParameter('ticket');
-        echo $order_id.'<br />';
-  	$subscription_id = $request->getParameter('subscriptionid');        
-  	$this->logMessage('sub id: '.$subscription_id);
-        $order_amount = $request->getParameter('amount')/100;
-
-  	$this->forward404Unless($order_id || $order_amount);
-
-	//get order object
-  	$order = CustomerOrderPeer::retrieveByPK($order_id);
-
-  	//check to see if that customer has already purchased this product
-  	$c = new Criteria();
-  	$c->add(CustomerProductPeer::CUSTOMER_ID, $order->getCustomerId());
-  	$c->addAnd(CustomerProductPeer::PRODUCT_ID, $order->getProductId());
-  	$c->addJoin(CustomerProductPeer::CUSTOMER_ID, CustomerPeer::ID);
-  	$c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, sfConfig::get('app_status_new'), Criteria::NOT_EQUAL);
-
-        echo 'retrieve order id: '.$order->getId().'<br />';
-
-  	if (CustomerProductPeer::doCount($c)!=0)
-  	{
-  		echo 'Customer is already registered.';
-  		//exit the script successfully
-  		return sfView::NONE;
-  	}
-
-  	//set subscription id
-  	$order->getCustomer()->setSubscriptionId($subscription_id);
-
-  	//set auto_refill amount
-  	if (isset($ticket_id) && $ticket_id!="")
-  	{
-  		
-                echo 'is autorefill activated';
-                //auto_refill_amount
-  		$auto_refill_amount_choices = array_keys(ProductPeer::getRefillHashChoices());
-
-  		$auto_refill_amount = in_array($request->getParameter('USER_ATTR_2'), $auto_refill_amount_choices)?$request->getParameter('USER_ATTR_2'):$auto_refill_amount_choices[0];
-  		$order->getCustomer()->setAutoRefillAmount($auto_refill_amount);
-
-  		//auto_refill_lower_limit
-  		$auto_refill_lower_limit_choices = array_keys(ProductPeer::getAutoRefillLowerLimitHashChoices());
-  		$auto_refill_min_balance = in_array($request->getParameter('USER_ATTR_3'), $auto_refill_lower_limit_choices)?$request->getParameter('USER_ATTR_3'):$auto_refill_lower_limit_choices[0];
-  		$order->getCustomer()->setAutoRefillMinBalance($auto_refill_min_balance);
-                $order->getCustomer()->setTicketval($ticket_id);
-  	}
-
-  	//if order is already completed > 404
-  	$this->forward404Unless($order->getOrderStatusId()!=sfConfig::get('app_status_completed'));
-  	$this->forward404Unless($order);
-
-        echo 'processing order <br />';
-
-  	$c = new Criteria;
-  	$c->add(TransactionPeer::ORDER_ID, $order_id);
-  	$transaction = TransactionPeer::doSelectOne($c);
-
-        echo 'retrieved transaction<br />';
-
-  	if($transaction->getAmount() > $order_amount || $transaction->getAmount() < $order_amount){
-  		//error
-  		$order->setOrderStatusId(sfConfig::get('app_status_error')); //error in amount
-  		$transaction->setTransactionStatusId(sfConfig::get('app_status_error')); //error in amount
-  		$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_error')); //error in amount
-                echo 'setting error <br /> ';
-
-  	}
-  	else {
-  		//TODO: remove it
-  		$transaction->setAmount($order_amount);
-
-	  	$order->setOrderStatusId(sfConfig::get('app_status_completed')); //completed
-	  	$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed')); //completed
-	  	$transaction->setTransactionStatusId(sfConfig::get('app_status_completed')); //completed
-                 echo 'transaction=ok <br /> ';
-	  	$is_transaction_ok = true;
-  	}
-
-
-  	$product_price = $order->getProduct()->getPrice() - $order->getExtraRefill();
-
-  	$product_price_vat = .20 * $product_price;
-
-  	$order->setQuantity(1);
-
-  	//set active agent_package in case customer
-  	if ($order->getCustomer()->getAgentCompany())
-  	{
-  		$order->setAgentCommissionPackageId($order->getCustomer()->getAgentCompany()->getAgentCommissionPackageId());
-  	}
-
-
-  	
-  	
-
-	 echo 'saving order '.$order->save().'<br /> ';
-         echo 'saving transaction '.$transaction->save().' <br /> ';
-  	if ($is_transaction_ok)
-  	{
-
-                echo 'Assigning Customer ID <br/>';
-	  	//set customer's proudcts in use
-	  	$customer_product = new CustomerProduct();
-
-	  	$customer_product->setCustomer($order->getCustomer());
-	  	$customer_product->setProduct($order->getProduct());
-
-	  	$customer_product->save();
-
-	  	//register to fonet
-	  	$this->customer = $order->getCustomer();
-
-	  //	Fonet::registerFonet($this->customer);
-	  	//recharge the extra_refill/initial balance of the prouduct
-		//Fonet::recharge($this->customer, $order->getExtraRefill());
-
-                echo 'Fonet Id assigned ID <br/>';
-
-
-                $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0,1);     // bcdef
-                if($getFirstnumberofMobile==0){
-                  $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-                  $TelintaMobile =  '46'.$TelintaMobile ;
-                }else{
-                  $TelintaMobile = '46'.$this->customer->getMobileNumber();
-                }
-                 $uniqueId = $this->customer->getUniqueid();
-              $emailId = $this->customer->getEmail();
-              $OpeningBalance = $order->getExtraRefill();
-              $customerPassword = $this->customer->getPlainText();
-
-              //Section For Telinta Add Cusomter
-              $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name='.$uniqueId.'&currency=SEK&opening_balance=0&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&email='.$emailId.'&type=customer');
-
-              // For Telinta Add Account
-              $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$uniqueId.'&customer='.$uniqueId.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=0&billing_model=1&password='.$customerPassword);
-              $telintaAddAccountA = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a'.$TelintaMobile.'&customer='.$TelintaMobile.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password='.$customerPassword);
-              $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$TelintaMobile.'&customer='.$TelintaMobile.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password='.$customerPassword);
-
-              //This is for Recharge the Customer
-              $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
-             
-
-                   //echo "SIP is being Assigned 1";
-              $sc = new Criteria();
-              $sc->add(SipPeer::ASSIGNED, false);
-              $sip = SipPeer::doSelectOne($sc);
-
-              //echo "SIP is being Assigned 2";
-
-              $sip->setCustomerId($this->customer->getId());
-              $sip->setAssigned(true);
-              $sip->save();
-
-              $cc = new Criteria();
-              $cc->add(EnableCountryPeer::ID, $this->customer->getCountryId());
-              $country = EnableCountryPeer::doSelectOne($cc);
-
-              $mobile = $country->getCallingCode().$this->customer->getMobileNumber();
-
-              if(strlen($mobile)==11){
-//                 echo 'mobile # = 11' ;
-                 $mobile = '00'.$mobile;
-             }
-
-              $IMdata = array(
-                      'type' => 'add',
-                      'secret'=>'rnRQSRD0',
-                      'username'=>$mobile,
-                      'password'=>$this->customer->getPlainText(),
-                      'name' =>$this->customer->getFirstName(),
-                      'email'=>$this->customer->getEmail()
-                );
-               $queryString = http_build_query($IMdata,'', '&');
-               $res2 = file_get_contents('http://im.zerocall.com:9090/plugins/userService/userservice?'.$queryString);
-
-
-         // Assign C9 number
-         if ($order->getProduct()->getId()=='3'){
-                
-          $c = new Criteria();
-  		  $c->add(C9NumbersPeer::IS_ASSIGNED, false);
-          $c9number = C9NumbersPeer::doSelectOne($c);
-
-          $this->customer->setC9CustomerNumber($c9number->getC9Number() );
-
-          $c9number->setIsAssigned(true);
-          $c9number->save();
-          //$customer = $form->save();
-          $this->customer->save();
-
-         c9Wrapper::equateBalance($this->customer);
-}
-
-
-
-			
-
-                //if the customer is invited, Give the invited customer a bonus of 10dkk
-                $invite_c = new Criteria();
-                $invite_c->add(InvitePeer::INVITE_NUMBER, $this->customer->getMobileNumber());
-                $invite_c->add(InvitePeer::INVITE_STATUS, 2);
-                $invite =  InvitePeer::doSelectOne($invite_c);
-
-                if($invite!=NULL){
-
-
-    $invite2 = "assigning bonuss \r\n";
-			 echo " assigning bonuss <br />";
-                         $invite_data_file=sfConfig::get('sf_data_dir').'/invite.txt';
-			file_put_contents($invite_data_file, $invite2, FILE_APPEND);
-
-
-
-
-    $invite->setInviteStatus(3);
-
-                       $sc = new Criteria();
-                $sc->add(CustomerCommisionPeer::ID, 1);
-                $commisionary = CustomerCommisionPeer::doSelectOne($sc);
-                           $comsion=$commisionary->getCommision();
-
-
-                           
-                $products = new Criteria();
-                $products->add(ProductPeer::ID, 11);
-                $products = ProductPeer::doSelectOne($products);
-                $extrarefill=$products->getInitialBalance();
-                //if the customer is invited, Give the invited customer a bonus of 10dkk
-            
-                $inviteOrder = new CustomerOrder();
-                $inviteOrder->setProductId(11);
-                $inviteOrder->setQuentity(1);
-                $inviteOrder->setOrderStatusId(3);
-                $inviteOrder->setCustomerId($invite->getCustomerId());
-                $inviteOrder->setExtraRefill($extrarefill);
-                $inviteOrder->save();
-                $OrderId    =   $inviteOrder->getId();
-                // make a new transaction to show in payment history
-                $transaction_i = new Transaction();
-                $transaction_i->setAmount($comsion);
-                $transaction_i->setDescription("Invitation Bonus for Mobile Number: ".$invite->getInviteNumber());
-                $transaction_i->setCustomerId($invite->getCustomerId());
-                $transaction_i->setOrderId($OrderId);
-                $transaction_i->setTransactionStatusId(3);
-
-                //send fonet query to update the balance of invitee by 10dkk
-           //     Fonet::recharge(CustomerPeer::retrieveByPK($invite->getCustomerId()), $comsion);
-
-                //save transaction & Invite
-                $transaction_i->save();
-                $invite->save();
-				$invite2 .= "transaction & invite saved  \r\n";
-				file_put_contents($invite_data_file, $invite2, FILE_APPEND);
-    $invitevar=$invite->getCustomerId();
-
-
-
-                 if(isset($invitevar)){
-                  emailLib::sendCustomerConfirmRegistrationEmail($invite->getCustomerId());
-                            }
-}
-                //send email
-
-	  	$message_body = $this->getPartial('payments/order_receipt', array(
-	  						'customer'=>$this->customer,
-	  						'order'=>$order,
-	  						'transaction'=>$transaction,
-	  						'vat'=>$product_price_vat,
-	  						'wrap'=>true
-	  					));
-
-                $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-		$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-		$sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
-
-		$recepient_email = trim($this->customer->getEmail());
-		$recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
-
-
-                //This Seciton For Make The Log History When Complete registration complete - Agent
-                //echo sfConfig::get('sf_data_dir');
-             
-              
-                
-		//Send Email --- when Confirm Payment --- 01/15/11
-
-               $agentid=$customer->getReferrerId();
-                $productid=$product->getId();
-                $transactionid=$transaction->getId();
-                if(isset($agentid) && $agentid!=""){
-                commissionLib::registrationCommissionCustomer($agentid,$productid,$transactionid);
-                }
-                   emailLib::sendCustomerConfirmPaymentEmail($this->customer,$message_body);
-                 emailLib::sendCustomerRegistrationViaWebEmail($this->customer,$order);
-              
-             
-	    $this->order = $order;
-
-  	}//end if
-  	else
-  	{
-  		$this->logMessage('Error in transaction.');
-
-  	} //end else
-
-  	return sfView::NONE;
-  }
 public function executeTest(sfWebrequest $request){
-$amt=100;
-echo  $Tes=CurrencyConverter::convertSekToUsd($amt);
+        $form = new Curl_HTTP_Client();
+
+  $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+                    $form->set_referrer("http://landncall.zerocall.com");
+                    $post_data = array(
+                        'Account' =>'cb4529900000',
+                        'Password' =>'asdf1asd',
+                        'Action' =>'Connect Us Now!',
+                        'First_Phone_Number' =>'923006826451',
+                        'Second_Phone_Number' =>'923218478166'
+                       
+                    );
+ 
+
+                  $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
+
 
 
 
@@ -2043,391 +920,6 @@ print_r($files);
 
   }
 
-  public function executeSMS(sfWebRequest $request)
-  {
-
-
-  	$sms = SMS::receive($request);
-
-  	if ($sms)
-  	{
-  		//take action
-  		$valid_keywords = array('ZEROCALLS', 'ZEROCALLR', 'ZEROCALLN');
-
-  		if (in_array($sms->getKeyword(), $valid_keywords))
-  		{
-  			//get voucher info
-  			$c = new Criteria();
-
-  			$c->add(VoucherPeer::PIN_CODE, $sms->getMessage());
-  			$c->add(VoucherPeer::USED_ON, null, CRITERIA::ISNULL);
-
-  			$is_voucher_ok = false;
-  			$voucher = VoucherPeer::doSelectOne($c);
-
-  			switch (strtolower($sms->getKeyword()))
-		  	{
-		  		case 'zerocalls': //register + refill
-		  			//purchaes a product in 0 rs, and 200 refill
-
-		  			//create customer
-
-		  			//create order for a product
-
-		  			//don't create trnsaction for product order
-
-		  			//create refill order for product
-		  			//create transaction for refill order
-
-		  			if ($voucher)
-		  			{
-		  				$is_voucher_ok = $voucher->getType()=='s';
-
-		  				$is_voucher_ok = $is_voucher_ok &&
-		  					 ($voucher->getAmount()==200);
-		  			}
-
-		  			if ($is_voucher_ok)
-		  			{
-		  				//check if customer already exists
-		  				if ($this->is_mobile_number_exists($sms->getMobileNumber()))
-		  				{
-		  					$message = $this->getContext()->getI18N()->__('
-		  						You mobile number is already registered with LandNCall AB.
-		  					');
-
-		  					echo $message;
-		  					SMS::send($message, $sms->getMobileNumber());
-		  					break;
-		  				}
-
-                                              //This Function For Get the Enable Country Id =
-                                              $calingcode = '45';
-                                              $countryId = $this->getEnableCountryId($calingcode);
-                                              
-			  			//create a customer
-			  			$customer = new Customer();
-                                                
-			  			$customer->setMobileNumber($sms->getMobileNumber());
-			  			$customer->setCountryId($countryId); //denmark;
-			  			$customer->setAddress('Street address');
-			  			$customer->setCity('City');
-			  			$customer->setDeviceId(1);
-			  			$customer->setEmail($sms->getMobileNumber().'@zerocall.com');
-			  			$customer->setFirstName('First name');
-			  			$customer->setLastName('Last name');
-
-			  			$password  = substr(md5($customer->getMobileNumber() .  'jhom$brabar_x'),0,8);
-			  			$customer->setPassword($password);
-
-			  			//crete an order of startpackage
-			  			$customer_order = new CustomerOrder();
-			  			$customer_order->setCustomer($customer);
-			  			$customer_order->setProductId(1);
-			  			$customer_order->setExtraRefill($voucher->getAmount());
-			  			$customer_order->setQuantity(0);
-			  			$customer_order->setIsFirstOrder(true);
-
-			  			//set customer_product
-
-			  			$customer_product = new CustomerProduct();
-
-			  			$customer_product->setCustomer($customer);
-			  			$customer_product->setProduct($customer_order->getProduct());
-
-			  			//crete a transaction of product price
-			  			$transaction = new Transaction();
-			  			$transaction->setAmount($voucher->getAmount());
-			  			$transaction->setDescription($this->getContext()->getI18N()->__('Product  purchase & refill, via voucher'));
-			  			$transaction->setOrderId($customer_order->getId());
-			  			$transaction->setCustomer($customer);
-
-
-			  			$customer->setCustomerStatusId(sfConfig::get('app_status_completed', 3));
-			  			$customer_order->setOrderStatusId(sfConfig::get('app_status_completed', 3));
-			  			$transaction->setTransactionStatusId(sfConfig::get('app_status_completed', 3));
-
-
-			  			$customer->save();
-			  			$customer_order->save();
-			  			$customer_product->save();
-			  			$transaction->save();
-
-
-			  			//save voucher so it can't be reused
-			  			$voucher->setUsedOn(date('Y-m-d'));
-
-			  			$voucher->save();
-
-			  			//register with fonet
-			  			Fonet::registerFonet($customer);
-			  			Fonet::recharge($customer, $transaction->getAmount());
-
-                                                $this->customer = $customer;
-                                                $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0,1);     // bcdef
-                                                if($getFirstnumberofMobile==0){
-                                                  $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-                                                  $TelintaMobile =  '46'.$TelintaMobile ;
-                                                }else{
-                                                  $TelintaMobile = '46'.$this->customer->getMobileNumber();
-                                                }
-                                                $uniqueId = $this->customer->getUniqueid();
-                                              $emailId = $this->customer->getEmail();
-                                              $OpeningBalance = $transaction->getAmount();
-                                              $customerPassword = $this->customer->getPlainText();
-
-                                              //Section For Telinta Add Cusomter
-                                              $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name='.$uniqueId.'&currency=SEK&opening_balance=0&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&email='.$emailId.'&type=customer');
-
-                                              // For Telinta Add Account
-                                              $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$uniqueId.'&customer='.$uniqueId.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=0&billing_model=1&password='.$customerPassword);
-                                              $telintaAddAccountA = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a'.$TelintaMobile.'&customer='.$TelintaMobile.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password='.$customerPassword);
-                                              $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$TelintaMobile.'&customer='.$TelintaMobile.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password='.$customerPassword);
-
-                                              //This is for Recharge the Customer
-                                              $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
-
-
-
-			  			$message = $this->getContext()->getI18N()->__('
-			  			You have been registered to ZerOcall.' /* \n
-			  			You can use following login information to access your account.\n
-			  			Email: '. $customer->getEmail(). '\n' .
-			  			'Password: ' . $password */
-			  			);
-
-			  			echo $message;
-			  			SMS::send($message, $customer->getMobileNumber());
-
-
-		  			}
-		  			else
-		  			{
-		  				$invalid_pin_sms = SMS::send($this->getContext()->getI18N()->__('Invalid pin code.'), $sms->getMobileNumber());
-		  				echo $invalid_pin_sms;
-		  				$this->logMessage('invaild pin sms sent to ' . $sms->getMobileNumber());
-		  			}
-
-		  			break;
-		  		case 'zerocallr': //refill
-		  			//check if mobile number exists?
-
-		  			//create an order for sms refill
-
-		  			//create a transaction
-		  			if ($voucher)
-		  			{
-		  				$is_voucher_ok = $voucher->getType()=='r';
-
-		  				$valid_refills = array(100, 200, 500);
-
-		  				$is_voucher_ok = $is_voucher_ok && in_array($voucher->getAmount(), $valid_refills);
-		  			}
-
-		  			if ($is_voucher_ok)
-		  			{
-		  				//check if customer already exists
-		  				if (!$this->is_mobile_number_exists($sms->getMobileNumber()))
-		  				{
-		  					$message = $this->getContext()->getI18N()->__('
-		  						Your mobile number is not registered with LandNCall AB.
-		  					');
-
-		  					echo $message;
-		  					SMS::send($message, $sms->getMobileNumber());
-		  					break;
-		  				}
-			  			//get the customer
-
-		  				$c = new Criteria();
-		  				$c->add(CustomerPeer::MOBILE_NUMBER, $sms->getMobileNumber());
-
-
-			  			$customer = CustomerPeer::doSelectOne($c);
-
-			  			//create new customer order
-			  			$customer_order = new CustomerOrder();
-			  			$customer_order->setCustomer($customer);
-
-			  			//get customer product
-
-			  			$c = new Criteria();
-			  			$c->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
-
-			  			$customer_product = CustomerProductPeer::doSelectOne($c);
-
-			  			//set customer product
-			  			$customer_order->setProduct($customer_product->getProduct());
-
-			  			$customer_order->setExtraRefill($voucher->getAmount());
-			  			$customer_order->setQuantity(0);
-			  			$customer_order->setIsFirstOrder(false);
-
-
-			  			//crete a transaction of product price
-			  			$transaction = new Transaction();
-			  			$transaction->setAmount($voucher->getAmount());
-			  			$transaction->setDescription($this->getContext()->getI18N()->__('LandNCall AB  Refill, via voucher'));
-			  			$transaction->setOrderId($customer_order->getId());
-			  			$transaction->setCustomer($customer);
-
-
-			  			$customer_order->setOrderStatusId(sfConfig::get('app_status_completed', 3));
-			  			$transaction->setTransactionStatusId(sfConfig::get('app_status_completed', 3));
-
-			  			$customer_order->save();
-			  			$transaction->save();
-
-			  			Fonet::recharge($customer, $transaction->getAmount());
-
-
-			  			//save voucher so it can't be reused
-			  			$voucher->setUsedOn(date('Y-m-d H:i:s'));
-
-			  			$voucher->save();
-
-			  			$message = $this->getContext()->getI18N()->__('
-			  			You account has been topped up.' /* \n
-			  			You can use following login information to access your account.\n
-			  			Email: '. $customer->getEmail(). '\n' .
-			  			'Password: ' . $password */
-			  			);
-
-			  			echo $message;
-			  			SMS::send($message, $sms->getMobileNumber());
-
-
-		  			}
-		  			else
-		  			{
-		  				$invalid_pin_sms = SMS::send($this->getContext()->getI18N()->__('Invalid pin code.'), $sms->getMobileNumber());
-		  				echo $invalid_pin_sms;
-		  				$this->logMessage('invaild pin sms sent to ' . $sms->getMobileNumber());
-		  			}
-
-		  			break;
-		  		case 'zerocalln':
-		  			//purchases a 100 product, no refill
-
-		  			//check if pin code
-		  			// pin code matches
-		  			// not used before
-		  			//	type is n, amount eq to gt than product price
-
-
-
-		  			if ($voucher)
-		  			{
-		  				$is_voucher_ok = $voucher->getType()=='n';
-
-		  				$is_voucher_ok = $is_voucher_ok &&
-		  					 ($voucher->getAmount()>=ProductPeer::retrieveByPK(1)->getPrice());
-		  			}
-
-		  			if ($is_voucher_ok)
-		  			{
-		  				//check if customer already exists
-		  				if ($this->is_mobile_number_exists($sms->getMobileNumber()))
-		  				{
-		  					$message = $this->getContext()->getI18N()->__('
-		  						You mobile number is already registered with LandNCall AB.
-		  					');
-
-		  					echo $message;
-		  					SMS::send($message, $sms->getMobileNumber());
-		  					break;
-		  				}
-
-                                                //This Function For Get the Enable Country Id =
-                                                $calingcode = '45';
-                                                $countryId = $this->getEnableCountryId($calingcode);
-
-			  			//create a customer
-			  			$customer = new Customer();
-
-			  			$customer->setMobileNumber($sms->getMobileNumber());
-			  			$customer->setCountryId($countryId); //denmark;
-			  			$customer->setAddress('Street address');
-			  			$customer->setCity('City');
-			  			$customer->setDeviceId(1);
-			  			$customer->setEmail($sms->getMobileNumber().'@zerocall.com');
-			  			$customer->setFirstName('First name');
-			  			$customer->setLastName('Last name');
-
-			  			$password  = substr(md5($customer->getMobileNumber() .  'jhom$brabar_x'),0,8);
-			  			$customer->setPassword($password);
-
-			  			//crete an order of startpackage
-			  			$customer_order = new CustomerOrder();
-			  			$customer_order->setCustomer($customer);
-			  			$customer_order->setProductId(1);
-			  			$customer_order->setExtraRefill(0);
-			  			$customer_order->setQuantity(1);
-			  			$customer_order->setIsFirstOrder(true);
-
-			  			//set customer_product
-
-			  			$customer_product = new CustomerProduct();
-
-			  			$customer_product->setCustomer($customer);
-			  			$customer_product->setProduct($customer_order->getProduct());
-
-			  			//crete a transaction of product price
-			  			$transaction = new Transaction();
-			  			$transaction->setAmount($customer_order->getProduct()->getPrice()*$customer_order->getQuantity());
-			  			$transaction->setDescription($this->getContext()->getI18N()->__('Product  purchase, via voucher'));
-			  			$transaction->setOrderId($customer_order->getId());
-			  			$transaction->setCustomer($customer);
-
-
-			  			$customer->setCustomerStatusId(sfConfig::get('app_status_completed', 3));
-			  			$customer_order->setOrderStatusId(sfConfig::get('app_status_completed', 3));
-			  			$transaction->setTransactionStatusId(sfConfig::get('app_status_completed', 3));
-
-
-			  			$customer->save();
-			  			$customer_order->save();
-			  			$customer_product->save();
-			  			$transaction->save();
-
-
-			  			//save voucher so it can't be reused
-			  			$voucher->setUsedOn(date('Y-m-d'));
-
-			  			$voucher->save();
-
-			  			//register with fonet
-			  			Fonet::registerFonet($customer);
-
-			  			$message = $this->getContext()->getI18N()->__('
-			  			You have been registered to LandNCall AB.' /* \n
-			  			You can use following login information to access your account.\n
-			  			Email: '. $customer->getEmail(). '\n' .
-			  			'Password: ' . $password */
-			  			);
-
-			  			echo $message;
-			  			SMS::send($message, $sms->getMobileNumber());
-
-
-		  			}
-		  			else
-		  			{
-		  				$invalid_pin_sms = SMS::send($this->getContext()->getI18N()->__('Invalid pin code.'), $sms->getMobileNumber());
-		  				echo $invalid_pin_sms;
-		  				$this->logMessage('invaild pin sms sent to ' . $sms->getMobileNumber());
-		  			}
-
-		  			break;
-		  	}
-  		}
-
-  	}
-
-  	$this->renderText('completed');
-
-  	return sfView::NONE;
-  }
 
   private function is_mobile_number_exists($mobile_number)
   {
@@ -2950,391 +1442,7 @@ $fonetId = $request->getParameter('fonetId');
 
         }
 
-public function executeSmsRegisteration(sfWebrequest $request){
 
-  $sms_log_data_file = sfConfig::get('sf_data_dir').'/sms_log.txt';
-  $sms_log = "sms registration";
-  $sms_log .= "number: ".$request->getParameter('mobile');
-  $sms_log .= " keyword: ".$request->getParameter('keyword');
-  $sms_log .= " message:".$request->getParameter('message');
-  $sms_log .= "\n";
-  file_put_contents($sms_log_data_file, $sms_log, FILE_APPEND);
-
-  try{
-  $alreadyRegistered = true;
-  $invalidMobile = true;
-  $mobile = "";
-  $number = $request->getParameter('mobile');
-  $sms_text="";
-  
-  if(strlen($number)>=10 and strlen($number) <=10){
-
-      $invalidMobile = false;
-      $mnc = new Criteria();
-      $mnc->add(CustomerPeer::MOBILE_NUMBER, substr($number,2,8));
-      $cus = CustomerPeer::doSelectOne($mnc);
-
-      if(!$cus){
-
-      $mobile = substr($number,2,8);
-      echo $number;
-      echo '<br/>';
-      echo $mobile;
-      echo '<br/>';
-      $alreadyRegistered = false;
-      
-      }else{
-          $mobile = substr($number,2,8);
-          $sms_text = "Mobile is Already Registered";
-      }
-  }else{
-       $sms_text = "Invlaid Mobile Number Format";
-  }
-
-  $message = $request->getParameter('message');
-  $keyword = $request->getParameter('keyword');
-
-  $agent_code = substr($message,0,4);
-  $product_code = substr($message,4,5);
-
-  echo $agent_code;
-  echo '<br/>';
-  echo $product_code;
-  echo '<br/>';
-
- // echo $referrer_cvr;
-  $c = new Criteria();
-  $c->add(AgentCompanyPeer::SMS_CODE,  $agent_code);
-  $agent = AgentCompanyPeer::doSelectOne($c);
-
-
-
- //geting product sms code
-    $pc = new Criteria();
-    $pc->add(ProductPeer::SMS_CODE, $product_code);
-    $product = ProductPeer::doSelectOne($pc);
-
-    ////////////////////////////////////////////
-//       $cp = new Criteria;
-//        $cp->add(AgentProductPeer::AGENT_ID, $agent->getId());
-//         $agentproductcount = AgentProductPeer::doCount($cp);
-//
-//        if(isset($agentproductcount) && $agentproductcount>0){
-//
-//               $cpp = new Criteria;
-//        $cpp->add(AgentProductPeer::AGENT_ID, $agent->getId());
-//        $cpp->add(AgentProductPeer::PRODUCT_ID,$product->getId());
-//        $agentproductcounta = AgentProductPeer::doCount($cpp);
-//
-//  if(isset($agentproductcounta) && $agentproductcounta==0){
-//
-//      $sms_text = "this product is not in your  package";
-//         echo "error, this product is not in your  package";
-//
-//  $data = array(
-//                  'S' => 'H',
-//                  'UN'=>'zapna1',
-//                  'P'=>'Zapna2010',
-//                  'DA'=>'45'.$mobile,
-//                  'SA' =>'Zerocall',
-//                  'M'=>$sms_text,
-//                  'ST'=>'5'
-//            );
-//
-//
-//        $queryString = http_build_query($data,'', '&');
-//	$queryString=smsCharacter::smsCharacterReplacement($queryString);
-//        echo $sms_text;
-//        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-//        echo $res;
-//
-//        die;
-//  }
-//
-//
-//        }
-
-
-
- if($product and $agent and !$invalidMobile and !$alreadyRegistered){
-
-
-     //This Function For Get the Enable Country Id =
-    $calingcode = '45';
-    $countryId = $this->getEnableCountryId($calingcode);
-
-        $customer = new Customer();
-
-        $customer->setFirstName($mobile);
-        $customer->setLastName($mobile);
-        $customer->setMobileNumber($mobile);
-        $customer->setPassword($mobile);
-        $customer->setEmail($agent->getEmail());
-        $customer->setReferrerId($agent->getId());
-        $customer->setCountryId($countryId);
-        $customer->setCity("");
-        $customer->setAddress("");        
-        $customer->setTelecomOperatorId(13);
-        $customer->setDeviceId(2191);
-        $customer->setCustomerStatusId(3);
-
-        $customer->setPlainText($mobile);
-      $customer->setRegistrationTypeId(4);
-      echo 'customer'.$customer->save();
-        echo '<br/>';
-
-        
-
-
-        $order = new CustomerOrder();    	
-    	$order->setProductId($product->getId());
-    	$order->setCustomerId($customer->getId());
-    	$order->setExtraRefill($order->getProduct()->getInitialBalance());
-    	$order->setIsFirstOrder(1);
-        $order->setOrderStatusId(3);
-    	echo 'order'.$order->save();
-        echo '<br/>';
-       $this->customer =$customer;
-        $transaction = new Transaction();
-        $transaction->setAgentCompanyId($customer->getReferrerId() );
-    	$transaction->setAmount($order->getProduct()->getPrice() - $order->getProduct()->getInitialBalance() + $order->getExtraRefill());
-    	$transaction->setDescription($this->getContext()->getI18N()->__('Registrering inkl. taletid'));
-    	$transaction->setOrderId($order->getId());
-    	$transaction->setCustomerId($customer->getId());
-        $transaction->setTransactionStatusId(3);
-        echo 'transaction'.$transaction->save();
-        echo '<br/>';
-
-        $customer_product = new CustomerProduct();
-        $customer_product->setCustomer($order->getCustomer());
-	$customer_product->setProduct($order->getProduct());
-	echo 'customer_product'.$customer_product->save();
-        echo '<br/>';
-
-  
-        
-
-         if($product->getSmsCode()!='01'){
-/*$sms_text="Velkommen til Zerocall, dit nummer er hermed aktiveret til at kunne benytte Zerocall Out, og du kan nu ringe til de billigste priser til hele verden.
-Din login informationer er:
-Brugernavn:".$mobile."  Adgangskode: ".$mobile."
-Har du behov for hjaelp er du velkommen til at kontakte vores kunde service paa: support@landncall.com
-
-Mange hilsner
-Zerocall Support";*/
-
-$sms_text="Velkommen til Zerocall out.
-Sæt Zerocall simkortet i telefonen og du er i gang med at ringe billigt til udlandet.
-Huskat registrere dig på www.zerocall.com inden for 24 timer. Dit brugernavn er ".$mobile." og password".$mobile."  
-Spørgsmål? Email: support@landncall.com eller 25998891.
-Venlig hilsen Zerocall";
-
-
-                   //echo "SIP is being Assigned 1";
-              $sc = new Criteria();
-              $sc->add(SipPeer::ASSIGNED, false);
-              $sip = SipPeer::doSelectOne($sc);
-
-              //echo "SIP is being Assigned 2";
-
-              $sip->setCustomerId($customer->getId());
-              $sip->setAssigned(true);
-              $sip->save();
-
-              $cc = new Criteria();
-              $cc->add(EnableCountryPeer::ID, $customer->getCountryId());
-              $country = EnableCountryPeer::doSelectOne($cc);
-
-              $mobile = $country->getCallingCode().$customer->getMobileNumber();
-
-              if(strlen($mobile)==11){
-//                 echo 'mobile # = 11' ;
-                 $mobile = '00'.$mobile;
-             }
-
-              $IMdata = array(
-                      'type' => 'add',
-                      'secret'=>'rnRQSRD0',
-                      'username'=>$mobile,
-                      'password'=>$customer->getPlainText(),
-                      'name' =>$customer->getFirstName(),
-                      'email'=>$customer->getEmail()
-                );
-               $queryString = http_build_query($IMdata,'', '&');
-               $res2 = file_get_contents('http://im.zerocall.com:9090/plugins/userService/userservice?'.$queryString);
-
-         $agentid=$agent->getId();
-         $productid=$product->getId();
-         $transactionid=$transaction->getId();
-         $massage=commissionLib::registrationCommission($agentid,$productid,$transactionid);
-           if(isset($massage)&& $massage=="balance_error" ){
-
-                   $sms_text = "your balance is low";
-         echo "error, your balance is low";
-
-  $data = array(
-                  'S' => 'H',
-                  'UN'=>'zapna1',
-                  'P'=>'Zapna2010',
-                  'DA'=>'45'.$mobile,
-                  'SA' =>'Zerocall',
-                  'M'=>$sms_text,
-                  'ST'=>'5'
-            );
-
-  
-
-        $queryString = http_build_query($data,'', '&');
-	$queryString=smsCharacter::smsCharacterReplacement($queryString);
-        echo $sms_text;
-        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-        echo $res;
-
-        die;
-               }
-           
-             Fonet::registerFonet($customer);
-             Fonet::recharge($customer, $order->getExtraRefill());
-
-             
-             $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0,1);     // bcdef
-             if($getFirstnumberofMobile==0){
-                 $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-                 $TelintaMobile =  '46'.$TelintaMobile ;
-              }else{
-                  $TelintaMobile = '46'.$this->customer->getMobileNumber();
-              }
-               $uniqueId = $this->customer->getUniqueid();
-              $emailId = $this->customer->getEmail();
-              $OpeningBalance = $order->getExtraRefill();
-              $customerPassword = $this->customer->getPlainText();
-
-              //Section For Telinta Add Cusomter
-              $telintaRegisterCus = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?reseller=R_LandNcall&action=add&name='.$uniqueId.'&currency=SEK&opening_balance=0&credit_limit=0&enable_dialingrules=Yes&int_dial_pre=00&email='.$emailId.'&type=customer');
-
-              // For Telinta Add Account
-              $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$uniqueId.'&customer='.$uniqueId.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number=0&billing_model=1&password='.$customerPassword);
-              $telintaAddAccountA = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=a'.$TelintaMobile.'&customer='.$TelintaMobile.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_CT&outgoing_default_r_r=2034&billing_model=1&password='.$customerPassword);
-              $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$TelintaMobile.'&customer='.$TelintaMobile.'&opening_balance=-'.$OpeningBalance.'&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password='.$customerPassword);
-
-              //This is for Recharge the Customer
-              $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
-                           
-             echo "zerocall paid";
-         }
-         else{
-             $sms_text="Velkommen til ZerocallFree.
-Dit nummer er aktiveret og du kan nu benyttet Zerocall Free til at ringe gratis til mere end 60 destinationer.
-Ring til 25 99 88 91 og ringe videre til udlandet herefter (afslut med #). Brug for hjaelp?
-Skriv til support@landncall.com.
-VH - Zerocall";
-             $sms_text.="Mange hilsner";
-             $sms_text.= "Zerocall Support";
-
-
-         $agentid=$agent->getId();
-         $productid=$product->getId();
-         $transactionid=$transaction->getId();
-         $massage=commissionLib::registrationCommission($agentid,$productid,$transactionid);
-           if(isset($massage)&& $massage=="balance_error" ){
-
-                   $sms_text = "your balance is low";
-         echo "error, your balance is low";
-
-  $data = array(
-                  'S' => 'H',
-                  'UN'=>'zapna1',
-                  'P'=>'Zapna2010',
-                  'DA'=>'45'.$mobile,
-                  'SA' =>'Zerocall',
-                  'M'=>$sms_text,
-                  'ST'=>'5'
-            );
-
-        $queryString = http_build_query($data,'', '&');
-	$queryString=smsCharacter::smsCharacterReplacement($queryString);
-        echo $sms_text;
-        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-        echo $res;
-
-        die;
-               }
-
-                  Fonet::registerFonetZeroCallOut($customer);
-//             $query_vars = array(
-//			'Action'=>'CustUpdate',
-//			'ParentCustomID'=>1393238,
-//	  		'AniNo'=>'45'.$mobile,
-//	  		'DdiNo'=>25969696,
-//                        'RateTableName'=>'ZapnaB2Cfree',
-//                        'Trace'=>1,
-//			'CustomID'=>$customer->getFonetCustomerId()
-//	  	);
-//
-//		$query_string = http_build_query($query_vars);
-//		$resp = file_get_contents('http://fax.fonet.dk/cgi-bin/ZeroCallV2Control.pl?'.$query_string);
-
-//             Fonet::registerFonet($customer);
-//             Fonet::recharge($customer, $order->getExtraRefill());
-             echo "zerocall free";
-            // echo $resp;
-         }
-
-         emailLib::sendCustomerRegistrationViaAgentSMSEmail($this->customer,$order);
-        echo 'customer registered';
- }else{
-
-     $sms_text = "customer not registered, please retry. ";
-     if(!$product){
-         $sms_text = 'Dear Customer, The Product code that you provided is not valid. Please try again';
-         echo 'Dear Customer, The Product code that you provided is not valid. Please try again';
-     }else if (!$agent){
-         $sms_text = "Dear Customer, The Code that you provided is not valid. Please try again";
-         echo 'customer not found';
-     }else if($invalidMobile){
-         $sms_text = "Dear Customer, The telephone number that you have provided is not valid. Please try again";
-         echo 'Invalid mobile number';
-     }else if($alreadyRegistered){
-         $sms_text = "Kaere Kunden
-Du er allerede registeret til ZerocallFree.
-Har du brug for hjaelp saa skriv til support@landncall.com.
-VH - Zerocall";
-         echo 'Number Already Registered';
-     }
-     
-     
-     
- }
-        $data = array(
-                  'S' => 'H',
-                  'UN'=>'zapna1',
-                  'P'=>'Zapna2010',
-                  'DA'=>'45'.$mobile,
-                  'SA' =>'Zerocall',
-                  'M'=>$sms_text,
-                  'ST'=>'5'
-            );
-    
-        $queryString = http_build_query($data,'', '&');
-	$queryString=smsCharacter::smsCharacterReplacement($queryString);
-        echo $sms_text;
-        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-        echo $res;
-
-      $sms_log .= $sms_text;
-      $sms_log .= "\n";
-      $sms_log .= $res;
-      $sms_log .= "\n";
-      file_put_contents($sms_log_data_file, $sms_log, FILE_APPEND);
-  }catch(Exception $e){
-      $sms_log .= $e->getMessage();
-      $sms_log .= "\n";
-      file_put_contents($sms_log_data_file, $sms_log, FILE_APPEND);
-  }
-
-
-      return sfView::NONE;
-}
 
 public function executeSmsCode(sfWebRequest $request){
 
@@ -3623,11 +1731,12 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
             }
             if (isset($cus) && $cus != "") {
 
-                 
+
                 $customerid = $cus->getId();
                 if (isset($customerid) && $customerid != "") {
 
- 
+
+
 
                     $fromcbnumber = 'cb' . $number;
                     $firstnumbernumber =$number;
@@ -3654,7 +1763,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
             }
 
             if (!$cus) {
-               
+
 
                // $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
     $sm->add(SmsTextPeer::ID, 4);
@@ -3693,13 +1802,13 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
 
 
-                 
+
                 $number="0".$number;
 		$mnc = new Criteria();
 		$mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
                 $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
 		$cus = CustomerPeer::doSelectOne($mnc);
-                 
+
 		$mnc = new Criteria();
 		$mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
                 $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
@@ -3730,8 +1839,10 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 			$callbacklog->save();
    			echo 'Success';
                         $mtnumber;
-                       $telintaGetBalance =  Telienta::getBalance($uniqueId);
+
+                       $telintaGetBalance =  Telienta::getBalance($cus);
                    
+
                         $getvoipInfo = new Criteria();
                         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerid);
                         $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
@@ -3740,41 +1851,27 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                             $voipnumbers =  substr($voipnumbers,2);
                         }else{
                         }
-                         //$emailId = $this->customer->getEmail();
-                       // echo 'https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$frmnumberTelinta.'&customer='.$uniqueId.'&opening_balance=-'.$telintaGetBalance.'&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd';
-                      // $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$frmnumberTelinta.'&customer='.$uniqueId.'&opening_balance=-'.$telintaGetBalance.'&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number='.$TelintaMobile.'&billing_model=1&password=asdf1asd');
-                      // $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name='.$voipnumbers.'&active=Y&follow_me_number='.$frmnumberTelinta.'&type=account');
-                       $deleteAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name='.$voipnumbers.'&type=account');
 
-                       
-                        $find = '';
-                        $string = $deleteAccount;
-                        $find = 'ERROR';
-                        if(strpos($string, $find )){
-                            $message_body = "Error ON Delete Account within environment <br> VOIP Number :$voipnumbers <br / >";
-                            //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                            emailLib::sendErrorTelinta($this->customer,$message_body);
-                        }else{
+                        
+                        
+                        $tc = new Criteria();
+                        $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                        $tc->add(TelintaAccountsPeer::STATUS,3);
+                        if(TelintaAccountsPeer::doCount($tc)>0){
+                            $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
+                            Telienta::terminateAccount($telintaAccount);
                         }
 
-                      $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$voipnumbers.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number='.$frmnumberTelinta.'&billing_model=1&password=asdf1asd');
-                      $find = '';
-                      
-                      $string = $telintaAddAccount;
-                      $find = 'ERROR';
-                        if(strpos($string, $find )){
-                             $message_body = "Error ON Active a HC within environment <br> VOIP Number :$voipnumbers <br / >Follow Me Number: $frmnumberTelinta";
-                             //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                            emailLib::sendErrorTelinta($this->customer,$message_body);
-                        }else{
-                        }
 
+                        Telienta::createReseNumberAccount($voipnumbers, $cus, $frmnumberTelinta);
+                    
                         
                     
       
         
         
                             
+
        $sm = new Criteria();
                     $sm->add(SmsTextPeer::ID, 1);
                     $smstext = SmsTextPeer::doSelectOne($sm);
@@ -3796,7 +1893,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
             );
 
      echo   $queryString = http_build_query($data,'', '&');
-     
+
 		$queryString=smsCharacter::smsCharacterReplacement($queryString);
       echo $sms_text;
       echo   $queryString;
@@ -3811,11 +1908,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
       if($cusCount<1){
  echo 'Success else contdiont';
    echo $mtnumber;
-   
-                         
-     
-                     
-      
+
   $sm = new Criteria();
                     $sm->add(SmsTextPeer::ID, 2);
                     $smstext = SmsTextPeer::doSelectOne($sm);
@@ -3856,7 +1949,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 
     if($caltype=="IC"){
 	$mobile = "";
-      
+
         $number=$number;
         $mnumber= $number;
 
@@ -3868,9 +1961,16 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 	$callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
 	$callbackq = CallbackLogPeer::doCount($callbackq);
 
+
+        $number="0".$number;
+        $mnc = new Criteria();
+        $mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
+        $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
+        $cus = CustomerPeer::doSelectOne($mnc);
+
  	if(isset($callbackq) && $callbackq>0){
 
-         
+
 		 //$customerid=$cus->getId();
 		  //$mbno =$cus->getMobileNumber();
 		//  $callCode = substr($Mobilenumber,0,2);
@@ -3886,6 +1986,9 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
 			$callbacklog->save();
    			echo 'Success';
 
+                           Telienta::createCBAccount($frmnumberTelinta, $cus);
+
+                        /*
                         $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$frmnumberTelinta.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd');
                         $find = '';
                         $string = $telintaAddAccountCB;
@@ -3896,22 +1999,20 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                             emailLib::sendErrorTelinta($this->customer,$message_body);
                         }else{
                         }
-
+                        */
 //                        $mnc = new Criteria();
 //                        $mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
 //                        $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
 //                        $cus = CustomerPeer::doSelectOne($mnc);
 //                    echo     $uniqueId = $cus->getUniqueid();
                         //This is for Retrieve balance From Telinta
-                        $telintaGetBalance =  Telienta::getBalance($uniqueId);
-
+                        $telintaGetBalance =  Telienta::getBalance($cus);
 
                         $mnc = new Criteria();
                         $mnc->add(CustomerPeer::UNIQUEID, $uniqueId);
                         $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
                         $cus = CustomerPeer::doSelectOne($mnc);
                         $customerids = $cus->getId();
-                
                         $getvoipInfo = new Criteria();
                         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
                         $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
@@ -3919,38 +2020,23 @@ public function executeSmsRegisterationwcb(sfWebrequest $request){
                             $voipnumbers = $getvoipInfos->getNumber() ;
                            echo  $voipnumbers =  substr($voipnumbers,2);
 
-                           $deleteAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name='.$voipnumbers.'&type=account');
-
-                            $find = '';
-                            $string = $deleteAccount;
-                            $find = 'ERROR';
-                            if(strpos($string, $find )){
-                                $message_body = "Error ON Delete Account within environment <br> VOIP Number :$voipnumbers <br / >";
-                                //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                                emailLib::sendErrorTelinta($this->customer,$message_body);
-                            }else{
+                            $tc = new Criteria();
+                            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                            $tc->add(TelintaAccountsPeer::STATUS,3);
+                            if(TelintaAccountsPeer::doCount($tc)>0){
+                                $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
+                                Telienta::terminateAccount($telintaAccount);
                             }
-                            $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$voipnumbers.'&customer='.$uniqueId.'&opening_balance=0&credit_limit=&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number='.$frmnumberTelinta.'&billing_model=1&password=asdf1asd');
-                            $find = '';
-                            $string = $telintaAddAccount;
-                            $find = 'ERROR';
-                            if(strpos($string, $find )){
-                                 $message_body = "Error ON Active a IC within environment <br> VOIP Number :$voipnumbers <br / >Follow Me Number: $frmnumberTelinta";
-                                 //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                                emailLib::sendErrorTelinta($this->customer,$message_body);
-                            }else{
-                            }
-                        }else{
+                            
+                           Telienta::createReseNumberAccount($voipnumbers, $cus, $frmnumberTelinta);
+                            
                         }
-                         //$emailId = $this->customer->getEmail();
-                       // echo 'https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name=cb'.$frmnumberTelinta.'&customer='.$uniqueId.'&opening_balance=-'.$telintaGetBalance.'&product=YYYLandncall_callback&outgoing_default_r_r=2034&billing_model=1&password=asdf1asd';
-                      // $telintaAddAccount = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=activate&name='.$frmnumberTelinta.'&customer='.$uniqueId.'&opening_balance=-'.$telintaGetBalance.'&product=YYYLandncall_Forwarding&outgoing_default_r_r=2034&activate_follow_me=Yes&follow_me_number='.$TelintaMobile.'&billing_model=1&password=asdf1asd');
-                      //echo  $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name='.$voipnumbers.'&active=Y&follow_me_number='.$frmnumberTelinta.'&type=account');
 
                        
                   
     
                  
+
                     $sm = new Criteria();
                     $sm->add(SmsTextPeer::ID, 3);
                     $smstext = SmsTextPeer::doSelectOne($sm);
@@ -4007,17 +2093,17 @@ if(($caltype!="IC") && ($caltype!="hc")){
    $number = $request->getParameter('from');
    $message = $request->getParameter('text');
 
- 
+
   if(isset($number) && $number!=""){
       $mnc = new Criteria();
-	 
+
       $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
       $cus = CallbackLogPeer::doSelectOne($mnc);
- 
+
   }
  if(isset($cus) && $cus!=""){
   	 $customerid=$cus->getId();
-	 if(isset($customerid)  && $customerid!="" ){     
+	 if(isset($customerid)  && $customerid!="" ){
 	           $cus->setImsi(substr($message,0,15));
 		   $cus->save();
 
@@ -4029,8 +2115,7 @@ if(($caltype!="IC") && ($caltype!="hc")){
                        $voipnumbers =  substr($voipnumbers,2);
                     }else{
                     }
-                   // echo  $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name='.$voipnumbers.'&active=Y&follow_me_number='.$frmnumberTelinta.'&type=account');
-		   echo 'Ok';
+                   echo 'Ok';
 	 }
  }
 
@@ -4475,8 +2560,8 @@ return sfView::NONE;
                     $customer_balance = $Tes;
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
-                    $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name=' . $uniqueId . '&type=customer');
-                   $customer_balance=Telienta::getBalance($uniqueId);
+                   
+                   $customer_balance=Telienta::getBalance($customers);
             
                 }
              //   echo $uniqueId.":".$customer_balance."<br/>";
@@ -4676,8 +2761,8 @@ echo "<br/>";
 
 
                         $MinuesOpeningBalance = $OpeningBalance*3;
-                        $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=customer');
-
+                        Telienta::recharge($this->customer, $OpeningBalance);
+                        
                         }
                         //This is for Recharge the Account
                           //this condition for if follow me is Active
@@ -4687,18 +2772,11 @@ echo "<br/>";
                             if(isset($getvoipInfos)){
                                 $voipnumbers = $getvoipInfos->getNumber() ;
                                 $voip_customer = $getvoipInfos->getCustomerId() ;
-                              //  $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$voipnumbers.'&amount='.$OpeningBalance.'&type=account');
-                            }else{
-                              //  $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name='.$uniqueId.'&amount='.$OpeningBalance.'&type=account');
-                            }                            
-                       // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=a'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-                       // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=cb'.$TelintaMobile.'&amount='.$OpeningBalance.'&type=account');
-
+                           }else{
+                              }                            
+                       
                         $MinuesOpeningBalance = $OpeningBalance*3;
-                        //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
-                        //This is for Recharge the Customer
-                       // $telintaAddAccountCB = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name='.$uniqueId.'&amount='.$MinuesOpeningBalance);
-
+                        
 
 
 //echo 'NOOO';
@@ -4739,291 +2817,141 @@ echo "<br/>";
           
             }    
   }    
-        public function executeUsageAlert(sfWebRequest $request)
-  {
 
+////////////////////////////////////////
+public function executeUsageAlert(sfWebRequest $request) {
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
-        changeLanguageCulture::languageCulture($request,$this);
+        changeLanguageCulture::languageCulture($request, $this);
         //-----------------------
         $langSym = $this->getUser()->getCulture();
-
-         $enableCountry = new Criteria();
+        $enableCountry = new Criteria();
         $enableCountry->add(EnableCountryPeer::LANGUAGE_SYMBOL, $langSym);
-        $country_id = EnableCountryPeer::doSelectOne($enableCountry);//->getId();
-        if($country_id){
-            $CallCode= $country_id->getCallingCode();
+        $country_id = EnableCountryPeer::doSelectOne($enableCountry); //->getId();
+        if ($country_id) {
+            $CallCode = $country_id->getCallingCode();
             $countryId = $country_id->getId();
-        }else{
+        } else {
             $CallCode = '46';
             $countryId = "2";
         }
-        $this->customer_balance = -1;
-       // echo $CallCode ;
 
-        //This Code For send the SMS Alert....
+        
         $usagealerts = new Criteria();
         $usagealerts->add(UsageAlertPeer::SMS_ACTIVE, 1);
-        //$usagealerts->addAnd(UsageAlertPeer::ALERT_AMOUNT, 0, Criteria::NOT_EQUAL);
         $usagealerts->addAnd(UsageAlertPeer::COUNTRY, $countryId);
-        $usagealert = UsageAlertPeer::doSelect($usagealerts);
-        foreach($usagealert as $alerts){
+        $usageAlerts = UsageAlertPeer::doSelect($usagealerts);
+        $c = new Criteria();
+        $c->addJoin(CustomerPeer::ID, CustomerProductPeer::CUSTOMER_ID, Criteria::LEFT_JOIN);
+        $c->addAnd(CustomerProductPeer::PRODUCT_ID, 7, Criteria::NOT_EQUAL);
+        $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $c->addAnd(CustomerPeer::COUNTRY_ID, $countryId);
+        $customers = CustomerPeer::doSelect($c);
 
-            $c=new Criteria();
-            $c->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
-            $c->addAnd(CustomerPeer::COUNTRY_ID,$countryId);
-            $customers=CustomerPeer::doSelect($c);
-            $customer_balance = "";
-            foreach($customers as $cus){
-                //echo $alerts->getId().'<br>';
-                $msgsentstatus = new Criteria();
-                $msgsentstatus->add(UsageAlertSentPeer::USAGE_ALERT_ID,$alerts->getId());
-                $msgsentstatus->addAnd(UsageAlertSentPeer::CUSTOMERID, $cus->getId());
-                $msgsentstatus->addAnd(UsageAlertSentPeer::ALERT_AMOUNT, $alerts->getAlertAmount());
-                $msgsentstatus->addAnd(UsageAlertSentPeer::MESSAGETYPE, "sms");
-                $msgsentrecord = UsageAlertSentPeer::doSelectOne($msgsentstatus);
-//                if($msgsentrecord){
-//                   // echo "Message Aleady Sent......".$msgsentrecord->getAlertAmount().'__'.$msgsentrecord->getCustomerid().'__'.$msgsentrecord->getUsageAlertId().'<br>';
-//                    echo "Message Aleady Sent......<br>";
-//                }else
-
-
-                    $senderName = new Criteria();
-                    $senderName->add(UsageAlertSenderPeer::ID,$alerts->getSenderName());
-                    $usageAlertSenderName = UsageAlertSenderPeer::doSelectOne($senderName);
-                    $AlertSenderName = $usageAlertSenderName->getName();
-                    //echo $cus->getId().'<br>';
-                    $this->customer = CustomerPeer::retrieveByPK($cus->getId());
-                  
-
-
-                       $uniqueId =$this->customer->getUniqueid();
- if(isset($uniqueId) && $uniqueId!=""){
-                       $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-         $customer_balance = $telintaGetBalance;
-
-
-
-                    }else{
-
-                        continue;
-                        
-                    }
-
-                    if($customer_balance<$alerts->getAlertAmount()){
-                         echo "New Message Sent......<br>";
-                         //echo $cus->getMobileNumber();
-                         echo 'CustomerBlance:'.$customer_balance.'<br>';
-                         //echo $alerts->getSmsAlertMessage();
-                         //echo '<br>';
-                            //--------------------------This Is sms Send Area---------------------------------------------------
-                         $mobnumber=$cus->getMobileNumber();
-                         $mobnumber=substr($mobnumber,1);
-                            echo $customerMobileNumber = $CallCode.$mobnumber;
-                            $delievry="";
-                            //*/3 *    * * *   root     /usr/bin/curl http://stage.zerocall.com/b2c/pScripts/usageAlert
-                            $number = $customerMobileNumber;
-                           // $number = "923214745120";
-                            $sms_text = $alerts->getSmsAlertMessage();
-                            $data = array(
-                              'S' => 'H',
-                              'UN'=>'zapna1',
-                              'P'=>'Zapna2010',
-                              'DA'=>$number,
-                              'SA' => $AlertSenderName,
-                              'M'=>$sms_text,
-                              'ST'=>'5'
-                            );
-                            $queryString = http_build_query($data,'', '&');
-                            //   die;
-                            sleep(0.5);
-
-                            $queryString=smsCharacter::smsCharacterReplacement($queryString);
-
-                            if($this->response_text = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString)){
-                                echo $this->response_text;
-                            }
-                            //--------------------------------------------------------------------------------------
-
-//                            //Set the Sms text
-//                            $msgSent = new UsageAlertSent();
-//                            $msgSent->setUsageAlertId($alerts->getId());
-//                            $msgSent->setCustomerid($cus->getId());
-//                            $msgSent->setMessagetype("sms");
-//                            $msgSent->setAlertAmount($alerts->getAlertAmount());
-//                            $msgSent->save();
-
-                    }
-                   // echo $alerts->getAlertAmount();
-                    if($alerts->getAlertAmount()==0){
-                        if($customer_balance==0){
-                            //--------------------------This Is sms Send Area---------------------------------------------------
-                            echo $customerMobileNumber = $CallCode.$cus->getMobileNumber();
-                            $delievry="";
-                            //*/3 *    * * *   root     /usr/bin/curl http://stage.zerocall.com/b2c/pScripts/usageAlert
-                            $number = $customerMobileNumber;
-                            //$number = "923214745120";
-                            $sms_text = $alerts->getSmsAlertMessage();
-                            $data = array(
-                              'S' => 'H',
-                              'UN'=>'zapna1',
-                              'P'=>'Zapna2010',
-                              'DA'=>$number,
-                              'SA' => $AlertSenderName,
-                              'M'=>$sms_text,
-                              'ST'=>'5'
-                            );
-                            $queryString = http_build_query($data,'', '&');
-                            //   die;
-                            sleep(0.5);
-
-                            $queryString=smsCharacter::smsCharacterReplacement($queryString);
-
-                            if($this->response_text = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString)){
-                                echo $this->response_text;
-                            }
-                            //--------------------------------------------------------------------------------------
-
-//                            //Set the Sms text
-//                            $msgSent = new UsageAlertSent();
-//                            $msgSent->setUsageAlertId($alerts->getId());
-//                            $msgSent->setCustomerid($cus->getId());
-//                            $msgSent->setMessagetype("sms");
-//                            $msgSent->setAlertAmount($alerts->getAlertAmount());
-//                            $msgSent->save();
-                        }
-                    }
-              //  }
+         foreach ($customers as $customer) {
+            $customer_balance = (double) Telienta::getBalance($customer);
+            echo $actual_balance = $customer_balance."<br>";
+            if($customer_balance < 1){
+                $customer_balance = 0;
             }
-        }
+            foreach($usageAlerts as $usageAlert){
+                if($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax() ){
 
-         //This Code For send the Email Alert....
-        $usagealerts = new Criteria();
-        $usagealerts->add(UsageAlertPeer::EMAIL_ACTIVE, 1);
-        //$usagealerts->addAnd(UsageAlertPeer::ALERT_AMOUNT, 0, Criteria::NOT_EQUAL);
-        $usagealerts->addAnd(UsageAlertPeer::COUNTRY, $countryId);
-        $usagealert = UsageAlertPeer::doSelect($usagealerts);
-        foreach($usagealert as $alerts){
-
-            $c=new Criteria();
-            $c->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
-            $c->addAnd(CustomerPeer::COUNTRY_ID,$countryId);
-            $customers=CustomerPeer::doSelect($c);
-            $customer_balance = "";
-            foreach($customers as $cus){
-                //echo $alerts->getId().'<br>';
-                $msgsentstatus = new Criteria();
-                $msgsentstatus->add(UsageAlertSentPeer::USAGE_ALERT_ID,$alerts->getId());
-                $msgsentstatus->addAnd(UsageAlertSentPeer::CUSTOMERID, $cus->getId());
-                $msgsentstatus->addAnd(UsageAlertSentPeer::ALERT_AMOUNT, $alerts->getAlertAmount());
-                $msgsentstatus->addAnd(UsageAlertSentPeer::MESSAGETYPE, "email");
-                $msgsentrecord = UsageAlertSentPeer::doSelectOne($msgsentstatus);
-//                if($msgsentrecord){
-//                   // echo "Message Aleady Sent......".$msgsentrecord->getAlertAmount().'__'.$msgsentrecord->getCustomerid().'__'.$msgsentrecord->getUsageAlertId().'<br>';
-//                    echo "Email Aleady Sent......<br>";
-//                }else
-                    {
-
-                    $senderName = new Criteria();
-                    $senderName->add(UsageAlertSenderPeer::ID,$alerts->getSenderName());
-                    $usageAlertSenderName = UsageAlertSenderPeer::doSelectOne($senderName);
-                    $AlertSenderName = $usageAlertSenderName->getName();
-
-                    //echo $cus->getId().'<br>';
-                    $this->customer = CustomerPeer::retrieveByPK($cus->getId());
-                         $uniqueId =$this->customer->getUniqueid();
-                if(isset($uniqueId) && $uniqueId!=""){
-
-                     //  $customer_balance = (double)Fonet::getBalance($this->customer);
+                        $sender = new Criteria();
+                        $sender->add(UsageAlertSenderPeer::ID, $usageAlert->getSenderName());
+                        $senders = UsageAlertSenderPeer::doSelectOne($sender);
+                        echo $senderName = $senders->getName();
 
 
-                  
-
-                       $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=getbalance&name='.$uniqueId.'&type=customer');
-        $telintaGetBalance = str_replace('success=OK&Balance=', '', $telintaGetBalance);
-        $telintaGetBalance = str_replace('-', '', $telintaGetBalance);
-         $customer_balance = $telintaGetBalance;
-
-
-
-
-
-
-                    }else{
-                        continue;
-
+                    $regType =  RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId());// && $customer->getFonetCustomerId()!=''
+                    $referer = $customer->getReferrerId();
+                    if (isset($referer) && $referer > 0) {
+                        $Cname = new Criteria();
+                        $Cname->add(AgentCompanyPeer::ID, $referer);
+                        $Companies = AgentCompanyPeer::doSelectOne($Cname);
+                        $comName = $Companies->getName();
+                    } else {
+                        $comName = "";
                     }
+                    $Prod = new Criteria();
+                    $Prod->addJoin(ProductPeer::ID, CustomerProductPeer::PRODUCT_ID, Criteria::LEFT_JOIN);
+                    $Prod->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
+                    $Product = ProductPeer::doSelectOne($Prod);
+                    
+                    if($usageAlert->getSmsActive()){
+                        $msgSent = new SmsAlertSent();
+                        $msgSent->setCustomerId($customer->getId());
+                        $msgSent->setCustomerName($customer->getFirstName());
+                        $msgSent->setCustomerProduct($Product->getName());
+                        $msgSent->setRegistrationType($regType->getDescription());
+                        $msgSent->setAgentName($comName);
+                        $msgSent->setCustomerEmail($customer->getEmail());
+                        $msgSent->setMobileNumber($customer->getMobileNumber());
+                      //$msgSent->setFonetCustomerId($customer->getFonetCustomerId());
+                        $msgSent->setMessageDescerption("Current Balance: ".$actual_balance);
+                        //$msgSent->save();
+                        /**
+                         * SMS Sending Code
+                         **/
+                       if($customer->getUsageAlertSMS()){echo "SMS Active";
+                        $customerMobileNumber = $CallCode . $customer->getMobileNumber();
+                        $sms_text = $usageAlert->getSmsAlertMessage();
+                        $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,$senderName);
+                        /*$data = array(
+                            'S'     => 'H',
+                            'UN'    => 'zapna1',
+                            'P'     => 'Zapna2010',
+                            'DA'    => $customerMobileNumber,
+                            'SA'    => "LandNcall",
+                            'M'     => $sms_text,
+                            'ST'    => '5'
+                        );
+                        $queryString = http_build_query($data, '', '&');
 
-                    if($customer_balance<$alerts->getAlertAmount()){
-                         echo "New Email Sent......<br>";
-                         //echo $cus->getMobileNumber();
-                         echo 'CustomerBlance:'.$customer_balance.'<br>';
-                         //echo $alerts->getSmsAlertMessage();
-                         //echo '<br>';
-                            //--------------------------This Is Email Send Area------------------------------------
-                                $customerMobileNumber = $CallCode.$cus->getMobileNumber();
+                        //   die;
 
-                                $subject         = 'Usage Alert' ;
-                                $message_body     = $alerts->getEmailAlertMessage()." <br />\r\n ".$AlertSenderName;
 
-                                $emailAlertCus=new Criteria();
-                                $emailAlertCus->add(CustomerPeer::ID,$cus->getId());
-                                $emailAlertCustomer = CustomerPeer::doSelectOne($emailAlertCus);
+                        $queryString = smsCharacter::smsCharacterReplacement($queryString);
 
-                                //Send Email to Customer For Balance --- 06/06/11
-                                emailLib::sendCustomerBalanceEmail($emailAlertCustomer,$message_body);
-
-                            //--------------------------------------------------------------------------------------
-
-//                            //Set the Sms text
-//                            $msgSent = new UsageAlertSent();
-//                            $msgSent->setUsageAlertId($alerts->getId());
-//                            $msgSent->setCustomerid($cus->getId());
-//                            $msgSent->setMessagetype("email");
-//                            $msgSent->setAlertAmount($alerts->getAlertAmount());
-//                            $msgSent->save();
-
+                        if ($this->response_text = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString)) {*/
+                           // echo $this->response_text;
+                            if($response){$msgSent->setAlertSent(1);}
+                        //}
+			//sleep(0.15);
+                       }
+                       $msgSent->save();
                     }
-                   // echo $alerts->getAlertAmount();
-                    if($alerts->getAlertAmount()==0){
-                        if($customer_balance==0){
-                            //--------------------------This Is sms Send Area--------------------------------------
-                                $customerMobileNumber = $CallCode.$cus->getMobileNumber();
-                                $subject         = 'Usage Alert' ;
-                                $message_body     = $alerts->getEmailAlertMessage()." <br /> \r\n ".$AlertSenderName;
+                    if($usageAlert->getEmailActive()){
+                        $msgSentE = new EmailAlertSent();
+                        $msgSentE->setCustomerId($customer->getId());
+                        $msgSentE->setCustomerName($customer->getFirstName());
+                        $msgSentE->setCustomerProduct($Product->getName());
+                        $msgSentE->setRegistrationType($regType->getDescription());
+                        $msgSentE->setAgentName($comName);
+                        $msgSentE->setCustomerEmail($customer->getEmail());
+                        $msgSentE->setMobileNumber($customer->getMobileNumber());
+                      //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
+                        $msgSentE->setMessageDescerption("Current Balance: ".$actual_balance);
+                        //$msgSentE->save();
+                       
+                      if($customer->getUsageAlertEmail()){echo "Email Active";
+                      $message='<img src="http://landncall.zerocall.com/images/logo.gif" /><br>'.$usageAlert->getEmailAlertMessage().'<br>Support<br>'.$senderName;
+                        emailLib::sendCustomerBalanceEmail($customer, $message);
+                        $msgSentE->setAlertSent(1);
+                      }
+                      $msgSentE->save();
 
-                                $emailAlertCus=new Criteria();
-                                $emailAlertCus->add(CustomerPeer::ID,$cus->getId());
-                                $emailAlertCustomer=CustomerPeer::doSelectOne($emailAlertCus);
 
-                                //Send Email to Customer For Balance --- 06/06/11
-                                emailLib::sendCustomerBalanceEmail($emailAlertCustomer,$message_body);
-                            //--------------------------------------------------------------------------------------
-
-//                            //Set the Sms text
-//                            $msgSent = new UsageAlertSent();
-//                            $msgSent->setUsageAlertId($alerts->getId());
-//                            $msgSent->setCustomerid($cus->getId());
-//                            $msgSent->setMessagetype("email");
-//                            $msgSent->setAlertAmount($alerts->getAlertAmount());
-//                            $msgSent->save();
-                        }
                     }
                 }
             }
-        }
+         }
 
-        die();
-
-  }
-
+      return sfView::NONE;
+    }
+//////////
 
  public function executeSendEmailstt(sfWebRequest $request)
   {
-
-
-
 
 	$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
 	$sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
@@ -5032,19 +2960,13 @@ echo "<br/>";
         echo $sender_email ;
         echo '<br/>';
         echo $sender_name ;
-
-
-
   	$c = new Criteria();
   	$c->add(EmailQueuePeer::EMAIL_STATUS_ID, sfConfig::get('app_status_completed'), Criteria::NOT_EQUAL);
         $emails = EmailQueuePeer::doSelect($c);
   try{
   	foreach( $emails as $email)
   	{
-
-
-
-
+////////////////////////////////////////////////////
 
 //		$message = Swift_Message::newInstance($email->getSubject())
 //		         ->setFrom(array($sender_email => $sender_name))
@@ -5052,9 +2974,7 @@ echo "<br/>";
 //		         ->setBody($email->getMessage(), 'text/html')
 //		         ;
 
-              
-
-
+            
 $to =  $email->getReceipientName()."<".$email->getReceipientEmail().">";
 $from =  $sender_name."<".$sender_email.">";
 
@@ -5132,6 +3052,370 @@ $headers .= "From:" . $from;
            }
        }
   }
+
+ public function executeCardNumber(sfWebRequest $request) {
+
+
+        function random($len) {
+
+
+            $return = '';
+            for ($i = 0; $i < $len; ++$i) {
+                if (!isset($urandom)) {
+                    if ($i % 2 == 0)
+                        mt_srand(time() % 2147 * 1000000 + (double) microtime() * 1000000);
+                    $rand = 48 + mt_rand() % 64;
+                } else
+                    $rand=48 + ord($urandom[$i]) % 64;
+
+                if ($rand > 57)
+                    $rand+=7;
+                if ($rand > 90)
+                    $rand+=6;
+                if ($rand > 80)
+                    $rand-=5;
+
+
+                if ($rand == 123)
+                    $rand = 45;
+                if ($rand == 124)
+                    $rand = 46;
+                $return.=$rand;
+            }
+            return $return;
+        }
+
+        $cardcount = 0;
+        $serial = 100000;
+        $i = 1;
+        while ($i <= 20000) {
+
+
+            $val = random(20);
+
+            $randLength = strlen($val);
+
+            if ($randLength > 9) {
+                $resultvalue = (int) $randLength - 9;
+
+                $rtvalue = mt_rand(1, $resultvalue);
+
+                $resultvalue = substr($val, $rtvalue, 9);
+
+                $cardnumber = "00880" . $resultvalue;
+            }
+
+            $CRcardcount = 0;
+            $cq = new Criteria();
+            $cq->add(CardNumbersPeer::CARD_NUMBER, $cardnumber);
+            $CRcardcount = CardNumbersPeer::doCount($cq);
+
+            if ($CRcardcount == 1) {
+                
+            } else {
+
+                $cardTotalcount = 0;
+                $ct = new Criteria();
+                $cardTotalcount = CardNumbersPeer::doCount($ct);
+                if ($cardTotalcount < 10000) {
+                    $cardcount = 0;
+
+                    $c = new Criteria();
+                    $c->add(CardNumbersPeer::CARD_PRICE, 50);
+                    $cardcount = CardNumbersPeer::doCount($c);
+                    if ($cardcount < 5000) {
+
+                        $price = 50;
+                        $cr = new CardNumbers();
+                        $cr->setCardNumber($cardnumber);
+                        $cr->setCardPrice($price);
+                        $cr->setCardSerial($serial);
+                        $cr->save();
+                        $serial++;
+                    } else {
+
+                        $price = 100;
+                        $crp = new CardNumbers();
+                        $crp->setCardNumber($cardnumber);
+                        $crp->setCardPrice($price);
+                        $crp->setCardSerial($serial);
+                        $crp->save();
+                        $serial++;
+                    }
+                } else {
+                    $i = 20000;
+                }
+            }
+            $i++;
+        }
+
+
+        return sfView::NONE;
+    }
+  /*
+   * This method will be used for refill via scratch card, Registration and for getting balance exectued by the sim card(customer)
+   *
+   */
+  public function executeSmsRegisterationsmscb(sfWebrequest $request) {
+
+        $urlval = "WCR-CB-" . $request->getURI();
+        $dibsCall = new DibsCall();
+        $dibsCall->setCallurl($urlval);
+        $dibsCall->save();
+        $number = $request->getParameter('from');
+        $text = $this->hextostr($request->getParameter('text'));
+        $splitedText = explode(";", $text);
+        if ($splitedText[3] != sfConfig::get("app_dialer_pin")) {
+            echo "Invalid Request<br/>";
+            $sms = SmsTextPeer::retrieveByPK(7);
+            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+            die;
+        }
+        $mobileNumber = substr($number, 2, strlen($number) - 2);
+        if ($mobileNumber[0] != "0") {
+            $mobileNumber = "0" . $mobileNumber;
+        }
+
+        $dialerIdLenght = strlen($splitedText[0]);
+        $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
+        echo "$mobileNumber".":::::".$uniqueId."<br/>";
+        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
+        $c = new Criteria();
+        $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+        $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
+
+
+        if ($dialerIdLenght == 10) {
+            echo "Register Customer<br/>";
+            //Registration Call, Register Customer In this block
+            $uc = new Criteria();
+            $uc->addAnd(UniqueIdsPeer::STATUS, 0);
+            $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
+
+
+            $cc = new Criteria();
+            $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+            $cc->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+
+            if(CustomerPeer::doCount($cc)>0){
+                $sms = SmsTextPeer::retrieveByPK(10);
+                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                die;
+            }
+
+
+
+
+            if (UniqueIdsPeer::doCount($uc) > 0) {
+                $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+
+                $pc = new Criteria();
+                $pc->add(ProductPeer::SMS_CODE, "50");
+                $product = ProductPeer::doSelectOne($pc);
+
+                $calingcode = sfConfig::get('app_country_code');
+                $password = $this->randomNumbers(6);
+                $customer = new Customer();
+                $customer->setFirstName($mobileNumber);
+                $customer->setLastName($mobileNumber);
+                $customer->setMobileNumber($mobileNumber);
+                $customer->setPassword($password);
+                $customer->setEmail("retail@example.com");
+                $customer->setCountryId(2);
+                $customer->setCity("");
+                $customer->setAddress("");
+                $customer->setTelecomOperatorId(1);
+                $customer->setDeviceId(1474);
+                $customer->setUniqueId($uniqueId);
+                $customer->setCustomerStatusId(3);
+                $customer->setPlainText($password);
+                $customer->setRegistrationTypeId(6);
+                $customer->save();
+
+
+                $order = new CustomerOrder();
+                $order->setProductId($product->getId());
+                $order->setCustomerId($customer->getId());
+                $order->setExtraRefill($order->getProduct()->getInitialBalance());
+                $order->setIsFirstOrder(1);
+                $order->setOrderStatusId(3);
+                $order->save();
+
+                $transaction = new Transaction();
+                $transaction->setAgentCompanyId($customer->getReferrerId());
+                $transaction->setAmount($order->getProduct()->getPrice());
+                $transaction->setDescription('Registration of Retail');
+                $transaction->setOrderId($order->getId());
+                $transaction->setCustomerId($customer->getId());
+                $transaction->setTransactionStatusId(3);
+                $transaction->save();
+
+                $customer_product = new CustomerProduct();
+                $customer_product->setCustomer($order->getCustomer());
+                $customer_product->setProduct($order->getProduct());
+                $customer_product->save();
+
+
+
+                $callbacklog = new CallbackLog();
+                $callbacklog->setMobileNumber($number);
+                $callbacklog->setuniqueId($uniqueId);
+                $callbacklog->setCheckStatus(3);
+                $callbacklog->save();
+
+                if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
+                    $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
+                    $availableUniqueId->setStatus(1);
+                    $availableUniqueId->setRegistrationTypeId(4);
+                    $availableUniqueId->save();
+                    Telienta::createAAccount($number, $customer);
+                    Telienta::createCBAccount($number, $customer);
+                }
+                $sms = SmsTextPeer::retrieveByPK(9);
+                $smsText = $sms->getMessageText();
+                $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
+                CARBORDFISH_SMS::Send($number, $smsText);
+                emailLib::sendCustomerRegistrationViaRetail($customer, $order);
+            } else {
+                $sms = SmsTextPeer::retrieveByPK(6);
+                $smsText = $sms->getMessageText();
+                CARBORDFISH_SMS::Send($number, $smsText);
+                die;
+            }
+
+
+
+
+            //End of Registration.
+        } else {
+            $c = new Criteria();
+            $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+            #$c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+            $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
+
+            if (CustomerPeer::doCount($c) > 0) {
+                $command = substr($splitedText[0], 0, 2);
+                $command = strtolower($command);
+                echo "<hr/>";
+                echo $command;
+                echo "<hr/>";
+                $customer = CustomerPeer::doSelectOne($c);
+                if ($command == "cb") {
+                    echo "Check Balance Request<br/>";
+                    $balance = Telienta::getBalance($customer);
+                    $sms = SmsTextPeer::retrieveByPK(5);
+                    $smsText = $sms->getMessageText();
+                    $smsText = str_replace("(balance)", $balance, $smsText);
+                    CARBORDFISH_SMS::Send($number, $smsText);
+                } elseif ($command == "re") {
+                    echo "Recharge Request<br/>";
+                    $cc = new Criteria();
+                    $cc->add(CardNumbersPeer::CARD_NUMBER, $splitedText[4]);
+                    $cc->addAnd(CardNumbersPeer::STATUS, 0);
+                    if (CardNumbersPeer::doCount($cc) == 1) {
+                        $scratchCard = CardNumbersPeer::doSelectOne($cc);
+                        //new order
+                        $order = new CustomerOrder();
+                        $customer_products = $customer->getProducts();
+                        $order->setProduct($customer_products[0]);
+                        $order->setCustomer($customer);
+                        $order->setQuantity(1);
+                        $order->setExtraRefill($scratchCard->getCardPrice());
+                        $order->save();
+
+                        //new transaction
+                        $transaction = new Transaction();
+                        $transaction->setAmount($scratchCard->getCardPrice());
+                        $transaction->setDescription('Refill Via Pin Sr #' . $scratchCard->getCardSerial());
+                        $transaction->setOrderId($order->getId());
+                        $transaction->setCustomerId($order->getCustomerId());
+                        $transaction->save();
+
+                        if (Telienta::recharge($customer, $scratchCard->getCardPrice())) {
+                            $scratchCard->setStatus(1);
+                            $scratchCard->setUsedAt(date("Y-m-d H:i:s"));
+                            $scratchCard->setCustomerId($customer->getId());
+                            $scratchCard->save();
+                            $order->setOrderStatusId(3);
+                            $order->save();
+                            $transaction->setTransactionStatusId(3);
+                            $transaction->save();
+
+                            // Send Customer Balance SMS after succesful recharge
+                            $balance = Telienta::getBalance($customer);
+                            $sms = SmsTextPeer::retrieveByPK(5);
+                            $smsText = $sms->getMessageText();
+                            $smsText = str_replace("(balance)", $balance, $smsText);
+                            CARBORDFISH_SMS::Send($number, $smsText);
+                            // Send email to Support after Recharge
+                            emailLib::sendRetailRefillEmail($customer, $order);
+                        } else {
+                            echo "Unable to charge";
+                            $sms = SmsTextPeer::retrieveByPK(8);
+                            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                        }
+                    } else {
+                        echo "CARD ALREADY USED<br/>";
+                        $sms = SmsTextPeer::retrieveByPK(7);
+                        CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                    }
+
+
+                    die;
+                }
+            } else {
+                echo "Invalid Command 1";
+                $sms = SmsTextPeer::retrieveByPK(7);
+                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                die;
+            }
+        }
+
+
+        return sfView::NONE;
+    }
+
+    private function hextostr($hex) {
+        $str = '';
+        for ($i = 0; $i < strlen($hex) - 1; $i+=2) {
+            $str .= chr(hexdec($hex[$i] . $hex[$i + 1]));
+        }
+        return $str;
+    }
+
+    private function randomNumbers($length) {
+        $random = "";
+        srand((double) microtime() * 1000000);
+        $data = "0123456789";
+        for ($i = 0; $i < $length; $i++) {
+            $random .= substr($data, (rand() % (strlen($data))), 1);
+        }
+        return $random;
+    }
+
+    public function executeGenrateTestString(sfWebRequest $request){
+
+        if($request->isMethod('post')){
+            if($request->getParameter("hex")=="on"){
+                echo $this->hexToStr($request->getParameter("inputstr"));
+            }else{
+                echo $this->strToHex($request->getParameter("inputstr"));
+            }
+        }
+        
+    }
+
+
+    private function strToHex($string) {
+        $hex = '';
+        for ($i = 0; $i < strlen($string); $i++) {
+            $hex .= dechex(ord($string[$i]));
+        }
+        return $hex;
+    }
+
 
 
 }

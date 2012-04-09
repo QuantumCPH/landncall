@@ -698,4 +698,24 @@ return number_format($bill_charge/100.00, 2);
 		exit(1);
 	}
 
+         function executeUsageAlertReport(sfRequest $request)
+	{
+
+                 $billing_start_date = $request->getParameter('startdate');
+		 $billing_end_date  = $request->getParameter('enddate');
+                 $billing_start_date = date("Y-m-d", strtotime($billing_start_date));
+		 $billing_end_date  = date("Y-m-d", strtotime($billing_end_date));
+                 //$billing_start_date = $this->formatDate($billing_start_date);
+		 //$billing_end_date = $this->formatDate($billing_end_date);
+                 $this->startdate=$billing_start_date;
+                 $this->enddate=$billing_end_date;
+
+	}
+
+        function executeSelectIntervalAlert(sfRequest $request)
+	{
+
+
+	}
+
 }

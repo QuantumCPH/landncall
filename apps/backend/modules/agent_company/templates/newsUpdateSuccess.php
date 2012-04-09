@@ -40,13 +40,20 @@
             }
     }
 </script>
+<div id="sf_admin_container">
 
-<form action="<?php echo url_for('agent_company/newsUpdate')?>" method="post">  
+<h1>Add News Update</h1>
+
+<div id="sf_admin_header">
+</div>
+
+<div id="sf_admin_content">
+<form action="<?php echo url_for('agent_company/newsUpdate')?>" method="post"  id="sf_admin_edit_form">
     <label >Enter the Topic   </label><br/> <input type="text" name="heading"/><br>
     <label>Enter the Message </label><br/><textarea cols="50" rows="10" name="message"></textarea><br>
   
-    <fieldset class="jcalendar" name="eDate" style="width:400px">
-       <legend>Starting Date</legend>
+    <label >
+      Starting Date </label>
        <div class="jcalendar-wrapper">
        <div class="jcalendar-selects">
          <select name="day" id="day" class="jcalendar-select-day">
@@ -103,15 +110,15 @@
            
            <option value="2010">2010</option>
            <option value="2011">2011</option>
-           
+            <option value="2012">2012</option>
          </select>        
        
        </div>
        </div>
-    </fieldset>
+    
     
 
   <br><input type="submit" value="Create"/>
 </form>
 
-
+</div></div>

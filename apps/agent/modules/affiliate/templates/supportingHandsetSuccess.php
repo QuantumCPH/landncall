@@ -1,6 +1,6 @@
 <table width="98%" cellspacing="0" cellpadding="3" align="center">
           <tbody>
-            <tr style="background-color: #FF6600; color: #fff"> 
+            <tr style="background-color: #A5BB3F; color: #fff">
               <td><strong>&nbsp;Brand name</strong></td>
               <td><strong>&nbsp;Model</strong></td>
               <td><strong>&nbsp;Callback Test result</strong></td>

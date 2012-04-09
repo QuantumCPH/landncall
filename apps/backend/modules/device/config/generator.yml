@@ -3,6 +3,7 @@ generator:
   param:
     model_class:      Device
     theme:            default
+    css:             /sf/sf_admin/css/admin_main.css
     
     list:
       display: [id, name, manufacturer]

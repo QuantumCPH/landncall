@@ -1,5 +1,5 @@
 <center>
-<h2>Login to Landncall Admin</h2>
+
 
 		<?php if($sf_user->hasFlash('message')): ?>
 			<div class="message">

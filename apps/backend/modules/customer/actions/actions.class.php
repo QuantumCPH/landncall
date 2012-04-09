@@ -88,6 +88,17 @@ class customerActions extends autocustomerActions
       $response_text .= '<br/>';
 
       $response_text .= "Exiting gracefully ... done!";
+        ForumTel::reSetBalance($customer_id);
+
+         $tc = new Criteria();
+            $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
+            $usnumber = UsNumberPeer::doSelectOne($tc);
+            $usnumber->setActiveStatus(1);
+            $usnumber->setUsMobileNumber(null);
+            $usnumber->setCustomerId(null);
+
+             $usnumber->save();
+
 
       $this->response_text=$response_text;
      }
@@ -195,7 +206,8 @@ class customerActions extends autocustomerActions
         $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
         $this->customer = CustomerPeer::doSelectOne($c);
 
-$this->customer_balance =Telienta::getBalance($this->customer->getUniqueid());
+//$this->customer_balance =Telienta::getBalance($this->customer->getUniqueid());
+        $this->customer_balance =Telienta::getBalance($this->customer);
     }
 public function executePaymenthistory(sfWebRequest $request)
 	{
@@ -267,61 +279,68 @@ public function executePaymenthistory(sfWebRequest $request)
 
 
 	}
-	public function executeCallhistory(sfWebRequest $request)
-	{
+    public function executeCallhistory(sfWebRequest $request) {
 
-            //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
-           // $id = $request->getParameter('id');
+        $this->customer = CustomerPeer::retrieveByPK($request->getParameter('id'));
+        $this->redirectUnless($this->customer, "@homepage");
 
+        $fromdate = mktime(0, 0, 0, date("m"), date("d") - 15, date("Y"));
+        $this->fromdate = date("Y-m-d", $fromdate);
+        $todate = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+        $this->todate = date("Y-m-d", $todate);
 
-		//$this->customer = CustomerPeer::retrieveByPK(58);
-		$this->customer = CustomerPeer::retrieveByPK($request->getParameter('id'));
-		$this->redirectUnless($this->customer, "@homepage");
-
-//		$c = new Criteria();
-//		$c->add(ZerocallCdrPeer::ANI, BaseUtil::trimMobileNumber($this->customer->getMobileNumber()));
-//		$c->add(ZerocallCdrPeer::SOURCECTY, $this->customer->getCountry()->getCallingCode());
-//		$c->add(ZerocallCdrPeer::USEDVALUE, 0, Criteria::NOT_EQUAL);
-//		$c->addDescendingOrderByColumn(ZerocallCdrPeer::ANSWERTIMEB);
-
-//                $unid   =  $this->customer->getUniqueid();
-//                if(isset($unid) && $unid!=""){
-//                $un = new Criteria();
-//                $un->add(CallbackLogPeer::UNIQUEID, $unid);
-//                $un -> addDescendingOrderByColumn(CallbackLogPeer::CREATED);
-//                $unumber = CallbackLogPeer::doSelectOne($un);
-
-
-                    $c = new Criteria();
-                    $c->add(BillingPeer::CUSTOMER_ID, $this->customer->getId());
-                    $c->addDescendingOrderByColumn(BillingPeer::TIME);
+        if ($request->isMethod('post')) {
+            $this->fromdate = $request->getParameter('startdate');
+            $this->todate = $request->getParameter('enddate');
+        }
 
 
 
-//		//setting filter
-//		$this->filter = new ZerocallCdrFormFilter();
-//
-//		if ($request->getParameter('zerocall_cdr_log_filters'))
-//		{
-//			$c->add($this->filter->buildCriteria($request->getParameter('zerocall_cdr_log_filters')));
-//			//$this->filter->bind($request->getParameter('zerocall_cdr_log_filters'));
-//		}
+        $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);
+        if ($getFirstnumberofMobile == 0) {
+            $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
+            $this->TelintaMobile = '46' . $TelintaMobile;
+        } else {
+            $this->TelintaMobile = '46' . $this->customer->getMobileNumber();
+        }
 
-		//set paging
-		$items_per_page = 25; //shouldn't be 0
-		$this->page = $request->getParameter('page');
-                if($this->page == '') $this->page = 1;
+        $this->numbername = $this->customer->getUniqueid();
+    }
 
-                $pager = new sfPropelPager('Billing', $items_per_page);
-                $pager->setPage($this->page);
+    public function executeEditcustomer(sfWebRequest $request)
+    {
+     if($request->getParameter('id')){
+         $customer = new Criteria();
+         $customer->add(CustomerPeer::ID, $request->getParameter('id'));
+         $this->editCust = CustomerPeer::doSelectOne($customer);
 
-                $pager->setCriteria($c);
+     }
+     if($request->getParameter('customerID')){
+      $dob = $request->getParameter('dy')."-".$request->getParameter('dm')."-".$request->getParameter('dd');
+      $dob = date('Y-m-d',strtotime($dob));
 
-                $pager->init();
+      $usage_email = $request->getParameter('usage_email');
+      ($usage_email=="")?$usage_email = 0:$usage_email = 1;
 
-                $this->callRecords = $pager->getResults();
-                $this->total_pages = $pager->getNbResults() / $items_per_page;
+      $usage_sms = $request->getParameter('usage_sms');
+      ($usage_sms=="")?$usage_sms = 0:$usage_sms = 1;
 
-	}
+      $customer = CustomerPeer::retrieveByPK($request->getParameter('customerID'));
+      $customer->setFirstName($request->getParameter('firstName'));
+      $customer->setLastName($request->getParameter('lastName'));
+      $customer->setAddress($request->getParameter('address'));
+      $customer->setCity($request->getParameter('city'));
+      $customer->setPoBoxNumber($request->getParameter('pob'));
+      $customer->setEmail($request->getParameter('email'));
+      $customer->setDateOfBirth($dob);
+      $customer->setUsageAlertEmail($usage_email);
+      $customer->setUsageAlertSMS($usage_sms);
+
+      $customer->save();
+
+          $this->message = "Customer has been updated.";
+
+     }
+    }
 
 }

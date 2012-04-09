@@ -9,7 +9,7 @@ default:
     #language:     en
     #robots:       index, follow
 
-  stylesheets:    [admin.css, /sf/calendar/skins/aqua/theme.css, /sf/sf_admin/css/main.css]
+  stylesheets:    [admin.css, /sf/calendar/skins/aqua/theme.css, /sf/sf_admin/css/admin_main.css]
 
   javascripts:    [/sf/prototype/js/prototype.js]
 

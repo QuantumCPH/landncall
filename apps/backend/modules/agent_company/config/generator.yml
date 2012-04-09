@@ -3,6 +3,7 @@ generator:
   param:
     model_class:      AgentCompany
     theme:            default
+    css:             /sf/sf_admin/css/admin_main.css
     fields:
         cvr_number: {name: Vat Number}
     list:

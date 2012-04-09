@@ -10,27 +10,33 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
         <div class="fl cb dashboard-info-text"><span><?php echo __('kundnummer') ?>:</span><span><?php echo $customer->getUniqueid(); ?></span></div>
 	<div class="fl cb dashboard-info-text"><span><?php echo __('Your account balance is') ?>:</span><span>
 	<?php
-
+            $pus=0;
             $cuid=$customer->getId();
-           $cp = new Criteria();
+            $cp = new Criteria();
                                   $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
                                   $custmpr = CustomerProductPeer::doSelectOne($cp);
                                    $p = new Criteria();
                                    $p->add(ProductPeer::ID, $custmpr->getProductId());
                                    $products=ProductPeer::doSelectOne($p);
-                                    if((int)$customer->getUniqueid()>200000){
                                   $pus=$products->getProductCountryUs();
-                                    }
-
                if($pus==1){
-
-                                echo $Tes=ForumTel::getBalanceForumtel($customer->getId());
-                              echo "USD"  ;
+                                 $Tes=ForumTel::getBalanceForumtel($customer->getId());
+                                  echo   $amt=CurrencyConverter::convertUsdToSek($Tes);
+                              echo " SEK"  ;
+                                   $getvoipInfo = new Criteria();
+        $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
+        $getvoipInfo->add(SeVoipNumberPeer::IS_ASSIGNED, 1);
+        $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
+        if(isset($getvoipInfos)){
+            $voipnumbers = $getvoipInfos->getNumber() ;
+            $voip_customer = $getvoipInfos->getCustomerId() ;
+        }else{
+           $voipnumbers =  '';
+           $voip_customer = '';
+        }
                }else{
 
-
         echo $customer_balance==-1?'&oslash;':number_format($customer_balance,2);
-
         //This Section For Get the Language Symbol For Set Currency -
         $getvoipInfo = new Criteria();
         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
@@ -43,8 +49,8 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
            $voipnumbers =  '';
            $voip_customer = '';
         }
-        
-        
+   
+      
 echo '&nbsp;';
 if($lang=="pl"){
         echo ('plz');
@@ -59,9 +65,9 @@ if($lang=="pl"){
 
 
   <?php
-      $unid   =  $customer->getUniqueid();
-  if($unid>200000){ ?>    <div class="fl cb dashboard-info-text"  ><span   style="padding-right:-10px"><?php echo __('Us Mobil nr: ') ?>:</span><span><?php
 
+ if($pus==1){ ?>    <div class="fl cb dashboard-info-text"  ><span   style="padding-right:-10px"><?php echo __('Us Mobil nr: ') ?>:</span><span><?php
+  $unid   =  $customer->getUniqueid();
 
         if(isset($unid) && $unid!=""){
               $us = new Criteria();
@@ -78,13 +84,24 @@ echo " ";   echo substr($Telintambs, 13,2);
           
 
 
-         }  ?></span></div>   <?php    }else{?>
+         }  ?></span></div>  <div class="fl cb dashboard-info-text"><span><?php echo __('Resenummer ') ?>:</span><span><?php  $TelintaMobile="";    $TelintaMobile=$voipnumbers;
+
+                 $Telintambs=$TelintaMobile;
+
+ echo substr($Telintambs, 0,4); echo " ";   echo substr($Telintambs, 4,3);
+echo " ";   echo substr($Telintambs, 7,2);
+echo " ";   echo substr($Telintambs, 9,2);
+echo " ";   echo substr($Telintambs, 11,2);
+echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
+
+                ?></span></div>  <?php    }else{?>
 
 
 
         <div class="fl cb dashboard-info-text"  ><span   style="padding-right:-10px"><?php echo __('Aktivt mobil nr ') ?>:</span><span><?php
         
-        $unid   =  $customer->getUniqueid();
+      
         if(isset($unid) && $unid!=""){
             $un = new Criteria();
             $un->add(CallbackLogPeer::UNIQUEID, $unid);
@@ -108,6 +125,7 @@ echo "    ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
             }else{
                $TelintaMobile="00".$unumber->getMobileNumber();
 
@@ -120,7 +138,7 @@ echo " ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
-
+echo " ";   echo substr($Telintambs, 15,2);
             }
          }else{
                 $getFirstnumberofMobile = substr($customer->getMobileNumber(), 0,1);     // bcdef
@@ -134,6 +152,7 @@ echo " ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
                 }else{
                   $TelintaMobile = '0046'.$customer->getMobileNumber();
 
@@ -144,13 +163,14 @@ echo " ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
                 }
-             
-            
+           
+          
          }  ?></span></div>
 
 <?php } ?>
-<?php  if($unid<200000){ ?>
+<?php   if($pus==0){?>
 
   <?php if($voip_customer!=''){?>
         
@@ -164,6 +184,7 @@ echo " ";   echo substr($Telintambs, 7,2);
 echo " ";   echo substr($Telintambs, 9,2);
 echo " ";   echo substr($Telintambs, 11,2);
 echo " ";   echo substr($Telintambs, 13,2);
+echo " ";   echo substr($Telintambs, 15,2);
                 
                 ?></span> 
                 <input type="button" class="butonsigninsmall" name="button" style="margin-left:10px;" onclick="window.location.href='<?php if($voip_customer!=''){  ?>
@@ -209,17 +230,13 @@ echo " ";   echo substr($Telintambs, 13,2);
                         <?php echo url_for('customer/subscribevoip?cid='.$customer->getId(), true) ?>
                     <?php }?>" class="blackcolor submittexts" style="color: #333333; font-family: Trebuchet MS,Helvetica,sans-serif;   font-weight: bold;
     text-decoration: none;"><?php
-        
-    if($voip_customer!=''){ echo 'Avaktivera'; }else{echo 'Aktivera';
-                    
-    } ?></a></b>
+            if($voip_customer!=''){ echo 'Avaktivera'; }else{echo 'Aktivera';
+                        } ?></a></b>
 			</td>
 		<td></td></tr>
 	</table>
-		
     </div>
   </div>
 
-
   <?php include_partial('sidebar') ?>
-  <iframe src="http://zerocall.com/b2c/testc.php" style="display:none"></iframe>
+ 
