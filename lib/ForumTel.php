@@ -14,7 +14,7 @@ class ForumTel {
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
         $tarif_name = "PayAsYouGo-Sub";
-        $xml_data = '<activate-account trid='.$transactionid.'>
+        $xml_data = '<activate-account trid=\"'.$transactionid.'\">
 <authentication>
 <username>' . $username . '</username>
 <password>' . $password . '</password>
@@ -70,7 +70,7 @@ class ForumTel {
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
 
-        $xml_data = '<suspend-account trid='.$transactionid.'>
+        $xml_data = '<suspend-account trid=\"'.$transactionid.'\">
 <authentication>
 <username>' . $username . '</username>
 <password>' . $password . '</password>
@@ -118,7 +118,7 @@ class ForumTel {
         $iccid = $usnumber->getIccid();
         $amount = $amount;
 
-        $xml_data = '<top-up-subscriber trid='.$transactionid.'>
+        $xml_data = '<top-up-subscriber trid=\"'.$transactionid.'\">
 <authentication>
 <username>' . $username . '</username>
 <password>' . $password . '</password>
@@ -168,7 +168,7 @@ class ForumTel {
         $iccid = $usnumber->getIccid();
 
         $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";
-        $post_string = '<get-subscriber-balance trid='.$transactionid.'>
+        $post_string = '<get-subscriber-balance trid=\"'.$transactionid.'\">
 <authentication>
 <username>' . $username . '</username>
 <password>' . $password . '</password>
@@ -233,7 +233,7 @@ class ForumTel {
             $iccid = $usnumber->getIccid();
 
             $url = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";
-            $post_string = '<get-usa-mdn trid='.$transactionid.'>
+            $post_string = '<get-usa-mdn trid=\"'.$transactionid.'\">
             <authentication>
             <username>' . $username . '</username>
             <password>' . $password . '</password>
@@ -297,7 +297,7 @@ $usnumber->save();
             $iccid = $usnumber->getIccid();
 
             $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";
-            $post_string = '<reset-subscriber-balance trid='.$transactionid.'>
+            $post_string = '<reset-subscriber-balance trid=\"'.$transactionid.'\">
             <authentication>
             <username>' . $username . '</username>
             <password>' . $password . '</password>
