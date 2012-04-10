@@ -1760,7 +1760,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
 
             $smstext = SmsTextPeer::retrieveByPK(1);
-            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+            CARBORDFISH_SMS::Send($number, $smstext->getMessageText());
             die;
             return sfView::NONE;
         } elseif ($requestType == "ic") {
@@ -1862,6 +1862,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $cc->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
 
                 if (CustomerPeer::doCount($cc) > 0) {
+                    echo "Already Registerd";
                     $sms = SmsTextPeer::retrieveByPK(10);
                     CARBORDFISH_SMS::Send($number, $sms->getMessageText());
                     die;
