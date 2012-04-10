@@ -21,7 +21,7 @@ class BaseUsageAlertForm extends BaseFormPropel
       'email_active'        => new sfWidgetFormInputCheckbox(),
       'country'             => new sfWidgetFormPropelChoice(array('model' => 'EnableCountry', 'add_empty' => false)),
       'sender_name'         => new sfWidgetFormPropelChoice(array('model' => 'UsageAlertSender', 'add_empty' => false)),
-      'status_id'           => new sfWidgetFormPropelChoice(array('model' => 'Status', 'add_empty' => false)),
+      'status'              => new sfWidgetFormPropelChoice(array('model' => 'Status', 'add_empty' => false)),
     ));
 
     $this->setValidators(array(
@@ -34,7 +34,7 @@ class BaseUsageAlertForm extends BaseFormPropel
       'email_active'        => new sfValidatorBoolean(),
       'country'             => new sfValidatorPropelChoice(array('model' => 'EnableCountry', 'column' => 'id')),
       'sender_name'         => new sfValidatorPropelChoice(array('model' => 'UsageAlertSender', 'column' => 'id')),
-      'status_id'           => new sfValidatorPropelChoice(array('model' => 'Status', 'column' => 'id')),
+      'status'              => new sfValidatorPropelChoice(array('model' => 'Status', 'column' => 'id')),
     ));
 
     $this->widgetSchema->setNameFormat('usage_alert[%s]');
