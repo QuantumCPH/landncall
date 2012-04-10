@@ -37,11 +37,13 @@ jQuery(function(){
 
             <li>
                 <label><?php echo __('Old Mobile Number') ?></label>
-                <input type="text" name="existingNumber"/>
+                <input type="text" name="existingNumber" style="margin-bottom:0px"/>
+                <label style="font-weight:normal; padding: 0px; margin: 0px; margin-bottom: 30px">Please enter a valid mobile number not starting with 0</label>
             </li>
             <li>
                 <label><?php echo __('New Mobile Number') ?></label>
-                <input type="text" name="newNumber"/>
+                <input type="text" name="newNumber" style="margin-bottom:0px"/>
+                <label style="font-weight:normal; padding: 0px; margin: 0px; margin-bottom: 30px">Please enter a valid mobile number not starting with 0</label>
             </li>
             <li>
                 <label><?php echo __('Country') ?></label>
