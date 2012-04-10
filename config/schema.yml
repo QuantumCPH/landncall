@@ -214,6 +214,7 @@ propel:
     imsi: { type: VARCHAR, size: '250', required: true }
     created: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     check_status: { type: TINYINT, size: '4', required: true, defaultValue: '1' }
+    imei: { type: VARCHAR, size: '255', required: false }
   card_numbers:
     _attributes: { phpName: CardNumbers }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -309,8 +310,8 @@ propel:
     city_id: { type: INTEGER, size: '11', required: false, foreignTable: city, foreignReference: id, onDelete: 'SET NULL', onUpdate: CASCADE }
     contact_name: { type: VARCHAR, size: '150', required: true }
     email: { type: VARCHAR, size: '255', required: true }
-    head_phone_number: { type: INTEGER, size: '11', required: true }
-    fax_number: { type: INTEGER, size: '11', required: false }
+    head_phone_number: { type: VARCHAR, size: '255', required: true }
+    fax_number: { type: VARCHAR, size: '255', required: false }
     website: { type: VARCHAR, size: '255', required: false }
     status_id: { type: INTEGER, size: '11', required: false, foreignTable: status, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     company_size_id: { type: INTEGER, size: '11', required: false, foreignTable: company_size, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
@@ -463,7 +464,7 @@ propel:
   dibs_call:
     _attributes: { phpName: DibsCall }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
-    callurl: { type: VARCHAR, size: '255', required: false }
+    callurl: { type: LONGVARCHAR, required: false }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
   email_alert_sent:
     _attributes: { phpName: EmailAlertSent }
