@@ -6,17 +6,29 @@
     <input type="hidden" value="<?php echo  $product->getPrice();  ?>" name="extra_refill" />
     <input type="hidden" value="<?php echo  $newNumber;  ?>" name="newnumber" />
     <input type="hidden" value="<?php echo  $countrycode;  ?>" name="countrycode" />
-    <ul class="fl col">
-        <li><label>New Mobile Number</label></li>
-        <li><label><?php echo  $newNumber;  ?></label></li>
-        <li><label>Customer Name</label></li>
-        <li><label><?php echo  $customer->getFirstName(); ?>&nbsp;<?php echo  $customer->getLastName(); ?></label></li>
-        <li><label>Old Mobile Number</label></li>
-        <li><label><?php echo  $customer->getMobileNumber(); ?></label></li>
-        <li><label>Product Detail</label></li>
-        <li><label><?php echo $product->getDescription(); ?></label></li>
-        <li><label><?php echo  $product->getPrice(); ?></label></li>
-        <li><input type="submit" name="Pay" value="Pay" /></li>
+    <ul class="fl col" style="float: left; list-style: none">
+        <li>
+            <label>New Mobile Number</label>
+            <label><?php echo  $newNumber;  ?></label>
+        </li>
+        <li>
+            <label>Customer Name</label>
+            <label><?php echo  $customer->getFirstName(); ?>&nbsp;<?php echo  $customer->getLastName(); ?></label>
+        </li>
+        <li>
+            <label>Old Mobile Number</label>
+            <label><?php echo  $customer->getMobileNumber(); ?></label>
+        </li>
+        <li>
+            <label>Product Detail</label>
+            <label><?php echo $product->getDescription(); ?></label>
+        </li>
+        <li>
+            <label>Price</label>
+            <label><?php echo  $product->getPrice(); ?></label>
+        </li>
+        <li style="margin-left:100px"><input type="submit" name="Pay" value="Pay" /></li>
     </ul>
     </form>
+    <div class="clr"></div>
 </div>
