@@ -1710,7 +1710,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
         if ($requestType == "hc") {
 
             $dialerIdLenght = strlen($textParamter);
-            $uniqueId = substr($textParamter, $dialerIdLenght - 6, $dialerIdLenght - 1);
+            $uniqueId = substr($textParamter, 7);
             $mnc = new Criteria();
             $mnc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
             $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
@@ -1766,7 +1766,11 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
         } elseif ($requestType == "ic") {
 
             $dialerIdLenght = strlen($textParamter);
-            $uniqueId = substr($textParamter, $dialerIdLenght - 6, $dialerIdLenght - 1);
+            $uniqueId = substr($textParamter, 3);
+            echo "<br/>";
+            echo $uniqueId."<hr/>";
+
+
 
             $callbackq = new Criteria();
             $callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
