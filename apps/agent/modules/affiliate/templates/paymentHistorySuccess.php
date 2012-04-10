@@ -35,6 +35,7 @@
     if($expensetype==1){  echo __("Customer Registration");  }
     if($expensetype==2){  echo __("Customer Refill");  }
     if($expensetype==3){  echo __("Agent Account Refill");  }
+    if($expensetype==4){  echo __("Customer Refill from Shop");  }
     if($expensetype==6){  echo __("Change Number");  }
      ?></td>
   <td align="center"><?php  echo $agent->getAmount();   ?></td>
