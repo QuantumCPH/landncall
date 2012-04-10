@@ -57,8 +57,22 @@
 			<td ><?php echo BaseUtil::format_number($registration->getCommissionAmount())?>
 			</td>
 		</tr>
+                <?php $reg_earnings= $reg_earnings + $registration->getAmount()?>
+			<?php $reg_commission = $reg_commission + ($registration->getCommissionAmount())?>
 		<?php endforeach; ?>
-	</table></div>
+                </table>
+              <table width="100%" cellspacing="0" cellpadding="2">
+		<tr>
+		<td align="right"><strong><?php echo __('Total Customer Registration:') ?></strong></td><td align="right"> <?php echo $i ?></td>
+		</tr>
+		<tr>
+		<td align="right"><strong><?php echo __('Total Earnings:') ?></strong></td><td align="right"> <?php echo $reg_earnings ?></td>
+		</tr>
+		<tr>
+		<td align="right"><strong><?php echo __('Total Commission Earned:') ?> </strong></td><td align="right"> <?php echo $reg_commission ?></td>
+		</tr>
+	</table>
+	</div>
 	<?php endif; ?>
 
 <?php if (count($sms_registrations)>0): ?>
