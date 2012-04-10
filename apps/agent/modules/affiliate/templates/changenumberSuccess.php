@@ -7,16 +7,16 @@
     <input type="hidden" value="<?php echo  $newNumber;  ?>" name="newnumber" />
     <input type="hidden" value="<?php echo  $countrycode;  ?>" name="countrycode" />
     <ul class="fl col">
-        <li>New Mobile Number</li>
-        <li><?php echo  $newNumber;  ?></li>
-        <li>Customer Name</li>
-        <li><?php echo  $customer->getFirstName(); ?>&nbsp;<?php echo  $customer->getLastName(); ?></li>
-        <li>Old Mobile Number</li>
-        <li><?php echo  $customer->getMobileNumber(); ?></li>
-        <li>Product Detail</li>
-        <li><?php echo $product->getDescription(); ?></li>
-        <li><?php echo  $product->getPrice(); ?></li>
-        <li><input type="submit" name="Pay" value="pay" /></li>
+        <li><label>New Mobile Number</label></li>
+        <li><label><?php echo  $newNumber;  ?></label></li>
+        <li><label>Customer Name</label></li>
+        <li><label><?php echo  $customer->getFirstName(); ?>&nbsp;<?php echo  $customer->getLastName(); ?></label></li>
+        <li><label>Old Mobile Number</label></li>
+        <li><label><?php echo  $customer->getMobileNumber(); ?></label></li>
+        <li><label>Product Detail</label></li>
+        <li><label><?php echo $product->getDescription(); ?></label></li>
+        <li><label><?php echo  $product->getPrice(); ?></label></li>
+        <li><input type="submit" name="Pay" value="Pay" /></li>
     </ul>
     </form>
 </div>
