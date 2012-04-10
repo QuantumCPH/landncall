@@ -2,9 +2,10 @@
 <?php include_javascripts_for_form($form) ?>
 
 <form method="post" action="registerCustomer<?php // url_for('@customer_registration_step1') ?>" name="newCustomerForm"  <?php $form->isMultipart() and print 'enctype="multipart/form-data" ' ?>>
+  <div id="sf_admin_container"><h1><?php echo __('Register a Customer') ?> <span class="active">- <?php echo __('Step 1') ?>: <?php echo __('Register') ?> </span></h1> </div>
+  <div class="borderDiv"> 
   <div class="left-col">
     <div class="split-form-sign-up">
-      <div class="step-details"> <h2><?php echo __('Register a Customer') ?> <span class="active">- <?php echo __('Step 1') ?>: <?php echo __('Register') ?> </span></h2> </div>
       <div class="fl col">
         <?php echo $form->renderHiddenFields() ?>
           <ul>
@@ -271,7 +272,8 @@
       </div>
     </div>
   </div>
-
+  <div class="clr"></div>
+</div>
   
 </form>
 

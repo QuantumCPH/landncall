@@ -22,8 +22,10 @@
                    
 
 <?php if (count($registrations)>0): ?>
-	<h2><?php echo __('Registration Earnings') ?>  </h2>
-	<table cellspacing="0" width="100%">
+	<div id="sf_admin_container"><h1><?php echo __('Registration Earnings') ?>  </h1></div>
+
+        <div class="borderDiv">
+	  <table cellspacing="0" cellpadding="2" width="100%">
 		<tr>
 
 			<th>&nbsp;</th>
@@ -36,7 +38,7 @@
 		$i = 0;
 		foreach($registrations as $registration):
 		?>
-		<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+		<tr <?php echo 'class="'.($i%2 == 0?'odd':'even').'"' ?>>
 			<td><?php echo ++$i ?>.</td>
                         <td><?php echo $registration->getCreatedAt() ?></td>
 			<td><?php
@@ -56,12 +58,14 @@
 			</td>
 		</tr>
 		<?php endforeach; ?>
-	</table>
+	</table></div>
 	<?php endif; ?>
 
 <?php if (count($sms_registrations)>0): ?>
-	<h2><?php echo __('SMS Registration Earnings') ?></h2>
-	<table cellspacing="0" width="100%">
+	<div id="sf_admin_container"><h1><?php echo __('SMS Registration Earnings') ?></h1></div>
+
+        <div class="borderDiv">
+	  <table cellspacing="0" width="100%">
 		<tr>
 
 			<th>&nbsp;</th>
@@ -74,7 +78,7 @@
 		$i = 0;
 		foreach($sms_registrations as $sms_registration):
 		?>
-		<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+		<tr <?php echo 'class="'.($i%2 == 0?'odd':'even').'"' ?>>
 			<td><?php echo ++$i ?>.</td>
                         <td><?php echo $sms_registration->getCreatedAt() ?></td>
 			<td><?php
@@ -101,13 +105,15 @@
                         
 		</tr>
 		<?php endforeach; ?>
-	</table>
+	</table></div>   
 	<?php endif; ?>
 
 
 	<?php if (count($refills)>0): ?>
-	<h2><?php echo __('Refills Earnings') ?></h2>
-	<table cellspacing="0" width="100%">
+	<div id="sf_admin_container"><h1><?php echo __('Refills Earnings') ?></h1></div>
+
+        <div class="borderDiv">
+	 <table cellspacing="0" width="100%">
 		<tr>
 			
 			<th>&nbsp;</th>
@@ -120,7 +126,7 @@
 		$i = 0;
 		foreach($refills as $refill):
 		?>
-		<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+		<tr <?php echo 'class="'.($i%2 == 0?'odd':'even').'"' ?>>
 			<td><?php echo ++$i ?>.</td>
                         <td><?php echo $refill->getCreatedAt() ?></td>
 			<td><?php
@@ -140,13 +146,15 @@
 			</td>
 		</tr>
 		<?php endforeach; ?>
-	</table>
+	</table></div>
 	<?php endif; ?>
 
 
 <?php if (count($ef)>0): ?>
-	<h2><?php echo __('Refill from Shop Earnings') ?></h2>
-	<table cellspacing="0" width="100%" >
+	<div id="sf_admin_container"><h1><?php echo __('Refill from Shop Earnings') ?></h1></div>
+
+        <div class="borderDiv">
+          <table cellspacing="0" cellpadding="2" width="100%">
 		<tr>
 			<th>&nbsp;</th>
 			<th><?php echo __('Date') ?> </th>
@@ -171,7 +179,7 @@
                     // because the position of 'a' was the 0th (first) character.
                        
                         if(strstr($efo->getDescription(),$stringfind)){  ?>
-		<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?> align="center">
+		<tr <?php echo 'class="'.($i%2 == 0?'odd':'even').'"' ?>>
 
 			<td><?php echo ++$i ?>.</td>
 			<td><?php echo $efo->getCreatedAt() ?></td>
@@ -193,22 +201,26 @@
 			<?php $commission = $commission + ($efo->getCommissionAmount())?>
 		<?php } ?>
 		<?php endforeach;?>
+                        </table>
+              <table width="100%" cellspacing="0" cellpadding="2">
 		<tr>
-		<td colspan="3" align="right"><?php echo __('Total Refills From The Shop:') ?></td><td colspan="2"> <?php echo $i ?></td>
+		<td align="right"><strong><?php echo __('Total Refills From The Shop:') ?></strong></td><td align="right"> <?php echo $i ?></td>
 		</tr>
 		<tr>
-		<td colspan="3" align="right"><?php echo __('Total Earnings:') ?></td><td colspan="2"> <?php echo $earnings ?></td>
+		<td align="right"><strong><?php echo __('Total Earnings:') ?></strong></td><td align="right"> <?php echo $earnings ?></td>
 		</tr>
 		<tr>
-		<td colspan="3" align="right"><?php echo __('Total Commission Earned:') ?> </td><td colspan="2"> <?php echo $commission ?></td>
+		<td align="right"><strong><?php echo __('Total Commission Earned:') ?> </strong></td><td align="right"> <?php echo $commission ?></td>
 		</tr>
-	</table>
+	</table></div>
 <?php endif; ?>
 
 
 <?php if (count($number_changes)>0): ?>
-	<h2><?php echo __('Mobile Number Change Earnings') ?></h2>
-	<table cellspacing="0" width="100%"  style="text-align:center;">
+	<div id="sf_admin_container"><h1><?php echo __('Mobile Number Change Earnings') ?></h1></div>
+
+        <div class="borderDiv">
+           <table cellspacing="0" cellpadding="2" width="100%">
 		<tr>
 			<th>&nbsp;</th>
 			<th><?php echo __('Date') ?> </th>
@@ -220,7 +232,7 @@
 		$i = 0;
 		foreach($number_changes as $number_change):
 		?>
-		<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+		<tr <?php echo 'class="'.($i%2 == 0?'odd':'even').'"' ?>>
 			<td><?php echo ++$i ?>.</td>
                         <td><?php echo $number_change->getCreatedAt() ?></td>
 			<td><?php
@@ -247,22 +259,26 @@
 
 		</tr>
 		<?php endforeach; ?>
+                </table>
+              <table width="100%" cellspacing="0" cellpadding="2">
         <tr>
-		<td colspan="3" align="right"><?php echo __('Total Number Change Sales:') ?></td><td colspan="2"> <?php echo $i ?></td>
+		<td align="right"><strong><?php echo __('Total Number Change Sales:') ?></strong></td><td align="right"> <?php echo $i ?></td>
 		</tr>
 		<tr>
-		<td colspan="3" align="right"><?php echo __('Total Earnings:') ?></td><td colspan="2"> <?php echo $numberChange_earnings; ?></td>
+		<td align="right"><strong><?php echo __('Total Earnings:') ?></strong></td><td align="right"> <?php echo $numberChange_earnings; ?></td>
 		</tr>
 		<tr>
-		<td colspan="3" align="right"><?php echo __('Total Commission Earned:') ?> </td><td colspan="2"> <?php echo $numberChange_commission; ?></td>
+		<td align="right"><strong><?php echo __('Total Commission Earned:') ?> </strong></td><td align="right"> <?php echo $numberChange_commission; ?></td>
 		</tr>
-	</table>
+	</table></div>
 	<?php endif; ?>
 
 
         <?php else: ?>
-        <h2><?php echo __('Earning Summary') ?></h2>
-<table cellspacing="0" width="60%" class="summary">
+        <div id="sf_admin_container"><h1><?php echo __('Earning Summary') ?></h1></div>
+
+        <div class="borderDiv">
+          <table cellspacing="0" width="60%" class="summary">
 
         <?php
             if($agent->getIsPrepaid()){
@@ -355,14 +371,14 @@
 
 
 </table>
-
+        </div>
 <p>
 </p>
 
-<h2>News Box</h2>
+<div id="sf_admin_container"><h1>News Box</h1></div><div class="borderDiv">
 <br/>
 <p>
-<font size="3">
+
 				<?php
 
 					$currentDate = date('Y-m-d');
@@ -402,7 +418,7 @@
 					} ?>
 
 					<b><?php echo link_to('View All News & Updates','affiliate/newsListing'); ?> </b>
-					</font>
+					
 
 </p>
 
@@ -410,7 +426,7 @@
 <?php endif; ?> <!--  end details -->
 
 
-
+</div>
 
 </div>
 

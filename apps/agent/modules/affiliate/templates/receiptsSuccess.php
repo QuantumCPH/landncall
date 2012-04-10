@@ -11,8 +11,9 @@
 	}
 </style>
 <div class="report_container">
-<h2><?php echo __('Registration Receipts') ?> (<?php echo (count($registrations))." receipts" ?>)</h2>
-<table cellspacing="0" width="100%" class="summary">	
+<div id="sf_admin_container"><h1><?php echo __('Registration Receipts') ?> (<?php echo (count($registrations))." receipts" ?>)</h1></div>
+<div class="borderDiv">
+   <table cellspacing="0" width="100%" class="summary">	
 	<tr>
 		<th>&nbsp;</th>
 		<th><?php echo __('Date') ?></th>
@@ -27,7 +28,7 @@
 	$i = 0;
 	foreach($registrations as $registration):
 	?>
-	<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+	<tr <?php echo 'class="'.($i%2 == 0?'odd':'even').'"' ?>>
 		<td><?php echo ++$i ?>.</td>
              
 		<td><?php echo $registration->getCreatedAt(); ?>
@@ -53,10 +54,13 @@
 	<?php endforeach; ?>
         
 </table>
+</div>
 
+<div id="sf_admin_container"><h1><?php echo __('Refill Receipts') ?> (<?php echo (count($refills))." receipts" ?>)</h1></div>
 
-<h2><?php echo __('Refill Receipts') ?> (<?php echo (count($refills))." receipts" ?>)</h2>
-<table cellspacing="0" width="100%" class="summary">
+  <div class="borderDiv">
+
+   <table cellspacing="0" width="100%" class="summary">
 	<tr>
 		<th>&nbsp;</th>
 		<th><?php echo __('Date') ?></th>
@@ -71,7 +75,7 @@
 	$i = 0;
 	foreach($refills as $refill):
 	?>
-	<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+	<tr <?php echo 'class="'.($i%2 == 0?'odd':'even').'"' ?>>
 		<td><?php echo ++$i ?>.</td>
 
 		<td><?php echo $refill->getCreatedAt(); ?>
@@ -97,9 +101,11 @@
 	<?php endforeach; ?>
 
 </table>
+  </div>
+<div id="sf_admin_container"><h1><?php echo __('Mobile Number Change Receipts') ?> (<?php echo (count($numberchanges))." receipts" ?>)</h1></div>
 
-<h2><?php echo __('Mobile Number Change Receipts') ?> (<?php echo (count($numberchanges))." receipts" ?>)</h2>
-<table cellspacing="0" width="100%" class="summary">
+  <div class="borderDiv">
+   <table cellspacing="0" width="100%" class="summary">
 	<tr>
 		<th>&nbsp;</th>
 		<th><?php echo __('Date') ?></th>
@@ -114,7 +120,7 @@
 	$i = 0;
 	foreach($numberchanges as $numberchange):
 	?>
-	<tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+	<tr <?php echo 'class="'.($i%2 == 0?'odd':'even').'"' ?>>
 		<td><?php echo ++$i ?>.</td>
 
 		<td><?php echo $numberchange->getCreatedAt(); ?>
@@ -140,6 +146,6 @@
 	<?php endforeach; ?>
 
 </table>
-
-        <?php echo __('Total Receipts for transactions:') ?> <?php echo (count($registrations)+count($refills)+count($numberchanges)) ?>
+  </div>
+        <p class="pTotal"><?php echo __('Total Receipts for transactions:') ?> <?php echo (count($registrations)+count($refills)+count($numberchanges)) ?></p>
 </div>

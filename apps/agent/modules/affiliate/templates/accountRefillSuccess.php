@@ -69,7 +69,9 @@
 
 
 </script>
+<div id="sf_admin_container"><h1><?php echo __('Account Refill') ?></h1></div>
 
+  <div class="borderDiv">
 <form action="https://payment.architrade.com/paymentweb/start.action"  method="post" id="refill" onsubmit="return checkForm()">
   
     <table>
@@ -180,3 +182,4 @@
     </table>
  
 </form>
+  </div>

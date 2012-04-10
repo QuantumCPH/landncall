@@ -3,6 +3,9 @@
     border-bottom: 0px solid #fff;
     }
 </style>
+<div id="sf_admin_container"><h1><?php echo __('Refill Receipts') ?> (<?php echo (count($refills))." receipts" ?>)</h1></div>
+
+  <div class="borderDiv">
 <?php foreach ($Userguide as $userguide): ?>
   <?php echo '<h1> '.$userguide->getTitle().'</h1>';
   if($userguide->getImage()!=''){?>
@@ -12,7 +15,7 @@
   <?php }
   echo '<p style=nowrap><b><font size=2></font></b>&nbsp;'.$userguide->getDescription();
   echo '</p>';?>
-<?php endforeach; ?>
+<?php endforeach; ?></div>
 <!--
 <h1>User guide til hvordan Zapna Global fungere p&aring; Windows mobil</h1>
   <p>Ved at f&oslash;lge disse f&aring; trin kan du skifte mellem din nuv&aelig;rende 

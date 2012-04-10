@@ -197,9 +197,10 @@
 </script>
 
 <form action="<?php echo url_for('@customer_registraion_complete') ?>"  method="post" id="payment" onsubmit="return checkForm()">
-    <div class="left-col">
+     <div id="sf_admin_container"><h1><?php echo __('Create a customer') ?> <span class="active">- <?php echo __('Step 2') ?></span></h1></div>
+    <div class="borderDiv">
+     <div class="left-col">
         <div class="split-form-sign-up">
-            <div class="step-details"> <strong><?php echo __('Create a customer') ?> <span class="active">- <?php echo __('Step 2') ?></span></strong> </div>
             <div class="fl col">
                 <ul>
                     <!-- payment details -->
@@ -311,6 +312,8 @@ echo $product_price;
             </div>
         </div>
     </div>
+        <div class="clr"></div>
+  </div>
 </form>
 <script type="text/javascript">
     jq('#quantity_error').hide();

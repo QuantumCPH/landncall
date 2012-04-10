@@ -1,8 +1,10 @@
-<h1>Zapna Global &#8211; FAQ</h1>
+<div id="sf_admin_container"><h1><?php echo __('LandNCall AB &#8211; FAQ') ?></h1></div>
+
+ <div class="borderDiv">
 
 
 <?php foreach ($Faqs as $faqs): ?>
-  <?php echo '<b><font size=2>Question:</font></b> '.$faqs->getQuestion().'<br /><br />' ?>
-  <?php echo '<p style=nowrap><b><font size=2>Answer:</font></b>&nbsp;'.$faqs->getAnswer();
-  echo '</p><br />';?>
+  <b><font size=2><?php echo __('Question: ')?></font></b><?php echo __($faqs->getQuestion());?><br /><br />
+  <p style=nowrap><b><font size=2><?php echo __('Answer:')?></font></b>&nbsp;<?php echo __($faqs->getAnswer());?></p><br />
 <?php endforeach; ?>
+ </div>

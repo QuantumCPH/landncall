@@ -9,41 +9,41 @@
                 $va = new Criteria();
 		$va->add(AgentCompanyPeer::ID, $sf_user->getAttribute('agent_company_id', '', 'usersession'));
 		$agent_company = AgentCompanyPeer::doSelectOne($va);
-                
-        ?>
-       
+       ?>
         <link rel="shortcut icon" href="/favicon.ico" />
         <style>
-.error{
-margin-left:150px;
-color:#F00000;
-
-}
-
-</style>
-	  </head>
+            .error{
+                margin-left:150px;
+                color:#F00000;
+            }
+        </style>
+    </head>
     <body>
-        <div id="basic" class="container_12 mitform">
-            <div id="header" class="grid_12">
-                <div id="logo" class="grid_3 alpha">
-                    <?php echo image_tag('/images/logo.gif');// link_to(image_tag('/images/logo.gif'), '@homepage'); ?>
+        <div id="basic">
+            <div id="header">
+                <div id="logo">
+                    <?php echo image_tag('/images/zapna_logo_small.png');// link_to(image_tag('/images/logo.gif'), '@homepage'); ?>
                 </div>
-                <div id="slogan" class="grid_6 omega">
-                    <h1 class="slogan">CRM/Billing/Agent Portal</h1>
-                </div>
-
+            </div>
+            <div class="clr"></div>
+            
                 <?php if($sf_user->getAttribute('username', '', 'usersession')){?>
-                 <div id="slogan" style="position:absolute; left: 812px; top: -6px; width: 104px; white-space:nowrap;">
-<?php echo __('Logged in as:') ?><b>&nbsp;<?php echo $sf_user->getAttribute('username', '', 'usersession')?></b><br />
-                    <?php
+            <div id="slogan">
+                <h1><?php echo __('Agent Portal'); ?></h1>
+                    <div id="loggedInUser">
+                        <?php echo __('Logged in as:') ?><b>&nbsp;<?php echo $sf_user->getAttribute('username', '', 'usersession')?></b><br />
+                        <?php
                         if($agent_company){
                         if($agent_company->getIsPrepaid()){ ?>
-                     <?php echo __('Your Balance is:') ?> <b><?php echo $agent_company->getBalance(); ?></b>
-                    <?php }
-                    ?>
+                        <?php echo __('Your Balance is:') ?> <b><?php echo $agent_company->getBalance(); ?></b>
+                        <?php }
+                        ?>
+                        <?php } ?>
+                    </div>
+                <div class="clr"></div>
+            </div>
                 <?php } ?>
-                </div>
-<?php } ?>
+                
                 <?php
 
 //                $enableCountry = new Criteria();
@@ -67,32 +67,27 @@ color:#F00000;
                     <input type="hidden" value="<?php echo $sf_user->getAttribute('cusid') ?>" name="cid" />
                 </form>
                 </div>-->
+           <?php if($sf_user->isAuthenticated()){ ?>                                    
+            <div id="menu">
+                <ul id="sddm">
+
+                        <li><?php echo link_to(__('Overview'), 'affiliate/report?show_summary=1');?></li>
+                        <li><?php echo link_to(__('Register a Customer'), '@customer_registration_step1');?></li>
+                        <li><?php echo link_to(__('Services'), 'affiliate/refill') ?></li>
+                        <li><?php echo link_to(__('Receipts'), 'affiliate/receipts');?></li>
+                        <li><?php echo link_to(__('My Earnings'), 'affiliate/report?show_details=1');?></li>
+                        <li><?php echo link_to(__('My Company Info'), 'agentcompany/view');?></li>
+                        <li><?php echo link_to(__('Supporting Handsets'), 'affiliate/supportingHandset');?></li>
+                        <li><?php echo link_to(__('User Guide'), 'affiliate/userguide');?></li>
+                        <li><?php echo link_to(__('FAQ'), 'affiliate/faq');?></li>
+                        <li class="last"><?php echo link_to(__('Logout'), 'agentUser/logout');?></li>
+
+                    </ul>
+                <div class="clr"></div>
             </div>
-            <div id="menu" class="grid_2 alpha">
-<!--                <h1>menu</h1>-->
-            <ul class="menu-list">
-                <?php if($sf_user->isAuthenticated()){ ?>                                    
-                    
-                
-                
-                    <li><?php echo link_to(__('Overview'), 'affiliate/report?show_summary=1');?></li>
-                    <li><?php echo link_to(__('Register a Customer'), '@customer_registration_step1');?></li>
-                    <li><?php echo link_to(__('Services'), 'affiliate/refill') ?></li>
-                    <li><?php echo link_to(__('Receipts'), 'affiliate/receipts');?></li>
-                    
-                    <li><?php echo link_to(__('My Earnings'), 'affiliate/report?show_details=1');?></li>
-                    <li><?php echo link_to(__('My Company Info'), 'agentcompany/view');?></li>
-<!--                    <li><?php //echo link_to(__('Package Conversion'), 'affiliate/conversionform');?></li>-->
-                    <li><?php echo link_to(__('Supporting Handsets'), 'affiliate/supportingHandset');?></li>
-                    <li><?php echo link_to(__('User Guide'), 'affiliate/userguide');?></li>
-                    <li><?php echo link_to(__('FAQ'), 'affiliate/faq');?></li>
-                    
-                    <li><?php echo link_to(__('Logout'), 'agentUser/logout');?></li>
-                       
-                </ul>
                 <?php } ?>
-            </div>
-            <div id="content" class="grid_10 omega">
+            
+            <div id="content">
 
                 <?php if($sf_user->hasFlash('message')): ?>
                     <div id="info-message" class="grid_9 save-ok">
@@ -115,19 +110,17 @@ color:#F00000;
 
                 
                 <?php if($sf_user->isAuthenticated()): ?>
-                <div>&nbsp;</div>
-                <p ><br /><?php echo __('Provide this link to your customers while they signup with your reference.') ?>				
-				<a href="http://landncall.zerocall.com/b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession') ?>">
-				http://landncall.zerocall.com/b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession')?>
-				</a>			
-				</p>				
-				<?php endif; ?>
+                 <div class="clr"></div>
+                    <p>
+                        <?php echo __('Provide this link to your customers while they signup with your reference.') ?>
+                        <a href="<?php echo sfConfig::get('app_url'); ?>b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession') ?>">
+                            <?php echo sfConfig::get('app_url'); ?>b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession')?>
+			</a>			
+                    </p>
+                    <?php endif; ?>
 
                 <?php echo $sf_content ?>
             </div>
-       <!--     <div id="footer" class="grid_12">
-                
-            </div>This is the footer-->
             <div class="clear"></div>
         </div>
     </body>
