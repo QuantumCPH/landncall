@@ -24,7 +24,7 @@
             <label><?php echo $product->getDescription(); ?></label>
         </li>
         <li>
-            <label>Price</label>
+            <label>Amount</label>
             <label><?php echo  $product->getPrice(); ?></label>
         </li>
         <li style="margin-left:100px"><input type="submit" name="Pay" value="Pay" /></li>
