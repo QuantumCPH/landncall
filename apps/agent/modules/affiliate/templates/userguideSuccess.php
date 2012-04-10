@@ -3,7 +3,7 @@
     border-bottom: 0px solid #fff;
     }
 </style>
-<div id="sf_admin_container"><h1><?php echo __('Refill Receipts') ?> (<?php echo (count($refills))." receipts" ?>)</h1></div>
+<div id="sf_admin_container"><h1><?php echo __('User Guide') ?></h1></div>
 
   <div class="borderDiv">
 <?php foreach ($Userguide as $userguide): ?>

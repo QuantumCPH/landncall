@@ -17,6 +17,55 @@
                 color:#F00000;
             }
         </style>
+       <script type="text/javascript">
+            <!--
+            // Copyright 2006-2007 javascript-array.com
+
+            var timeout	= 500;
+            var closetimer	= 0;
+            var ddmenuitem	= 0;
+
+            // open hidden layer
+            function mopen(id)
+            {
+                // cancel close timer
+                mcancelclosetime();
+
+                // close old layer
+                if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+
+                // get new layer and show it
+                ddmenuitem = document.getElementById(id);
+                ddmenuitem.style.visibility = 'visible';
+
+            }
+            // close showed layer
+            function mclose()
+            {
+                if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+            }
+
+            // go close timer
+            function mclosetime()
+            {
+                closetimer = window.setTimeout(mclose, timeout);
+            }
+
+            // cancel close timer
+            function mcancelclosetime()
+            {
+                if(closetimer)
+                {
+                    window.clearTimeout(closetimer);
+                    closetimer = null;
+                }
+            }
+
+            // close layer when click-out
+            document.onclick = mclose;
+            -->
+
+        </script>
     </head>
     <body>
         <div id="basic">
@@ -67,19 +116,96 @@
                     <input type="hidden" value="<?php echo $sf_user->getAttribute('cusid') ?>" name="cid" />
                 </form>
                 </div>-->
-           <?php if($sf_user->isAuthenticated()){ ?>                                    
+           <?php if($sf_user->isAuthenticated()){
+                    $modulName = $sf_context->getModuleName();
+                    $actionName = $sf_context->getActionName();
+               ?>
             <div id="menu">
                 <ul id="sddm">
 
-                        <li><?php echo link_to(__('Overview'), 'affiliate/report?show_summary=1');?></li>
-                        <li><?php echo link_to(__('Register a Customer'), '@customer_registration_step1');?></li>
-                        <li><?php echo link_to(__('Services'), 'affiliate/refill') ?></li>
-                        <li><?php echo link_to(__('Receipts'), 'affiliate/receipts');?></li>
-                        <li><?php echo link_to(__('My Earnings'), 'affiliate/report?show_details=1');?></li>
-                        <li><?php echo link_to(__('My Company Info'), 'agentcompany/view');?></li>
-                        <li><?php echo link_to(__('Supporting Handsets'), 'affiliate/supportingHandset');?></li>
-                        <li><?php echo link_to(__('User Guide'), 'affiliate/userguide');?></li>
-                        <li><?php echo link_to(__('FAQ'), 'affiliate/faq');?></li>
+                        <li>
+                            <?php
+                            if ($actionName == 'report' && $modulName == "affiliate" && $sf_request->getParameter('show_summary') == 1) {
+                                 echo link_to(__('Overview'), 'affiliate/report?show_summary=1', array('class' => 'current'));
+                        } else {
+                                echo link_to(__('Overview'), 'affiliate/report?show_summary=1');
+                            }
+                            ?>
+                        </li>
+                        <li>
+                            <a onmouseover="mopen('m2')" onmouseout="mclosetime()" href="#" onclick="return false;"
+                            <?php echo $actionName == 'registerCustomer' || $actionName == 'setProductDetails' || $actionName == 'refill' ? 'class="current"' : ''; ?>><?php echo __('Services'); ?></a>
+                        <div id="m2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                            <?php
+                            if ($modulName == "affiliate" && $actionName == 'registerCustomer' || $actionName == 'setProductDetails') {
+                                echo link_to(__('Register a Customer'), '@customer_registration_step1', array('class' => 'subSelect'));
+                            } else {
+                                echo link_to(__('Register a Customer'), '@customer_registration_step1');
+                            }
+                            if ($modulName == "affiliate" && $actionName == 'refill') {
+                                echo link_to(__('Refill'), 'affiliate/refill', array('class' => 'subSelect'));
+                            } else {
+                                 echo link_to(__('Refill'), 'affiliate/refill');
+                            }
+                            if ($modulName == "affiliate" && $actionName == 'changenumberservice') {
+                                echo link_to(__('Change Number'), 'affiliate/changenumberservice', array('class' => 'subSelect'));
+                            } else {
+                                 echo link_to(__('Change Number'), 'affiliate/changenumberservice');
+                            }
+                             ?>
+                            </div>
+                        </li>
+                        <li>
+                            <?php
+                            if ($modulName == "affiliate" && $actionName == 'receipts') {
+                                echo link_to(__('Receipts'), 'affiliate/receipts', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('Receipts'), 'affiliate/receipts');
+                            }    
+                            ?>
+                        </li>
+                        <li>
+                            <?php
+                                if ($modulName == "affiliate" && $actionName == 'report' && $sf_request->getParameter('show_details') == 1) {
+                                    echo link_to(__('My Earnings'), 'affiliate/report?show_details=1', array('class' => 'current'));
+                                } else {
+                                echo link_to(__('My Earnings'), 'affiliate/report?show_details=1');
+                                }
+                            ?>
+                        </li>
+                        <li>
+                            <?php
+                                if ($modulName == "agentcompany" && $actionName == 'view' || $actionName == 'accountRefill' || $actionName == 'agentOrder' || $actionName == 'paymentHistory') {
+                                echo link_to(__('My Company Info'), 'agentcompany/view', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('My Company Info'), 'agentcompany/view');
+                            }
+                            ?></li>
+                        <li>
+                            <?php
+                                if ($modulName == "affiliate" && $actionName == 'supportingHandset') {
+                                echo link_to(__('Supporting Handsets'), 'affiliate/supportingHandset', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('Supporting Handsets'), 'affiliate/supportingHandset');
+                            }
+                             ?>
+                        </li>
+                        <li>
+                            <?php
+                            if ($modulName == "affiliate" && $actionName == 'userguide') {
+                                echo link_to(__('User Guide'), 'affiliate/userguide', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('User Guide'), 'affiliate/userguide');
+                            }?>
+                        </li>
+                        <li><?php
+                            if ($modulName == "affiliate" && $actionName == 'faq') {
+                                echo link_to(__('FAQ'), 'affiliate/faq', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('FAQ'), 'affiliate/faq');
+                            }
+                            ?>
+                        </li>
                         <li class="last"><?php echo link_to(__('Logout'), 'agentUser/logout');?></li>
 
                     </ul>
