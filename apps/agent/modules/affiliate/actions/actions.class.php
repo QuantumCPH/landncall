@@ -1821,7 +1821,12 @@ public function executeAgentOrder(sfRequest $request){
         return sfView::NONE;
    }
 
+   public function executeChangenumberservice(sfWebRequest $request) {
 
+       changeLanguageCulture::languageCulture($request,$this);
+       $this->browser = new Browser();
+    
+   }
    public function executeChangenumber(sfWebRequest $request) {
         changeLanguageCulture::languageCulture($request, $this);
 

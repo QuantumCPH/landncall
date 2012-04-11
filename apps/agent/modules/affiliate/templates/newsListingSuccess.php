@@ -1,6 +1,6 @@
-<center>
-<h2>News & Updates Listing</h2>
-</center>
+<div id="sf_admin_container"><h1><?php echo __('News & Updates Listing') ?></h1></div>
+
+ <div class="borderDiv">
 <br/>
 
 					
@@ -32,4 +32,5 @@
 					} ?>
 				
 					
-					
+                                                                  <div class="clr"></div>
+ </div>

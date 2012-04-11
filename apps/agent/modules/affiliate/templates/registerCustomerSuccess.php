@@ -2,9 +2,10 @@
 <?php include_javascripts_for_form($form) ?>
 
 <form method="post" action="registerCustomer<?php // url_for('@customer_registration_step1') ?>" name="newCustomerForm"  <?php $form->isMultipart() and print 'enctype="multipart/form-data" ' ?>>
+  <div id="sf_admin_container"><h1><?php echo __('Register a Customer') ?> <span class="active">- <?php echo __('Step 1') ?>: <?php echo __('Register') ?> </span></h1> </div>
+  <div class="borderDiv"> 
   <div class="left-col">
     <div class="split-form-sign-up">
-      <div class="step-details"> <h2><?php echo __('Register a Customer') ?> <span class="active">- <?php echo __('Step 1') ?>: <?php echo __('Register') ?> </span></h2> </div>
       <div class="fl col">
         <?php echo $form->renderHiddenFields() ?>
           <ul>
@@ -22,6 +23,7 @@
             <li>
                  <?php echo $form['mobile_number']->renderLabel() ?>
              <?php echo $form['mobile_number'] ?>
+                <label class="validnumber">Enter mobile number without leading 0</label>
              <?php if ($error_mobile_number): ?>
              <span id="cardno_decl" class="alertstep1">
 			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
@@ -257,7 +259,7 @@
           <?php 
           if( $browser->getBrowser() == Browser::BROWSER_IE  )
           {  ?>
-          <li class="fr buttonplacement" style="margin-left:20px ">
+          <li class="fr buttonplacement" style="margin-left:50px ">
                <input type="submit" value="Next" style="margin-left:115px;">
           </li>
          
@@ -271,7 +273,8 @@
       </div>
     </div>
   </div>
-
+  <div class="clr"></div>
+</div>
   
 </form>
 
