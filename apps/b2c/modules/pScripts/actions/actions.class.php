@@ -1932,9 +1932,16 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                         Telienta::createAAccount($number, $customer);
                         Telienta::createCBAccount($number, $customer);
                     }
+
                     $sms = SmsTextPeer::retrieveByPK(9);
                     $smsText = $sms->getMessageText();
                     $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
+                    CARBORDFISH_SMS::Send($number, $smsText);
+
+                    $sms = SmsTextPeer::retrieveByPK(11);
+                    $smsText = $sms->getMessageText();
+                    $smsText = str_replace("(username)", $mobileNumber, $smsText);
+                    $smsText = str_replace("(password)", $password, $smsText);
                     CARBORDFISH_SMS::Send($number, $smsText);
                     emailLib::sendCustomerRegistrationViaRetail($customer, $order);
                 } else {
