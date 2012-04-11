@@ -593,7 +593,8 @@ a.external_link {
 }
 .changenumber{
     float: left;
-    list-style: none
+    list-style: none;
+    width: 50%;
 }
 .changenumber label{
     text-align: left !important;

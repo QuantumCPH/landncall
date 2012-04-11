@@ -38,7 +38,7 @@
           if( $browser->getBrowser() == Browser::BROWSER_IE  )
           {
                    ?>
-          <li class="fr buttonplacement" style="margin-left:20px ">
+          <li class="fr buttonplacement" style="margin-left:50px;">
                <input type="submit" value="Next" style="margin-left:115px;">
           </li>
 
