@@ -95,7 +95,7 @@
                 
                 <?php
                     $userguide = new Criteria();
-                    $userguide->add(ClientdocumentsPeer::ID, 2);
+                    $userguide->add(ClientdocumentsPeer::ID, 7);
                     $guide = ClientdocumentsPeer::doSelectOne($userguide);
 //                $enableCountry = new Criteria();
 //                $enableCountry->add(EnableCountryPeer::STATUS, '1');
