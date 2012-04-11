@@ -176,7 +176,7 @@
 		<input type="hidden" name="accepturl" id="accepturl"  value="http://landncall.zerocall.com/agent.php/affiliate/thankyou?accept=yes&subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=50000">
 
                 
-<input type="submit" value="Recharge" />
+                <input type="submit" value="Recharge" />
             </td>
         </tr>
     </table>

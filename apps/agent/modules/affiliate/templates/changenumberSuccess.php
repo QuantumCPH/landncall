@@ -6,7 +6,7 @@
     <input type="hidden" value="<?php echo  $product->getPrice();  ?>" name="extra_refill" />
     <input type="hidden" value="<?php echo  $newNumber;  ?>" name="newnumber" />
     <input type="hidden" value="<?php echo  $countrycode;  ?>" name="countrycode" />
-    <ul class="fl col" style="float: left; list-style: none">
+    <ul class="fl col changenumber">
         <li>
             <label>New Mobile Number</label>
             <label><?php echo  $newNumber;  ?></label>
@@ -27,7 +27,7 @@
             <label>Amount</label>
             <label><?php echo  $product->getPrice(); ?></label>
         </li>
-        <li style="margin-left:100px"><input type="submit" name="Pay" value="Pay" /></li>
+        <li style="margin-left:188px"><input type="submit" name="Pay" value="Pay" /></li>
     </ul>
     </form>
     <div class="clr"></div>

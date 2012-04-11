@@ -82,7 +82,7 @@ a:hover{
     height:27px;
     color:#ffffff;
     border:0px !important;
-    margin-left:0px;
+    margin-left:26px;
     font-size:11px;
     font-weight: bold;
 }
@@ -240,7 +240,7 @@ margin-bottom:10px;
 }
 #menu{
     text-align: center;
-    width: 80%;
+    width: 62%;
     margin:0 auto;
 }
 #menu ul#sddm{
@@ -359,7 +359,7 @@ margin-bottom:10px;
 .split-form-sign-up ul li select.quater{width:55px; border:1px solid #999999;font-size:11px; padding:3px; margin-right:3px; }
 .split-form-sign-up ul li input.chkbx{width:20px; padding:0px; border:0px; float:left;}
 .split-form-sign-up ul li input.radbx{width:20px; padding:0px; border:0px; float:left;}
-.split-form-sign-up ul li.fr {width:250px; text-align:right;}
+.split-form-sign-up ul li.fr {width:244px; text-align:right;}
 .split-form-sign-up ul li.buttonplacement{ /*position: relative; right:75px; margin-left: 36px;*/text-align: right !important;}
 #customer_date_of_birth_month{
     margin-left:10px !important;
@@ -373,7 +373,7 @@ margin-bottom:10px;
     color:#FFFFFF;
     font-size:22px;
     height:48px;
-    margin-top:20px;
+    margin-top:42px;
     padding-bottom:7px;
     padding-top:5px;
     /*position:absolute;
@@ -590,4 +590,23 @@ a.external_link {
     font-size: 11px;
     float: right;
     margin-top:10px;
+}
+.changenumber{
+    float: left;
+    list-style: none
+}
+.changenumber label{
+    text-align: left !important;
+    width:200px !important;
+}
+label.validnumber{
+    font-weight:normal !important;
+    padding: 0px;
+    margin: 0px;
+ }
+ #mobile_number{
+    margin-bottom: 0px !important;
+}
+ #customer_mobile_number{
+    margin-bottom: 0px !important;
 }

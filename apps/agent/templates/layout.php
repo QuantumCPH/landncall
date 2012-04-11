@@ -94,7 +94,9 @@
                 <?php } ?>
                 
                 <?php
-
+                    $userguide = new Criteria();
+                    $userguide->add(ClientdocumentsPeer::ID, 2);
+                    $guide = ClientdocumentsPeer::doSelectOne($userguide);
 //                $enableCountry = new Criteria();
 //                $enableCountry->add(EnableCountryPeer::STATUS, '1');
 //
@@ -191,12 +193,17 @@
                              ?>
                         </li>
                         <li>
+                             <a onmouseover="mopen('m3')" onmouseout="mclosetime()" href="#" onclick="return false;"
+                            <?php echo $actionName == 'userguide'? 'class="current"' : ''; ?>><?php echo __('User Guide'); ?></a>
+                            <div id="m3" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
                             <?php
                             if ($modulName == "affiliate" && $actionName == 'userguide') {
-                                echo link_to(__('User Guide'), 'affiliate/userguide', array('class' => 'current'));
+                                echo link_to(__('Smarter Sim User Guide'), 'affiliate/userguide', array('class' => 'current'));
                             } else {
-                                echo link_to(__('User Guide'), 'affiliate/userguide');
+                                echo link_to(__('Smarter Sim User Guide'), 'affiliate/userguide');
                             }?>
+                                <a href="/uploads/documents/<?php echo $guide->getFilename();?>" target="_blank"><?php echo $guide->getTitle();?></a>
+                            </div>
                         </li>
                         <li><?php
                             if ($modulName == "affiliate" && $actionName == 'faq') {
@@ -205,9 +212,9 @@
                                 echo link_to(__('FAQ'), 'affiliate/faq');
                             }
                             ?>
+                          
                         </li>
                         <li class="last"><?php echo link_to(__('Logout'), 'agentUser/logout');?></li>
-
                     </ul>
                 <div class="clr"></div>
             </div>

@@ -11,6 +11,7 @@
             <li>
              <?php echo $form['mobile_number']->renderLabel() ?>
              <?php echo $form['mobile_number'] ?>
+                <label class="validnumber">Enter mobile number without leading 0</label>
              <?php if ($error_mobile_number): ?>
              <span id="cardno_decl" class="alertstep1">
 			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
