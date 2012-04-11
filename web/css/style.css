@@ -604,6 +604,8 @@ label.validnumber{
     font-weight:normal !important;
     padding: 0px;
     margin: 0px;
+    margin-left:20px;
+    font-size: 11px;
  }
  #mobile_number{
     margin-bottom: 0px !important;
