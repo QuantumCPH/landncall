@@ -106,10 +106,20 @@ class emailLib {
                 ));
 
         $subject = __('Payment Confirmation');
+        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
         $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
+        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
         $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
         //---------------------------------------
         //--------------Sent The Email To Support
+
+        $email3 = new EmailQueue();
+        $email3->setSubject($subject);
+        $email3->setReceipientName($sender_name);
+        $email3->setReceipientEmail($sender_email);
+        $email3->setEmailType('Retail Refil');
+        $email3->setMessage($message_body);
+        $email3->save();
 
         $email3 = new EmailQueue();
         $email3->setSubject($subject);
@@ -252,10 +262,20 @@ class emailLib {
 
 
 
+        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
         $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
+        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
         $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
         //---------------------------------------
         //--------------Sent The Email To Support
+
+        $email3 = new EmailQueue();
+        $email3->setSubject($subject);
+        $email3->setReceipientName($sender_name);
+        $email3->setReceipientEmail($sender_email);
+        $email3->setEmailType('Retail Activation');
+        $email3->setMessage($message_body);
+        $email3->save();
 
         $email3 = new EmailQueue();
         $email3->setSubject($subject);
@@ -264,8 +284,6 @@ class emailLib {
         $email3->setEmailType('Retail Activation');
         $email3->setMessage($message_body);
         $email3->save();
-
-
         //-----------------------------------------
     }
 
@@ -1131,10 +1149,10 @@ Med vänlig hälsning<br/><br/>
 LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
+        $sender_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
         $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email', 'zerocallengineering@googlegroups.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        //$sender_emailcdu = sfConfig::get('app_email_sender_email', 'zerocallengineering@googlegroups.com');
+        //$sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
 
 
         //--------------Sent The Email To okhan
@@ -1151,7 +1169,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         endif;
         //-----------------------------------------
         //--------------Sent The Email To CDU
-        if (trim($sender_emailcdu) != ''):
+       /* if (trim($sender_emailcdu) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
             $email4->setReceipientName($sender_namecdu);
@@ -1161,7 +1179,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email4->setEmailType('Error In Telinta');
             $email4->setMessage($message_body);
             $email4->save();
-        endif;
+        endif;*/
         //-----------------------------------------
     }
 
@@ -1174,10 +1192,10 @@ Uniuqe Ids finsihed.<br/><br/>
 LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
         //Support Informationt
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
+        $sender_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
         $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email', 'zerocallengineering@googlegroups.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        //$sender_emailcdu = sfConfig::get('app_email_sender_email', 'zerocallengineering@googlegroups.com');
+        //$sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
 
 
         //--------------Sent The Email To okhan
@@ -1194,7 +1212,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         endif;
         //-----------------------------------------
         //--------------Sent The Email To CDU
-        if (trim($sender_emailcdu) != ''):
+        /*if (trim($sender_emailcdu) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
             $email4->setReceipientName($sender_namecdu);
@@ -1204,7 +1222,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email4->setEmailType('Unique Ids Finished');
             $email4->setMessage($message_body);
             $email4->save();
-        endif;
+        endif;*/
         //-----------------------------------------
     }
 
@@ -1217,10 +1235,10 @@ Uniuqe Id " . $uniqueid . " has issue while assigning on " . $customer->getMobil
 LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
         //Support Informationt
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
+        $sender_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
         $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email', 'zerocallengineering@googlegroups.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        //$sender_emailcdu = sfConfig::get('app_email_sender_email', 'zerocallengineering@googlegroups.com');
+        //$sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
 
 
         //--------------Sent The Email To okhan
@@ -1237,7 +1255,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         endif;
         //-----------------------------------------
         //--------------Sent The Email To CDU
-        if (trim($sender_emailcdu) != ''):
+        /*if (trim($sender_emailcdu) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
             $email4->setReceipientName($sender_namecdu);
@@ -1247,7 +1265,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email4->setEmailType('Unique Ids Finished');
             $email4->setMessage($message_body);
             $email4->save();
-        endif;
+        endif;*/
         //-----------------------------------------
     }
 
@@ -1263,13 +1281,13 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         $email->save();
 
         //To Support @ Zerocall
-        $email = new EmailQueue();
+        /*$email = new EmailQueue();
         $email->setSubject($subject);
         $email->setReceipientName("Support");
         $email->setReceipientEmail("support@zerocall.com");
         $email->setEmailType('Telinta Error');
         $email->setMessage($message);
-        $email->save();
+        $email->save();*/
     }
 
 //////////////////////////////////////////////////////////////////////////////////
