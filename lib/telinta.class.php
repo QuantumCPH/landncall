@@ -33,7 +33,7 @@ class Telienta {
             $Parent = self::$iParentRLandnCall;
         }
         try {
-               $uniqueId="LCB2C".$customer->getUniqueid();
+               $uniqueId=$customer->getUniqueid();
             $tCustomer = $pb->add_customer(array('customer_info' => array(
                             'name' => $uniqueId,
                             'iso_4217' => self::$currency,
@@ -220,7 +220,7 @@ class Telienta {
                             'password' => 'asdf1asd',
                             'h323_password' => 'asdf1asd',
                             'activation_date' => date('Y-m-d'),
-                            'batch_name' => "LCB2C".$customer->getUniqueid(),
+                            'batch_name' => $customer->getUniqueid(),
                             'follow_me_enabled' => $followMeEnabled
                             )));
         } catch (SoapFault $e) {
