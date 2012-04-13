@@ -2028,7 +2028,7 @@ public function executeAgentOrder(sfRequest $request){
 
                             $getvoipInfo = new Criteria();
                             $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
-                            $getvoipInfo->addAnd(SeVoipNumberPeer::STATUS, 1);
+                            //$getvoipInfo->addAnd(SeVoipNumberPeer::STATUS, 1);
                             $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
                             if(isset($getvoipInfos)){
                                 $voipnumbers = $getvoipInfos->getNumber() ;
