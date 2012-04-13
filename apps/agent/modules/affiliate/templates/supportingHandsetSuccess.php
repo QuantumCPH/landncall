@@ -1,6 +1,10 @@
-<table width="98%" cellspacing="0" cellpadding="3" align="center">
+<div id="sf_admin_container"><h1><?php echo __('Supporting Handset') ?></h1></div>
+
+ <div class="borderDiv">
+     <table width="98%" cellspacing="0" cellpadding="3" align="center">
           <tbody>
-            <tr style="background-color: #A5BB3F; color: #fff">
+	<tr>
+
               <td><strong>&nbsp;Brand name</strong></td>
               <td><strong>&nbsp;Model</strong></td>
               <td><strong>&nbsp;Callback Test result</strong></td>
@@ -200,8 +204,9 @@
               <td>&nbsp;Deactivation take around 4-5 min before its activated</td>
               <td>&nbsp;1</td>
             </tr>
-          </tbody>
+          
         </table>
+     <div>
 <script language="javascript" type="text/javascript">
 	jq = jQuery.noConflict();
 	jq('table tr:not(:first-child):even').css('background-color', '#f0f0f0');

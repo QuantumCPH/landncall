@@ -6,18 +6,18 @@
 
 ?>
 
-<a href="#" onclick="showCompany()" title="company info"><?php echo __('Company info') ?></a>
-&nbsp; | &nbsp;
+<a href="#" onclick="showCompany()" title="company info" class="external_link"><?php echo __('Company info') ?></a>
+
 <?php if($sf_user->isAuthenticated()): ?>
      <?php if($agent_company->getIsPrepaid()): ?>
 
-        <?php echo link_to(__('Account Recharge'), 'affiliate/accountRefill') ?>
+        <?php echo link_to(__('Account Recharge'), 'affiliate/accountRefill',array('class'=>'external_link')) ?>
 
-    &nbsp; | &nbsp;
+ 
 
-        <?php echo link_to(__('Recharge Receipts'), 'affiliate/agentOrder') ?>
+        <?php echo link_to(__('Recharge Receipts'), 'affiliate/agentOrder',array('class'=>'external_link')) ?>
 
-    &nbsp; | &nbsp;
+   
     
     <?php endif; ?>
 <?php endif; ?>
@@ -27,12 +27,12 @@
 &nbsp; | &nbsp;
 -->
  <?php if($agent_company->getIsPrepaid()): ?>
- <?php echo link_to(__('Payment History'), 'affiliate/paymentHistory') ?>
+ <?php echo link_to(__('Payment History'), 'affiliate/paymentHistory',array('class'=>'external_link')) ?>
 <?php endif; ?>
 <br/>
 <div id="company-info" style="display:block">
-    <h1><?php echo __('Company info') ?></h1>
-
+    <div id="sf_admin_container"><h1><?php echo __('Company info') ?></h1></div>
+<div class="borderDiv">
 
       <label class="grid_2 required"><?php echo __('Company Name:') ?></label>
       <div class="grid_2 content">
@@ -122,7 +122,8 @@
       <div class="grid_2 content">
             <?php echo $agent_company->getCreatedAt() ?>
       </div>
-
+<div class="clr"></div>
+</div>
 </div>
 
 <div id="bank-info" style="display:none">

@@ -3,16 +3,19 @@
     border-bottom: 0px solid #fff;
     }
 </style>
+<div id="sf_admin_container"><h1><?php echo __('User Guide') ?></h1></div>
+
+  <div class="borderDiv">
 <?php foreach ($Userguide as $userguide): ?>
   <?php echo '<h1> '.$userguide->getTitle().'</h1>';
-  if($userguide->getImage()!=''){?>
+  /*if($userguide->getImage()!=''){?>
   <img src="<?php echo image_path('../uploads/userguide/'.$userguide->getImage()) ?>" alt="" width="160" /><br /><br />
 
 
-  <?php }
+  <?php }*/
   echo '<p style=nowrap><b><font size=2></font></b>&nbsp;'.$userguide->getDescription();
   echo '</p>';?>
-<?php endforeach; ?>
+<?php endforeach; ?></div>
 <!--
 <h1>User guide til hvordan Zapna Global fungere p&aring; Windows mobil</h1>
   <p>Ved at f&oslash;lge disse f&aring; trin kan du skifte mellem din nuv&aelig;rende 

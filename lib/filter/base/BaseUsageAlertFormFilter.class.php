@@ -22,7 +22,7 @@ class BaseUsageAlertFormFilter extends BaseFormFilterPropel
       'email_active'        => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'country'             => new sfWidgetFormPropelChoice(array('model' => 'EnableCountry', 'add_empty' => true)),
       'sender_name'         => new sfWidgetFormPropelChoice(array('model' => 'UsageAlertSender', 'add_empty' => true)),
-      'status_id'           => new sfWidgetFormPropelChoice(array('model' => 'Status', 'add_empty' => true)),
+      'status'              => new sfWidgetFormPropelChoice(array('model' => 'Status', 'add_empty' => true)),
     ));
 
     $this->setValidators(array(
@@ -34,7 +34,7 @@ class BaseUsageAlertFormFilter extends BaseFormFilterPropel
       'email_active'        => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'country'             => new sfValidatorPropelChoice(array('required' => false, 'model' => 'EnableCountry', 'column' => 'id')),
       'sender_name'         => new sfValidatorPropelChoice(array('required' => false, 'model' => 'UsageAlertSender', 'column' => 'id')),
-      'status_id'           => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Status', 'column' => 'id')),
+      'status'              => new sfValidatorPropelChoice(array('required' => false, 'model' => 'Status', 'column' => 'id')),
     ));
 
     $this->widgetSchema->setNameFormat('usage_alert_filters[%s]');
@@ -61,7 +61,7 @@ class BaseUsageAlertFormFilter extends BaseFormFilterPropel
       'email_active'        => 'Boolean',
       'country'             => 'ForeignKey',
       'sender_name'         => 'ForeignKey',
-      'status_id'           => 'ForeignKey',
+      'status'              => 'ForeignKey',
     );
   }
 }
