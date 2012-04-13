@@ -17,7 +17,7 @@
 <tr>
   <th id="sf_admin_list_th_id"><a href="javascript:;">Id</a></th>
   <th id="sf_admin_list_th_question">Document Title</th>
-  <th id="sf_admin_list_th_answer">File Path</th>
+<!--  <th id="sf_admin_list_th_answer">File Path</th>-->
   <th id="sf_admin_list_th_status">Downlaod</th>
   <th id="sf_admin_list_th_sf_actions">Actions</th>
 </tr>
@@ -35,7 +35,7 @@ while($qryObj = mysql_fetch_object($Qry)){?>
     <td><a href="<?php echo $_SERVER['PHP_SELF'];?>/edit/id/<?php echo $qryObj->id;?>"><?php echo $qryObj->id;?></a></td>
     <td><?php echo $qryObj->title;?></td>
       
-      <td>uploads/documents/<?php echo $qryObj->filename;?></td>
+<!--      <td>uploads/documents/<?php echo $qryObj->filename;?></td>-->
       <td><a href="/uploads/documents/<?php echo $qryObj->filename;?>" target="_blank">DOWNLOAD DOCUMENT</a></td>
   <td>
 <ul class="sf_admin_td_actions">

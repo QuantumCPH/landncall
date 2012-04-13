@@ -25,6 +25,11 @@ class customerActions extends sfActions {
     }
     public function executeTest(sfWebRequest $request) {
 
+        var_dump($_REQUEST);
+
+        die;
+  return sfView::NONE;
+
     }
 
     protected function processForm(sfWebRequest $request, sfForm $form, $id) {
@@ -1004,15 +1009,16 @@ class customerActions extends sfActions {
 
         //get  transactions
         $c = new Criteria();
-        $searchingCr = "LandNCall AB Refill via agent";
+        //$searchingCr = "LandNCall AB Refill via agent";
         $c->add(TransactionPeer::CUSTOMER_ID, $this->customer->getId());
-        $c->add(TransactionPeer::DESCRIPTION, 'LandNCall AB Refill');
-        $c->addOR(TransactionPeer::DESCRIPTION, 'Registrering inkl. taletid');
-        $c->addOR(TransactionPeer::DESCRIPTION, 'Auto Refill');
+        //$c->add(TransactionPeer::DESCRIPTION, 'LandNCall AB Refill');
+        //$c->addOR(TransactionPeer::DESCRIPTION, 'Registrering inkl. taletid');
+       // $c->addOR(TransactionPeer::DESCRIPTION, 'Auto Refill');
         //$c->addOR(TransactionPeer::DESCRIPTION,'Resenummer bekräftelse');
-        $c->addOR(TransactionPeer::DESCRIPTION, '%' . $searchingCr . '%', Criteria::LIKE);
-        $c->add(TransactionPeer::TRANSACTION_STATUS_ID, sfConfig::get('app_status_completed', -1)
-        );
+        //$c->addOR(TransactionPeer::DESCRIPTION, '%' . $searchingCr . '%', Criteria::LIKE);
+        //$c->add(TransactionPeer::TRANSACTION_STATUS_ID, sfConfig::get('app_status_completed', -1)
+        //);
+        $c->add(TransactionPeer::TRANSACTION_STATUS_ID,3);
         // Here we can simple check the transaction stats and we can meet our requirements but here use the description value equel which is i dnt
         // Good approch but me not edit this i just pass one more "Resenummer bekräftelse" - ahtsham
         /*
@@ -1129,6 +1135,8 @@ class customerActions extends sfActions {
                     unset($this->form['manufacturer']);
                     unset($this->form['product']);
                     unset($this->form['i_customer']);
+                    unset($this->form['usage_alert_sms']);
+                    unset($this->form['usage_alert_email']);
 
    
 
@@ -1202,6 +1210,9 @@ class customerActions extends sfActions {
         unset($this->form['manufacturer']);
         unset($this->form['device_id']);
         unset($this->form['ticketval']);
+        unset($this->form['i_customer']);
+        unset($this->form['usage_alert_sms']);
+        unset($this->form['usage_alert_email']);
         $this->uniqueidValue = $this->customer->getUniqueId();
         //This Section For Get the Language Symbol For Set Currency -
         $getvoipInfo = new Criteria();
@@ -2467,7 +2478,7 @@ class customerActions extends sfActions {
             //$this->getUser()->setAttribute('product_id', $product, 'usersignup');
 
 
-            $this->redirect('http://stagelc.zerocall.com/b2c.php/customer/signupusstep2?cid=' . $customer->getId() . '&pid=' . $product);
+            $this->redirect($this->getTargetUrl().'customer/signupusstep2?cid=' . $customer->getId() . '&pid=' . $product);
             //$this->redirect(sfConfig::get('app_epay_relay_script_url').$this->getController()->genUrl('@signup_step2?customer_id='.$customer->getId().'&product_id='.$product, true));
         }
     }

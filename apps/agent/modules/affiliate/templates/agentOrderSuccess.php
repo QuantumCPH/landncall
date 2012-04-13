@@ -11,7 +11,9 @@
 	}
 </style>
 <div class="report_container">
-<h2>Reciepts For Agent Account Refills</h2>
+<div id="sf_admin_container"><h1><?php echo __('Reciepts For Agent Account Refills') ?></h1></div>
+
+  <div class="borderDiv">
 <table cellspacing="0" width="100%" class="summary">
 	<tr>
 		<th style="text-align:left">&nbsp;</th>
@@ -33,4 +35,4 @@
 
         <?php } ?>
 </table>
-</div>
+</div></div>

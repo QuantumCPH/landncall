@@ -5,7 +5,7 @@ generator:
     theme:            default
     css:             /sf/sf_admin/css/admin_main.css
     list:
-            title: 'Usage Alert'
+            title: 'Low Credit Alert'
             display: [id, alert_amount_min, alert_amount_max, sms_alert_message, sms_active, email_alert_message, email_active, enable_country, usage_alert_sender, status]
             fields:
               enable_country: {name: Country}
@@ -13,3 +13,5 @@ generator:
             object_actions:
               _delete: ~
               _edit: ~
+    edit:
+            title: 'Edit Low Credit Alert'

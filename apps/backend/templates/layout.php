@@ -91,7 +91,7 @@
             <li>
                 <a href="#"
                 onmouseover="mopen('m5')"
-                onmouseout="mclosetime()">Landncall</a>
+                onmouseout="mclosetime()">B2C</a>
                 <div id="m5"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
@@ -99,7 +99,7 @@
                     <?php echo link_to('Registered Customer(Web)', 'customer/registeredByWeb'); ?>
                     <?php echo link_to('Registered Customer(Agent)', 'customer/registeredByAgent'); ?>
                     <?php echo link_to('Registered Customer(Agent Link)', 'customer/registeredByAgentLink'); ?>
-                    <?php echo link_to('Registered Customer(Agent SMS)', 'customer/registeredBySms'); ?>
+                    <?php //echo link_to('Registered Customer(Agent SMS)', 'customer/registeredBySms'); ?>
                     <?php //echo link_to('Registered Customer(Mobile App)', 'customer/registeredByApp'); ?>
                     <?php echo link_to('Partial Registeration(Web)', 'customer/partialRegisteredByWeb'); ?>
                     <?php echo link_to('Partial Registeration(Agent)', 'customer/partialRegisteredByAgent'); ?>
@@ -158,7 +158,7 @@
                 <div id="m9"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
-		     <?php echo link_to('Alert Usage Report ', 'invoice/selectIntervalAlert'); ?>
+		     <?php echo link_to('Low Credit Alert Report ', 'invoice/selectIntervalAlert'); ?>
 
 
                 </div>
@@ -171,7 +171,7 @@
                 <div id="m6"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
-                    <?php echo link_to('Get Info', 'fonetAmin/info'); ?>
+             -       <?php echo link_to('Get Info', 'fonetAmin/info'); ?>
                     <?php echo link_to('Recharge', 'fonetAmin/recharge'); ?>
                     <?php echo link_to('Activate', 'fonetAmin/activate'); ?>
                     <?php echo link_to('DeActivate', 'fonetAmin/delete'); ?>
@@ -200,7 +200,7 @@
             <li>
                 <a href="#"
                 onmouseover="mopen('m4')"
-                onmouseout="mclosetime()">Security</a>
+                onmouseout="mclosetime()">Admin Users</a>
                 <div id="m4"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
@@ -211,7 +211,19 @@
                 </div>
             </li>
             
-            
+             <li>
+				<a href="#"
+                onmouseover="mopen('m6')"
+                onmouseout="mclosetime()">Download</a>
+                <div id="m6"
+                    onmouseover="mcancelclosetime()"
+                    onmouseout="mclosetime()">
+             <?php echo link_to('Downlaod User Guide', 'client_documents/index') ?>
+                    
+                </div>
+
+
+            </li>
 			
 			
           
@@ -243,10 +255,10 @@
                         <?php
                         // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
                          //echo link_to('<b>Zerocall Setting</b>', '') ?>
-                        <a href="javascript:;"><b>LandnCall Setting</b></a>
-                        <?php echo link_to('Mobile Models', 'device/index'); ?>
-                        <?php echo link_to('Mobile Brands', 'manufacturer/index'); ?>
-                        <?php echo link_to('Mobile Operator', 'telecom_operator/index') ?>
+<!--                        <a href="javascript:;"><b>LandnCall Setting</b></a>-->
+                        <?php //echo link_to('Mobile Models', 'device/index'); ?>
+                        <?php //echo link_to('Mobile Brands', 'manufacturer/index'); ?>
+                        <?php //echo link_to('Mobile Operator', 'telecom_operator/index') ?>
                         <?php //echo link_to('Postal charges', 'postal_charges/index') ?>
                         <?php
                         // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
@@ -264,14 +276,14 @@
                          //echo link_to('<b>General Setting</b>', '') ?>
                         <a href="javascript:;"><b>General Setting</b></a>
                         <?php echo link_to('products', 'product/index') ?>
-                        <?php echo link_to('Language Type', 'enable_country/index') ?>
+                        <?php echo link_to('Country List', 'enable_country/index') ?>
                         <?php echo link_to('Cities', 'city/index') ?>
                         <?php echo link_to('SMS TEXT', 'sms_text/index') ?>
-                        <?php echo link_to('Usage Alert', 'usage_alert/index') ?>
-                        <?php echo link_to('Usage Alert Sender', 'usage_alert_sender/index') ?>
+                        <?php echo link_to('Low Credit Alert', 'usage_alert/index') ?>
+                        <?php echo link_to('Low Credit Alert Sender', 'usage_alert_sender/index') ?>
                         <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
                         <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
-                         <?php echo link_to('Upload Client Document', 'client_documents/index') ?>
+                         <?php //echo link_to('Upload Client Document', 'client_documents/index') ?>
 <!--                        <a href="/client_documents/index">Upload Client Document</a>-->
                         <?php //echo link_to('global setting', 'global_setting/index') ?>
                         <?php //echo link_to('employee products', 'employee_product/index') ?>

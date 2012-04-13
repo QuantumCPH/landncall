@@ -35,7 +35,7 @@ class Telienta {
         try {
                $uniqueId="LCB2C".$customer->getUniqueid();
             $tCustomer = $pb->add_customer(array('customer_info' => array(
-                            'name' => $uniqueId, 
+                            'name' => $uniqueId,
                             'iso_4217' => self::$currency,
                             'i_parent' => $Parent,
                             'i_customer_type' => 1,
@@ -129,7 +129,7 @@ class Telienta {
             $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
 
             $cInfo = $pb->get_customer_info(array(
-                        'name' => $customer->getUniqueid(),
+                        'i_customer' => $customer->getICustomer(),
                     ));
             $Balance = $cInfo->customer_info->balance;
             $pb->_logout();
@@ -224,7 +224,7 @@ class Telienta {
                             'password' => 'asdf1asd',
                             'h323_password' => 'asdf1asd',
                             'activation_date' => date('Y-m-d'),
-                            'batch_name' => $customer->getUniqueid(),
+                            'batch_name' => "LCB2C".$customer->getUniqueid(),
                             'follow_me_enabled' => $followMeEnabled
                             )));
         } catch (SoapFault $e) {

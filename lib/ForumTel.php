@@ -8,15 +8,13 @@ class ForumTel {
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-            $transactionid= mt_rand(10000000,time());
-
-
+        $transactionid= "466".mt_rand(100000000,999999999);
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
         $tarif_name = "PayAsYouGo-Sub";
-        $xml_data = '<activate-account trid='.$transactionid.'>
+        $xml_data = '<activate-account trid="'.$transactionid.'">
 <authentication>
 <username>' . $username . '</username>
 <password>' . $password . '</password>
@@ -65,14 +63,14 @@ class ForumTel {
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-             $transactionid= mt_rand(10000000,time());
+           $transactionid= "466".mt_rand(100000000,999999999);
 
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
 
-        $xml_data = '<suspend-account trid='.$transactionid.'>
+        $xml_data = '<suspend-account trid="'.$transactionid.'">
 <authentication>
 <username>' . $username . '</username>
 <password>' . $password . '</password>
@@ -112,7 +110,7 @@ class ForumTel {
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-              $transactionid= mt_rand(10000000,time());
+        $transactionid= "466".mt_rand(100000000,999999999);
 
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
@@ -120,7 +118,7 @@ class ForumTel {
         $iccid = $usnumber->getIccid();
         $amount = $amount;
 
-        $xml_data = '<top-up-subscriber trid='.$transactionid.'>
+        $xml_data = '<top-up-subscriber trid="'.$transactionid.'">
 <authentication>
 <username>' . $username . '</username>
 <password>' . $password . '</password>
@@ -162,7 +160,7 @@ class ForumTel {
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-            $transactionid= mt_rand(10000000,time());
+              $transactionid= "466".mt_rand(100000000,999999999);
 
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
@@ -170,7 +168,7 @@ class ForumTel {
         $iccid = $usnumber->getIccid();
 
         $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";
-        $post_string = '<get-subscriber-balance trid='.$transactionid.'>
+        $post_string = '<get-subscriber-balance trid="'.$transactionid.'">
 <authentication>
 <username>' . $username . '</username>
 <password>' . $password . '</password>
@@ -197,8 +195,8 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
         curl_setopt($ch, CURLOPT_HEADER, true);
 
-        $data = curl_exec($ch);
-
+         $data = curl_exec($ch);
+       $output=$data;
         $data = substr($data, 215);
         $xml_obj = new SimpleXMLElement($data);
 //var_dump($xml_obj);
@@ -208,7 +206,7 @@ class ForumTel {
 
              $ftr = new ForumTelRequests();
                     $ftr->setRequestid($transactionid);
-                    $ftr->setResponse($data);
+                    $ftr->setResponse($output);
                     $ftr->setRequestType('get balance');
                     $ftr->setIccid($iccid);
                     $ftr->setMsisdn($msisdn);
@@ -228,14 +226,14 @@ class ForumTel {
             $tc = new Criteria();
             $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
             $usnumber = UsNumberPeer::doSelectOne($tc);
-             $transactionid= mt_rand(10000000,time());
+                 $transactionid= "466".mt_rand(100000000,999999999);
             $username = "Zapna";
             $password = "ZUkATradafEfA4reYeWr";
             $msisdn = $usnumber->getMsisdn();
             $iccid = $usnumber->getIccid();
 
             $url = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";
-            $post_string = '<get-usa-mdn trid='.$transactionid.'>
+            $post_string = '<get-usa-mdn trid="'.$transactionid.'">
             <authentication>
             <username>' . $username . '</username>
             <password>' . $password . '</password>
@@ -292,14 +290,14 @@ $usnumber->save();
             $tc = new Criteria();
             $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
             $usnumber = UsNumberPeer::doSelectOne($tc);
-            $transactionid= mt_rand(10000000,time());
+                 $transactionid= "466".mt_rand(100000000,999999999);
             $username = "Zapna";
             $password = "ZUkATradafEfA4reYeWr";
             $msisdn = $usnumber->getMsisdn();
             $iccid = $usnumber->getIccid();
 
             $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";
-            $post_string = '<reset-subscriber-balance trid='.$transactionid.'>
+            $post_string = '<reset-subscriber-balance trid="'.$transactionid.'">
             <authentication>
             <username>' . $username . '</username>
             <password>' . $password . '</password>

@@ -140,16 +140,15 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                  if(document.getElementById('user_attr_1').checked){
                 $('#idcallbackurl').val(callbackurlstr);
                  }else{
-                     var callbackurlstrs = "<?php echo $relay_script_url.url_for('@dibs_accept_url', true);  ?>?accept=yes&subscriptionid=1&orderid=<?php echo $order_id; ?>&amount="+total*100;
+                     var callbackurlstrs = "<?php echo $relay_script_url.url_for('@dibs_us_accept_url', true);  ?>?accept=yes&subscriptionid=1&orderid=<?php echo $order_id; ?>&amount="+total*100;
                     $('#idcallbackurl').val(callbackurlstrs);
                  }
 	}
 	
-	
-	
+
 	
 </script>
-
+<!---->
 <form action="https://payment.architrade.com/paymentweb/start.action"   method="post" id="payment" onsubmit="return checkForm()">
   <div class="left-col">
     <div class="split-form-sign-up">
@@ -245,14 +244,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
           </ul>
         <!-- hidden fields -->
 		<?php echo $form->renderHiddenFields() ?>
-		<?php 
-			
-			define("DIBS_MD5KEY2","r!oRvYT8}L5%,7XFj~Rlr$+Y[W3t3vho");
-			define("DIBS_MD5KEY1","cBI&R8y*KsGD.o}1z^WF]HqK5,*R[Y^w");
-			//define("PATH_WEB","http://landncall.zerocall.com/");
-			$md5key   =  md5(DIBS_MD5KEY2.md5(DIBS_MD5KEY1.'merchant=90049676&orderid='.$order_id.'&currency=752&amount='.$total));
-		?>
-
+		 
 		
 		<input type="hidden" name="merchant" value="90049676" />
 		<input type="hidden" name="amount" id="total" value="<?php echo $total;?>" />

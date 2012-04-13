@@ -2,7 +2,7 @@
 #all:
 
 all:
- main_url: http://stagelc.zerocall.com/b2c.php/
+ main_url: http://landncall.zerocall.com/b2c.php/
  epay:
    merchant_number: 5116449
    currency: 208
@@ -34,3 +34,4 @@ all:
    - { module: payments,  action: signup}
    - { module: payments,  action: accept}
    - { module: payments,  action: reject}
+ dialer_pin: 9998889999

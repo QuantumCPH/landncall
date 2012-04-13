@@ -11,7 +11,9 @@
 	}
 </style>
 <div class="report_container">
- <h2><?php echo __('Payment History') ?></h2>
+<div id="sf_admin_container"><h1><?php echo __('Payment History') ?></h1></div>
+
+ <div class="borderDiv"> 
     <table cellspacing="0" width="100%" class="summary">
    
   <tr>
@@ -28,11 +30,12 @@
         ?>
 
   
-  <tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
+  <tr <?php echo 'class="'.($i%2 == 0?'odd':'even').'"' ?>>
   <td><?php  $expensetype=$agent->getExpeneseType(); 
     if($expensetype==1){  echo __("Customer Registration");  }
     if($expensetype==2){  echo __("Customer Refill");  }
     if($expensetype==3){  echo __("Agent Account Refill");  }
+    if($expensetype==4){  echo __("Customer Refill from Shop");  }
     if($expensetype==6){  echo __("Change Number");  }
      ?></td>
   <td align="center"><?php  echo $agent->getAmount();   ?></td>
@@ -47,5 +50,5 @@
 
 </div>
 
-
+</div>
 
