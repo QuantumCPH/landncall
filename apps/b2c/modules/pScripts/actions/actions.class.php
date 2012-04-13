@@ -2194,7 +2194,6 @@ die;
 
             if (isset($number) && $number != "") {
                 $mnc = new Criteria();
-
                 $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
                 $cus = CallbackLogPeer::doSelectOne($mnc);
             }
@@ -2202,6 +2201,7 @@ die;
 
                  
                 $customerid = $cus->getId();
+             
                 if (isset($customerid) && $customerid != "") {
 
  
@@ -2209,7 +2209,6 @@ die;
                     $fromcbnumber = 'cb' . $number;
                     $firstnumbernumber =$number;
                     $secondnumber =$message;
-
                     $form = new Curl_HTTP_Client();
 
                     $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
