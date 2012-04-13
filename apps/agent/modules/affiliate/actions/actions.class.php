@@ -1985,7 +1985,7 @@ public function executeAgentOrder(sfRequest $request){
 
                     $transaction->save();
                     if ($customer) {
-                        $newMobileNo=$countrycode.$newnumber;
+                        $newMobileNo=$countrycode.substr($newnumber,1);
                         $customerids = $customer->getId();
                         $uniqueId=$customer->getUniqueid();
                         $customer->setMobileNumber($newnumber);
@@ -2053,15 +2053,14 @@ public function executeAgentOrder(sfRequest $request){
 
                         
                          $number = $countrycode . $mobile_number;
-                        $sms_text = "Dear customer
-                            We have changed your number from: $mobile_number to: $newnumber, you can now use LandNCall. If you have further questions please be free to contact the support on: support@landncall.com";
-                        CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
-
-                        //Send SMS ----
-                        $number = $newMobileNo;
-                        $sms_text = "Dear customer
-                            We have changed your number from: $mobile_number to: $newnumber, you can now use LandNCall. If you have further questions please be free to contact the support on: support@landncall.com";
-                       CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
+                         $sms = SmsTextPeer::retrieveByPK(12);
+                         $smsText = $sms->getMessageText();
+                         $smsText = str_replace(array("(oldnumber)", "(newnumber)"),array($mobile_number, $newnumber),$smsText);
+                    
+                         CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
+                         //Send SMS ----
+                         $number = $newMobileNo;
+                         CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
                        
                     }
 //exit;
