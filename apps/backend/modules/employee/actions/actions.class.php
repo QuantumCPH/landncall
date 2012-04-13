@@ -410,7 +410,7 @@ $companyCVR=$compny->getVatNo();
       //  $employee->setProductPrice($request->getParameter('price'));
         $employee->setDeleted($request->getParameter('deleted'));
         $employee->save();
-         $this->getUser()->setFlash('messageEdit', 'Employee has been edit Sucessfully '.(isset($msg)?"and ".$msg:''));
+         $this->getUser()->setFlash('messageEdit', 'Employee has been modified Sucessfully '.(isset($msg)?"and ".$msg:''));
         //$this->message = "employee added successfully";
         $this->redirect('employee/index?message=edit');
        // return sfView::NONE;

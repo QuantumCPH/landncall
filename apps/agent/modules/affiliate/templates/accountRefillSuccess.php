@@ -69,7 +69,9 @@
 
 
 </script>
+<div id="sf_admin_container"><h1><?php echo __('Account Refill') ?></h1></div>
 
+  <div class="borderDiv">
 <form action="https://payment.architrade.com/paymentweb/start.action"  method="post" id="refill" onsubmit="return checkForm()">
   
     <table>
@@ -174,9 +176,10 @@
 		<input type="hidden" name="accepturl" id="accepturl"  value="http://landncall.zerocall.com/agent.php/affiliate/thankyou?accept=yes&subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=50000">
 
                 
-<input type="submit" value="Recharge" />
+                <input type="submit" value="Recharge" />
             </td>
         </tr>
     </table>
  
 </form>
+  </div>

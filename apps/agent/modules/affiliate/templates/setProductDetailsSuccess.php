@@ -12,7 +12,7 @@
         jq("#payment").validate({
             rules: {
                 uniqueid: {
-                    remote: "<?php echo $target; ?>validateUniqueId"
+                    remote: "<?php echo sfConfig::get('app_agent_url'); ?>affiliate/validateUniqueId"
                 }
             }
         });
@@ -197,9 +197,10 @@
 </script>
 
 <form action="<?php echo url_for('@customer_registraion_complete') ?>"  method="post" id="payment" onsubmit="return checkForm()">
-    <div class="left-col">
+     <div id="sf_admin_container"><h1><?php echo __('Create a customer') ?> <span class="active">- <?php echo __('Step 2') ?></span></h1></div>
+    <div class="borderDiv">
+     <div class="left-col">
         <div class="split-form-sign-up">
-            <div class="step-details"> <strong><?php echo __('Create a customer') ?> <span class="active">- <?php echo __('Step 2') ?></span></strong> </div>
             <div class="fl col">
                 <ul>
                     <!-- payment details -->
@@ -296,7 +297,7 @@ echo $product_price;
 <?php
                                    if ($browser->getBrowser() == Browser::BROWSER_IE) {
 ?>
-                                       <li class="fr buttonplacement" style="margin-left:20px ">
+                                       <li class="fr buttonplacement" style="margin-left:20px; margin-top: 50px  ">
                                            <input type="submit" value="Next">
                                        </li>
 
@@ -311,6 +312,8 @@ echo $product_price;
             </div>
         </div>
     </div>
+        <div class="clr"></div>
+  </div>
 </form>
 <script type="text/javascript">
     jq('#quantity_error').hide();

@@ -602,6 +602,11 @@ class paymentsActions extends sfActions {
 
     public function executeConfirmpaymentus(sfWebRequest $request) {
         changeLanguageCulture::languageCulture($request, $this);
+
+        $urlvalrest="Confirm-payment-us-".var_export($_REQUEST,true);
+        $emaires = new DibsCall();
+        $emaires->setCallurl($urlvalrest);
+        $emaires->save();
         $urlval = $request->getParameter('transact');
         $email2 = new DibsCall();
         $email2->setCallurl($urlval);

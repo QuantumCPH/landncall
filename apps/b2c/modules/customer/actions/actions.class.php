@@ -25,6 +25,11 @@ class customerActions extends sfActions {
     }
     public function executeTest(sfWebRequest $request) {
 
+        var_dump($_REQUEST);
+
+        die;
+  return sfView::NONE;
+
     }
 
     protected function processForm(sfWebRequest $request, sfForm $form, $id) {
@@ -2473,7 +2478,7 @@ class customerActions extends sfActions {
             //$this->getUser()->setAttribute('product_id', $product, 'usersignup');
 
 
-            $this->redirect('http://stagelc.zerocall.com/b2c.php/customer/signupusstep2?cid=' . $customer->getId() . '&pid=' . $product);
+            $this->redirect($this->getTargetUrl().'customer/signupusstep2?cid=' . $customer->getId() . '&pid=' . $product);
             //$this->redirect(sfConfig::get('app_epay_relay_script_url').$this->getController()->genUrl('@signup_step2?customer_id='.$customer->getId().'&product_id='.$product, true));
         }
     }

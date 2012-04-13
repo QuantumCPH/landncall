@@ -9,43 +9,94 @@
                 $va = new Criteria();
 		$va->add(AgentCompanyPeer::ID, $sf_user->getAttribute('agent_company_id', '', 'usersession'));
 		$agent_company = AgentCompanyPeer::doSelectOne($va);
-                
-        ?>
-       
+       ?>
         <link rel="shortcut icon" href="/favicon.ico" />
         <style>
-.error{
-margin-left:150px;
-color:#F00000;
+            .error{
+                margin-left:150px;
+                color:#F00000;
+            }
+        </style>
+       <script type="text/javascript">
+            <!--
+            // Copyright 2006-2007 javascript-array.com
 
-}
+            var timeout	= 500;
+            var closetimer	= 0;
+            var ddmenuitem	= 0;
 
-</style>
-	  </head>
+            // open hidden layer
+            function mopen(id)
+            {
+                // cancel close timer
+                mcancelclosetime();
+
+                // close old layer
+                if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+
+                // get new layer and show it
+                ddmenuitem = document.getElementById(id);
+                ddmenuitem.style.visibility = 'visible';
+
+            }
+            // close showed layer
+            function mclose()
+            {
+                if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
+            }
+
+            // go close timer
+            function mclosetime()
+            {
+                closetimer = window.setTimeout(mclose, timeout);
+            }
+
+            // cancel close timer
+            function mcancelclosetime()
+            {
+                if(closetimer)
+                {
+                    window.clearTimeout(closetimer);
+                    closetimer = null;
+                }
+            }
+
+            // close layer when click-out
+            document.onclick = mclose;
+            -->
+
+        </script>
+    </head>
     <body>
-        <div id="basic" class="container_12 mitform">
-            <div id="header" class="grid_12">
-                <div id="logo" class="grid_3 alpha">
-                    <?php echo image_tag('/images/logo.gif');// link_to(image_tag('/images/logo.gif'), '@homepage'); ?>
+        <div id="basic">
+            <div id="header">
+                <div id="logo">
+                    <?php echo image_tag('/images/zapna_logo_small.png');// link_to(image_tag('/images/logo.gif'), '@homepage'); ?>
                 </div>
-                <div id="slogan" class="grid_6 omega">
-                    <h1 class="slogan">CRM/Billing/Agent Portal</h1>
-                </div>
-
+            </div>
+            <div class="clr"></div>
+            
                 <?php if($sf_user->getAttribute('username', '', 'usersession')){?>
-                 <div id="slogan" style="position:absolute; left: 812px; top: -6px; width: 104px; white-space:nowrap;">
-<?php echo __('Logged in as:') ?><b>&nbsp;<?php echo $sf_user->getAttribute('username', '', 'usersession')?></b><br />
-                    <?php
+            <div id="slogan">
+                <h1><?php echo __('Agent Portal'); ?></h1>
+                    <div id="loggedInUser">
+                        <?php echo __('Logged in as:') ?><b>&nbsp;<?php echo $sf_user->getAttribute('username', '', 'usersession')?></b><br />
+                        <?php
                         if($agent_company){
                         if($agent_company->getIsPrepaid()){ ?>
-                     <?php echo __('Your Balance is:') ?> <b><?php echo $agent_company->getBalance(); ?></b>
-                    <?php }
-                    ?>
+                        <?php echo __('Your Balance is:') ?> <b><?php echo $agent_company->getBalance(); ?></b>
+                        <?php }
+                        ?>
+                        <?php } ?>
+                    </div>
+                <div class="clr"></div>
+            </div>
                 <?php } ?>
-                </div>
-<?php } ?>
+                
                 <?php
-
+                    $userguide = new Criteria();
+                    $userguide->add(ClientdocumentsPeer::ID, 7);
+                    $guide = ClientdocumentsPeer::doSelectOne($userguide);
 //                $enableCountry = new Criteria();
 //                $enableCountry->add(EnableCountryPeer::STATUS, '1');
 //
@@ -67,32 +118,109 @@ color:#F00000;
                     <input type="hidden" value="<?php echo $sf_user->getAttribute('cusid') ?>" name="cid" />
                 </form>
                 </div>-->
+           <?php if($sf_user->isAuthenticated()){
+                    $modulName = $sf_context->getModuleName();
+                    $actionName = $sf_context->getActionName();
+               ?>
+            <div id="menu">
+                <ul id="sddm">
+
+                        <li>
+                            <?php
+                            if ($actionName == 'report' && $modulName == "affiliate" && $sf_request->getParameter('show_summary') == 1) {
+                                 echo link_to(__('Overview'), 'affiliate/report?show_summary=1', array('class' => 'current'));
+                        } else {
+                                echo link_to(__('Overview'), 'affiliate/report?show_summary=1');
+                            }
+                            ?>
+                        </li>
+                        <li>
+                            <a onmouseover="mopen('m2')" onmouseout="mclosetime()" href="#" onclick="return false;"
+                            <?php echo $actionName == 'registerCustomer' || $actionName == 'setProductDetails' || $actionName == 'refill' ? 'class="current"' : ''; ?>><?php echo __('Services'); ?></a>
+                        <div id="m2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                            <?php
+                            if ($modulName == "affiliate" && $actionName == 'registerCustomer' || $actionName == 'setProductDetails') {
+                                echo link_to(__('Register a Customer'), '@customer_registration_step1', array('class' => 'subSelect'));
+                            } else {
+                                echo link_to(__('Register a Customer'), '@customer_registration_step1');
+                            }
+                            if ($modulName == "affiliate" && $actionName == 'refill') {
+                                echo link_to(__('Refill'), 'affiliate/refill', array('class' => 'subSelect'));
+                            } else {
+                                 echo link_to(__('Refill'), 'affiliate/refill');
+                            }
+                            if ($modulName == "affiliate" && $actionName == 'changenumberservice') {
+                                echo link_to(__('Change Number'), 'affiliate/changenumberservice', array('class' => 'subSelect'));
+                            } else {
+                                 echo link_to(__('Change Number'), 'affiliate/changenumberservice');
+                            }
+                             ?>
+                            </div>
+                        </li>
+                        <li>
+                            <?php
+                            if ($modulName == "affiliate" && $actionName == 'receipts') {
+                                echo link_to(__('Receipts'), 'affiliate/receipts', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('Receipts'), 'affiliate/receipts');
+                            }    
+                            ?>
+                        </li>
+                        <li>
+                            <?php
+                                if ($modulName == "affiliate" && $actionName == 'report' && $sf_request->getParameter('show_details') == 1) {
+                                    echo link_to(__('My Earnings'), 'affiliate/report?show_details=1', array('class' => 'current'));
+                                } else {
+                                echo link_to(__('My Earnings'), 'affiliate/report?show_details=1');
+                                }
+                            ?>
+                        </li>
+                        <li>
+                            <?php
+                                if ($modulName == "agentcompany" && $actionName == 'view' || $actionName == 'accountRefill' || $actionName == 'agentOrder' || $actionName == 'paymentHistory') {
+                                echo link_to(__('My Company Info'), 'agentcompany/view', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('My Company Info'), 'agentcompany/view');
+                            }
+                            ?></li>
+                        <li>
+                            <?php
+                                if ($modulName == "affiliate" && $actionName == 'supportingHandset') {
+                                echo link_to(__('Supporting Handsets'), 'affiliate/supportingHandset', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('Supporting Handsets'), 'affiliate/supportingHandset');
+                            }
+                             ?>
+                        </li>
+                        <li>
+                             <a onmouseover="mopen('m3')" onmouseout="mclosetime()" href="#" onclick="return false;"
+                            <?php echo $actionName == 'userguide'? 'class="current"' : ''; ?>><?php echo __('User Guide'); ?></a>
+                            <div id="m3" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
+                            <?php
+                            if ($modulName == "affiliate" && $actionName == 'userguide') {
+                                echo link_to(__('Smarter Sim User Guide'), 'affiliate/userguide', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('Smarter Sim User Guide'), 'affiliate/userguide');
+                            }?>
+                                <a href="/uploads/documents/<?php echo $guide->getFilename();?>" target="_blank"><?php echo $guide->getTitle();?></a>
+                            </div>
+                        </li>
+                        <li><?php
+                            if ($modulName == "affiliate" && $actionName == 'faq') {
+                                echo link_to(__('FAQ'), 'affiliate/faq', array('class' => 'current'));
+                            } else {
+                                echo link_to(__('FAQ'), 'affiliate/faq');
+                            }
+                            ?>
+                          
+                        </li>
+                        <li class="last"><?php echo link_to(__('Logout'), 'agentUser/logout');?></li>
+                    </ul>
+                <div class="clr"></div>
             </div>
-            <div id="menu" class="grid_2 alpha">
-<!--                <h1>menu</h1>-->
-            <ul class="menu-list">
-                <?php if($sf_user->isAuthenticated()){ ?>                                    
-                    
-                
-                
-                    <li><?php echo link_to(__('Overview'), 'affiliate/report?show_summary=1');?></li>
-                    <li><?php echo link_to(__('Register a Customer'), '@customer_registration_step1');?></li>
-                    <li><?php echo link_to(__('Services'), 'affiliate/refill') ?></li>
-                    <li><?php echo link_to(__('Receipts'), 'affiliate/receipts');?></li>
-                    
-                    <li><?php echo link_to(__('My Earnings'), 'affiliate/report?show_details=1');?></li>
-                    <li><?php echo link_to(__('My Company Info'), 'agentcompany/view');?></li>
-<!--                    <li><?php //echo link_to(__('Package Conversion'), 'affiliate/conversionform');?></li>-->
-                    <li><?php echo link_to(__('Supporting Handsets'), 'affiliate/supportingHandset');?></li>
-                    <li><?php echo link_to(__('User Guide'), 'affiliate/userguide');?></li>
-                    <li><?php echo link_to(__('FAQ'), 'affiliate/faq');?></li>
-                    
-                    <li><?php echo link_to(__('Logout'), 'agentUser/logout');?></li>
-                       
-                </ul>
                 <?php } ?>
-            </div>
-            <div id="content" class="grid_10 omega">
+            
+            <div id="content">
 
                 <?php if($sf_user->hasFlash('message')): ?>
                     <div id="info-message" class="grid_9 save-ok">
@@ -115,19 +243,17 @@ color:#F00000;
 
                 
                 <?php if($sf_user->isAuthenticated()): ?>
-                <div>&nbsp;</div>
-                <p ><br /><?php echo __('Provide this link to your customers while they signup with your reference.') ?>				
-				<a href="http://landncall.zerocall.com/b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession') ?>">
-				http://landncall.zerocall.com/b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession')?>
-				</a>			
-				</p>				
-				<?php endif; ?>
+                 <div class="clr"></div>
+                    <p>
+                        <?php echo __('Provide this link to your customers while they signup with your reference.') ?>
+                        <a href="<?php echo sfConfig::get('app_url'); ?>b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession') ?>">
+                            <?php echo sfConfig::get('app_url'); ?>b2c/signup/step1?ref=<?php echo $sf_user->getAttribute('agent_company_id', '', 'usersession')?>
+			</a>			
+                    </p>
+                    <?php endif; ?>
 
                 <?php echo $sf_content ?>
             </div>
-       <!--     <div id="footer" class="grid_12">
-                
-            </div>This is the footer-->
             <div class="clear"></div>
         </div>
     </body>
