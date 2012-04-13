@@ -49,10 +49,15 @@ class PortaBillingSoapClient extends SoapClient {
           * @return string Session Id
           */
          public function _login($login, $password) {
-                 $soap_client = new SoapClient(
-                                 $this->_constructUri($this->serverUrl, $this->interface, 'Session')
-                         );
-                 $sessionId = $soap_client->login($login, $password);
+                try {
+                    $soap_client = new SoapClient(
+                    $this->_constructUri($this->serverUrl, $this->interface, 'Session'));
+                    $sessionId = $soap_client->login($login, $password);
+                 } catch (SoapFault $e) {
+                    emailLib::sendErrorInTelinta("Could not Login  <br/> Please Investigate.");
+                    $pb->_logout();
+                    return false;
+                }
                  $this->_setSessionId($sessionId);
                  return $sessionId;
          }
@@ -63,11 +68,17 @@ class PortaBillingSoapClient extends SoapClient {
           * @return mixed result from soap method call
           */
          public function _logout($sessionId = NULL) {
-                 $soap_client = new SoapClient(
+              try {
+                $soap_client = new SoapClient(
                                  $this->_constructUri($this->serverUrl, $this->interface, 'Session')
                          );
                  $sessionId = $sessionId ? $sessionId : $this->sessionId;
                  return $soap_client->logout($sessionId);
+             } catch (SoapFault $e) {
+                    emailLib::sendErrorInTelinta("Could not Logout  <br/> Please Investigate.");
+                    $pb->_logout();
+                    return false;
+             }
          }
 
          /**
