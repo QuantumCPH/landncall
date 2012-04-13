@@ -2036,7 +2036,7 @@ public function executeAgentOrder(sfRequest $request){
 
                             $tc = new Criteria();
                             $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-                            $tc->add(TelintaAccountsPeer::STATUS,3);
+                            $tc->add(TelintaAccountsPeer::STATUS,1);
                             if(TelintaAccountsPeer::doCount($tc)>0){
                                 $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
                                 Telienta::terminateAccount($telintaAccountR);
