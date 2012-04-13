@@ -2028,6 +2028,7 @@ public function executeAgentOrder(sfRequest $request){
 
                             $getvoipInfo = new Criteria();
                             $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
+                            $getvoipInfo->addAnd(SeVoipNumberPeer::STATUS, 1);
                             $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
                             if(isset($getvoipInfos)){
                                 $voipnumbers = $getvoipInfos->getNumber() ;
@@ -2037,7 +2038,7 @@ public function executeAgentOrder(sfRequest $request){
 
                             $tc = new Criteria();
                             $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-                            $tc->add(TelintaAccountsPeer::STATUS,1);
+                            $tc->add(TelintaAccountsPeer::STATUS,3);
                             if(TelintaAccountsPeer::doCount($tc)>0){
                                 $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
                                 Telienta::terminateAccount($telintaAccountR);
