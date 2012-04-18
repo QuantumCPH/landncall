@@ -3404,7 +3404,7 @@ $headers .= "From:" . $from;
             $todate = date("Y-m-d", $tomorrow);
             $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate,true);
             $filename="LandnCall_".time().".csv";
-$myFile = "/home/landncall_cdr/".$filename;
+$myFile = "/var/www/landncall/data/landncall_cdr/".$filename;
  $fh = fopen($myFile, 'w') or die("can't open file");
 // var_dump($tilentaCallHistryResult->xdr_list);
 $comma=",";
