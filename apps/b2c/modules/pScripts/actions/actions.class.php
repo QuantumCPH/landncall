@@ -3431,7 +3431,7 @@ $destination_file = "/zapna/zapna/".$filename;
     // login with username and password, or give invalid user message
     $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
     ftp_pasv($conn_id, true);
-    $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
+    $upload = ftp_put($conn_id, $destination_file, $fh, FTP_BINARY);  // upload the file
     if (!$upload) {  // check upload status
         echo "<h2>FTP upload of $myFileName has failed!</h2> <br />";
     }
