@@ -3398,10 +3398,12 @@ $headers .= "From:" . $from;
    public function executeCsvFiles(sfWebRequest $request)
   {
         
-         $tomorrow1 = mktime(0, 0, 0, date("m"), date("d") - 1, date("Y"));
-            $fromdate = date("Y-m-d", $tomorrow1);
-            $tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
-            $todate = date("Y-m-d", $tomorrow);
+  $tomorrow1 = mktime(date("H")-1, date("i"), date("s"), date("m"), date("d"), date("Y"));
+      $fromdate = date("Y-m-d H:59:59", $tomorrow1);
+
+            $tomorrow = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+
+            $todate = date("Y-m-d H:59:59");
             $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate,true);
             $filename="LandnCall_".time().".csv";
 $myFile = "/var/www/landncall/data/landncall_cdr/".$filename;
