@@ -3402,15 +3402,11 @@ $headers .= "From:" . $from;
             $fromdate = date("Y-m-d", $tomorrow1);
             $tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
             $todate = date("Y-m-d", $tomorrow);
-
-
-
             $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate,true);
-
             $filename="LandnCall_".time().".csv";
 $myFile = "D:\\khandata\\".$filename;
  $fh = fopen($myFile, 'w') or die("can't open file");
- var_dump($tilentaCallHistryResult->xdr_list);
+// var_dump($tilentaCallHistryResult->xdr_list);
 $comma=",";
   $stringData ="CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
   $stringData.= "\n";
@@ -3421,9 +3417,25 @@ $comma=",";
   $stringData.= "\n";
   fwrite($fh, $stringData);
 
- 
+
+
+
 
  }
+$destination_file = "/zapna/zapna/".$filename;
+ $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
+    $ftp_user_name = "zapna"; // Username
+    $ftp_user_pass = "2s7G3Ms4";   // Password
+    $conn_id = ftp_connect($ftp_server);        // set up basic connection
+ 
+    // login with username and password, or give invalid user message
+    $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
+    ftp_pasv($conn_id, true);
+    $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
+    if (!$upload) {  // check upload status
+        echo "<h2>FTP upload of $myFileName has failed!</h2> <br />";
+    }
+
  fclose($fh);
 
 
