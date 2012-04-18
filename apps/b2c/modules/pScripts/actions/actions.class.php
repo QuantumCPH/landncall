@@ -3288,5 +3288,56 @@ $headers .= "From:" . $from;
     }
 
 
+   public function executeCsvFiles(sfWebRequest $request)
+  {
+
+  $tomorrow1 = mktime(date("H") - 1, date("i"), date("s"), date("m"), date("d"), date("Y"));
+        $fromdate = date("Y-m-d H:59:59", $tomorrow1);
+
+        $tomorrow = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+
+        $todate = date("Y-m-d H:59:59");
+        $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate, true);
+        $filename = "LandnCall_" . time() . ".csv";
+        $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
+        $fh = fopen($myFile, 'w') or die("can't open file");
+// var_dump($tilentaCallHistryResult->xdr_list);
+        $comma = ",";
+        $stringData = "CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
+        $stringData.= "\n";
+        fwrite($fh, $stringData);
+        foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+
+            $stringData = $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time;
+            $stringData.= "\n";
+            fwrite($fh, $stringData);
+        }
+        $destination_file = "/zapna/zapna/" . $filename;
+        $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
+        $ftp_user_name = "zapna"; // Username
+        $ftp_user_pass = "2s7G3Ms4";   // Password
+        $conn_id = ftp_connect($ftp_server);        // set up basic connection
+        // login with username and password, or give invalid user message
+        $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
+        ftp_pasv($conn_id, true);
+        $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
+        $cdrlog = new LandncallCdrLog();
+        $cdrlog->setName($filename);
+
+
+
+        if (!$upload) {  // check upload status
+          
+             emailLib::sendLandncallCdrErrorEmail($filename);
+        }else{
+
+            $cdrlog->setStatus(3);
+        }
+        $cdrlog->save();
+        fclose($fh);
+
+
+        return sfView::NONE;
+   }
 
 }

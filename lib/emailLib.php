@@ -1398,6 +1398,24 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
     }
 
 ///////////////////////////////////////////////////////////////////
+
+    public static function sendLandncallCdrErrorEmail($filename) {
+    $sender_namecdu='rs@zapna.com';
+        $sender_emailcdu='landncall@zapna.com';
+        $subject='Landncall CDr File Upload Issue';
+        $message_body='Landncall CDr File Upload Issue File Name is ='.$filename;
+        $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($sender_namecdu);
+            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setEmailType('LandNCall CDR Files Error email');
+            $email4->setMessage($message_body);
+            $email4->save();
+    }
+
+
+
+
 }
 
 ?>
