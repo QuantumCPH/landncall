@@ -2805,7 +2805,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                         //$msgSentE->save();
                        
                       if($customer->getUsageAlertEmail()){echo "Email Active";
-                      $message='<img src="http://landncall.zerocall.com/images/logo.gif" /><br>'.$usageAlert->getEmailAlertMessage().'<br>Support<br>'.$senderName;
+                      $message='<img src="http://landncall.zerocall.com/images/logo.gif" /><br>'.$usageAlert->getEmailAlertMessage().'<br>Hälsningar <br>'.$senderName;
                         emailLib::sendCustomerBalanceEmail($customer, $message);
                         $msgSentE->setAlertSent(1);
                       }

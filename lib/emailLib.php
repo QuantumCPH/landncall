@@ -1116,7 +1116,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 
     public static function sendCustomerBalanceEmail(Customer $customer, $message_body) {
 
-        $subject = ' Balance Email ';
+        $subject = ' Låg Kredit Varning Email';
         $recepient_name = '';
         $recepient_email = '';
 
