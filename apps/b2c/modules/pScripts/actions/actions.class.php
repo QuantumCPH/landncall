@@ -2791,7 +2791,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                        }
                        $msgSent->save();
                     }
-                   /* if($usageAlert->getEmailActive()){
+                    if($usageAlert->getEmailActive()){
                         $msgSentE = new EmailAlertSent();
                         $msgSentE->setCustomerId($customer->getId());
                         $msgSentE->setCustomerName($customer->getFirstName());
@@ -2812,7 +2812,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                       $msgSentE->save();
 
 
-                    }*/
+                    }
                 }
             }
          }
