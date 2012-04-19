@@ -2764,7 +2764,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                          * SMS Sending Code
                          **/
                        if($customer->getUsageAlertSMS()){echo "SMS Active";
-                        $customerMobileNumber = $CallCode . $customer->getMobileNumber();
+                        $customerMobileNumber = $CallCode . substr($customer->getMobileNumber(),1);
                         $sms_text = $usageAlert->getSmsAlertMessage();
                         $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,$senderName);
                         /*$data = array(
