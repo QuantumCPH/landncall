@@ -3131,8 +3131,8 @@ $headers .= "From:" . $from;
         foreach($cdrrecords as $cdrrecord){
         $filename =$cdrrecord->getName();
         $tilentaCallHistryResult = Telienta::callHistory(59368, $cdrrecord->getFromTime(), $cdrrecord->getToTime(), true);
-        var_dump($tilentaCallHistryResult);
-       die;
+//        var_dump($tilentaCallHistryResult);
+//       die;
           sleep(.5);
         $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
         $fh = fopen($myFile, 'w') or die("can't open file");
