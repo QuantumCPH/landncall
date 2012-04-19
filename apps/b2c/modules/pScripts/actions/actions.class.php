@@ -3068,7 +3068,7 @@ $headers .= "From:" . $from;
    public function executeCsvFiles(sfWebRequest $request)
   {
 
-  $tomorrow1 = mktime(date("H") - 1, date("i"), date("s"), date("m"), date("d"), date("Y"));
+  $tomorrow1 = mktime(date("H") - 4, date("i"), date("s"), date("m"), date("d"), date("Y"));
         $fromdate = date("Y-m-d H:00:00", $tomorrow1);
         $todate = date("Y-m-d H:59:59", $tomorrow1);
 
@@ -3131,8 +3131,8 @@ $headers .= "From:" . $from;
         foreach($cdrrecords as $cdrrecord){
         $filename =$cdrrecord->getName();
         $tilentaCallHistryResult = Telienta::callHistory(59368, $cdrrecord->getFromTime(), $cdrrecord->getToTime(), true);
-        var_dump($tilentaCallHistryResult);
-        die;
+     
+       
           sleep(.5);
         $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
         $fh = fopen($myFile, 'w') or die("can't open file");
