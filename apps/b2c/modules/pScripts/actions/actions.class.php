@@ -3123,19 +3123,15 @@ $headers .= "From:" . $from;
   {
 
 
-
         $cdrq = new Criteria();
         $cdrq->add(LandncallCdrLogPeer::STATUS,1);
         $cdrrecords= LandncallCdrLogPeer::doSelect($cdrq);
 
 
         foreach($cdrrecords as $cdrrecord){
-
-
         $filename =$cdrrecord->getName();
-
-
         $tilentaCallHistryResult = Telienta::callHistory(59368, $cdrrecord->getFromTime(), $cdrrecord->getToTime(), true);
+        var_dump($tilentaCallHistryResult);
           sleep(.5);
         $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
         $fh = fopen($myFile, 'w') or die("can't open file");
@@ -3144,7 +3140,6 @@ $headers .= "From:" . $from;
         $stringData.= "\n";
         fwrite($fh, $stringData);
         foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
-
             $stringData = $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time;
             $stringData.= "\n";
             fwrite($fh, $stringData);
@@ -3155,31 +3150,18 @@ $headers .= "From:" . $from;
         $ftp_user_name = "zapna"; // Username
         $ftp_user_pass = "2s7G3Ms4";   // Password
         $conn_id = ftp_connect($ftp_server);        // set up basic connection
-
         $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
         ftp_pasv($conn_id, true);
         $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
-
-
-
         if (!$upload) {
             emailLib::sendLandncallCdrErrorEmail($filename);
         } else {
-
             $cdrrecord->setStatus(3);
               $cdrrecord->save();
         }
-      
-        fclose($fh);
-        sleep(1);
+         fclose($fh);
+         sleep(1);
         }
-
         return sfView::NONE;
    }
-
-
-
-
-
-
 }
