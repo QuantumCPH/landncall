@@ -3023,230 +3023,7 @@ $headers .= "From:" . $from;
 
         return sfView::NONE;
     }
-  /*
-   * This method will be used for refill via scratch card, Registration and for getting balance exectued by the sim card(customer)
-   *
-   */
-// // public function executeSmsRegisterationsmscb(sfWebrequest $request) {
-//
-//        $urlval = "WCR-CB-" . $request->getURI();
-//        $dibsCall = new DibsCall();
-//        $dibsCall->setCallurl($urlval);
-//        $dibsCall->save();
-//        $number = $request->getParameter('from');
-//        $text = $this->hextostr($request->getParameter('text'));
-//        $splitedText = explode(";", $text);
-//        if ($splitedText[3] != sfConfig::get("app_dialer_pin")) {
-//            echo "Invalid Request<br/>";
-//            $sms = SmsTextPeer::retrieveByPK(7);
-//            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//            die;
-//        }
-//        $mobileNumber = substr($number, 2, strlen($number) - 2);
-//        if ($mobileNumber[0] != "0") {
-//            $mobileNumber = "0" . $mobileNumber;
-//        }
-//
-//        $dialerIdLenght = strlen($splitedText[0]);
-//        $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
-//        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
-//        echo "$mobileNumber".":::::".$uniqueId."<br/>";
-//        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
-//        $c = new Criteria();
-//        $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
-//        $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-//        $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
-//
-//
-//        if ($dialerIdLenght == 10) {
-//            echo "Register Customer<br/>";
-//            //Registration Call, Register Customer In this block
-//            $uc = new Criteria();
-//            $uc->addAnd(UniqueIdsPeer::STATUS, 0);
-//            $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
-//
-//
-//            $cc = new Criteria();
-//            $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
-//            $cc->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-//
-//            if(CustomerPeer::doCount($cc)>0){
-//                $sms = SmsTextPeer::retrieveByPK(10);
-//                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//                die;
-//            }
-//
-//
-//
-//
-//            if (UniqueIdsPeer::doCount($uc) > 0) {
-//                $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
-//
-//                $pc = new Criteria();
-//                $pc->add(ProductPeer::SMS_CODE, "50");
-//                $product = ProductPeer::doSelectOne($pc);
-//
-//                $calingcode = sfConfig::get('app_country_code');
-//                $password = $this->randomNumbers(6);
-//                $customer = new Customer();
-//                $customer->setFirstName($mobileNumber);
-//                $customer->setLastName($mobileNumber);
-//                $customer->setMobileNumber($mobileNumber);
-//                $customer->setPassword($password);
-//                $customer->setEmail("retail@example.com");
-//                $customer->setCountryId(2);
-//                $customer->setCity("");
-//                $customer->setAddress("");
-//                $customer->setTelecomOperatorId(1);
-//                $customer->setDeviceId(1474);
-//                $customer->setUniqueId($uniqueId);
-//                $customer->setCustomerStatusId(3);
-//                $customer->setPlainText($password);
-//                $customer->setRegistrationTypeId(6);
-//                $customer->save();
-//
-//
-//                $order = new CustomerOrder();
-//                $order->setProductId($product->getId());
-//                $order->setCustomerId($customer->getId());
-//                $order->setExtraRefill($order->getProduct()->getInitialBalance());
-//                $order->setIsFirstOrder(1);
-//                $order->setOrderStatusId(3);
-//                $order->save();
-//
-//                $transaction = new Transaction();
-//                $transaction->setAgentCompanyId($customer->getReferrerId());
-//                $transaction->setAmount($order->getProduct()->getPrice());
-//                $transaction->setDescription('Registration of Retail');
-//                $transaction->setOrderId($order->getId());
-//                $transaction->setCustomerId($customer->getId());
-//                $transaction->setTransactionStatusId(3);
-//                $transaction->save();
-//
-//                $customer_product = new CustomerProduct();
-//                $customer_product->setCustomer($order->getCustomer());
-//                $customer_product->setProduct($order->getProduct());
-//                $customer_product->save();
-//
-//
-//
-//                $callbacklog = new CallbackLog();
-//                $callbacklog->setMobileNumber($number);
-//                $callbacklog->setuniqueId($uniqueId);
-//                $callbacklog->setCheckStatus(3);
-//                $callbacklog->save();
-//
-//                if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
-//                    $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
-//                    $availableUniqueId->setStatus(1);
-//                    $availableUniqueId->setRegistrationTypeId(4);
-//                    $availableUniqueId->save();
-//                    Telienta::createAAccount($number, $customer);
-//                    Telienta::createCBAccount($number, $customer);
-//                }
-//                $sms = SmsTextPeer::retrieveByPK(9);
-//                $smsText = $sms->getMessageText();
-//                $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
-//                CARBORDFISH_SMS::Send($number, $smsText);
-//                emailLib::sendCustomerRegistrationViaRetail($customer, $order);
-//            } else {
-//                $sms = SmsTextPeer::retrieveByPK(6);
-//                $smsText = $sms->getMessageText();
-//                CARBORDFISH_SMS::Send($number, $smsText);
-//                die;
-//            }
-//
-//
-//
-//
-//            //End of Registration.
-//        } else {
-//            $c = new Criteria();
-//            $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
-//            #$c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-//            $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
-//
-//            if (CustomerPeer::doCount($c) > 0) {
-//                $command = substr($splitedText[0], 0, 2);
-//                $command = strtolower($command);
-//                echo "<hr/>";
-//                echo $command;
-//                echo "<hr/>";
-//                $customer = CustomerPeer::doSelectOne($c);
-//                if ($command == "cb") {
-//                    echo "Check Balance Request<br/>";
-//                    $balance = Telienta::getBalance($customer);
-//                    $sms = SmsTextPeer::retrieveByPK(5);
-//                    $smsText = $sms->getMessageText();
-//                    $smsText = str_replace("(balance)", $balance, $smsText);
-//                    CARBORDFISH_SMS::Send($number, $smsText);
-//                } elseif ($command == "re") {
-//                    echo "Recharge Request<br/>";
-//                    $cc = new Criteria();
-//                    $cc->add(CardNumbersPeer::CARD_NUMBER, $splitedText[4]);
-//                    $cc->addAnd(CardNumbersPeer::STATUS, 0);
-//                    if (CardNumbersPeer::doCount($cc) == 1) {
-//                        $scratchCard = CardNumbersPeer::doSelectOne($cc);
-//                        //new order
-//                        $order = new CustomerOrder();
-//                        $customer_products = $customer->getProducts();
-//                        $order->setProduct($customer_products[0]);
-//                        $order->setCustomer($customer);
-//                        $order->setQuantity(1);
-//                        $order->setExtraRefill($scratchCard->getCardPrice());
-//                        $order->save();
-//
-//                        //new transaction
-//                        $transaction = new Transaction();
-//                        $transaction->setAmount($scratchCard->getCardPrice());
-//                        $transaction->setDescription('Refill Via Pin Sr #' . $scratchCard->getCardSerial());
-//                        $transaction->setOrderId($order->getId());
-//                        $transaction->setCustomerId($order->getCustomerId());
-//                        $transaction->save();
-//
-//                        if (Telienta::recharge($customer, $scratchCard->getCardPrice())) {
-//                            $scratchCard->setStatus(1);
-//                            $scratchCard->setUsedAt(date("Y-m-d H:i:s"));
-//                            $scratchCard->setCustomerId($customer->getId());
-//                            $scratchCard->save();
-//                            $order->setOrderStatusId(3);
-//                            $order->save();
-//                            $transaction->setTransactionStatusId(3);
-//                            $transaction->save();
-//
-//                            // Send Customer Balance SMS after succesful recharge
-//                            $balance = Telienta::getBalance($customer);
-//                            $sms = SmsTextPeer::retrieveByPK(5);
-//                            $smsText = $sms->getMessageText();
-//                            $smsText = str_replace("(balance)", $balance, $smsText);
-//                            CARBORDFISH_SMS::Send($number, $smsText);
-//                            // Send email to Support after Recharge
-//                            emailLib::sendRetailRefillEmail($customer, $order);
-//                        } else {
-//                            echo "Unable to charge";
-//                            $sms = SmsTextPeer::retrieveByPK(8);
-//                            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//                        }
-//                    } else {
-//                        echo "CARD ALREADY USED<br/>";
-//                        $sms = SmsTextPeer::retrieveByPK(7);
-//                        CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//                    }
-//
-//
-//                    die;
-//                }
-//            } else {
-//                echo "Invalid Command 1";
-//                $sms = SmsTextPeer::retrieveByPK(7);
-//                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//                die;
-//            }
-//        }
-//
-//
-//        return sfView::NONE;
-//    }
+
 
     private function hextostr($hex) {
         $str = '';
@@ -3292,22 +3069,19 @@ $headers .= "From:" . $from;
   {
 
   $tomorrow1 = mktime(date("H") - 1, date("i"), date("s"), date("m"), date("d"), date("Y"));
-        $fromdate = date("Y-m-d H:59:59", $tomorrow1);
+        $fromdate = date("Y-m-d H:00:00", $tomorrow1);
+        $todate = date("Y-m-d H:59:59", $tomorrow1);
 
-        $tomorrow = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-
-        $todate = date("Y-m-d H:59:59");
-            $filename = "LandnCall_" . time() . ".csv";
-          $cdrlog = new LandncallCdrLog();
+        $filename = "LandnCall_" . time() . ".csv";
+        $cdrlog = new LandncallCdrLog();
         $cdrlog->setName($filename);
-          $cdrlog->setFromTime($fromdate);
-            $cdrlog->setToTime($todate);
-
+        $cdrlog->setFromTime($fromdate);
+        $cdrlog->setToTime($todate);
+        $cdrlog->save();
         $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate, true);
-    
+
         $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
         $fh = fopen($myFile, 'w') or die("can't open file");
-// var_dump($tilentaCallHistryResult->xdr_list);
         $comma = ",";
         $stringData = "CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
         $stringData.= "\n";
@@ -3323,17 +3097,16 @@ $headers .= "From:" . $from;
         $ftp_user_name = "zapna"; // Username
         $ftp_user_pass = "2s7G3Ms4";   // Password
         $conn_id = ftp_connect($ftp_server);        // set up basic connection
-        // login with username and password, or give invalid user message
+       
         $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
         ftp_pasv($conn_id, true);
         $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
-      
 
 
-        if (!$upload) {  // check upload status
-          
-             emailLib::sendLandncallCdrErrorEmail($filename);
-        }else{
+
+        if (!$upload) {
+            emailLib::sendLandncallCdrErrorEmail($filename);
+        } else {
 
             $cdrlog->setStatus(3);
         }
@@ -3343,5 +3116,70 @@ $headers .= "From:" . $from;
 
         return sfView::NONE;
    }
+
+
+
+     public function executeResendFailedCsvFiles(sfWebRequest $request)
+  {
+
+
+
+        $cdrq = new Criteria();
+        $cdrq->add(LandncallCdrLogPeer::STATUS,1);
+        $cdrrecords= LandncallCdrLogPeer::doSelect($cdrq);
+
+
+        foreach($cdrrecords as $cdrrecord){
+
+
+        $filename =$cdrrecord->getName();
+
+
+        $tilentaCallHistryResult = Telienta::callHistory(59368, $cdrrecord->getFromTime(), $cdrrecord->getToTime(), true);
+          sleep(.5);
+        $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
+        $fh = fopen($myFile, 'w') or die("can't open file");
+        $comma = ",";
+        $stringData = "CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
+        $stringData.= "\n";
+        fwrite($fh, $stringData);
+        foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+
+            $stringData = $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time;
+            $stringData.= "\n";
+            fwrite($fh, $stringData);
+        }
+           sleep(.5);
+        $destination_file = "/zapna/zapna/" . $filename;
+        $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
+        $ftp_user_name = "zapna"; // Username
+        $ftp_user_pass = "2s7G3Ms4";   // Password
+        $conn_id = ftp_connect($ftp_server);        // set up basic connection
+
+        $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
+        ftp_pasv($conn_id, true);
+        $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
+
+
+
+        if (!$upload) {
+            emailLib::sendLandncallCdrErrorEmail($filename);
+        } else {
+
+            $cdrrecord->setStatus(3);
+              $cdrrecord->save();
+        }
+      
+        fclose($fh);
+        sleep(1);
+        }
+
+        return sfView::NONE;
+   }
+
+
+
+
+
 
 }
