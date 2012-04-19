@@ -3297,8 +3297,14 @@ $headers .= "From:" . $from;
         $tomorrow = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
 
         $todate = date("Y-m-d H:59:59");
+            $filename = "LandnCall_" . time() . ".csv";
+          $cdrlog = new LandncallCdrLog();
+        $cdrlog->setName($filename);
+          $cdrlog->setFromTime($fromdate);
+            $cdrlog->setToTime($todate);
+
         $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate, true);
-        $filename = "LandnCall_" . time() . ".csv";
+    
         $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
         $fh = fopen($myFile, 'w') or die("can't open file");
 // var_dump($tilentaCallHistryResult->xdr_list);
@@ -3321,9 +3327,7 @@ $headers .= "From:" . $from;
         $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
         ftp_pasv($conn_id, true);
         $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
-        $cdrlog = new LandncallCdrLog();
-        $cdrlog->setName($filename);
-
+      
 
 
         if (!$upload) {  // check upload status
