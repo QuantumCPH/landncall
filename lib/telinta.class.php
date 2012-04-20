@@ -63,9 +63,9 @@ class Telienta {
         return self::createAccount($customer, $mobileNumber, 'cb', self::$cb_iProduct);
     }
 
-    public static function createReseNumberAccount($VOIPNumber, Customer $customer, $currentActiveNumber) {
+    public static function createReseNumberAccount($VOIPNumber, Customer $customer, $currentActiveNumber,$voip_iProduct=7994 ) {
 
-        if (self::createAccount($customer, $VOIPNumber, '', self::$voip_iProduct,'Y')) {
+        if (self::createAccount($customer, $VOIPNumber, '', $voip_iProduct,'Y')) {
             $ct = new Criteria();
             $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, $VOIPNumber);
             $ct->addAnd(TelintaAccountsPeer::STATUS, 3);
