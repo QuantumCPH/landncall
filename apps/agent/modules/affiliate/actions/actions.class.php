@@ -2033,18 +2033,19 @@ public function executeAgentOrder(sfRequest $request){
                             if(isset($getvoipInfos)){
                                 $voipnumbers = $getvoipInfos->getNumber() ;
                                 $voipnumbers =  substr($voipnumbers,2);
+
+                                $tc = new Criteria();
+                                $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                                $tc->add(TelintaAccountsPeer::STATUS,3);
+                                if(TelintaAccountsPeer::doCount($tc)>0){
+                                    $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
+                                    Telienta::terminateAccount($telintaAccountR);
+                                }
+                                Telienta::createReseNumberAccount($voipnumbers, $customer, $newMobileNo);
                             }else{
                             }
 
-                            $tc = new Criteria();
-                            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-                            $tc->add(TelintaAccountsPeer::STATUS,3);
-                            if(TelintaAccountsPeer::doCount($tc)>0){
-                                $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
-                                Telienta::terminateAccount($telintaAccountR);
-                            }
-
-                            Telienta::createReseNumberAccount($voipnumbers, $customer, $newMobileNo);
+                            
                         }
 
                             $callbacklog = new CallbackLog();
