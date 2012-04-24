@@ -176,7 +176,7 @@ $cld='called-date';
    echo   $calls->from;   ?></td><td> <?php
    echo   $calls->duration;  ?></td><td>
             <?php
-   echo   $calls->cost;   ?></td>
+   echo  CurrencyConverter::convertUsdToSek($calls->cost);  ?></td>
       <td>
             <?php
    echo   $calls->type;   ?></td></tr>

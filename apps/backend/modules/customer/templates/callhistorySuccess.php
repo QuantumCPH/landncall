@@ -101,7 +101,7 @@ if($pus==1){
                 <td ><?php
             $cld = 'called-date';
             echo $calls->$cld; ?></td> <td><?php echo $calls->to; ?></td><td><?php echo $calls->from; ?></td><td> <?php echo $calls->duration; ?></td><td>
-        <?php echo $calls->cost; ?></td>
+        <?php echo CurrencyConverter::convertUsdToSek($calls->cost); ?> SEK</td>
              <td> <?php  echo   $calls->type;   ?></td></tr>
 <?php } ?>
 
