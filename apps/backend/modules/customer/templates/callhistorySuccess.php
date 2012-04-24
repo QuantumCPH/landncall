@@ -38,7 +38,7 @@ if($pus==1){
         <th  width="20%"  align="left"><?php echo __('To Number') ?></th>
         <th  width="20%"  align="left"><?php echo __('From Number') ?></th>
         <th width="10%"   align="left"><?php echo __('Duration') ?></th>
-        <th width="20%"   align="left"><?php echo __('Cost') ?></th>
+        <th width="20%"   align="left"><?php echo __('Cost') ?> (SEK)</th>
         <th width="10%"   align="left"><?php echo __('Typ') ?></th>
     </tr>
         <?php
@@ -101,7 +101,7 @@ if($pus==1){
                 <td ><?php
             $cld = 'called-date';
             echo $calls->$cld; ?></td> <td><?php echo $calls->to; ?></td><td><?php echo $calls->from; ?></td><td> <?php echo $calls->duration; ?></td><td>
-        <?php echo CurrencyConverter::convertUsdToSek($calls->cost); ?> SEK</td>
+        <?php echo CurrencyConverter::convertUsdToSek($calls->cost); ?></td>
              <td> <?php  echo   $calls->type;   ?></td></tr>
 <?php } ?>
 

@@ -103,7 +103,7 @@
                     <th  width="20%"  align="left"><?php echo __('till Number') ?></th>
                     <th  width="20%"  align="left"><?php echo __('från Number') ?></th>
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
-                    <th width="20%"   align="left"><?php echo __('Cost') ?></th>
+                    <th width="20%"   align="left"><?php echo __('Cost') ?> (SEK)</th>
                       <th width="10%"   align="left"><?php echo __('Typ') ?></th>
                   </tr>
 <?php
