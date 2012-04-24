@@ -152,7 +152,7 @@ $result = file_get_contents($google_url);
 //Explode result to convert into an array
 $result = explode('"', $result);
 //var_dump($result);
-################################
+################################ wo api ki tarif sy tha rola tha
 # Right Hand Side
 ################################
 $converted_amount = explode(' ', $result[3]);
