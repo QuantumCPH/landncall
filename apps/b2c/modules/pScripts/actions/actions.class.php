@@ -2719,7 +2719,13 @@ public function executeUsageAlert(sfWebRequest $request) {
         $customers = CustomerPeer::doSelect($c);
 
          foreach ($customers as $customer) {
-            $customer_balance = (double) Telienta::getBalance($customer);
+             $customer_balance = Telienta::getBalance($customer);
+            //$customer_balance = (double) Telienta::getBalance($customer);
+            if(!$customer_balance){
+                continue;
+            }else{
+                $customer_balance = (double)$customer_balance;
+            }
             echo $actual_balance = $customer_balance."<br>";
             if($customer_balance < 1){
                 $customer_balance = 0;
