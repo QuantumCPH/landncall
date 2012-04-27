@@ -3171,4 +3171,13 @@ $headers .= "From:" . $from;
         }
         return sfView::NONE;
    }
+
+       public function executeGetBalanceFromTelienta(sfWebRequest $request){
+        $c = new Criteria();
+        $c->add(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
+        $customers = CustomerPeer::doSelect($c);
+        foreach($customers as $customer){
+            Telienta::getBalance($customer);
+        }
+    }
 }
