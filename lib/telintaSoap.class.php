@@ -54,7 +54,7 @@ class PortaBillingSoapClient extends SoapClient {
                     $this->_constructUri($this->serverUrl, $this->interface, 'Session'));
                     $sessionId = $soap_client->login($login, $password);
                  } catch (SoapFault $e) {
-                    emailLib::sendErrorInTelinta("Login Issue","Could not Login with Billing Server  <br/> Please Investigate.");
+                    emailLib::sendErrorInTelinta("Login Issue","Could not Login with Billing Server. Error is " . $e->faultstring . "  <br/> Please Investigate.");
                     $pb->_logout();
                     return false;
                 }
@@ -75,7 +75,7 @@ class PortaBillingSoapClient extends SoapClient {
                  $sessionId = $sessionId ? $sessionId : $this->sessionId;
                  return $soap_client->logout($sessionId);
              } catch (SoapFault $e) {
-                    emailLib::sendErrorInTelinta("Logout Issue","Could not Logout from Billing Server  <br/> Please Investigate.");
+                    emailLib::sendErrorInTelinta("Logout Issue","Could not Logout from Billing Server. Error is " . $e->faultstring . "  <br/> Please Investigate.");
                     $pb->_logout();
                     return false;
              }
