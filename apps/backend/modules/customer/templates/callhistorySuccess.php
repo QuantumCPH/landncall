@@ -115,8 +115,8 @@ if($pus==1){
     }else{
         $tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
         $fromdate=date("Y-m-d", $tomorrow1);
-        $tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
-        $todate=date("Y-m-d", $tomorrow);
+        //$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
+        $todate=date("Y-m-d");
     }
         
         ?>
