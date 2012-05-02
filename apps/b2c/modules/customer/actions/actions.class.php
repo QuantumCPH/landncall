@@ -892,13 +892,13 @@ class customerActions extends sfActions {
         $this->redirectUnless($this->customer, "@homepage");
 
         $fromdate = mktime(0, 0, 0, date("m"), date("d") - 15, date("Y"));
-        $this->fromdate = date("Y-m-d", $fromdate);
-        $todate = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-        $this->todate = date("Y-m-d", $todate);
+        $this->fromdate = date("Y-m-d", $fromdate). '00:00:00';
+        //$todate = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+        $this->todate = date("Y-m-d"). '11:59:59';
 
         if ($request->isMethod('post')) {
-            $this->fromdate = $request->getParameter('startdate');
-            $this->todate = $request->getParameter('enddate');
+            $this->fromdate = $request->getParameter('startdate'). '00:00:00';;
+            $this->todate = $request->getParameter('enddate'). '11:59:59';
         }
 
 
