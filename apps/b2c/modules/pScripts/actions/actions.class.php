@@ -1975,7 +1975,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     } elseif ($command == "re") {
                         echo "Recharge Request<br/>";
                         $cc = new Criteria();
-                        $cc->add(CardNumbersPeer::CARD_NUMBER, $splitedText[4]);
+                        $cc->add(CardNumbersPeer::CARD_NUMBER,"00880".$splitedText[4]);
                         $cc->addAnd(CardNumbersPeer::STATUS, 0);
                         if (CardNumbersPeer::doCount($cc) == 1) {
                             $scratchCard = CardNumbersPeer::doSelectOne($cc);
