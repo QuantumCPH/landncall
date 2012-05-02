@@ -205,7 +205,7 @@ $cld='called-date';
 
 
 
-                            $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate, $todate);
+                            $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate. ' 00:00:00', $todate. ' 11:59:59');
 
 
                             foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
