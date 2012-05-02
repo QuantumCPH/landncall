@@ -110,13 +110,13 @@ if($pus==1){
     <?php } else {
         
     if(isset($_POST['startdate']) && isset($_POST['enddate'])){
-        $fromdate=$_POST['startdate'];
-        $todate=$_POST['enddate'];
+        $fromdate=$_POST['startdate']. '00:00:00';
+        $todate=$_POST['enddate']. '11:59:59';
     }else{
         $tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
-        $fromdate=date("Y-m-d", $tomorrow1);
+        $fromdate=date("Y-m-d", $tomorrow1). '00:00:00';
         //$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
-        $todate=date("Y-m-d");
+        $todate=date("Y-m-d"). '11:59:59';
     }
         
         ?>
