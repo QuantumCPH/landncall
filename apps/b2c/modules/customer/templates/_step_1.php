@@ -4,9 +4,9 @@
      
 	$(function() {
                 $('body').css('overflow','hidden');
-                $("#wrap").width("600px");
-                $("#newCustomerForm").width("600px");
-                $('.split-form-sign-up').width("600px");
+                $("#wrap").width("629px");
+                $("#newCustomerForm").width("629px");
+                $('.split-form-sign-up').width("629px");
         });
        
 	</script>
