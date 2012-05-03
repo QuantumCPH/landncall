@@ -1687,6 +1687,7 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
                     $c = new Criteria();
                     $agent_order = new AgentOrder();
                     $agent_order->setAgentCompanyId($agent->getId());
+                    $agent_order->setOrderDescription(2);///// By Credit Card for agent
                     $agent_order->setStatus('1');
                     $agent_order->save();
 
@@ -1710,6 +1711,7 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
           $agent_order = AgentOrderPeer::doSelectOne($c);
 
           $agent_order->setAmount($amount/100);
+          $agent_order->setOrderDescription(2);///// By Credit Card for agent
           $agent_order->setStatus(3);
           $agent_order->save();
 
@@ -1722,7 +1724,8 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
                      $remainingbalance=$agent->getBalance();
                      $aph = new AgentPaymentHistory();
                      $aph->setAgentId($agent_order->getAgentCompanyId());
-                     $aph->setExpeneseType(3);
+                     $aph->setExpeneseType(9);
+                     $aph->setOrderDescription(2);
                      $aph->setAmount($amount);
                      $aph->setRemainingBalance($remainingbalance);
                      $aph->save();

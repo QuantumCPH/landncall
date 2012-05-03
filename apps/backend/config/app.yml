@@ -1,6 +1,6 @@
 # default values
 all:
- backend_url: http://landncall.zerocall.com/backend.php/
+ backend_url: http://localhost/landncall/web/backend.php/
  email:
   sender_email: okhan@zapna.com
   sender_name: ZapnaAps
