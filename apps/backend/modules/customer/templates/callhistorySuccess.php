@@ -38,7 +38,7 @@ if($pus==1){
         <th  width="20%"  align="left"><?php echo __('To Number') ?></th>
         <th  width="20%"  align="left"><?php echo __('From Number') ?></th>
         <th width="10%"   align="left"><?php echo __('Duration') ?></th>
-        <th width="20%"   align="left"><?php echo __('Cost') ?></th>
+        <th width="20%"   align="left"><?php echo __('Cost') ?> (SEK)</th>
         <th width="10%"   align="left"><?php echo __('Typ') ?></th>
     </tr>
         <?php
@@ -101,7 +101,7 @@ if($pus==1){
                 <td ><?php
             $cld = 'called-date';
             echo $calls->$cld; ?></td> <td><?php echo $calls->to; ?></td><td><?php echo $calls->from; ?></td><td> <?php echo $calls->duration; ?></td><td>
-        <?php echo $calls->cost; ?></td>
+        <?php echo CurrencyConverter::convertUsdToSek($calls->cost); ?></td>
              <td> <?php  echo   $calls->type;   ?></td></tr>
 <?php } ?>
 
@@ -110,13 +110,13 @@ if($pus==1){
     <?php } else {
         
     if(isset($_POST['startdate']) && isset($_POST['enddate'])){
-        $fromdate=$_POST['startdate'];
-        $todate=$_POST['enddate'];
+        $fromdate=$_POST['startdate']. ' 00:00:00';
+        $todate=$_POST['enddate']. ' 11:59:59';
     }else{
         $tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
-        $fromdate=date("Y-m-d", $tomorrow1);
-        $tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
-        $todate=date("Y-m-d", $tomorrow);
+        $fromdate=date("Y-m-d", $tomorrow1). ' 00:00:00';
+        //$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
+        $todate=date("Y-m-d"). ' 11:59:59';
     }
         
         ?>
@@ -193,7 +193,7 @@ $numbername=$customer->getUniqueid();
 
 
                                 <tr>
-                                    <td><?php echo $xdr->connect_time; ?></td>
+                                    <td><?php echo date("Y-m-d H:i:s", strtotime($xdr->connect_time)); ?></td>
                                     <td><?php echo $xdr->CLD; ?></td>
                                     <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>

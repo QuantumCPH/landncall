@@ -33,7 +33,7 @@ class Telienta {
             $Parent = self::$iParentRLandnCall;
         }
         try {
-               $uniqueId="LCB2C".$customer->getUniqueid();
+               $uniqueId=$customer->getUniqueid();
             $tCustomer = $pb->add_customer(array('customer_info' => array(
                             'name' => $uniqueId,
                             'iso_4217' => self::$currency,
@@ -63,9 +63,9 @@ class Telienta {
         return self::createAccount($customer, $mobileNumber, 'cb', self::$cb_iProduct);
     }
 
-    public static function createReseNumberAccount($VOIPNumber, Customer $customer, $currentActiveNumber) {
+    public static function createReseNumberAccount($VOIPNumber, Customer $customer, $currentActiveNumber,$voip_iProduct=7994 ) {
 
-        if (self::createAccount($customer, $VOIPNumber, '', self::$voip_iProduct,'Y')) {
+        if (self::createAccount($customer, $VOIPNumber, '', $voip_iProduct,'Y')) {
             $ct = new Criteria();
             $ct->add(TelintaAccountsPeer::ACCOUNT_TITLE, $VOIPNumber);
             $ct->addAnd(TelintaAccountsPeer::STATUS, 3);
@@ -154,13 +154,18 @@ class Telienta {
         return self::makeTransaction($customer, "Manual payment", $amount);
     }
 
-    public static function callHistory(Customer $customer, $fromDate, $toDate) {
+
+   public static function callHistory($customer, $fromDate, $toDate,$reseller=false) {
         $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
         $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
+        if($reseller)
+            $icustomer = $customer;
+        else
+            $icustomer = $customer->getICustomer ();
         try {
-            $xdrList = $pb->get_customer_xdr_list(array('i_customer' => $customer->getICustomer(), 'from_date' => $fromDate, 'to_date' => $toDate, 'i_service' => 3));
+            $xdrList = $pb->get_customer_xdr_list(array('i_customer' => $icustomer, 'from_date' => $fromDate, 'to_date' => $toDate, 'i_service' => 3));
         } catch (SoapFault $e) {
-            emailLib::sendErrorInTelinta("Customer Call History: " . $customer->getId() . " Error!", "We have faced an issue with Customer while Fetching Call History  this is the error for cusotmer with  Customer ID: " . $customer->getId() . " error is " . $e->faultstring . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History  this is the error for cusotmer with  ICustomer: " . $icustomer . " error is " . $e->faultstring . "  <br/> Please Investigate.");
             $pb->_logout();
         }
         $pb->_logout();
@@ -220,7 +225,7 @@ class Telienta {
                             'password' => 'asdf1asd',
                             'h323_password' => 'asdf1asd',
                             'activation_date' => date('Y-m-d'),
-                            'batch_name' => "LCB2C".$customer->getUniqueid(),
+                            'batch_name' => $customer->getUniqueid(),
                             'follow_me_enabled' => $followMeEnabled
                             )));
         } catch (SoapFault $e) {

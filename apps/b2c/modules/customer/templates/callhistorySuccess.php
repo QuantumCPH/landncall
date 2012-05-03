@@ -103,7 +103,7 @@
                     <th  width="20%"  align="left"><?php echo __('till Number') ?></th>
                     <th  width="20%"  align="left"><?php echo __('från Number') ?></th>
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
-                    <th width="20%"   align="left"><?php echo __('Cost') ?></th>
+                    <th width="20%"   align="left"><?php echo __('Cost') ?> (SEK)</th>
                       <th width="10%"   align="left"><?php echo __('Typ') ?></th>
                   </tr>
 <?php
@@ -176,7 +176,7 @@ $cld='called-date';
    echo   $calls->from;   ?></td><td> <?php
    echo   $calls->duration;  ?></td><td>
             <?php
-   echo   $calls->cost;   ?></td>
+   echo  CurrencyConverter::convertUsdToSek($calls->cost);  ?></td>
       <td>
             <?php
    echo   $calls->type;   ?></td></tr>
@@ -205,7 +205,7 @@ $cld='called-date';
 
 
 
-                            $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate, $todate);
+                            $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate. ' 00:00:00', $todate. ' 11:59:59');
 
 
                             foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
@@ -213,7 +213,7 @@ $cld='called-date';
 
 
                                 <tr>
-                                    <td><?php echo $xdr->connect_time; ?></td>
+                                    <td><?php echo date("Y-m-d H:i:s", strtotime($xdr->connect_time)); ?></td>
                                     <td><?php echo $xdr->CLD; ?></td>
                                     <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
