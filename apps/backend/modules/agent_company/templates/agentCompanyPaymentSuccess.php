@@ -93,7 +93,7 @@
                 echo $transaction_desc->getTitle();
             }?></td>
             <td><?php  echo $agent->getAmount();   ?></td>
-            <td><a href="<?php echo url_for(sfConfig::get('app_admin_url').'agent_company/printAgentReceipt?aoid='.$agent->getId(), true) ?>"><img alt="view Detail" title="view Detail" src="/sf/sf_admin/images/default_icon.png" ></a>
+            <td><a href="<?php echo url_for(sfConfig::get('app_admin_url').'agent_company/printAgentReceipt?aoid='.$agent->getId(), true) ?>"><img alt="view Detail" title="view Detail" src="../../sf/sf_admin/images/default_icon.png" /></a>
          </tr>
     <?php  } ?>
     </table>
