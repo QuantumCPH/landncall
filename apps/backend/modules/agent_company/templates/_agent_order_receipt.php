@@ -97,9 +97,9 @@ $wrap_content  = isset($wrap)?$wrap:false;
   <tr> 
     <td><?php echo $createddate ?></td>
     <td><?php 
-    if($order_des){
+    if($description){
                 $c = new Criteria();
-                $c->add(TransactionDescriptionPeer::ID,$order_des);
+                $c->add(TransactionDescriptionPeer::ID,$description);
                 $transaction_desc = TransactionDescriptionPeer::doSelectOne($c);
                 echo $transaction_desc->getTitle();
             }
