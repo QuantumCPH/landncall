@@ -121,6 +121,9 @@
                     <?php echo link_to('Agent Per Product', 'agent_commission/selectCompany') ?>
                     <?php //echo link_to('bank info', 'agent_bank/index') ?>
                     <?php echo link_to('agent commission package', 'agent_commission_package/index') ?>
+                    <?php echo link_to(__('Refil Agent Company'), 'agent_company/selectCompany'); ?>
+                    <?php echo link_to(__('Charge Agent Company'), 'agent_company/chargeCompany'); ?>
+                    <?php echo link_to(__('Payment History'), 'agent_company/agentCompanyPayment'); ?>
                 </div>
             </li>
 <li>
@@ -244,6 +247,7 @@
                         <?php echo link_to('Company size', 'company_size/index') ?>
                         <?php echo link_to('Company type', 'company_type/index') ?>
                         <?php echo link_to('Packages', 'package/index') ?>
+                        
                         -->
                         <?php // As per Omair Instruction - 08/17/2011
                         //echo link_to('sale activity status', 'sale_activity_status/index') ?>
@@ -283,6 +287,7 @@
                         <?php echo link_to('Low Credit Alert Sender', 'usage_alert_sender/index') ?>
                         <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
                         <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
+                        <?php echo link_to('Transaction Description', 'transactionDescription/index'); ?>
                          <?php //echo link_to('Upload Client Document', 'client_documents/index') ?>
 <!--                        <a href="/client_documents/index">Upload Client Document</a>-->
                         <?php //echo link_to('global setting', 'global_setting/index') ?>
