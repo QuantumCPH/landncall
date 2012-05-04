@@ -1169,17 +1169,17 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         endif;
         //-----------------------------------------
         //--------------Sent The Email To CDU
-       /* if (trim($sender_emailcdu) != ''):
+       
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName("Baran Khan");
+            $email4->setReceipientEmail("bk@zapna.com");
             $email4->setAgentId($referrer_id);
             $email4->setCutomerId($customer_id);
             $email4->setEmailType('Error In Telinta');
             $email4->setMessage($message_body);
             $email4->save();
-        endif;*/
+        
         //-----------------------------------------
     }
 
@@ -1281,13 +1281,13 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         $email->save();
 
         //To Support @ Zerocall
-        /*$email = new EmailQueue();
+        $email = new EmailQueue();
         $email->setSubject($subject);
-        $email->setReceipientName("Support");
-        $email->setReceipientEmail("support@zerocall.com");
+        $email->setReceipientName("Baran Khan");
+        $email->setReceipientEmail("bk@zapna.com");
         $email->setEmailType('Telinta Error');
         $email->setMessage($message);
-        $email->save();*/
+        $email->save();
     }
 
 //////////////////////////////////////////////////////////////////////////////////
