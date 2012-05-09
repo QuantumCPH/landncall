@@ -13,7 +13,7 @@ class BaseEmailQueueForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'id'               => new sfWidgetFormInputHidden(),
-      'message'          => new sfWidgetFormTextarea(),
+      'message'          => new sfWidgetFormInput(),
       'receipient_email' => new sfWidgetFormInput(),
       'subject'          => new sfWidgetFormInput(),
       'created_at'       => new sfWidgetFormDateTime(),
@@ -27,7 +27,7 @@ class BaseEmailQueueForm extends BaseFormPropel
 
     $this->setValidators(array(
       'id'               => new sfValidatorPropelChoice(array('model' => 'EmailQueue', 'column' => 'id', 'required' => false)),
-      'message'          => new sfValidatorString(),
+      'message'          => new sfValidatorString(array('max_length' => 5000)),
       'receipient_email' => new sfValidatorString(array('max_length' => 100)),
       'subject'          => new sfValidatorString(array('max_length' => 500)),
       'created_at'       => new sfValidatorDateTime(),
