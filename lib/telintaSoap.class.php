@@ -32,7 +32,9 @@ class PortaBillingSoapClient extends SoapClient {
      * @see SoapClient
      */
     public function __construct($serverUrl, $interface, $service, $options = array()) {
+
         $this->serverUrl = rtrim($serverUrl, '/');
+        $this->_setSessionId();
         $this->interface = $interface;
         $this->service = $service;
         parent::__construct(
@@ -48,30 +50,27 @@ class PortaBillingSoapClient extends SoapClient {
      * @return string Session Id
      */
     public function _login($login, $password) {
-        $sessionId = false;
+
+        $result = false;
         $max_retries = 5;
         $retry_count = 0;
-        while (!$sessionId && $retry_count < $max_retries) {
+        while (!$result && $retry_count < $max_retries) {
             try {
-                $soap_client = new SoapClient(
-                                $this->_constructUri($this->serverUrl, $this->interface, 'Session'));
-                $sessionId = $soap_client->login($login, $password);
+                $soap_client = new SoapClient($this->_constructUri($this->serverUrl, $this->interface, 'Session'));
+                $result = $soap_client->login($login, $password);
             } catch (SoapFault $e) {
-                emailLib::sendErrorInTelinta("Login Issue", "Could not Login with Billing Server. Error is " . $e->faultstring . "  <br/> Please Investigate.");
-                $pb->_logout();
-                return false;
-            }
-
-            sleep(0.5);
+                if ($e->faultstring != 'Could not connect to host') {
+                    emailLib::sendErrorInTelinta("Login Issue", "Could not Login with Billing Server. Error is " . $e->faultstring . "  <br/> Please Investigate.");
+                    return false;
+                }
+            }sleep(0.5);
             $retry_count++;
         }
-
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Error in Login", "We have faced an issue in Login on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Login Issue", "Could not Login with Billing Server. Error is Even After Max Retries" . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
-        $this->_setSessionId($sessionId);
-        return $sessionId;
+        return $result;
     }
 
     /**
@@ -80,7 +79,6 @@ class PortaBillingSoapClient extends SoapClient {
      * @return mixed result from soap method call
      */
     public function _logout($sessionId = NULL) {
-
         $soap_client = new SoapClient(
                         $this->_constructUri($this->serverUrl, $this->interface, 'Session')
         );
@@ -93,7 +91,9 @@ class PortaBillingSoapClient extends SoapClient {
      * @return string
      */
     public function _getSessionId() {
-        return $this->sessionId;
+        $c = new Criteria();
+        $tilentaConfigCount = TelintaConfigPeer::doSelectOne($c);
+        return $tilentaConfigCount->getSession();
     }
 
     /**
@@ -101,10 +101,11 @@ class PortaBillingSoapClient extends SoapClient {
      * @param string $sessionId Session Id
      * @return PortaBillingSoapClient $this
      */
-    public function _setSessionId($sessionId) {
-        $this->sessionId = $sessionId;
+    public function _setSessionId() {
+
+        $this->sessionId = $this->_getSessionId();
         $soapSession[] = new SoapVar(
-                        "<session_id>$sessionId</session_id>",
+                        "<session_id>$this->sessionId</session_id>",
                         XSD_ANYXML,
                         'session_id',
                         $this->serverUrl . '/Porta/SOAP/Session')
