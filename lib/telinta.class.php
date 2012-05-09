@@ -12,6 +12,7 @@ require_once(sfConfig::get('sf_lib_dir') . '/telintaSoap.class.php');
  * @author baran Khan
  */
 set_time_limit(10000000);
+
 class Telienta {
 
     private static $currency = 'SEK';
@@ -24,22 +25,22 @@ class Telienta {
     private static $telintaSOAPUser = 'API_login';
     private static $telintaSOAPPassword = 'ee4eriny';
 
-    public static function ResgiterCustomer(Customer $customer, $OpeningBalance,$creditLimit=0,$USReseller = false) {
+    public static function ResgiterCustomer(Customer $customer, $OpeningBalance, $creditLimit=0, $USReseller = false) {
         $tCustomer = false;
         $max_retries = 5;
         $retry_count = 0;
-        
+
         $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
         $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
-        $uniqueId=$customer->getUniqueid();
-        if($USReseller){
+        $uniqueId = $customer->getUniqueid();
+        if ($USReseller) {
             $Parent = self::$iParentUS;
-        }else{
+        } else {
             $Parent = self::$iParentRLandnCall;
         }
         while (!$tCustomer && $retry_count < $max_retries) {
             try {
-                   
+
                 $tCustomer = $pb->add_customer(array('customer_info' => array(
                                 'name' => $uniqueId,
                                 'iso_4217' => self::$currency,
@@ -61,10 +62,10 @@ class Telienta {
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Error in Customer Registration", "We have faced an issue in Customer registration on telinta. Error is Even After Max Retries ".$max_retries."  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Error in Customer Registration", "We have faced an issue in Customer registration on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
-        
+
         $customer->setICustomer($tCustomer->i_customer);
         $customer->save();
         $pb->_logout();
@@ -79,9 +80,9 @@ class Telienta {
         return self::createAccount($customer, $mobileNumber, 'cb', self::$cb_iProduct);
     }
 
-    public static function createReseNumberAccount($VOIPNumber, Customer $customer, $currentActiveNumber,$voip_iProduct=7994 ) {
+    public static function createReseNumberAccount($VOIPNumber, Customer $customer, $currentActiveNumber, $voip_iProduct=7994) {
 
-        if (self::createAccount($customer, $VOIPNumber, '', $voip_iProduct,'Y')) {
+        if (self::createAccount($customer, $VOIPNumber, '', $voip_iProduct, 'Y')) {
             $accounts = false;
             $max_retries = 5;
             $retry_count = 0;
@@ -109,6 +110,19 @@ class Telienta {
                     }
                 }
 
+
+                sleep(0.5);
+                $retry_count++;
+            }
+            if ($retry_count == $max_retries) {
+                emailLib::sendErrorInTelinta("Account update_followme_number: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account update_followme_number on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+                return false;
+            }
+            
+            $accounts = false;
+            $max_retries = 5;
+            $retry_count = 0;
+            while (!$accounts && $retry_count < $max_retries) {
                 try {
                     $accounts = $pb->add_followme_number(array('i_account' => $telintaAccount->getIAccount(),
                                 'number_info' => array(
@@ -132,7 +146,7 @@ class Telienta {
                 $retry_count++;
             }
             if ($retry_count == $max_retries) {
-                emailLib::sendErrorInTelinta("Account add_followme_number: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account add_followme_number on telinta. Error is Even After Max Retries ".$max_retries."  <br/> Please Investigate.");
+                emailLib::sendErrorInTelinta("Account add_followme_number: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account add_followme_number on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
                 return false;
             }
         }
@@ -159,7 +173,7 @@ class Telienta {
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Account Deletion: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account Deletion on telinta. Error is Even After Max Retries ".$max_retries."  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Account Deletion: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account Deletion on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
         $pb->_logout();
@@ -193,7 +207,7 @@ class Telienta {
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Error in getBalance", "We have faced an issue on Success in getBalnace on telinta. Error is Even After Max Retries ".$max_retries."  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Error in getBalance", "We have faced an issue on Success in getBalnace on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
         $Balance = $cInfo->customer_info->balance;
@@ -211,17 +225,16 @@ class Telienta {
         return self::makeTransaction($customer, "Manual payment", $amount);
     }
 
-
-   public static function callHistory($customer, $fromDate, $toDate,$reseller=false) {
-       $xdrList = false;
-       $max_retries = 5;
-       $retry_count = 0;
-       $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
+    public static function callHistory($customer, $fromDate, $toDate, $reseller=false) {
+        $xdrList = false;
+        $max_retries = 5;
+        $retry_count = 0;
+        $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
         $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
-        if($reseller)
+        if ($reseller)
             $icustomer = $customer;
         else
-            $icustomer = $customer->getICustomer ();
+            $icustomer = $customer->getICustomer();
         while (!$xdrList && $retry_count < $max_retries) {
             try {
                 $xdrList = $pb->get_customer_xdr_list(array('i_customer' => $icustomer, 'from_date' => $fromDate, 'to_date' => $toDate, 'i_service' => 3));
@@ -235,7 +248,7 @@ class Telienta {
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History on telinta. Error is Even After Max Retries ".$max_retries."  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
         $pb->_logout();
@@ -246,7 +259,7 @@ class Telienta {
         $cInfo = false;
         $max_retries = 5;
         $retry_count = 0;
-        
+
         $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
         $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
 
@@ -262,7 +275,7 @@ class Telienta {
         $cInfo = false;
         $max_retries = 5;
         $retry_count = 0;
-        
+
         $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Account');
         $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
         try {
@@ -287,7 +300,7 @@ class Telienta {
         $account = false;
         $max_retries = 5;
         $retry_count = 0;
-        
+
         $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Account');
         $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
         $accountName = $accountType . $mobileNumber;
@@ -321,7 +334,7 @@ class Telienta {
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Account Creation: " . $accountName . " Error!", "We have faced an issue in Customer Account Creation on telinta. Error is Even After Max Retries ".$max_retries."  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Account Creation: " . $accountName . " Error!", "We have faced an issue in Customer Account Creation on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
 
@@ -339,7 +352,7 @@ class Telienta {
         $accounts = false;
         $max_retries = 5;
         $retry_count = 0;
-        
+
         $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
         $session = $pb->_login(self::$telintaSOAPUser, self::$telintaSOAPPassword);
         while (!$accounts && $retry_count < $max_retries) {
@@ -361,7 +374,7 @@ class Telienta {
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Customer Transcation: " . $customer->getId() . " Error!", "We have faced an issue with Customer while making transaction on telinta. Error is Even After Max Retries ".$max_retries."  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Customer Transcation: " . $customer->getId() . " Error!", "We have faced an issue with Customer while making transaction on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
         $pb->_logout();
