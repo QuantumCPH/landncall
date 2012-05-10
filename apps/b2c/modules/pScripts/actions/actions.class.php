@@ -1719,7 +1719,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($cusCount < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(2);
                 echo $smstext->getMessageText();
-                CARBORDFISH_SMS::Send($number, $smstext->getMessageText());
+                SMSNU::Send($number, $smstext->getMessageText());
                 die;
             }
             $customer = CustomerPeer::doSelectOne($mnc);
@@ -1731,7 +1731,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($callbackq < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
                 echo $smstext->getMessageText();
-                CARBORDFISH_SMS::Send($number, $smstext->getMessageText());
+                SMSNU::Send($number, $smstext->getMessageText());
                 die;
             }
 
@@ -1760,7 +1760,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
 
             $smstext = SmsTextPeer::retrieveByPK(1);
-            CARBORDFISH_SMS::Send($number, $smstext->getMessageText());
+            SMSNU::Send($number, $smstext->getMessageText());
             die;
             return sfView::NONE;
         } elseif ($requestType == "ic") {
@@ -1778,7 +1778,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
 
             if ($callbackq < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
-                CARBORDFISH_SMS::Send($number, $smstext->getMessageText());
+                SMSNU::Send($number, $smstext->getMessageText());
                 die;
             }
 
@@ -1789,7 +1789,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
 
             if ($cusCount < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(2);
-                CARBORDFISH_SMS::Send($number, $smstext->getMessageText());
+                SMSNU::Send($number, $smstext->getMessageText());
                 die;
             }
             $customer = CustomerPeer::doSelectOne($mnc);
@@ -1823,7 +1823,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             }
 
             $smstext = SmsTextPeer::retrieveByPK(3);
-            CARBORDFISH_SMS::Send($number, $smstext->getMessageText());
+            SMSNU::Send($number, $smstext->getMessageText());
             die;
             return sfView::NONE;
         } else {
@@ -1833,7 +1833,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($splitedText[3] != sfConfig::get("app_dialer_pin")) {
                 echo "Invalid Request<br/>";
                 $sms = SmsTextPeer::retrieveByPK(7);
-                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                SMSNU::Send($number, $sms->getMessageText());
                 die;
             }
             $mobileNumber = substr($number, 2, strlen($number) - 2);
@@ -1864,7 +1864,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 if (CustomerPeer::doCount($cc) > 0) {
                     echo "Already Registerd";
                     $sms = SmsTextPeer::retrieveByPK(10);
-                    CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                    SMSNU::Send($number, $sms->getMessageText());
                     die;
                 }
 
@@ -1936,18 +1936,18 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     $sms = SmsTextPeer::retrieveByPK(9);
                     $smsText = $sms->getMessageText();
                     $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
-                    CARBORDFISH_SMS::Send($number, $smsText);
+                    SMSNU::Send($number, $smsText);
 
                     $sms = SmsTextPeer::retrieveByPK(11);
                     $smsText = $sms->getMessageText();
                     $smsText = str_replace("(username)", $mobileNumber, $smsText);
                     $smsText = str_replace("(password)", $password, $smsText);
-                    CARBORDFISH_SMS::Send($number, $smsText);
+                    SMSNU::Send($number, $smsText);
                     emailLib::sendCustomerRegistrationViaRetail($customer, $order);
                 } else {
                     $sms = SmsTextPeer::retrieveByPK(6);
                     $smsText = $sms->getMessageText();
-                    CARBORDFISH_SMS::Send($number, $smsText);
+                    SMSNU::Send($number, $smsText);
                     die;
                 }
 
@@ -1971,7 +1971,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                         $sms = SmsTextPeer::retrieveByPK(5);
                         $smsText = $sms->getMessageText();
                         $smsText = str_replace("(balance)", $balance, $smsText);
-                        CARBORDFISH_SMS::Send($number, $smsText);
+                        SMSNU::Send($number, $smsText);
                     } elseif ($command == "re") {
                         echo "Recharge Request<br/>";
                         $cc = new Criteria();
@@ -2011,25 +2011,25 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                                 $sms = SmsTextPeer::retrieveByPK(5);
                                 $smsText = $sms->getMessageText();
                                 $smsText = str_replace("(balance)", $balance, $smsText);
-                                CARBORDFISH_SMS::Send($number, $smsText);
+                                SMSNU::Send($number, $smsText);
                                 // Send email to Support after Recharge
                                 emailLib::sendRetailRefillEmail($customer, $order);
                             } else {
                                 echo "Unable to charge";
                                 $sms = SmsTextPeer::retrieveByPK(8);
-                                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                                SMSNU::Send($number, $sms->getMessageText());
                             }
                         } else {
                             echo "CARD ALREADY USED<br/>";
                             $sms = SmsTextPeer::retrieveByPK(7);
-                            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                            SMSNU::Send($number, $sms->getMessageText());
                         }
                         die;
                     }
                 } else {
                     echo "Invalid Command 1";
                     $sms = SmsTextPeer::retrieveByPK(7);
-                    CARBORDFISH_SMS::Send($number, $sms->getMessageText());
+                    SMSNU::Send($number, $sms->getMessageText());
                     die;
                 }
             }
@@ -2772,7 +2772,7 @@ public function executeUsageAlert(sfWebRequest $request) {
                        if($customer->getUsageAlertSMS()){echo "SMS Active";
                         $customerMobileNumber = $CallCode . substr($customer->getMobileNumber(),1);
                         $sms_text = $usageAlert->getSmsAlertMessage();
-                        $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,$senderName);
+                        $response=SMSNU::Send($customerMobileNumber, $sms_text,$senderName);
                         /*$data = array(
                             'S'     => 'H',
                             'UN'    => 'zapna1',
