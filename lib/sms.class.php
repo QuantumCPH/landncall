@@ -84,7 +84,7 @@ class SMSNU {
         );
         $queryString = http_build_query($data, '', '&');
         $queryString = smsCharacter::smsCharacterReplacement($queryString);
-        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+        $res = file_get_contents('http://smsnu.dk/sendsms?' . $queryString);
         sleep(0.15);
 
         $smsLog = new SmsLog();
