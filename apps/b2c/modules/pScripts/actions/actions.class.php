@@ -2723,6 +2723,7 @@ echo "<br/>";
             do {
                 $customer_balance = Telienta::getBalance($customer);
                 $retries++;
+                echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
             } while (!$customer_balance && $retries <= 5);
 
             $customer_balance = (double) $customer_balance;
@@ -2761,6 +2762,7 @@ echo "<br/>";
                     $cSMSentCount = SmsAlertSentPeer::doCount($cSMSent);
 
                     if ($usageAlert->getSmsActive() && $cSMSentCount == 0) {
+                        echo "Sms Alert Sent:";
                         $msgSent = new SmsAlertSent();
                         $msgSent->setCustomerId($customer->getId());
                         $msgSent->setCustomerName($customer->getFirstName());
@@ -2776,7 +2778,7 @@ echo "<br/>";
                          * SMS Sending Code
                          * */
                         if ($customer->getUsageAlertSMS()) {
-                            echo "SMS Active";
+                            echo "SMS Active<br/>";
                             $customerMobileNumber = $CallCode . substr($customer->getMobileNumber(), 1);
                             $sms_text = $usageAlert->getSmsAlertMessage();
                             $response = CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text, $senderName);
@@ -2795,6 +2797,7 @@ echo "<br/>";
                     $cEmailSentCount = EmailAlertSentPeer::doCount($cEmailSent);
 
                     if ($usageAlert->getEmailActive() && $cEmailSentCount == 0) {
+                        echo "Email Alert Sent:";
                         $msgSentE = new EmailAlertSent();
                         $msgSentE->setCustomerId($customer->getId());
                         $msgSentE->setCustomerName($customer->getFirstName());
@@ -2808,7 +2811,7 @@ echo "<br/>";
                         //$msgSentE->save();
 
                         if ($customer->getUsageAlertEmail()) {
-                            echo "Email Active";
+                            echo "Email Active<br/>";
                             $message = '<img src="http://landncall.zerocall.com/images/logo.gif" /><br>' . $usageAlert->getEmailAlertMessage() . '<br>Hälsningar <br>' . $senderName;
                             emailLib::sendCustomerBalanceEmail($customer, $message);
                             $msgSentE->setAlertSent(1);
