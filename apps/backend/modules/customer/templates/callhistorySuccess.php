@@ -187,8 +187,8 @@ $numbername=$customer->getUniqueid();
                           $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate, $todate);
 
 
-                            foreach ($tilentaCallHistryResult->xdr_list as $xdr) { //echo "<pre>";echo var_dump($tilentaCallHistryResult);echo "</pre>";
-                          //  die;
+                            foreach ($tilentaCallHistryResult->xdr_list as $xdr) { echo "<pre>";echo var_dump($tilentaCallHistryResult);echo "</pre>";
+                           die;
                             ?>
 
 
