@@ -224,7 +224,7 @@ class Telienta {
         $c = new Criteria;
         $c->add(EmailAlertSentPeer::USAGE_ALERT_STATUS_ID, null, Criteria::ISNOTNULL);
         $c->addAnd(EmailAlertSentPeer::CUSTOMER_ID,$customer->getId());
-        $emailAlertCount = EmailAlertSentPeer::doCount();
+        $emailAlertCount = EmailAlertSentPeer::doCount($c);
         if($emailAlertCount>0){
            $emailAlerts =  EmailAlertSentPeer::doSelect($c);
            foreach($emailAlerts as $emailAlert){
@@ -236,7 +236,7 @@ class Telienta {
         $c = new Criteria;
         $c->add(SmsAlertSentPeer::USAGE_ALERT_STATUS_ID, null, Criteria::ISNOTNULL);
         $c->addAnd(SmsAlertSentPeer::CUSTOMER_ID,$customer->getId());
-        $smsAlertCount = SmsAlertSentPeer::doCount();
+        $smsAlertCount = SmsAlertSentPeer::doCount($c);
         if($smsAlertCount>0){
            $smsAlerts =  SmsAlertSentPeer::doSelect($c);
            foreach($smsAlerts as $smsAlert){
