@@ -211,7 +211,7 @@ class Telienta {
         }
         $Balance = $cInfo->customer_info->balance;
         if ($Balance == 0)
-            return (float)$Balance;
+            return 0.000001;
         else
             return -1 * $Balance;
     }

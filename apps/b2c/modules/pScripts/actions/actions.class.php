@@ -2725,7 +2725,7 @@ echo "<br/>";
                 $customer_balance = Telienta::getBalance($customer);
                 $retries++;
                 echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
-            } while ((!$customer_balance && $customer_balance !==0 ) && $retries <= $maxRetries);
+            } while (!$customer_balance && $retries <= $maxRetries);
 
             if($retries==$maxRetries){
                 continue;
