@@ -225,7 +225,7 @@ echo  date('i:s',$callval);
                                     echo "R";
                                 }
                                 if ($typecall == 'c') {
-                                    if ($CLI == '**24') {
+                                    if ($xdr->CLI == '**24') {
                                         echo "Cb M";
                                     } else {
                                         echo "Cb S";
