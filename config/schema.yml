@@ -493,6 +493,7 @@ propel:
     status: { type: boolean, required: true, defaultValue: '1' }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     alert_sent: { type: boolean, required: false, defaultValue: '0' }
+    usage_alert_status_id: { type: INTEGER, size: '11', required: false }
   email_queue:
     _attributes: { phpName: EmailQueue }
     id: { type: BIGINT, size: '20', primaryKey: true, autoIncrement: true, required: true }
@@ -865,6 +866,7 @@ propel:
     status: { type: boolean, required: true, defaultValue: '1' }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     alert_sent: { type: boolean, required: false, defaultValue: '0' }
+    usage_alert_status_id: { type: INTEGER, size: '11', required: false }
   sms_log:
     _attributes: { phpName: SmsLog }
     id: { type: INTEGER, size: '10', primaryKey: true, autoIncrement: true, required: true }
