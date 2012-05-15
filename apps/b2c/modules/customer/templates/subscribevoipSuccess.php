@@ -36,14 +36,14 @@
                 <span class="submit3moleft " style="width: 57px;"></span><span class="submit3moright " style="left: 57px;"></span></span>
 <!--                <input type="hidden" value="<?php echo '';?>" name="customerid" id="customerid">-->
             <?php if($customer_balance >= 40.00) { ?>
-            <input type="submit" class="loginbuttun" name="submit" value="<?php echo __('Aktivera') ?>">
-            
+            <input type="submit" class="loginbuttun" name="submit" value="<?php echo __('Aktivera') ?>" onclick="$(this).hide()">
+          
             <?php }else{ ?>
             <p>
             <u><b><?php echo __('your balance is low and you need to buy the credit before you can purchase the resenumber.') ?></b></u>
-            
-            <div class="fl cb"><button type="button" onclick="window.location.href='<?php echo sfConfig::get('app_epay_relay_script_url').url_for('customer/refill?customer_id='.$customer->getId(), true) ?>'"><?php echo __('Buy credit') ?></button></div>			
             </p>
+            <div class="fl cb"><button type="button" onclick="window.location.href='<?php echo sfConfig::get('app_epay_relay_script_url').url_for('customer/refill?customer_id='.$customer->getId(), true) ?>'"><?php echo __('Buy credit') ?></button></div>			
+            
             <?php }?>
             <span class="submit3left " style="width: 87px;"></span><span class="submit3right "></span></span>
         </form><script type="text/javascript">

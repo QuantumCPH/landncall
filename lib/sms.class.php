@@ -55,5 +55,50 @@ class CARBORDFISH_SMS {
     }
 
 }
+class SMSNU {
+
+    //put your code here
+
+    private static $main   = '13rkha84';
+      private static $id  = 'LandnCall';
+
+
+   /*
+    * Description of Send
+    *
+    * @param $mobilenumber is the mobile number leading with country code;
+    * @smsText is for the text that will be sent.
+    * @param $Sender will be the sender name of the SMS;
+    */
+
+    public static function Send($mobileNumber,$smsText,$senderName=null) {
+        if($senderName == null)
+            $senderName = self::$id;
+
+        $data = array(
+            'main' => self::$main,
+            'til' => $mobileNumber,
+            'id' => $senderName,
+            'msgtxt' => $smsText
+         
+        );
+        $queryString = http_build_query($data, '', '&');
+        $queryString = smsCharacter::smsCharacterReplacement($queryString);
+        $res = file_get_contents('http://smsnu.dk/sendsms?' . $queryString);
+        sleep(0.15);
+
+        $smsLog = new SmsLog();
+        $smsLog->setMessage($smsText);
+        $smsLog->setStatus($res);
+        $smsLog->setSenderName($senderName);
+        $smsLog->setMobileNumber($mobileNumber);
+        $smsLog->save();
+        if (substr($res, 10, 2) == 'OK')
+            return true;
+        else
+            return false;
+    }
+
+}
 
 ?>
