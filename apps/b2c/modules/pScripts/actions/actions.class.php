@@ -2690,7 +2690,7 @@ echo "<br/>";
   }    
 
 ////////////////////////////////////////
-public function executeUsageAlert(sfWebRequest $request) {
+    public function executeUsageAlert(sfWebRequest $request) {
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         changeLanguageCulture::languageCulture($request, $this);
         //-----------------------
@@ -2706,7 +2706,7 @@ public function executeUsageAlert(sfWebRequest $request) {
             $countryId = "2";
         }
 
-        
+
         $usagealerts = new Criteria();
         $usagealerts->add(UsageAlertPeer::SMS_ACTIVE, 1);
         $usagealerts->addAnd(UsageAlertPeer::COUNTRY, $countryId);
@@ -2718,28 +2718,29 @@ public function executeUsageAlert(sfWebRequest $request) {
         $c->addAnd(CustomerPeer::COUNTRY_ID, $countryId);
         $customers = CustomerPeer::doSelect($c);
 
-         foreach ($customers as $customer) {
-             $customer_balance = Telienta::getBalance($customer);
-            //$customer_balance = (double) Telienta::getBalance($customer);
-            if(!$customer_balance){
-                continue;
-            }else{
-                $customer_balance = (double)$customer_balance;
-            }
-            echo $actual_balance = $customer_balance."<br>";
-            if($customer_balance < 1){
+        foreach ($customers as $customer) {
+            $retries = 0;
+            do {
+                $customer_balance = Telienta::getBalance($customer);
+                $retries++;
+            } while (!$customer_balance && $retries <= 5);
+
+            $customer_balance = (double) $customer_balance;
+
+            $actual_balance = $customer_balance;
+            if ($customer_balance < 1) {
                 $customer_balance = 0;
             }
-            foreach($usageAlerts as $usageAlert){
-                if($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax() ){
+            foreach ($usageAlerts as $usageAlert) {
+                if ($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax()) {
 
-                        $sender = new Criteria();
-                        $sender->add(UsageAlertSenderPeer::ID, $usageAlert->getSenderName());
-                        $senders = UsageAlertSenderPeer::doSelectOne($sender);
-                        echo $senderName = $senders->getName();
+                    $sender = new Criteria();
+                    $sender->add(UsageAlertSenderPeer::ID, $usageAlert->getSenderName());
+                    $senders = UsageAlertSenderPeer::doSelectOne($sender);
+                    echo $senderName = $senders->getName();
 
 
-                    $regType =  RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId());// && $customer->getFonetCustomerId()!=''
+                    $regType = RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId()); // && $customer->getFonetCustomerId()!=''
                     $referer = $customer->getReferrerId();
                     if (isset($referer) && $referer > 0) {
                         $Cname = new Criteria();
@@ -2753,8 +2754,13 @@ public function executeUsageAlert(sfWebRequest $request) {
                     $Prod->addJoin(ProductPeer::ID, CustomerProductPeer::PRODUCT_ID, Criteria::LEFT_JOIN);
                     $Prod->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
                     $Product = ProductPeer::doSelectOne($Prod);
-                    
-                    if($usageAlert->getSmsActive()){
+
+                    $cSMSent = new Criteria();
+                    $cSMSent->add(SmsAlertSentPeer::USAGE_ALERT_STATUS_ID, $usageAlert->getId());
+                    $cSMSent->addAnd(SmsAlertSentPeer::CUSTOMER_ID, $customer->getId());
+                    $cSMSentCount = SmsAlertSentPeer::doCount($cSMSent);
+
+                    if ($usageAlert->getSmsActive() && $cSMSentCount == 0) {
                         $msgSent = new SmsAlertSent();
                         $msgSent->setCustomerId($customer->getId());
                         $msgSent->setCustomerName($customer->getFirstName());
@@ -2763,41 +2769,32 @@ public function executeUsageAlert(sfWebRequest $request) {
                         $msgSent->setAgentName($comName);
                         $msgSent->setCustomerEmail($customer->getEmail());
                         $msgSent->setMobileNumber($customer->getMobileNumber());
-                      //$msgSent->setFonetCustomerId($customer->getFonetCustomerId());
-                        $msgSent->setMessageDescerption("Current Balance: ".$actual_balance);
+                        //$msgSent->setFonetCustomerId($customer->getFonetCustomerId());
+                        $msgSent->setMessageDescerption("Current Balance: " . $actual_balance);
                         //$msgSent->save();
                         /**
                          * SMS Sending Code
-                         **/
-                       if($customer->getUsageAlertSMS()){echo "SMS Active";
-                        $customerMobileNumber = $CallCode . substr($customer->getMobileNumber(),1);
-                        $sms_text = $usageAlert->getSmsAlertMessage();
-                        $response=SMSNU::Send($customerMobileNumber, $sms_text,$senderName);
-                        /*$data = array(
-                            'S'     => 'H',
-                            'UN'    => 'zapna1',
-                            'P'     => 'Zapna2010',
-                            'DA'    => $customerMobileNumber,
-                            'SA'    => "LandNcall",
-                            'M'     => $sms_text,
-                            'ST'    => '5'
-                        );
-                        $queryString = http_build_query($data, '', '&');
+                         * */
+                        if ($customer->getUsageAlertSMS()) {
+                            echo "SMS Active";
+                            $customerMobileNumber = $CallCode . substr($customer->getMobileNumber(), 1);
+                            $sms_text = $usageAlert->getSmsAlertMessage();
+                            $response = CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text, $senderName);
 
-                        //   die;
+                            if ($response) {
+                                $msgSent->setAlertSent(1);
+                            }
+                        }
+                        $msgSent->save();
 
-
-                        $queryString = smsCharacter::smsCharacterReplacement($queryString);
-
-                        if ($this->response_text = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString)) {*/
-                           // echo $this->response_text;
-                            if($response){$msgSent->setAlertSent(1);}
-                        //}
-			//sleep(0.15);
-                       }
-                       $msgSent->save();
                     }
-                    if($usageAlert->getEmailActive()){
+
+                    $cEmailSent = new Criteria();
+                    $cEmailSent->add(EmailAlertSentPeer::USAGE_ALERT_STATUS_ID, $usageAlert->getId());
+                    $cEmailSent->addAnd(EmailAlertSentPeer::CUSTOMER_ID, $customer->getId());
+                    $cEmailSentCount = EmailAlertSentPeer::doCount($cEmailSent);
+
+                    if ($usageAlert->getEmailActive() && $cEmailSentCount == 0) {
                         $msgSentE = new EmailAlertSent();
                         $msgSentE->setCustomerId($customer->getId());
                         $msgSentE->setCustomerName($customer->getFirstName());
@@ -2806,24 +2803,23 @@ public function executeUsageAlert(sfWebRequest $request) {
                         $msgSentE->setAgentName($comName);
                         $msgSentE->setCustomerEmail($customer->getEmail());
                         $msgSentE->setMobileNumber($customer->getMobileNumber());
-                      //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
-                        $msgSentE->setMessageDescerption("Current Balance: ".$actual_balance);
+                        //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
+                        $msgSentE->setMessageDescerption("Current Balance: " . $actual_balance);
                         //$msgSentE->save();
-                       
-                      if($customer->getUsageAlertEmail()){echo "Email Active";
-                      $message='<img src="http://landncall.zerocall.com/images/logo.gif" /><br>'.$usageAlert->getEmailAlertMessage().'<br>Hälsningar <br>'.$senderName;
-                        emailLib::sendCustomerBalanceEmail($customer, $message);
-                        $msgSentE->setAlertSent(1);
-                      }
-                      $msgSentE->save();
 
-
+                        if ($customer->getUsageAlertEmail()) {
+                            echo "Email Active";
+                            $message = '<img src="http://landncall.zerocall.com/images/logo.gif" /><br>' . $usageAlert->getEmailAlertMessage() . '<br>Hälsningar <br>' . $senderName;
+                            emailLib::sendCustomerBalanceEmail($customer, $message);
+                            $msgSentE->setAlertSent(1);
+                        }
+                        $msgSentE->save();
                     }
                 }
             }
-         }
+        }
 
-      return sfView::NONE;
+        return sfView::NONE;
     }
 //////////
 
