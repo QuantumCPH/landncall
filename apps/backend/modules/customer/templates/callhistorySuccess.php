@@ -111,12 +111,12 @@ if($pus==1){
         
     if(isset($_POST['startdate']) && isset($_POST['enddate'])){
         $fromdate=$_POST['startdate']. ' 00:00:00';
-        $todate=$_POST['enddate']. ' 11:59:59';
+        $todate=$_POST['enddate']. ' 23:59:59';
     }else{
         $tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
         $fromdate=date("Y-m-d", $tomorrow1). ' 00:00:00';
         //$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
-        $todate=date("Y-m-d"). ' 11:59:59';
+        $todate=date("Y-m-d"). ' 23:59:59';
     }
         
         ?>
