@@ -2725,7 +2725,7 @@ echo "<br/>";
                 $customer_balance = Telienta::getBalance($customer);
                 $retries++;
                 echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
-            } while (!$customer_balance && $retries <= $maxRetries);
+            } while ((!$customer_balance && $customer_balance !==0 ) && $retries <= $maxRetries);
 
             if($retries==$maxRetries){
                 continue;
@@ -2738,7 +2738,7 @@ echo "<br/>";
                 $customer_balance = 0;
             }
             foreach ($usageAlerts as $usageAlert) {
-                echo "<hr/>".$usageAlert->getId()."<hr/>";
+                //echo "<hr/>".$usageAlert->getId()."<hr/>";
                 if ($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax()) {
 
                     $sender = new Criteria();
