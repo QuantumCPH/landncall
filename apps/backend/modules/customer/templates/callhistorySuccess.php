@@ -183,7 +183,6 @@ if($getFirstnumberofMobile==0){
 $numbername=$customer->getUniqueid();
 
 
-
                           $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate, $todate);
 
 
@@ -195,7 +194,7 @@ $numbername=$customer->getUniqueid();
                                 <tr>
                                     <td><?php echo date("Y-m-d H:i:s", strtotime($xdr->connect_time)); ?></td>
                                     <td><?php echo $xdr->CLD; ?></td>
-                                    <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
+                                    <td><?php  echo  date('H:i:s',$xdr->charged_quantity); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
                                 $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
