@@ -2720,11 +2720,16 @@ echo "<br/>";
 
         foreach ($customers as $customer) {
             $retries = 0;
+            $maxRetries = 5;
             do {
                 $customer_balance = Telienta::getBalance($customer);
                 $retries++;
                 echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
-            } while (!$customer_balance && $retries <= 5);
+            } while (!$customer_balance && $retries <= $maxRetries);
+
+            if($retries==$maxRetries){
+                continue;
+            }
 
             $customer_balance = (double) $customer_balance;
 
@@ -2733,6 +2738,7 @@ echo "<br/>";
                 $customer_balance = 0;
             }
             foreach ($usageAlerts as $usageAlert) {
+                echo "<hr/>".$usageAlert->getId()."<hr/>";
                 if ($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax()) {
 
                     $sender = new Criteria();
@@ -2771,6 +2777,7 @@ echo "<br/>";
                         $msgSent->setAgentName($comName);
                         $msgSent->setCustomerEmail($customer->getEmail());
                         $msgSent->setMobileNumber($customer->getMobileNumber());
+                        $msgSent->setUsageAlertStatusId($usageAlert->getId());
                         //$msgSent->setFonetCustomerId($customer->getFonetCustomerId());
                         $msgSent->setMessageDescerption("Current Balance: " . $actual_balance);
                         //$msgSent->save();
@@ -2806,6 +2813,7 @@ echo "<br/>";
                         $msgSentE->setAgentName($comName);
                         $msgSentE->setCustomerEmail($customer->getEmail());
                         $msgSentE->setMobileNumber($customer->getMobileNumber());
+                        $msgSentE->setUsageAlertStatusId($usageAlert->getId());
                         //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
                         $msgSentE->setMessageDescerption("Current Balance: " . $actual_balance);
                         //$msgSentE->save();
