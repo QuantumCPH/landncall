@@ -3181,4 +3181,11 @@ $headers .= "From:" . $from;
             Telienta::getBalance($customer);
         }
     }
+
+
+//       public function executeGetSms(sfWebRequest $request){
+//       $smstext = SmsTextPeer::retrieveByPK(5);
+//       SMSNU::Send(923006826451, $smstext->getMessageText());
+//         return sfView::NONE;
+//}
 }
