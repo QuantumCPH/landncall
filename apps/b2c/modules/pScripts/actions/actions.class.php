@@ -2788,7 +2788,7 @@ echo "<br/>";
                             echo "SMS Active<br/>";
                             $customerMobileNumber = $CallCode . substr($customer->getMobileNumber(), 1);
                             $sms_text = $usageAlert->getSmsAlertMessage();
-                            $response = CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text, $senderName);
+                            $response = SMSNU::Send($customerMobileNumber, $sms_text, $senderName);
 
                             if ($response) {
                                 $msgSent->setAlertSent(1);
