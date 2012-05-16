@@ -117,7 +117,7 @@ $i++;
             <td><?php echo $EmailuslageDetail->getCustomerProduct();   ?> </td>
             <td><?php echo $EmailuslageDetail->getAgentName();   ?> </td>
             <td>&nbsp; <?php echo $EmailuslageDetail->getRegistrationType();   ?> </td>
-            <td><?php echo ($smsuslageDetail->getAlertActivated()==0) ? 'No' :'Yes';   ?> </td>
+            <td><?php echo ($EmailuslageDetail->getAlertActivated()==0) ? 'No' :'Yes';   ?> </td>
             <td>&nbsp; <?php echo ($EmailuslageDetail->getAlertSent()==0) ? 'No' :'Yes';   ?> </td>
         </tr>
 <?php $j++;}?>
