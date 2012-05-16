@@ -111,12 +111,12 @@ if($pus==1){
         
     if(isset($_POST['startdate']) && isset($_POST['enddate'])){
         $fromdate=$_POST['startdate']. ' 00:00:00';
-        $todate=$_POST['enddate']. ' 11:59:59';
+        $todate=$_POST['enddate']. ' 23:59:59';
     }else{
         $tomorrow1 = mktime(0,0,0,date("m"),date("d")-15,date("Y"));
         $fromdate=date("Y-m-d", $tomorrow1). ' 00:00:00';
         //$tomorrow = mktime(0,0,0,date("m"),date("d")+1,date("Y"));
-        $todate=date("Y-m-d"). ' 11:59:59';
+        $todate=date("Y-m-d"). ' 23:59:59';
     }
         
         ?>
@@ -183,7 +183,6 @@ if($getFirstnumberofMobile==0){
 $numbername=$customer->getUniqueid();
 
 
-
                           $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate, $todate);
 
 
@@ -195,7 +194,25 @@ $numbername=$customer->getUniqueid();
                                 <tr>
                                     <td><?php echo date("Y-m-d H:i:s", strtotime($xdr->connect_time)); ?></td>
                                     <td><?php echo $xdr->CLD; ?></td>
-                                    <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
+                                    <td><?php  $callval=$xdr->charged_quantity;
+if($callval>3600){
+
+ $hval=number_format($callval/3600);
+
+  $rval=$callval%3600;
+
+$minute=date('i',$rval);
+  $second=date('s',$rval);
+
+  $minute=$minute+$hval*60;
+
+  echo $minute.":".$second;
+}else{
+
+
+echo  date('i:s',$callval);
+
+}       ?></td>
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
                                 $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
@@ -208,7 +225,7 @@ $numbername=$customer->getUniqueid();
                                     echo "R";
                                 }
                                 if ($typecall == 'c') {
-                                    if ($CLI == '**24') {
+                                    if ($xdr->CLI == '**24') {
                                         echo "Cb M";
                                     } else {
                                         echo "Cb S";

@@ -205,7 +205,7 @@ $cld='called-date';
 
 
 
-                            $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate. ' 00:00:00', $todate. ' 11:59:59');
+                            $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate. ' 00:00:00', $todate. ' 23:59:59');
 
 
                             foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
@@ -215,7 +215,25 @@ $cld='called-date';
                                 <tr>
                                     <td><?php echo date("Y-m-d H:i:s", strtotime($xdr->connect_time)); ?></td>
                                     <td><?php echo $xdr->CLD; ?></td>
-                                    <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
+                                    <td><?php  $callval=$xdr->charged_quantity;
+if($callval>3600){
+
+ $hval=number_format($callval/3600);
+
+  $rval=$callval%3600;
+
+$minute=date('i',$rval);
+  $second=date('s',$rval);
+
+  $minute=$minute+$hval*60;
+
+  echo $minute.":".$second;
+}else{
+
+
+echo  date('i:s',$callval);
+
+} ?></td>
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
                                 $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
@@ -228,7 +246,7 @@ $cld='called-date';
                                     echo "R";
                                 }
                                 if ($typecall == 'c') {
-                                    if ($CLI == '**24') {
+                                    if ($xdr->CLI == '**24') {
                                         echo "Cb M";
                                     } else {
                                         echo "Cb S";
