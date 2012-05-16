@@ -26,6 +26,7 @@ class BaseEmailAlertSentForm extends BaseFormPropel
       'created_at'            => new sfWidgetFormDateTime(),
       'alert_sent'            => new sfWidgetFormInputCheckbox(),
       'usage_alert_status_id' => new sfWidgetFormInput(),
+      'alert_activated'       => new sfWidgetFormInputCheckbox(),
     ));
 
     $this->setValidators(array(
@@ -43,6 +44,7 @@ class BaseEmailAlertSentForm extends BaseFormPropel
       'created_at'            => new sfValidatorDateTime(),
       'alert_sent'            => new sfValidatorBoolean(array('required' => false)),
       'usage_alert_status_id' => new sfValidatorInteger(array('required' => false)),
+      'alert_activated'       => new sfValidatorBoolean(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('email_alert_sent[%s]');

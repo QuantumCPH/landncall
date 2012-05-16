@@ -27,6 +27,7 @@ class BaseEmailAlertSentFormFilter extends BaseFormFilterPropel
       'created_at'            => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
       'alert_sent'            => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
       'usage_alert_status_id' => new sfWidgetFormFilterInput(),
+      'alert_activated'       => new sfWidgetFormChoice(array('choices' => array('' => 'yes or no', 1 => 'yes', 0 => 'no'))),
     ));
 
     $this->setValidators(array(
@@ -43,6 +44,7 @@ class BaseEmailAlertSentFormFilter extends BaseFormFilterPropel
       'created_at'            => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'alert_sent'            => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
       'usage_alert_status_id' => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'alert_activated'       => new sfValidatorChoice(array('required' => false, 'choices' => array('', 1, 0))),
     ));
 
     $this->widgetSchema->setNameFormat('email_alert_sent_filters[%s]');
@@ -74,6 +76,7 @@ class BaseEmailAlertSentFormFilter extends BaseFormFilterPropel
       'created_at'            => 'Date',
       'alert_sent'            => 'Boolean',
       'usage_alert_status_id' => 'Number',
+      'alert_activated'       => 'Boolean',
     );
   }
 }

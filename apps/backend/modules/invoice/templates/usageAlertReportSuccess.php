@@ -15,6 +15,7 @@
             <th>Product</th>
             <th>Agent name</th>
             <th>Registration type</th>
+            <th>Alert Activated</th>
             <th>Sent</th>
         </tr>
     </thead>
@@ -55,6 +56,7 @@
             <td><?php echo $smsuslageDetail->getCustomerProduct();   ?> </td>
             <td><?php echo $smsuslageDetail->getAgentName();   ?> </td>
             <td><?php echo $smsuslageDetail->getRegistrationType();   ?> </td>
+            <td><?php echo ($smsuslageDetail->getAlertActivated()==0) ? 'No' :'Yes';   ?> </td>
             <td><?php echo ($smsuslageDetail->getAlertSent()==0) ? 'No' :'Yes';   ?> </td>
         </tr>
 <?php
@@ -77,6 +79,7 @@ $i++;
             <th>Product</th>
             <th>Agent name</th>
             <th>Registration type</th>
+            <th>Alert Activated</th>
             <th>Sent</th>
          </tr>
       <thead>
@@ -114,6 +117,7 @@ $i++;
             <td><?php echo $EmailuslageDetail->getCustomerProduct();   ?> </td>
             <td><?php echo $EmailuslageDetail->getAgentName();   ?> </td>
             <td>&nbsp; <?php echo $EmailuslageDetail->getRegistrationType();   ?> </td>
+            <td><?php echo ($smsuslageDetail->getAlertActivated()==0) ? 'No' :'Yes';   ?> </td>
             <td>&nbsp; <?php echo ($EmailuslageDetail->getAlertSent()==0) ? 'No' :'Yes';   ?> </td>
         </tr>
 <?php $j++;}?>
