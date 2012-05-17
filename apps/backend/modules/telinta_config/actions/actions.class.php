@@ -14,6 +14,7 @@ class telinta_configActions extends sfActions {
     }
 
     public function executeNew(sfWebRequest $request) {
+        die ("barankhan");
         $c = new Criteria();
         $tilentaConfigCount = TelintaConfigPeer::doCount($c);
         if ($tilentaConfigCount == 0) {
