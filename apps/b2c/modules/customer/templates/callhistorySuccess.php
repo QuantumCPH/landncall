@@ -181,7 +181,7 @@
 
                         <?php } else {
  ?>
-
+                    <h1><?php echo __('Credit History'); ?> </h1>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                         <tr>
                             <td class="title"><?php echo __('Date &amp; time') ?></td>
@@ -206,7 +206,7 @@
 
                             } ?>
                         </table>
-
+                    <h1><?php echo __('Call History'); ?> </h1>
                         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                             <tr>
                                 <td class="title"><?php echo __('Date &amp; time') ?></td>
