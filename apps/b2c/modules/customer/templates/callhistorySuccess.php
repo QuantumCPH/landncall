@@ -190,7 +190,7 @@
                             </tr>
                         <?php
                         $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate . ' 00:00:00', $todate . ' 23:59:59', false, 1);
-
+                        if(count($tilentaCallHistryResult)>0){
                         foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
                          ?>
 
@@ -200,7 +200,11 @@
                                 <td><?php echo $xdr->CLD; ?></td>
                                 <td><?php echo $xdr->description; ?></td>
                             </tr>
-                            <?php } ?>
+                            <?php } }else {
+
+                                echo __('There are currently no call records to show.');
+
+                            } ?>
                         </table>
 
                         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
