@@ -1014,6 +1014,13 @@
                 <source>to date</source>
                 <target>Hemresa</target>
             </trans-unit>
+            <trans-unit id="10846" translate="yes" reformat="yes" xml:space="default">
+                <source>Credit History</source>
+                <target>Kredit Historia</target>
+            </trans-unit>
+
+
+
         </body>
     </file>
 </xliff>

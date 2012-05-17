@@ -205,7 +205,7 @@
                                 echo __('There are currently no call records to show.');
 
                             } ?>
-                        </table>
+                        </table><br/><br/>
                     <h1><?php echo __('Call History'); ?> </h1>
                         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                             <tr>
