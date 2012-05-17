@@ -604,10 +604,12 @@ label.validnumber{
     font-weight:normal !important;
     padding: 0px;
     margin: 0px;
+    margin-left:20px;
+    font-size: 11px;
  }
- #mobile_number{
+ /*#mobile_number{
     margin-bottom: 0px !important;
 }
  #customer_mobile_number{
     margin-bottom: 0px !important;
-}
+}*/

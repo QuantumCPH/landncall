@@ -1689,457 +1689,352 @@ public function getEnableCountryId($calingcode){
 }
 
 
-public function executeSmsRegisterationwcb(sfWebrequest $request){
+public function executeSmsRegisterationwcb(sfWebrequest $request) {
+        $urlval = "WCR-" . $request->getURI();
+        $dibsCall = new DibsCall();
+        $dibsCall->setCallurl($urlval);
+        $dibsCall->save();
+
+
+        $number = $request->getParameter('from');
+        $mobileNumber = substr($number, 2, strlen($number) - 2);
+        if ($mobileNumber[0] != "0") {
+            $mobileNumber = "0" . $mobileNumber;
+        }
+        $textParamter = $request->getParameter('text');
+        $requestType = substr($textParamter, 0, 2);
+        $requestType = strtolower($requestType);
 
 
 
-     $urlval = "WCR-" . $request->getURI();
+        if ($requestType == "hc") {
 
-        $email2 = new DibsCall();
-        $email2->setCallurl($urlval);
+            $dialerIdLenght = strlen($textParamter);
+            $uniqueId = substr($textParamter, 7);
+            $mnc = new Criteria();
+            $mnc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+            $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+            $cusCount = CustomerPeer::doCount($mnc);
 
-        $email2->save();
-
-
-
-       
-    $sms_text="";
-   $number = $request->getParameter('from');
-    $mtnumber = $request->getParameter('from');
-    $frmnumberTelinta = $request->getParameter('from');
-	 $text = $request->getParameter('text');
-      $caltype=substr($text,0,2);
-
-     $numberlength=strlen($number);
-
-      $endnumberlength=$numberlength-2;
-
-          if ($caltype == "0000000000000000000000000000") {
-
-
-
-            $mobile = "";
-            $number = $request->getParameter('from');
-            $message = $request->getParameter('text');
-
-
-            if (isset($number) && $number != "") {
-                $mnc = new Criteria();
-
-                $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
-                $cus = CallbackLogPeer::doSelectOne($mnc);
+            if ($cusCount < 1) {
+                $smstext = SmsTextPeer::retrieveByPK(2);
+                echo $smstext->getMessageText();
+                SMSNU::Send($number, $smstext->getMessageText());
+                die;
             }
-            if (isset($cus) && $cus != "") {
+            $customer = CustomerPeer::doSelectOne($mnc);
+
+            $callbackq = new Criteria();
+            $callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
+            $callbackq = CallbackLogPeer::doCount($callbackq);
+
+            if ($callbackq < 1) {
+                $smstext = SmsTextPeer::retrieveByPK(7);
+                echo $smstext->getMessageText();
+                SMSNU::Send($number, $smstext->getMessageText());
+                die;
+            }
+
+            $callbacklog = new CallbackLog();
+            $callbacklog->setMobileNumber($number);
+            $callbacklog->setuniqueId($uniqueId);
+            $callbacklog->save();
+
+            $getvoipInfo = new Criteria();
+            $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
+            $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
+            if (isset($getvoipInfos)) {
+                $voipnumbers = $getvoipInfos->getNumber();
+                $voipnumbers = substr($voipnumbers, 2);
+            }
 
 
-                $customerid = $cus->getId();
-                if (isset($customerid) && $customerid != "") {
+            $tc = new Criteria();
+            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+            $tc->add(TelintaAccountsPeer::STATUS, 3);
+            if (TelintaAccountsPeer::doCount($tc) > 0) {
+                $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
+                Telienta::terminateAccount($telintaAccount);
+            }
+
+            Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
+
+            $smstext = SmsTextPeer::retrieveByPK(1);
+            SMSNU::Send($number, $smstext->getMessageText());
+            die;
+            return sfView::NONE;
+        } elseif ($requestType == "ic") {
+
+            $dialerIdLenght = strlen($textParamter);
+            $uniqueId = substr($textParamter, 3);
+            echo "<br/>";
+            echo $uniqueId."<hr/>";
 
 
 
+            $callbackq = new Criteria();
+            $callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
+            $callbackq = CallbackLogPeer::doCount($callbackq);
 
-                    $fromcbnumber = 'cb' . $number;
-                    $firstnumbernumber =$number;
-                    $secondnumber = substr($message, 2);
+            if ($callbackq < 1) {
+                $smstext = SmsTextPeer::retrieveByPK(7);
+                SMSNU::Send($number, $smstext->getMessageText());
+                die;
+            }
 
-                    $form = new Curl_HTTP_Client();
+            $mnc = new Criteria();
+            $mnc->add(CustomerPeer::UNIQUEID, $uniqueId);
+            $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+            $cusCount = CustomerPeer::doCount($mnc);
 
-                    $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
-                    $form->set_referrer("http://landncall.zerocall.com");
-                    $post_data = array(
-                        'Account' => $fromcbnumber,
-                        'Password' => 'asdf1asd',
-                        'Action' => 'Connect Us Now!',
-                        'First_Phone_Number' => $firstnumbernumber,
-                        'Second_Phone_Number' => $secondnumber
-                    );
+            if ($cusCount < 1) {
+                $smstext = SmsTextPeer::retrieveByPK(2);
+                SMSNU::Send($number, $smstext->getMessageText());
+                die;
+            }
+            $customer = CustomerPeer::doSelectOne($mnc);
+
+            $callbacklog = new CallbackLog();
+            $callbacklog->setMobileNumber($number);
+            $callbacklog->setuniqueId($uniqueId);
+            $callbacklog->setcallingCode(46);
+            $callbacklog->save();
+
+            Telienta::createCBAccount($number, $customer);
+
+            $telintaGetBalance = Telienta::getBalance($customer);
+
+            $getvoipInfo = new Criteria();
+            $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
+            $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
+            if (isset($getvoipInfos)) {
+                $voipnumbers = $getvoipInfos->getNumber();
+                $voipnumbers = substr($voipnumbers, 2);
+
+                $tc = new Criteria();
+                $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                $tc->add(TelintaAccountsPeer::STATUS, 3);
+                if (TelintaAccountsPeer::doCount($tc) > 0) {
+                    $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
+                    Telienta::terminateAccount($telintaAccount);
+                }
+
+                Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
+            }
+
+            $smstext = SmsTextPeer::retrieveByPK(3);
+            SMSNU::Send($number, $smstext->getMessageText());
+            die;
+            return sfView::NONE;
+        } else {
+
+            $text = $this->hextostr($request->getParameter('text'));
+            $splitedText = explode(";", $text);
+            if ($splitedText[3] != sfConfig::get("app_dialer_pin")) {
+                echo "Invalid Request<br/>";
+                $sms = SmsTextPeer::retrieveByPK(7);
+                SMSNU::Send($number, $sms->getMessageText());
+                die;
+            }
+            $mobileNumber = substr($number, 2, strlen($number) - 2);
+            if ($mobileNumber[0] != "0") {
+                $mobileNumber = "0" . $mobileNumber;
+            }
+
+            $dialerIdLenght = strlen($splitedText[0]);
+            $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+
+            $c = new Criteria();
+            $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+            $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+            $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
 
 
-                    echo $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
+            if ($dialerIdLenght == 10) {
+                echo "Register Customer<br/>";
+                //Registration Call, Register Customer In this block
+                $uc = new Criteria();
+                $uc->addAnd(UniqueIdsPeer::STATUS, 0);
+                $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
 
+                $cc = new Criteria();
+                $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+                $cc->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
 
+                if (CustomerPeer::doCount($cc) > 0) {
+                    echo "Already Registerd";
+                    $sms = SmsTextPeer::retrieveByPK(10);
+                    SMSNU::Send($number, $sms->getMessageText());
+                    die;
+                }
+
+                if (UniqueIdsPeer::doCount($uc) > 0) {
+                    $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+
+                    $pc = new Criteria();
+                    $pc->add(ProductPeer::SMS_CODE, "50");
+                    $product = ProductPeer::doSelectOne($pc);
+
+                    $calingcode = sfConfig::get('app_country_code');
+                    $password = $this->randomNumbers(6);
+                    $customer = new Customer();
+                    $customer->setFirstName($mobileNumber);
+                    $customer->setLastName($mobileNumber);
+                    $customer->setMobileNumber($mobileNumber);
+                    $customer->setPassword($password);
+                    $customer->setEmail("retail@example.com");
+                    $customer->setCountryId(2);
+                    $customer->setCity("");
+                    $customer->setAddress("");
+                    $customer->setTelecomOperatorId(1);
+                    $customer->setDeviceId(1474);
+                    $customer->setUniqueId($uniqueId);
+                    $customer->setCustomerStatusId(3);
+                    $customer->setPlainText($password);
+                    $customer->setRegistrationTypeId(6);
+                    $customer->save();
+
+                    $order = new CustomerOrder();
+                    $order->setProductId($product->getId());
+                    $order->setCustomerId($customer->getId());
+                    $order->setExtraRefill($order->getProduct()->getInitialBalance());
+                    $order->setIsFirstOrder(1);
+                    $order->setOrderStatusId(3);
+                    $order->save();
+
+                    $transaction = new Transaction();
+                    $transaction->setAgentCompanyId($customer->getReferrerId());
+                    $transaction->setAmount($order->getProduct()->getPrice());
+                    $transaction->setDescription('Registration of Retail');
+                    $transaction->setOrderId($order->getId());
+                    $transaction->setCustomerId($customer->getId());
+                    $transaction->setTransactionStatusId(3);
+                    $transaction->save();
+
+                    $customer_product = new CustomerProduct();
+                    $customer_product->setCustomer($order->getCustomer());
+                    $customer_product->setProduct($order->getProduct());
+                    $customer_product->save();
+
+                    $callbacklog = new CallbackLog();
+                    $callbacklog->setMobileNumber($number);
+                    $callbacklog->setuniqueId($uniqueId);
+                    $callbacklog->setImei($splitedText[1]);
+                    $callbacklog->setImsi($splitedText[2]);
+                    $callbacklog->setCheckStatus(3);
+                    $callbacklog->save();
+
+                    if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
+                        $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
+                        $availableUniqueId->setStatus(1);
+                        $availableUniqueId->setRegistrationTypeId(4);
+                        $availableUniqueId->save();
+                        Telienta::createAAccount($number, $customer);
+                        Telienta::createCBAccount($number, $customer);
+                    }
+
+                    $sms = SmsTextPeer::retrieveByPK(9);
+                    $smsText = $sms->getMessageText();
+                    $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
+                    SMSNU::Send($number, $smsText);
+
+                    $sms = SmsTextPeer::retrieveByPK(11);
+                    $smsText = $sms->getMessageText();
+                    $smsText = str_replace("(username)", $mobileNumber, $smsText);
+                    $smsText = str_replace("(password)", $password, $smsText);
+                    SMSNU::Send($number, $smsText);
+                    emailLib::sendCustomerRegistrationViaRetail($customer, $order);
+                } else {
+                    $sms = SmsTextPeer::retrieveByPK(6);
+                    $smsText = $sms->getMessageText();
+                    SMSNU::Send($number, $smsText);
+                    die;
+                }
+
+                //End of Registration.
+            } else {
+                $c = new Criteria();
+                $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
+                #$c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+                $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
+
+                if (CustomerPeer::doCount($c) > 0) {
+                    $command = substr($splitedText[0], 0, 2);
+                    $command = strtolower($command);
+                    echo "<hr/>";
+                    echo $command;
+                    echo "<hr/>";
+                    $customer = CustomerPeer::doSelectOne($c);
+                    if ($command == "cb") {
+                        echo "Check Balance Request<br/>";
+                        $balance = Telienta::getBalance($customer);
+                        $sms = SmsTextPeer::retrieveByPK(5);
+                        $smsText = $sms->getMessageText();
+                        $smsText = str_replace("(balance)", $balance, $smsText);
+                        SMSNU::Send($number, $smsText);
+                    } elseif ($command == "re") {
+                        echo "Recharge Request<br/>";
+                        $cc = new Criteria();
+                        $cc->add(CardNumbersPeer::CARD_NUMBER,"00880".$splitedText[4]);
+                        $cc->addAnd(CardNumbersPeer::STATUS, 0);
+                        if (CardNumbersPeer::doCount($cc) == 1) {
+                            $scratchCard = CardNumbersPeer::doSelectOne($cc);
+                            //new order
+                            $order = new CustomerOrder();
+                            $customer_products = $customer->getProducts();
+                            $order->setProduct($customer_products[0]);
+                            $order->setCustomer($customer);
+                            $order->setQuantity(1);
+                            $order->setExtraRefill($scratchCard->getCardPrice());
+                            $order->save();
+
+                            //new transaction
+                            $transaction = new Transaction();
+                            $transaction->setAmount($scratchCard->getCardPrice());
+                            $transaction->setDescription('Refill Via Pin Sr #' . $scratchCard->getCardSerial());
+                            $transaction->setOrderId($order->getId());
+                            $transaction->setCustomerId($order->getCustomerId());
+                            $transaction->save();
+
+                            if (Telienta::recharge($customer, $scratchCard->getCardPrice())) {
+                                $scratchCard->setStatus(1);
+                                $scratchCard->setUsedAt(date("Y-m-d H:i:s"));
+                                $scratchCard->setCustomerId($customer->getId());
+                                $scratchCard->save();
+                                $order->setOrderStatusId(3);
+                                $order->save();
+                                $transaction->setTransactionStatusId(3);
+                                $transaction->save();
+
+                                // Send Customer Balance SMS after succesful recharge
+                                $balance = Telienta::getBalance($customer);
+                                $sms = SmsTextPeer::retrieveByPK(5);
+                                $smsText = $sms->getMessageText();
+                                $smsText = str_replace("(balance)", $balance, $smsText);
+                                SMSNU::Send($number, $smsText);
+                                // Send email to Support after Recharge
+                                emailLib::sendRetailRefillEmail($customer, $order);
+                            } else {
+                                echo "Unable to charge";
+                                $sms = SmsTextPeer::retrieveByPK(8);
+                                SMSNU::Send($number, $sms->getMessageText());
+                            }
+                        } else {
+                            echo "CARD ALREADY USED<br/>";
+                            $sms = SmsTextPeer::retrieveByPK(7);
+                            SMSNU::Send($number, $sms->getMessageText());
+                        }
+                        die;
+                    }
+                } else {
+                    echo "Invalid Command 1";
+                    $sms = SmsTextPeer::retrieveByPK(7);
+                    SMSNU::Send($number, $sms->getMessageText());
                     die;
                 }
             }
-
-            if (!$cus) {
-
-
-               // $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
-    $sm->add(SmsTextPeer::ID, 4);
-                    $smstext = SmsTextPeer::doSelectOne($sm);
-                    $sms_text = $smstext->getMessageText();
-                $data = array(
-                    'S' => 'H',
-                    'UN' => 'zapna1',
-                    'P' => 'Zapna2010',
-                    'DA' => $number,
-                    'SA' => 'LandNcall',
-                    'M' => $sms_text,
-                    'ST' => '5'
-                );
-
-                $queryString = http_build_query($data, '', '&');
-                $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                echo $sms_text;
-                $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
-                //
-            }
-             return sfView::NONE;
         }
-    if($caltype=="hc"){
-
-
-        $cus=0;
-	$mobile = "";
-        $mnumber= $number;
-	$number =substr($number,2,$endnumberlength);
-	$message =substr($text,3,6);
-	$uniqueId  = $text;
-        $uniqueId  =substr($uniqueId,3,6);
-
-  if(isset($number) && $number!=""){
-
-
-
-
-                $number="0".$number;
-		$mnc = new Criteria();
-		$mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
-                $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
-		$cus = CustomerPeer::doSelectOne($mnc);
-
-		$mnc = new Criteria();
-		$mnc->add(CustomerPeer::MOBILE_NUMBER, $number);
-                $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
-		$cusCount = CustomerPeer::doCount($mnc);
-
-
-		$callbackq = new Criteria();
-		$callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
-		//$callbackq = CallbackLogPeer::doSelectOne($callbackq);
-                $callbackq = CallbackLogPeer::doCount($callbackq);
-  }
-//if(isset($callbackq) && $callbackq>0)
- if($cusCount>=1 && isset($callbackq) && $callbackq>0){
-  	  $customerid=$cus->getId();
-	  $mbno =$cus->getMobileNumber();
-	 // $callCode = substr($number,0,2);
-	 if(isset($customerid)  && $customerid!=""){
-	 		//echo $uniqueId;
-		   //$cus->setUniqueid($uniqueId);
-		  // $cus->save();
-
-		   //------save the callback data
-		   	$callbacklog = new CallbackLog();
-			$callbacklog->setMobileNumber($mnumber);
-			$callbacklog->setuniqueId($uniqueId);
-			//$callbacklog->setcallingCode(45);
-			// $calllog->setMac($mac);
-			$callbacklog->save();
-   			echo 'Success';
-                        $mtnumber;
-
-                       $telintaGetBalance =  Telienta::getBalance($cus);
-                   
-
-                        $getvoipInfo = new Criteria();
-                        $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerid);
-                        $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
-                        if(isset($getvoipInfos)){
-                            $voipnumbers = $getvoipInfos->getNumber() ;
-                            $voipnumbers =  substr($voipnumbers,2);
-                        }else{
-                        }
-
-                        
-                        
-                        $tc = new Criteria();
-                        $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-                        $tc->add(TelintaAccountsPeer::STATUS,3);
-                        if(TelintaAccountsPeer::doCount($tc)>0){
-                            $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
-                            Telienta::terminateAccount($telintaAccount);
-                        }
-
-
-                        Telienta::createReseNumberAccount($voipnumbers, $cus, $frmnumberTelinta);
-                    
-                        
-                    
-      
-        
-        
-                            
-
-       $sm = new Criteria();
-                    $sm->add(SmsTextPeer::ID, 1);
-                    $smstext = SmsTextPeer::doSelectOne($sm);
-                    $sms_text = $smstext->getMessageText();
-//                  $sms_text="Hej,
-//                    Ditt Smartsim är nu aktiverat och du kan börja spara pengar på din utlandstelefoni.
-//                    Med vänlig hälsning
-//                    LandNCall";
-
-//$mtnumber=923006826451;
-        $data = array(
-                  'S' => 'H',
-                  'UN'=>'zapna1',
-                  'P'=>'Zapna2010',
-                'DA'=>$mtnumber,
-                 'SA' =>'LandNcall',
-                  'M'=>$sms_text,
-                  'ST'=>'5'
-            );
-
-     echo   $queryString = http_build_query($data,'', '&');
-
-		$queryString=smsCharacter::smsCharacterReplacement($queryString);
-      echo $sms_text;
-      echo   $queryString;
-    $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-       echo $res;
-
-	 }
- }
-
-
-
-      if($cusCount<1){
- echo 'Success else contdiont';
-   echo $mtnumber;
-
-  $sm = new Criteria();
-                    $sm->add(SmsTextPeer::ID, 2);
-                    $smstext = SmsTextPeer::doSelectOne($sm);
-                    $sms_text = $smstext->getMessageText();
-//                      $sms_text="Hej,
-//                    Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
-//                    MVH
-//                    LandNCall";
-
-
-        $data = array(
-                  'S' => 'H',
-                  'UN'=>'zapna1',
-                  'P'=>'Zapna2010',
-                'DA'=>$mtnumber,
-                 'SA' =>'LandNcall',
-                  'M'=>$sms_text,
-                  'ST'=>'5'
-            );
-
-       $queryString = http_build_query($data,'', '&');
-		$queryString=smsCharacter::smsCharacterReplacement($queryString);
-        echo $sms_text;
-       $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-       echo $res;
-
-      }
-
-      if($callbackq<1){
-       // echo '_Error';
-      }
-
-
-      return sfView::NONE;
-
-
     }
-
-    if($caltype=="IC"){
-	$mobile = "";
-
-        $number=$number;
-        $mnumber= $number;
-
-	$number =substr($number,2,$endnumberlength);
-	$message =substr($text,3,6);
-	$uniqueId  = $text;
-      echo   $uniqueId  =substr($uniqueId,3,6);
-	$callbackq = new Criteria();
-	$callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
-	$callbackq = CallbackLogPeer::doCount($callbackq);
-
-
-        $number="0".$number;
-        $mnc = new Criteria();
-        $mnc->add(CustomerPeer::UNIQUEID, $uniqueId);
-        $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
-        $cus = CustomerPeer::doSelectOne($mnc);
-
- 	if(isset($callbackq) && $callbackq>0){
-
-
-		   	$callbacklog = new CallbackLog();
-			$callbacklog->setMobileNumber($mnumber);
-			$callbacklog->setuniqueId($uniqueId);
-			$callbacklog->setcallingCode(46);
-			$callbacklog->save();
-   			echo 'Success';
-                        $frmnumberTelinta=$request->getParameter('from');
-                           Telienta::createCBAccount($frmnumberTelinta, $cus);
-
-                       
-                        $telintaGetBalance =  Telienta::getBalance($cus);
-
-                        $mnc = new Criteria();
-                        $mnc->add(CustomerPeer::UNIQUEID, $uniqueId);
-                        $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
-                        $cus = CustomerPeer::doSelectOne($mnc);
-                        $customerids = $cus->getId();
-                        $getvoipInfo = new Criteria();
-                        $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
-                        $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
-                        if(isset($getvoipInfos)){
-                            $voipnumbers = $getvoipInfos->getNumber() ;
-                           echo  $voipnumbers =  substr($voipnumbers,2);
-
-                            $tc = new Criteria();
-                            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-                            $tc->add(TelintaAccountsPeer::STATUS,3);
-                            if(TelintaAccountsPeer::doCount($tc)>0){
-                                $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
-                                Telienta::terminateAccount($telintaAccount);
-                            }
-                            
-                           Telienta::createReseNumberAccount($voipnumbers, $cus, $frmnumberTelinta);
-                            
-                        }
-
-                       
-                  
-    
-                 
-
-                    $sm = new Criteria();
-                    $sm->add(SmsTextPeer::ID, 3);
-                    $smstext = SmsTextPeer::doSelectOne($sm);
-                    $sms_text = $smstext->getMessageText();
-
-                       $sms_text="Hej,
-Ditt Smartsim är nu aktiverat och du kan börja spara pengar på din utlandstelefoni.
-Med vänlig hälsning
-LandNCall";
-        $data = array(
-                  'S' => 'H',
-                  'UN'=>'zapna1',
-                  'P'=>'Zapna2010',
-                'DA'=>$mtnumber,
-                 'SA' =>'LandNcall',
-                  'M'=>$sms_text,
-                  'ST'=>'5'
-            );
-
-       $queryString = http_build_query($data,'', '&');
-		$queryString=smsCharacter::smsCharacterReplacement($queryString);
-        echo $sms_text;
-       $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-       echo $res;
-
- 	}
-
-
-      if($callbackq){
-       //echo 'Error';
-      }
-
-
-      return sfView::NONE;
-
-
-
-    }
-
-
-if(($caltype!="IC") && ($caltype!="hc")){
-
-
-  $sms_log_data_file = sfConfig::get('sf_data_dir').'/imsi_log.txt';
-  $sms_log = "sms registration";
-  $sms_log .= "number: ".$request->getParameter('from');
-  $sms_log .= " message:".$request->getParameter('text');
-  $sms_log .= "\n";
-  file_put_contents($sms_log_data_file, $sms_log, FILE_APPEND);
-
-
-
-  $mobile = "";
-   $number = $request->getParameter('from');
-   $message = $request->getParameter('text');
-
-
-  if(isset($number) && $number!=""){
-      $mnc = new Criteria();
-
-      $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
-      $cus = CallbackLogPeer::doSelectOne($mnc);
-
-  }
- if(isset($cus) && $cus!=""){
-  	 $customerid=$cus->getId();
-	 if(isset($customerid)  && $customerid!="" ){
-	           $cus->setImsi(substr($message,0,15));
-		   $cus->save();
-
-                   $getvoipInfo = new Criteria();
-                    $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerid);
-                    $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
-                    if(isset($getvoipInfos)){
-                       $voipnumbers = $getvoipInfos->getNumber() ;
-                       $voipnumbers =  substr($voipnumbers,2);
-                    }else{
-                    }
-                   echo 'Ok';
-	 }
- }
-
-      if(!$cus){
-
-        $sms_text="Hej,
-                    Ditt telefonnummer är inte registrerat hos LandNCall. Vänligen registrera telefonen eller kontakta support på support@landncall.com
-                    MVH
-                    LandNCall";
-
-        $data = array(
-                  'S' => 'H',
-                  'UN'=>'zapna1',
-                  'P'=>'Zapna2010',
-                  'DA'=>$number,
-                  'SA' =>'LandNcall',
-                  'M'=>$sms_text,
-                  'ST'=>'5'
-            );
-
-        $queryString = http_build_query($data,'', '&');
-		$queryString=smsCharacter::smsCharacterReplacement($queryString);
-        echo $sms_text;
-        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-        //
-      }else{
-
-          $sms_text="Bästa kund, Din IMSI registrerat successusfully";
-
-        $data = array(
-                  'S' => 'H',
-                  'UN'=>'zapna1',
-                  'P'=>'Zapna2010',
-                  'DA'=>$number,
-                  'SA' =>'LandNcall',
-                  'M'=>$sms_text,
-                  'ST'=>'5'
-            );
-
-        $queryString = http_build_query($data,'', '&');
-		$queryString=smsCharacter::smsCharacterReplacement($queryString);
-        echo $sms_text;
-        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-
-      }
-
-      return sfView::NONE;
-  }
-}
 
 public function executeSmsRegisterationsmscb(sfWebrequest $request){
 
@@ -2194,7 +2089,6 @@ die;
 
             if (isset($number) && $number != "") {
                 $mnc = new Criteria();
-
                 $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
                 $cus = CallbackLogPeer::doSelectOne($mnc);
             }
@@ -2202,6 +2096,7 @@ die;
 
                  
                 $customerid = $cus->getId();
+             
                 if (isset($customerid) && $customerid != "") {
 
  
@@ -2209,7 +2104,6 @@ die;
                     $fromcbnumber = 'cb' . $number;
                     $firstnumbernumber =$number;
                     $secondnumber =$message;
-
                     $form = new Curl_HTTP_Client();
 
                     $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
@@ -2796,7 +2690,7 @@ echo "<br/>";
   }    
 
 ////////////////////////////////////////
-public function executeUsageAlert(sfWebRequest $request) {
+    public function executeUsageAlert(sfWebRequest $request) {
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         changeLanguageCulture::languageCulture($request, $this);
         //-----------------------
@@ -2812,7 +2706,7 @@ public function executeUsageAlert(sfWebRequest $request) {
             $countryId = "2";
         }
 
-        
+
         $usagealerts = new Criteria();
         $usagealerts->add(UsageAlertPeer::SMS_ACTIVE, 1);
         $usagealerts->addAnd(UsageAlertPeer::COUNTRY, $countryId);
@@ -2824,22 +2718,36 @@ public function executeUsageAlert(sfWebRequest $request) {
         $c->addAnd(CustomerPeer::COUNTRY_ID, $countryId);
         $customers = CustomerPeer::doSelect($c);
 
-         foreach ($customers as $customer) {
-            $customer_balance = (double) Telienta::getBalance($customer);
-            echo $actual_balance = $customer_balance."<br>";
-            if($customer_balance < 1){
+        foreach ($customers as $customer) {
+            $retries = 0;
+            $maxRetries = 5;
+            do {
+                $customer_balance = Telienta::getBalance($customer);
+                $retries++;
+                echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+            } while (!$customer_balance && $retries <= $maxRetries);
+
+            if($retries==$maxRetries){
+                continue;
+            }
+
+            $customer_balance = (double) $customer_balance;
+
+            $actual_balance = $customer_balance;
+            if ($customer_balance < 1) {
                 $customer_balance = 0;
             }
-            foreach($usageAlerts as $usageAlert){
-                if($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax() ){
+            foreach ($usageAlerts as $usageAlert) {
+                //echo "<hr/>".$usageAlert->getId()."<hr/>";
+                if ($customer_balance >= $usageAlert->getAlertAmountMin() && $customer_balance < $usageAlert->getAlertAmountMax()) {
 
-                        $sender = new Criteria();
-                        $sender->add(UsageAlertSenderPeer::ID, $usageAlert->getSenderName());
-                        $senders = UsageAlertSenderPeer::doSelectOne($sender);
-                        echo $senderName = $senders->getName();
+                    $sender = new Criteria();
+                    $sender->add(UsageAlertSenderPeer::ID, $usageAlert->getSenderName());
+                    $senders = UsageAlertSenderPeer::doSelectOne($sender);
+                    echo $senderName = $senders->getName();
 
 
-                    $regType =  RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId());// && $customer->getFonetCustomerId()!=''
+                    $regType = RegistrationTypePeer::retrieveByPK($customer->getRegistrationTypeId()); // && $customer->getFonetCustomerId()!=''
                     $referer = $customer->getReferrerId();
                     if (isset($referer) && $referer > 0) {
                         $Cname = new Criteria();
@@ -2853,8 +2761,14 @@ public function executeUsageAlert(sfWebRequest $request) {
                     $Prod->addJoin(ProductPeer::ID, CustomerProductPeer::PRODUCT_ID, Criteria::LEFT_JOIN);
                     $Prod->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
                     $Product = ProductPeer::doSelectOne($Prod);
-                    
-                    if($usageAlert->getSmsActive()){
+
+                    $cSMSent = new Criteria();
+                    $cSMSent->add(SmsAlertSentPeer::USAGE_ALERT_STATUS_ID, $usageAlert->getId());
+                    $cSMSent->addAnd(SmsAlertSentPeer::CUSTOMER_ID, $customer->getId());
+                    $cSMSentCount = SmsAlertSentPeer::doCount($cSMSent);
+
+                    if ($usageAlert->getSmsActive() && $cSMSentCount == 0) {
+                        echo "Sms Alert Sent:";
                         $msgSent = new SmsAlertSent();
                         $msgSent->setCustomerId($customer->getId());
                         $msgSent->setCustomerName($customer->getFirstName());
@@ -2863,41 +2777,35 @@ public function executeUsageAlert(sfWebRequest $request) {
                         $msgSent->setAgentName($comName);
                         $msgSent->setCustomerEmail($customer->getEmail());
                         $msgSent->setMobileNumber($customer->getMobileNumber());
-                      //$msgSent->setFonetCustomerId($customer->getFonetCustomerId());
-                        $msgSent->setMessageDescerption("Current Balance: ".$actual_balance);
+                        $msgSent->setUsageAlertStatusId($usageAlert->getId());
+                        $msgSent->setAlertActivated($customer->getUsageAlertSMS());
+                        //$msgSent->setFonetCustomerId($customer->getFonetCustomerId());
+                        $msgSent->setMessageDescerption("Current Balance: " . $actual_balance);
                         //$msgSent->save();
                         /**
                          * SMS Sending Code
-                         **/
-                       if($customer->getUsageAlertSMS()){echo "SMS Active";
-                        $customerMobileNumber = $CallCode . $customer->getMobileNumber();
-                        $sms_text = $usageAlert->getSmsAlertMessage();
-                        $response=CARBORDFISH_SMS::Send($customerMobileNumber, $sms_text,$senderName);
-                        /*$data = array(
-                            'S'     => 'H',
-                            'UN'    => 'zapna1',
-                            'P'     => 'Zapna2010',
-                            'DA'    => $customerMobileNumber,
-                            'SA'    => "LandNcall",
-                            'M'     => $sms_text,
-                            'ST'    => '5'
-                        );
-                        $queryString = http_build_query($data, '', '&');
+                         * */
+                        if ($customer->getUsageAlertSMS()) {
+                            echo "SMS Active<br/>";
+                            $customerMobileNumber = $CallCode . substr($customer->getMobileNumber(), 1);
+                            $sms_text = $usageAlert->getSmsAlertMessage();
+                            $response = SMSNU::Send($customerMobileNumber, $sms_text, $senderName);
 
-                        //   die;
+                            if ($response) {
+                                $msgSent->setAlertSent(1);
+                            }
+                        }
+                        $msgSent->save();
 
-
-                        $queryString = smsCharacter::smsCharacterReplacement($queryString);
-
-                        if ($this->response_text = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString)) {*/
-                           // echo $this->response_text;
-                            if($response){$msgSent->setAlertSent(1);}
-                        //}
-			//sleep(0.15);
-                       }
-                       $msgSent->save();
                     }
-                    if($usageAlert->getEmailActive()){
+
+                    $cEmailSent = new Criteria();
+                    $cEmailSent->add(EmailAlertSentPeer::USAGE_ALERT_STATUS_ID, $usageAlert->getId());
+                    $cEmailSent->addAnd(EmailAlertSentPeer::CUSTOMER_ID, $customer->getId());
+                    $cEmailSentCount = EmailAlertSentPeer::doCount($cEmailSent);
+
+                    if ($usageAlert->getEmailActive() && $cEmailSentCount == 0) {
+                        echo "Email Alert Sent:";
                         $msgSentE = new EmailAlertSent();
                         $msgSentE->setCustomerId($customer->getId());
                         $msgSentE->setCustomerName($customer->getFirstName());
@@ -2906,24 +2814,25 @@ public function executeUsageAlert(sfWebRequest $request) {
                         $msgSentE->setAgentName($comName);
                         $msgSentE->setCustomerEmail($customer->getEmail());
                         $msgSentE->setMobileNumber($customer->getMobileNumber());
-                      //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
-                        $msgSentE->setMessageDescerption("Current Balance: ".$actual_balance);
+                        $msgSentE->setUsageAlertStatusId($usageAlert->getId());
+                        $msgSentE->setAlertActivated($customer->getUsageAlertEmail());
+                        //$msgSentE->setFonetCustomerId($customer->getFonetCustomerId());
+                        $msgSentE->setMessageDescerption("Current Balance: " . $actual_balance);
                         //$msgSentE->save();
-                       
-                      if($customer->getUsageAlertEmail()){echo "Email Active";
-                      $message='<img src="http://landncall.zerocall.com/images/logo.gif" /><br>'.$usageAlert->getEmailAlertMessage().'<br>Support<br>'.$senderName;
-                        emailLib::sendCustomerBalanceEmail($customer, $message);
-                        $msgSentE->setAlertSent(1);
-                      }
-                      $msgSentE->save();
 
-
+                        if ($customer->getUsageAlertEmail()) {
+                            echo "Email Active<br/>";
+                            $message = '<img src="http://landncall.zerocall.com/images/logo.gif" /><br>' . $usageAlert->getEmailAlertMessage() . '<br>Hälsningar <br>' . $senderName;
+                            emailLib::sendCustomerBalanceEmail($customer, $message);
+                            $msgSentE->setAlertSent(1);
+                        }
+                        $msgSentE->save();
                     }
                 }
             }
-         }
+        }
 
-      return sfView::NONE;
+        return sfView::NONE;
     }
 //////////
 
@@ -3129,230 +3038,7 @@ $headers .= "From:" . $from;
 
         return sfView::NONE;
     }
-  /*
-   * This method will be used for refill via scratch card, Registration and for getting balance exectued by the sim card(customer)
-   *
-   */
-// // public function executeSmsRegisterationsmscb(sfWebrequest $request) {
-//
-//        $urlval = "WCR-CB-" . $request->getURI();
-//        $dibsCall = new DibsCall();
-//        $dibsCall->setCallurl($urlval);
-//        $dibsCall->save();
-//        $number = $request->getParameter('from');
-//        $text = $this->hextostr($request->getParameter('text'));
-//        $splitedText = explode(";", $text);
-//        if ($splitedText[3] != sfConfig::get("app_dialer_pin")) {
-//            echo "Invalid Request<br/>";
-//            $sms = SmsTextPeer::retrieveByPK(7);
-//            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//            die;
-//        }
-//        $mobileNumber = substr($number, 2, strlen($number) - 2);
-//        if ($mobileNumber[0] != "0") {
-//            $mobileNumber = "0" . $mobileNumber;
-//        }
-//
-//        $dialerIdLenght = strlen($splitedText[0]);
-//        $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
-//        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
-//        echo "$mobileNumber".":::::".$uniqueId."<br/>";
-//        echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"."<br/>";
-//        $c = new Criteria();
-//        $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
-//        $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-//        $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
-//
-//
-//        if ($dialerIdLenght == 10) {
-//            echo "Register Customer<br/>";
-//            //Registration Call, Register Customer In this block
-//            $uc = new Criteria();
-//            $uc->addAnd(UniqueIdsPeer::STATUS, 0);
-//            $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
-//
-//
-//            $cc = new Criteria();
-//            $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
-//            $cc->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-//
-//            if(CustomerPeer::doCount($cc)>0){
-//                $sms = SmsTextPeer::retrieveByPK(10);
-//                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//                die;
-//            }
-//
-//
-//
-//
-//            if (UniqueIdsPeer::doCount($uc) > 0) {
-//                $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
-//
-//                $pc = new Criteria();
-//                $pc->add(ProductPeer::SMS_CODE, "50");
-//                $product = ProductPeer::doSelectOne($pc);
-//
-//                $calingcode = sfConfig::get('app_country_code');
-//                $password = $this->randomNumbers(6);
-//                $customer = new Customer();
-//                $customer->setFirstName($mobileNumber);
-//                $customer->setLastName($mobileNumber);
-//                $customer->setMobileNumber($mobileNumber);
-//                $customer->setPassword($password);
-//                $customer->setEmail("retail@example.com");
-//                $customer->setCountryId(2);
-//                $customer->setCity("");
-//                $customer->setAddress("");
-//                $customer->setTelecomOperatorId(1);
-//                $customer->setDeviceId(1474);
-//                $customer->setUniqueId($uniqueId);
-//                $customer->setCustomerStatusId(3);
-//                $customer->setPlainText($password);
-//                $customer->setRegistrationTypeId(6);
-//                $customer->save();
-//
-//
-//                $order = new CustomerOrder();
-//                $order->setProductId($product->getId());
-//                $order->setCustomerId($customer->getId());
-//                $order->setExtraRefill($order->getProduct()->getInitialBalance());
-//                $order->setIsFirstOrder(1);
-//                $order->setOrderStatusId(3);
-//                $order->save();
-//
-//                $transaction = new Transaction();
-//                $transaction->setAgentCompanyId($customer->getReferrerId());
-//                $transaction->setAmount($order->getProduct()->getPrice());
-//                $transaction->setDescription('Registration of Retail');
-//                $transaction->setOrderId($order->getId());
-//                $transaction->setCustomerId($customer->getId());
-//                $transaction->setTransactionStatusId(3);
-//                $transaction->save();
-//
-//                $customer_product = new CustomerProduct();
-//                $customer_product->setCustomer($order->getCustomer());
-//                $customer_product->setProduct($order->getProduct());
-//                $customer_product->save();
-//
-//
-//
-//                $callbacklog = new CallbackLog();
-//                $callbacklog->setMobileNumber($number);
-//                $callbacklog->setuniqueId($uniqueId);
-//                $callbacklog->setCheckStatus(3);
-//                $callbacklog->save();
-//
-//                if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
-//                    $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
-//                    $availableUniqueId->setStatus(1);
-//                    $availableUniqueId->setRegistrationTypeId(4);
-//                    $availableUniqueId->save();
-//                    Telienta::createAAccount($number, $customer);
-//                    Telienta::createCBAccount($number, $customer);
-//                }
-//                $sms = SmsTextPeer::retrieveByPK(9);
-//                $smsText = $sms->getMessageText();
-//                $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
-//                CARBORDFISH_SMS::Send($number, $smsText);
-//                emailLib::sendCustomerRegistrationViaRetail($customer, $order);
-//            } else {
-//                $sms = SmsTextPeer::retrieveByPK(6);
-//                $smsText = $sms->getMessageText();
-//                CARBORDFISH_SMS::Send($number, $smsText);
-//                die;
-//            }
-//
-//
-//
-//
-//            //End of Registration.
-//        } else {
-//            $c = new Criteria();
-//            $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
-//            #$c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-//            $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
-//
-//            if (CustomerPeer::doCount($c) > 0) {
-//                $command = substr($splitedText[0], 0, 2);
-//                $command = strtolower($command);
-//                echo "<hr/>";
-//                echo $command;
-//                echo "<hr/>";
-//                $customer = CustomerPeer::doSelectOne($c);
-//                if ($command == "cb") {
-//                    echo "Check Balance Request<br/>";
-//                    $balance = Telienta::getBalance($customer);
-//                    $sms = SmsTextPeer::retrieveByPK(5);
-//                    $smsText = $sms->getMessageText();
-//                    $smsText = str_replace("(balance)", $balance, $smsText);
-//                    CARBORDFISH_SMS::Send($number, $smsText);
-//                } elseif ($command == "re") {
-//                    echo "Recharge Request<br/>";
-//                    $cc = new Criteria();
-//                    $cc->add(CardNumbersPeer::CARD_NUMBER, $splitedText[4]);
-//                    $cc->addAnd(CardNumbersPeer::STATUS, 0);
-//                    if (CardNumbersPeer::doCount($cc) == 1) {
-//                        $scratchCard = CardNumbersPeer::doSelectOne($cc);
-//                        //new order
-//                        $order = new CustomerOrder();
-//                        $customer_products = $customer->getProducts();
-//                        $order->setProduct($customer_products[0]);
-//                        $order->setCustomer($customer);
-//                        $order->setQuantity(1);
-//                        $order->setExtraRefill($scratchCard->getCardPrice());
-//                        $order->save();
-//
-//                        //new transaction
-//                        $transaction = new Transaction();
-//                        $transaction->setAmount($scratchCard->getCardPrice());
-//                        $transaction->setDescription('Refill Via Pin Sr #' . $scratchCard->getCardSerial());
-//                        $transaction->setOrderId($order->getId());
-//                        $transaction->setCustomerId($order->getCustomerId());
-//                        $transaction->save();
-//
-//                        if (Telienta::recharge($customer, $scratchCard->getCardPrice())) {
-//                            $scratchCard->setStatus(1);
-//                            $scratchCard->setUsedAt(date("Y-m-d H:i:s"));
-//                            $scratchCard->setCustomerId($customer->getId());
-//                            $scratchCard->save();
-//                            $order->setOrderStatusId(3);
-//                            $order->save();
-//                            $transaction->setTransactionStatusId(3);
-//                            $transaction->save();
-//
-//                            // Send Customer Balance SMS after succesful recharge
-//                            $balance = Telienta::getBalance($customer);
-//                            $sms = SmsTextPeer::retrieveByPK(5);
-//                            $smsText = $sms->getMessageText();
-//                            $smsText = str_replace("(balance)", $balance, $smsText);
-//                            CARBORDFISH_SMS::Send($number, $smsText);
-//                            // Send email to Support after Recharge
-//                            emailLib::sendRetailRefillEmail($customer, $order);
-//                        } else {
-//                            echo "Unable to charge";
-//                            $sms = SmsTextPeer::retrieveByPK(8);
-//                            CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//                        }
-//                    } else {
-//                        echo "CARD ALREADY USED<br/>";
-//                        $sms = SmsTextPeer::retrieveByPK(7);
-//                        CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//                    }
-//
-//
-//                    die;
-//                }
-//            } else {
-//                echo "Invalid Command 1";
-//                $sms = SmsTextPeer::retrieveByPK(7);
-//                CARBORDFISH_SMS::Send($number, $sms->getMessageText());
-//                die;
-//            }
-//        }
-//
-//
-//        return sfView::NONE;
-//    }
+
 
     private function hextostr($hex) {
         $str = '';
@@ -3394,56 +3080,116 @@ $headers .= "From:" . $from;
     }
 
 
-
    public function executeCsvFiles(sfWebRequest $request)
   {
-        
-  $tomorrow1 = mktime(date("H")-1, date("i"), date("s"), date("m"), date("d"), date("Y"));
-      $fromdate = date("Y-m-d H:59:59", $tomorrow1);
 
-            $tomorrow = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
+  $tomorrow1 = mktime(date("H") - 4, date("i"), date("s"), date("m"), date("d"), date("Y"));
+        $fromdate = date("Y-m-d H:00:00", $tomorrow1);
+        $todate = date("Y-m-d H:59:59", $tomorrow1);
 
-            $todate = date("Y-m-d H:59:59");
-            $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate,true);
-            $filename="LandnCall_".time().".csv";
-$myFile = "/var/www/landncall/data/landncall_cdr/".$filename;
- $fh = fopen($myFile, 'w') or die("can't open file");
-// var_dump($tilentaCallHistryResult->xdr_list);
-$comma=",";
-  $stringData ="CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
-  $stringData.= "\n";
-  fwrite($fh, $stringData);
- foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+        $filename = "LandnCall_" . time() . ".csv";
+        $cdrlog = new LandncallCdrLog();
+        $cdrlog->setName($filename);
+        $cdrlog->setFromTime($fromdate);
+        $cdrlog->setToTime($todate);
+        $cdrlog->save();
+        $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate, true);
 
-      $stringData =$xdr->CLI.$comma.$xdr->CLD.$comma.$xdr->charged_amount.$comma.$xdr->charged_quantity.$comma.$xdr->country.$comma.$xdr->subdivision.$comma.$xdr->description.$comma.$xdr->disconnect_cause.$comma.$xdr->bill_status.$comma.$xdr->unix_connect_time.$comma.$xdr->disconnect_time.$comma.$xdr->unix_disconnect_time.$comma.$xdr->bill_time;
-  $stringData.= "\n";
-  fwrite($fh, $stringData);
+        $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
+        $fh = fopen($myFile, 'w') or die("can't open file");
+        $comma = ",";
+        $stringData = "CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
+        $stringData.= "\n";
+        fwrite($fh, $stringData);
+        foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
 
-
-
-
-
- }
-$destination_file = "/zapna/zapna/".$filename;
- $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
-    $ftp_user_name = "zapna"; // Username
-    $ftp_user_pass = "2s7G3Ms4";   // Password
-    $conn_id = ftp_connect($ftp_server);        // set up basic connection
- 
-    // login with username and password, or give invalid user message
-    $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
-    ftp_pasv($conn_id, true);
-    $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
-    if (!$upload) {  // check upload status
-        echo "<h2>FTP upload of $myFileName has failed!</h2> <br />";
-        
-    }
-
- fclose($fh);
+            $stringData = $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time;
+            $stringData.= "\n";
+            fwrite($fh, $stringData);
+        }
+        $destination_file = "/zapna/zapna/" . $filename;
+        $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
+        $ftp_user_name = "zapna"; // Username
+        $ftp_user_pass = "2s7G3Ms4";   // Password
+        $conn_id = ftp_connect($ftp_server);        // set up basic connection
+       
+        $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
+        ftp_pasv($conn_id, true);
+        $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
 
 
-   return sfView::NONE;
+
+        if (!$upload) {
+            emailLib::sendLandncallCdrErrorEmail($filename);
+        } else {
+
+            $cdrlog->setStatus(3);
+        }
+        $cdrlog->save();
+        fclose($fh);
+
+
+        return sfView::NONE;
    }
 
+
+
+     public function executeResendFailedCsvFiles(sfWebRequest $request)
+  {
+
+
+        $cdrq = new Criteria();
+        $cdrq->add(LandncallCdrLogPeer::STATUS,1);
+        $cdrrecords= LandncallCdrLogPeer::doSelect($cdrq);
+
+
+        foreach($cdrrecords as $cdrrecord){
+        $filename =$cdrrecord->getName();
+        $tilentaCallHistryResult = Telienta::callHistory(59368, $cdrrecord->getFromTime(), $cdrrecord->getToTime(), true);
+//        var_dump($tilentaCallHistryResult);
+//       die;
+          sleep(.5);
+        $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
+        $fh = fopen($myFile, 'w') or die("can't open file");
+        $comma = ",";
+        $stringData = "CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
+        $stringData.= "\n";
+        fwrite($fh, $stringData);
+        foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+            $stringData = $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time;
+            $stringData.= "\n";
+            fwrite($fh, $stringData);
+        }
+           sleep(.5);
+        $destination_file = "/zapna/zapna/" . $filename;
+        $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
+        $ftp_user_name = "zapna"; // Username
+        $ftp_user_pass = "2s7G3Ms4";   // Password
+        $conn_id = ftp_connect($ftp_server);        // set up basic connection
+        $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
+        ftp_pasv($conn_id, true);
+        $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
+        if (!$upload) {
+            emailLib::sendLandncallCdrErrorEmail($filename);
+        } else {
+            $cdrrecord->setStatus(3);
+              $cdrrecord->save();
+        }
+         fclose($fh);
+         sleep(1);
+        }
+        return sfView::NONE;
+   }
+
+
+       public function executeGetBalanceFromTelienta(sfWebRequest $request){
+        $c = new Criteria();
+        $c->add(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
+        $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $customers = CustomerPeer::doSelect($c);
+        foreach($customers as $customer){
+            Telienta::getBalance($customer);
+        }
+    }
 
 }

@@ -251,7 +251,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 		<input type="hidden" name="currency" value="752" />
 		<input type="hidden" name="orderid" value="<?php echo $order_id;?>" />
 		 
-              <input type="hidden" name="test" value="yes" />
+            
 		<input type="hidden" name="account" value="YTIP" />
 		  <input type="hidden" name="addfee" value="0" />
        

@@ -147,9 +147,9 @@ width:232px;
 a.receipt{ background-image:url(../images/green-bullet.jpg); background-repeat:no-repeat; padding-left:15px; float:left; display:block; text-decoration:none; color:#000;}
 
 .split-form-sign-up{padding-top:20px; float:left; clear:both; width:750px; padding-bottom:30px; min-height:412px; background-image:url(../images/bg-map-sign-up.jpg); background-repeat:no-repeat; background-color:#F7F7F7; padding-top:20px; padding-left:30px; margin-bottom:10px;}
-.split-form-sign-up .col{width:314px; float: left; position: relative;height: 250px;}
+.split-form-sign-up .col{width:300px; float: left; position: relative;height: 250px;}
 .split-form-sign-up ul{list-style:none;}
-.split-form-sign-up ul li{list-style:none; margin-bottom:10px; float:left; clear:both;width:350px; white-space:nowrap; z-index:100; position:relative; color:#000;}
+.split-form-sign-up ul li{list-style:none; margin-bottom:6px; float:left; clear:both;width:300px; white-space:nowrap; z-index:100; position:relative; color:#000;}
 .split-form-sign-up ul li label{width:130px; float:left; padding-top:3px; font-weight:bold; color:#000; }
 .split-form-sign-up ul li input{width:130px; border:1px solid #999999; font-size:11px; padding:3px;}
 .split-form-sign-up ul li select{width:137px; border:1px solid #999999;font-size:11px; padding:3px; }

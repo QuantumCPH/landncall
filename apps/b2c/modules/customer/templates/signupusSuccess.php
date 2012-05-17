@@ -4,7 +4,10 @@
 <script>
      
 	$(function() {
-           
+                $('body').css('overflow','hidden');
+                $("#wrap").width("600px");
+                $("#newCustomerForm").width("600px");
+                $('.split-form-sign-up').width("600px");
 		var dates = $( "#from_date, #to_date" ).datepicker({
 			defaultDate: "+1w",
 			changeMonth: true,
@@ -211,7 +214,7 @@
 			 </span>
 			 <?php endif; ?>
              <div class='inline-error'><?php echo $error_password?$form['password']->renderError():'&nbsp;'?></div>
-             <label style="float:right;width:95px;<?php if ($error_mobile_number): ?> margin-right:85px; <?php endif; ?>"><?php echo __('Minimum 6 digits') ?></label>
+             <label style="float:right;width:85px;<?php if ($error_mobile_number): ?> width: 85px; <?php endif; ?>"><?php echo __('Minimum 6 digits') ?></label>
             </li>
             <!-- end password -->
             <?php
@@ -328,9 +331,9 @@
             </li>
 			</div>
           <!-- end newsletter -->
-		  
-			 <div id="content" >
-			 	<input type="submit" class="butonsigninsmall" name="submit" style="cursor: pointer; margin-left: 70px;"  value="<?php echo __('Next') ?>" ></div>
+		<br />  
+			 <div id="content" style="float:none;clear:both;" >
+			 	<input type="submit" class="butonsigninsmall" name="submit" style="cursor: pointer;"  value="<?php echo __('Next') ?>" ></div>
 			
             </li>
 			</div>
@@ -344,6 +347,7 @@
     </div>
 	<?php //include_partial('signup/steps_indicator', array('active_step'=>1)) ?>
   </div>
+    <div style="clear:both;"></div>
 </form>
 <script type="text/javascript">
      jQuery('#customer_po_box_number').blur(function(){

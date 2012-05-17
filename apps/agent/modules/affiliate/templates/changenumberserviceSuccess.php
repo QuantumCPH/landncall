@@ -38,12 +38,12 @@ jQuery(function(){
             <li>
                 <label><?php echo __('Old Mobile Number') ?></label>
                 <input type="text" name="existingNumber" style="margin-bottom:0px"/>
-                <label class="validnumber">Enter mobile number without leading 0</label>
+<!--                <label class="validnumber">Enter mobile number without leading 0</label>-->
             </li>
             <li>
                 <label><?php echo __('New Mobile Number') ?></label>
                 <input type="text" name="newNumber" style="margin-bottom:0px"/>
-                <label class="validnumber">Enter mobile number without leading 0</label>
+<!--                <label class="validnumber">Enter mobile number without leading 0</label>-->
             </li>
             <li>
                 <label><?php echo __('Country') ?></label>

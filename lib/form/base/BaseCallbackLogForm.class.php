@@ -19,6 +19,7 @@ class BaseCallbackLogForm extends BaseFormPropel
       'imsi'          => new sfWidgetFormInput(),
       'created'       => new sfWidgetFormDateTime(),
       'check_status'  => new sfWidgetFormInput(),
+      'imei'          => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -29,6 +30,7 @@ class BaseCallbackLogForm extends BaseFormPropel
       'imsi'          => new sfValidatorString(array('max_length' => 250)),
       'created'       => new sfValidatorDateTime(),
       'check_status'  => new sfValidatorInteger(),
+      'imei'          => new sfValidatorString(array('max_length' => 255, 'required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('callback_log[%s]');

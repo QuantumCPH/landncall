@@ -1687,6 +1687,7 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
                     $c = new Criteria();
                     $agent_order = new AgentOrder();
                     $agent_order->setAgentCompanyId($agent->getId());
+                    $agent_order->setOrderDescription(2);///// By Credit Card for agent
                     $agent_order->setStatus('1');
                     $agent_order->save();
 
@@ -1710,6 +1711,7 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
           $agent_order = AgentOrderPeer::doSelectOne($c);
 
           $agent_order->setAmount($amount/100);
+          $agent_order->setOrderDescription(2);///// By Credit Card for agent
           $agent_order->setStatus(3);
           $agent_order->save();
 
@@ -1722,7 +1724,8 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
                      $remainingbalance=$agent->getBalance();
                      $aph = new AgentPaymentHistory();
                      $aph->setAgentId($agent_order->getAgentCompanyId());
-                     $aph->setExpeneseType(3);
+                     $aph->setExpeneseType(9);
+                     $aph->setOrderDescription(2);
                      $aph->setAmount($amount);
                      $aph->setRemainingBalance($remainingbalance);
                      $aph->save();
@@ -1981,11 +1984,12 @@ public function executeAgentOrder(sfRequest $request){
                     }
                 }
                           // var_dump($customer);exit;
+                
                 if ($is_recharged) {
 
                     $transaction->save();
                     if ($customer) {
-                        $newMobileNo=$countrycode.$newnumber;
+                        $newMobileNo=$countrycode.substr($newnumber,1);
                         $customerids = $customer->getId();
                         $uniqueId=$customer->getUniqueid();
                         $customer->setMobileNumber($newnumber);
@@ -2027,22 +2031,24 @@ public function executeAgentOrder(sfRequest $request){
 
                             $getvoipInfo = new Criteria();
                             $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
+                            $getvoipInfo->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 1);
                             $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
                             if(isset($getvoipInfos)){
                                 $voipnumbers = $getvoipInfos->getNumber() ;
                                 $voipnumbers =  substr($voipnumbers,2);
+
+                                $tc = new Criteria();
+                                $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                                $tc->add(TelintaAccountsPeer::STATUS,3);
+                                if(TelintaAccountsPeer::doCount($tc)>0){
+                                    $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
+                                    Telienta::terminateAccount($telintaAccountR);
+                                }
+                                Telienta::createReseNumberAccount($voipnumbers, $customer, $newMobileNo);
                             }else{
                             }
 
-                            $tc = new Criteria();
-                            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-                            $tc->add(TelintaAccountsPeer::STATUS,3);
-                            if(TelintaAccountsPeer::doCount($tc)>0){
-                                $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
-                                Telienta::terminateAccount($telintaAccountR);
-                            }
-
-                            Telienta::createReseNumberAccount($voipnumbers, $customer, $newMobileNo);
+                            
                         }
 
                             $callbacklog = new CallbackLog();
@@ -2053,15 +2059,14 @@ public function executeAgentOrder(sfRequest $request){
 
                         
                          $number = $countrycode . $mobile_number;
-                        $sms_text = "Dear customer
-                            We have changed your number from: $mobile_number to: $newnumber, you can now use LandNCall. If you have further questions please be free to contact the support on: support@landncall.com";
-                        CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
-
-                        //Send SMS ----
-                        $number = $newMobileNo;
-                        $sms_text = "Dear customer
-                            We have changed your number from: $mobile_number to: $newnumber, you can now use LandNCall. If you have further questions please be free to contact the support on: support@landncall.com";
-                       CARBORDFISH_SMS::Send($number, $sms_text,"LandNCall");
+                         $sms = SmsTextPeer::retrieveByPK(12);
+                         $sms_text = $sms->getMessageText();
+                         $sms_text = str_replace(array("(oldnumber)", "(newnumber)"),array($mobile_number, $newnumber),$sms_text);
+                    
+                         SMSNU::Send($number, $sms_text,"LandNCall");
+                         //Send SMS ----
+                         $number = $newMobileNo;
+                         SMSNU::Send($number, $sms_text,"LandNCall");
                        
                     }
 //exit;

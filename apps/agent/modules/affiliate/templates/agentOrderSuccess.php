@@ -18,6 +18,7 @@
 	<tr>
 		<th style="text-align:left">&nbsp;</th>
 		<th style="text-align:left">Date</th>
+                <th style="text-align:left">Description</th>
 		<th style="text-align:left">Amount</th>
 		<th style="text-align:left">Show Reciept</th>
 
@@ -27,6 +28,12 @@
         <tr <?php echo 'bgcolor="'.($i%2 == 0?'#f0f0f0':'#ffffff').'"' ?>>
             <td><?php echo ++$i ?>.</td>
             <td><?php echo $agentOrder->getCreatedAt() ?></td>
+            <td><?php if($agentOrder->getOrderDescription()){
+                $c = new Criteria();
+                $c->add(TransactionDescriptionPeer::ID,$agentOrder->getOrderDescription());
+                $transaction_desc = TransactionDescriptionPeer::doSelectOne($c);
+                echo $transaction_desc->getTitle();
+            } ?></td>
             <td><?php echo $agentOrder->getAmount() ?></td>
             <td><a href="<?php echo url_for('affiliate/printAgentReceipt?aoid='.$agentOrder->getId(), true) ?>" > Reciept</a>
             </td>

@@ -1008,11 +1008,11 @@
             </trans-unit>
                <trans-unit id="10845" translate="yes" reformat="yes" xml:space="default">
                 <source>from date</source>
-                <target>från datum</target>
+                <target>Avresa</target>
             </trans-unit>
               <trans-unit id="10846" translate="yes" reformat="yes" xml:space="default">
                 <source>to date</source>
-                <target>hittills</target>
+                <target>Hemresa</target>
             </trans-unit>
         </body>
     </file>

@@ -1,6 +1,15 @@
 <?php include_stylesheets_for_form($form) ?>
 <?php include_javascripts_for_form($form) ?>
-
+<script>
+     
+	$(function() {
+                $('body').css('overflow','hidden');
+                $("#wrap").width("629px");
+                $("#newCustomerForm").width("629px");
+                $('.split-form-sign-up').width("629px");
+        });
+       
+	</script>
 <form method="post" action="<?php url_for('@signup_step1') ?>" id="newCustomerForm" <?php $form->isMultipart() and print 'enctype="multipart/form-data" ' ?>>
   <div class="left-col">
     <div class="split-form-sign-up">
@@ -267,8 +276,8 @@
 			</div>
           <!-- end newsletter -->
 		  
-			 <div id="content" >
-			 	<input type="submit" class="butonsigninsmall" name="submit" style="cursor: pointer; margin-left: 70px;"  value="<?php echo __('Next') ?>" ></div>
+			 <div id="content" style="float:none;clear:both;"  >
+			 	<input type="submit" class="butonsigninsmall" name="submit" style="cursor: pointer;"  value="<?php echo __('Next') ?>" ></div>
 			
             </li>
 			</div>

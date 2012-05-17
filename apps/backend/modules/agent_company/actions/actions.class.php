@@ -1,5 +1,5 @@
 <?php
-
+require_once(sfConfig::get('sf_lib_dir') . '/emailLib.php');
 /**
  * agent_company actions.
  *
@@ -221,6 +221,186 @@ public function executeNewsEdit(sfWebRequest $request)
 
 
 }
+public function executeRefilAgentCompany($request){
 
+
+    $agentId = $request->getParameter('agent_company_id');
+    $amount = $request->getParameter('refill_amount');
+    $transaction_desc_id = $request->getParameter('transaction_description');
+    
+    $c = new Criteria();
+    $agent_order = new AgentOrder();
+    $agent_order->setAgentCompanyId($agentId);
+    $agent_order->setStatus('1');
+    $agent_order->save();
+
+    $agent_order->setAgentOrderId('a0' . $agent_order->getId());
+    $agent_order->save();
+
+    $order_id =  $agent_order->getAgentOrderId();
+    
+
+if ($order_id and $amount) {
+    $c = new Criteria();
+    $c->add(AgentOrderPeer::AGENT_ORDER_ID, $order_id);
+    $c->add(AgentOrderPeer::STATUS, 1);
+    $agent_order = AgentOrderPeer::doSelectOne($c);
+    $agent_order->setAmount($amount);
+    $agent_order->setOrderDescription($transaction_desc_id);
+    $agent_order->setStatus(3);
+    $agent_order->save();
+
+    $agent = AgentCompanyPeer::retrieveByPK($agent_order->getAgentCompanyId());
+    $agent->setBalance($agent->getBalance() + ($amount));
+    $agent->save();
+    $this->agent = $agent;
+
+    $amount = $amount;
+    $remainingbalance = $agent->getBalance();
+    $aph = new AgentPaymentHistory();
+    $aph->setAgentId($agent_order->getAgentCompanyId());
+    $aph->setExpeneseType(9);
+    $aph->setOrderDescription($transaction_desc_id);
+    $aph->setAmount($amount);
+    $aph->setRemainingBalance($remainingbalance);
+    $aph->save();
+
+    $this->getUser()->setFlash('message', 'Your Selected Agent Company is Refill Successful ' . $amount . ' SEK is approved');
+    emailLib::sendAdminRefilEmail($this->agent, $agent_order);
+    $this->redirect('agent_company/agentCompanyPayment');
+
+   }else{
+    $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__('Enter all required fields.'));
+    $this->redirect('agent_company/selectCompany');        
+   }
+}
+public function executeAgentCompanyPayment(sfWebrequest $request) {
+
+        $agentId=0;
+        $c = new Criteria();
+        $c->add(AgentCompanyPeer::IS_PREPAID,1);
+        $Lcompanies = AgentCompanyPeer::doSelect($c);
+        $this->Lcompanies=$Lcompanies;
+
+        $ctd = new Criteria();        
+        $this->transactionDesc = TransactionDescriptionPeer::doSelect($ctd);
+        
+        
+        $refilltype = $request->getParameter('refilltype');
+        $this->refilltype=$refilltype;
+        $agentId = $request->getParameter('agent_company_id');
+        $this->agentidd=$agentId;
+
+        $ca = new Criteria();
+        if($agentId>0){
+            $ca->add(AgentOrderPeer::AGENT_COMPANY_ID,$agentId);
+        }
+        if($refilltype==0){
+
+        }else{
+              $ca->add(AgentOrderPeer::ORDER_DESCRIPTION,$refilltype);
+        }
+        
+
+        $ca->addAnd(AgentOrderPeer::STATUS, 3);
+        $ca->addDescendingOrderByColumn(AgentOrderPeer::CREATED_AT);
+        $agent = AgentOrderPeer::doSelect($ca);
+
+        if($agentId>0){
+            $this->agent_company = AgentCompanyPeer::retrieveByPK($agentId);
+        }
+        $this->agents = $agent;
+    }
+    public function executePrintAgentReceipt(sfWebrequest $request) {
+        $ca = new Criteria();
+        $aoid = $request->getParameter('aoid');
+        $agent_order = AgentOrderPeer::retrieveByPk($aoid);
+        $this->agent = AgentCompanyPeer::retrieveByPk($agent_order->getAgentCompanyId());
+        $this->aoid = $aoid;
+        $this->agent_order = $agent_order;
+
+        $this->setLayout(false);
+    }
+  public function executeSelectCompany($request){
+
+
+        $c = new Criteria();
+        $c->add(AgentCompanyPeer::IS_PREPAID,1);
+        $Lcompanies = AgentCompanyPeer::doSelect($c);
+        $this->Lcompanies=$Lcompanies;
+        
+        $ct = new Criteria();
+        $ct->add(TransactionDescriptionPeer::TRANSACTION_TYPE_ID,1); // For refill
+        $ct->addAnd(TransactionDescriptionPeer::TRANSACTION_SECTION_ID,1); // 1, Description is for Admin and 2, for  Agent
+        $this->transactionDescriptions = TransactionDescriptionPeer::doSelect($ct);
+        
+
+     }
+ 
+  public function executeChargeCompany($request){
+        $c = new Criteria();
+        $c->add(AgentCompanyPeer::IS_PREPAID,1);
+        $Lcompanies = AgentCompanyPeer::doSelect($c);
+        $this->Lcompanies=$Lcompanies;
+        
+        $ct = new Criteria();
+        $ct->add(TransactionDescriptionPeer::TRANSACTION_TYPE_ID,2); // For charge
+        $ct->addAnd(TransactionDescriptionPeer::TRANSACTION_SECTION_ID,1); // 1, Description is for Admin and 2, for  Agent
+        $this->transactionDescriptions = TransactionDescriptionPeer::doSelect($ct);
+    }
+  
+  public function executeChargeAgentCompany($request){
+
+
+    $agentId = $request->getParameter('agent_company_id');
+    $amount = $request->getParameter('charge_amount');
+    $transaction_desc_id = $request->getParameter('transaction_description');
+    
+    $c = new Criteria();
+    $agent_order = new AgentOrder();
+    $agent_order->setAgentCompanyId($agentId);
+    $agent_order->setStatus('1');
+    $agent_order->save();
+
+    $agent_order->setAgentOrderId('a0' . $agent_order->getId());
+    $agent_order->save();
+
+    $order_id =  $agent_order->getAgentOrderId();
+    
+
+  if ($order_id and $amount) {
+    $c = new Criteria();
+    $c->add(AgentOrderPeer::AGENT_ORDER_ID, $order_id);
+    $c->add(AgentOrderPeer::STATUS, 1);
+    $agent_order = AgentOrderPeer::doSelectOne($c);
+    $agent_order->setAmount(-$amount);
+    $agent_order->setOrderDescription($transaction_desc_id);
+    $agent_order->setStatus(3);
+    $agent_order->save();
+
+    $agent = AgentCompanyPeer::retrieveByPK($agent_order->getAgentCompanyId());
+    $agent->setBalance($agent->getBalance() - ($amount));
+    $agent->save();
+    $this->agent = $agent;
+
+    $amount = $amount;
+    $remainingbalance = $agent->getBalance();
+    $aph = new AgentPaymentHistory();
+    $aph->setAgentId($agent_order->getAgentCompanyId());
+    $aph->setExpeneseType(9);
+    $aph->setAmount(-$amount);
+    $aph->setOrderDescription($transaction_desc_id);
+    $aph->setRemainingBalance($remainingbalance);
+    $aph->save();
+
+    $this->getUser()->setFlash('message', 'Your Selected Agent Company is Charged Successfully ' . -$amount . ' SEK is approved');
+    emailLib::sendAdminRefilEmail($this->agent, $agent_order);
+    $this->redirect('agent_company/agentCompanyPayment');
+
+   }else{
+    $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__('Enter all required fields.'));
+    $this->redirect('agent_company/chargeCompany');        
+   }
+  }
 
 }
