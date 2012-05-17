@@ -216,8 +216,8 @@ class Telienta {
             return -1 * $Balance;
     }
 
-    public static function charge(Customer $customer, $amount) {
-        return self::makeTransaction($customer, "Manual charge", $amount);
+    public static function charge(Customer $customer, $amount,$description) {
+        return self::makeTransaction($customer, "Manual charge", $amount,$description);
     }
 
     public static function recharge(Customer $customer, $amount) {
@@ -244,7 +244,7 @@ class Telienta {
                $smsAlert->save();
            }
         }
-        return self::makeTransaction($customer, "Manual payment", $amount);
+        return self::makeTransaction($customer, "Manual payment", $amount,"Refill");
     }
 
 
@@ -373,7 +373,7 @@ class Telienta {
         return true;
     }
 
-    private static function makeTransaction(Customer $customer, $action, $amount) {
+    private static function makeTransaction(Customer $customer, $action, $amount,$description) {
         $accounts = false;
         $max_retries = 5;
         $retry_count = 0;
@@ -386,7 +386,7 @@ class Telienta {
                             'i_customer' => $customer->getICustomer(),
                             'action' => $action, //Manual payment, Manual charge
                             'amount' => $amount,
-                            'visible_comment' => 'charge by SOAP ' . $action
+                            'visible_comment' => $description
                         ));
             } catch (SoapFault $e) {
                 if ($e->faultstring != 'Could not connect to host') {

@@ -158,7 +158,7 @@ if($pus==1){
                         <tr>
                             <td class="title"><?php echo __('Date &amp; time') ?></td>
                             <td class="title" width="40%"><?php echo __('Description') ?></td>
-                                <td class="title"><?php echo __('Description') ?></td>
+                                <td class="title"><?php echo __('Amount') ?></td>
                             </tr>
                         <?php
                         $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate . ' 00:00:00', $todate . ' 23:59:59', false, 1);
@@ -170,7 +170,7 @@ if($pus==1){
                             <tr>
                                 <td><?php echo date("Y-m-d H:i:s", strtotime($xdr->bill_time)); ?></td>
                                 <td><?php echo $xdr->CLD; ?></td>
-                                <td><?php echo $xdr->description; ?></td>
+                                <td><?php echo $xdr->charged_amount; ?></td>
                             </tr>
                             <?php } }else {
 
@@ -179,7 +179,31 @@ if($pus==1){
                             } ?>
                         </table><br/><br/>
 
+                           <h1><?php echo __('Payment History'); ?> </h1>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
+                        <tr>
+                            <td class="title"><?php echo __('Date &amp; time') ?></td>
+                            <td class="title" width="40%"><?php echo __('Description') ?></td>
+                                <td class="title"><?php echo __('Amount') ?></td>
+                            </tr>
+                        <?php
+                        $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate . ' 00:00:00', $todate . ' 23:59:59', false, 2);
+                        if(count($tilentaCallHistryResult)>0){
+                        foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                         ?>
 
+
+                            <tr>
+                                <td><?php echo date("Y-m-d H:i:s", strtotime($xdr->bill_time)); ?></td>
+                                <td><?php echo $xdr->CLD; ?></td>
+                                <td><?php echo $xdr->charged_amount*-1; ?></td>
+                            </tr>
+                            <?php } }else {
+
+                                echo __('There are currently no call records to show.');
+
+                            } ?>
+                        </table><br/><br/>
 
 
 
