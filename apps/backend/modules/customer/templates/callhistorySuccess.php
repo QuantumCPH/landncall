@@ -152,7 +152,38 @@ if($pus==1){
             </form>
         </div>
             
-                <h1>Call History</h1>
+
+                <h1><?php echo __('Credit History'); ?> </h1>
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
+                        <tr>
+                            <td class="title"><?php echo __('Date &amp; time') ?></td>
+                            <td class="title" width="40%"><?php echo __('Description') ?></td>
+                                <td class="title"><?php echo __('Description') ?></td>
+                            </tr>
+                        <?php
+                        $tilentaCallHistryResult = Telienta::callHistory($customer, $fromdate . ' 00:00:00', $todate . ' 23:59:59', false, 1);
+                        if(count($tilentaCallHistryResult)>0){
+                        foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                         ?>
+
+
+                            <tr>
+                                <td><?php echo date("Y-m-d H:i:s", strtotime($xdr->bill_time)); ?></td>
+                                <td><?php echo $xdr->CLD; ?></td>
+                                <td><?php echo $xdr->description; ?></td>
+                            </tr>
+                            <?php } }else {
+
+                                echo __('There are currently no call records to show.');
+
+                            } ?>
+                        </table><br/><br/>
+
+
+
+
+
+    <h1>Call History</h1>
 
                 <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign" border='0'>
                 <tr class="headings">

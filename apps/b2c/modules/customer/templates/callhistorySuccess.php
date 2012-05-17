@@ -185,7 +185,7 @@
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                         <tr>
                             <td class="title"><?php echo __('Date &amp; time') ?></td>
-                            <td class="title" width="40%"><?php echo __('Phone Number') ?></td>
+                            <td class="title" width="40%"><?php echo __('Description') ?></td>
                                 <td class="title"><?php echo __('Description') ?></td>
                             </tr>
                         <?php
