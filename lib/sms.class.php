@@ -60,7 +60,7 @@ class SMSNU {
     //put your code here
 
     private static $main   = '13rkha84';
-      private static $id  = 'LandnCall';
+      private static $id  = '0701086015';
 
 
    /*
@@ -83,7 +83,7 @@ class SMSNU {
          
         );
         $queryString = http_build_query($data, '', '&');
-        $queryString = smsCharacter::smsCharacterReplacement($queryString);
+       // $queryString = smsCharacter::smsCharacterReplacement($queryString);
         $res = file_get_contents('http://smsnu.dk/sendsms?' . $queryString);
         sleep(0.15);
 
