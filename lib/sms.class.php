@@ -13,7 +13,7 @@ class CARBORDFISH_SMS {
     private static $S   = 'H';
     private static $UN  = 'zapna1';
     private static $P   = 'Zapna2010';
-    private static $SA  = 'LandnCall';
+    private static $SA  = 'LandNCall';
     private static $ST   = 5;
     
    /*
@@ -60,7 +60,7 @@ class SMSNU {
     //put your code here
 
     private static $main   = '13rkha84';
-      private static $id  = 'LandnCall';
+      private static $id  = 'LandNCall';
    /*
     * Description of Send
     *
