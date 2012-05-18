@@ -216,11 +216,11 @@ class Telienta {
             return -1 * $Balance;
     }
 
-    public static function charge(Customer $customer, $amount, $description) {
+    public static function charge(Customer $customer, $amount, $description="Refill") {
         return self::makeTransaction($customer, "Manual charge", $amount, $description);
     }
 
-    public static function recharge(Customer $customer, $amount) {
+    public static function recharge(Customer $customer, $amount, $description) {
         $c = new Criteria;
         $c->add(EmailAlertSentPeer::USAGE_ALERT_STATUS_ID, null, Criteria::ISNOTNULL);
         $c->addAnd(EmailAlertSentPeer::CUSTOMER_ID,$customer->getId());
@@ -244,7 +244,7 @@ class Telienta {
                $smsAlert->save();
            }
         }
-        return self::makeTransaction($customer, "Manual payment", $amount, "Refill");
+        return self::makeTransaction($customer, "Manual payment", $amount, $description);
     }
 
     public static function callHistory($customer, $fromDate, $toDate, $reseller=false) {
@@ -263,6 +263,7 @@ class Telienta {
             } catch (SoapFault $e) {
                 if ($e->faultstring != 'Could not connect to host') {
                     emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History  this is the error for cusotmer with  ICustomer: " . $icustomer . " error is " . $e->faultstring . "  <br/> Please Investigate.");
+                    return false;
                 }
             }
             sleep(0.5);
