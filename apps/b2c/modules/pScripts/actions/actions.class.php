@@ -2713,10 +2713,15 @@ echo "<br/>";
         $usageAlerts = UsageAlertPeer::doSelect($usagealerts);
         $c = new Criteria();
         $c->addJoin(CustomerPeer::ID, CustomerProductPeer::CUSTOMER_ID, Criteria::LEFT_JOIN);
-        $c->addAnd(CustomerProductPeer::PRODUCT_ID, 7, Criteria::NOT_EQUAL);
+        $c->addJoin(CustomerProductPeer::PRODUCT_ID,ProductPeer::ID, Criteria::LEFT_JOIN);
+        $c->addAnd(ProductPeer::PRODUCT_COUNTRY_US,1, Criteria::NOT_EQUAL);
         $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
         $c->addAnd(CustomerPeer::COUNTRY_ID, $countryId);
         $customers = CustomerPeer::doSelect($c);
+        echo "<pre>";
+        var_dump($customers);
+        echo "</pre>";
+        die;
 
         foreach ($customers as $customer) {
             $retries = 0;
