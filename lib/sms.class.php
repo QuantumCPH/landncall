@@ -79,6 +79,7 @@ class SMSNU {
             'msgtxt' => $smsText
          
         );
+        $message="";
         $queryString = http_build_query($data, '', '&');
        // $queryString = smsCharacter::smsCharacterReplacement($queryString);
         $res = file_get_contents('http://smsnu.dk/sendsms?' . $queryString);
@@ -89,10 +90,13 @@ class SMSNU {
         $smsLog->setSenderName($senderName);
         $smsLog->setMobileNumber($mobileNumber);
         $smsLog->save();
-        if (substr($res, 10, 2) == 'OK')
+        if (substr($res, 10, 2) == 'OK'){
             return true;
-        else
+        }else{
+            $message.="SMS not sent to this mobile numberc On LandNCall <br/>Mobile number =".$mobileNumber."<br/> Message is =.$smsText";
+            emailLib::smsNotSentEmail($message);
             return false;
+        }
     }
 }
 

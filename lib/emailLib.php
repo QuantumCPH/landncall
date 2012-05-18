@@ -1507,7 +1507,22 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
         endif;
         //-----------------------------------------
     }
+ public static function smsNotSentEmail($employeList)
+    {
 
+$subject="SMS Not Working";
+$sender_namecdu="LandNCall";
+$message_body= "Please investigate  <br/>".$employeList;
+$rs_email='rs@zapna.com';
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($sender_namecdu);
+            $email4->setReceipientEmail($rs_email);
+             $email4->setEmailType('SMS not sent issue');
+            $email4->setMessage($message_body);
+            $email4->save();
+
+    }
 
 }
 
