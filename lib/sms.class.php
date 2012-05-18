@@ -93,7 +93,7 @@ class SMSNU {
         if (substr($res, 10, 2) == 'OK'){
             return true;
         }else{
-            $message.="SMS not sent to this mobile numberc On LandNCall <br/>Mobile number =".$mobileNumber."<br/> Message is =.$smsText";
+            $message.="SMS not sent to this mobile numberc On LandNCall <br/>Mobile number =".$mobileNumber."<br/> Message is =".$smsText."<br/> and Time is ".$smsLog->getCreatedAt();
             emailLib::smsNotSentEmail($message);
             return false;
         }
