@@ -3192,9 +3192,9 @@ $headers .= "From:" . $from;
     }
 
 
-//       public function executeGetSms(sfWebRequest $request){
-//       $smstext = SmsTextPeer::retrieveByPK(5);
-//       SMSNU::Send(923006826451, $smstext->getMessageText());
-//         return sfView::NONE;
-//}
+       public function executeGetSms(sfWebRequest $request){
+       $smstext ="Du är registrerad framgångsrikt. ditt saldo är 99";
+       SMSNU::Send(46732801013, $smstext);
+         return sfView::NONE;
+}
 }

@@ -32,7 +32,7 @@ class CARBORDFISH_SMS {
             'S' => self::$S,
             'UN' => self::$UN,
             'P' => self::$P,
-            'DA' => $mobileNumber,
+            'DA' => $mobileNumber, 
             'SA' => $senderName,
             'M' => $smsText,
             'ST' => self::$ST
@@ -60,9 +60,7 @@ class SMSNU {
     //put your code here
 
     private static $main   = '13rkha84';
-      private static $id  = '0701086015';
-
-
+      private static $id  = '+46701086015';
    /*
     * Description of Send
     *
@@ -74,7 +72,6 @@ class SMSNU {
     public static function Send($mobileNumber,$smsText,$senderName=null) {
         if($senderName == null)
             $senderName = self::$id;
-
         $data = array(
             'main' => self::$main,
             'til' => $mobileNumber,
@@ -86,7 +83,6 @@ class SMSNU {
        // $queryString = smsCharacter::smsCharacterReplacement($queryString);
         $res = file_get_contents('http://smsnu.dk/sendsms?' . $queryString);
         sleep(0.15);
-
         $smsLog = new SmsLog();
         $smsLog->setMessage($smsText);
         $smsLog->setStatus($res);
@@ -98,7 +94,6 @@ class SMSNU {
         else
             return false;
     }
-
 }
 
 ?>
