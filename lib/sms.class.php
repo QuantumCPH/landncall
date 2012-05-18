@@ -60,7 +60,7 @@ class SMSNU {
     //put your code here
 
     private static $main   = '13rkha84';
-      private static $id  = '46701086015';
+      private static $id  = 'LandnCall';
    /*
     * Description of Send
     *
