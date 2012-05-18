@@ -2718,10 +2718,6 @@ echo "<br/>";
         $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
         $c->addAnd(CustomerPeer::COUNTRY_ID, $countryId);
         $customers = CustomerPeer::doSelect($c);
-        echo "<pre>";
-        var_dump($customers);
-        echo "</pre>";
-        die;
 
         foreach ($customers as $customer) {
             $retries = 0;
