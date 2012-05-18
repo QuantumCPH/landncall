@@ -3182,6 +3182,7 @@ $headers .= "From:" . $from;
         return sfView::NONE;
    }
 
+
        public function executeGetBalanceFromTelienta(sfWebRequest $request){
         $c = new Criteria();
         $c->add(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
@@ -3193,9 +3194,11 @@ $headers .= "From:" . $from;
     }
 
 
+
        public function executeGetSms(sfWebRequest $request){
        $smstext ="Du är registrerad framgångsrikt. ditt saldo är 99";
        SMSNU::Send(46732801013, $smstext);
          return sfView::NONE;
 }
+
 }

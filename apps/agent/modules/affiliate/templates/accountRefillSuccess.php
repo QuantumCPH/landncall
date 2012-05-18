@@ -165,12 +165,13 @@
                 <input type="hidden" name="merchant" value="90049676" />
 		<input type="hidden" name="currency" value="752" />
 		<input type="hidden" name="orderid" id="orderid" value="<?php echo $agent_order->getAgentOrderId() ?>" />
-		<input type="hidden" name="textreply" value="true" />
+	 
 
 		<input type="hidden" name="calcfee" value="yes" />
 		<input type="hidden" name="account" value="YTIP" />
 		<input type="hidden" name="status" value="" />
-<!--		<input type="hidden" name="md5key" value="<?php echo $md5key;?>">-->
+                 <input type="hidden" name="lang" value="sv" />   
+              <input type="hidden" name="test" value="yes" />
 		<input type="hidden" name="cancelurl" value="http://landncall.zerocall.com/agent.php/affiliate/thankyou/?accept=cancel" />
 		<input type="hidden" name="callbackurl" value="http://landncall.zerocall.com/agent.php/affiliate/accountRefill" />
 		<input type="hidden" name="accepturl" id="accepturl"  value="http://landncall.zerocall.com/agent.php/affiliate/thankyou?accept=yes&subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=50000">

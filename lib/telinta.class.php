@@ -216,8 +216,10 @@ class Telienta {
             return -1 * $Balance;
     }
 
+
     public static function charge(Customer $customer, $amount, $description="Refill") {
         return self::makeTransaction($customer, "Manual charge", $amount, $description);
+
     }
 
     public static function recharge(Customer $customer, $amount, $description) {
@@ -244,10 +246,13 @@ class Telienta {
                $smsAlert->save();
            }
         }
+
         return self::makeTransaction($customer, "Manual payment", $amount, $description);
+
     }
 
-    public static function callHistory($customer, $fromDate, $toDate, $reseller=false) {
+
+    public static function callHistory($customer, $fromDate, $toDate, $reseller=false,$iService=3) {
         $xdrList = false;
         $max_retries = 5;
         $retry_count = 0;
@@ -259,23 +264,28 @@ class Telienta {
             $icustomer = $customer->getICustomer();
         while (!$xdrList && $retry_count < $max_retries) {
             try {
-                $xdrList = $pb->get_customer_xdr_list(array('i_customer' => $icustomer, 'from_date' => $fromDate, 'to_date' => $toDate, 'i_service' => 3));
+                $xdrList = $pb->get_customer_xdr_list(array('i_customer' => $icustomer, 'from_date' => $fromDate, 'to_date' => $toDate, 'i_service' => $iService));
             } catch (SoapFault $e) {
                 if ($e->faultstring != 'Could not connect to host') {
-                    emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History  this is the error for cusotmer with  ICustomer: " . $icustomer . " error is " . $e->faultstring . "  <br/> Please Investigate.");
+
+                    emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History  this is the error for cusotmer with  ICustomer: " . $icustomer . " and the i_service is: ".$iService."error is " . $e->faultstring . "  <br/> Please Investigate.");
                     return false;
+
                 }
             }
             sleep(0.5);
             $retry_count++;
+
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History on telinta.  and the i_service is:".$iService." .Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
 
         return $xdrList;
     }
+
+
 
     public static function getCustomerInfo($uniqueId) {
         $cInfo = false;
