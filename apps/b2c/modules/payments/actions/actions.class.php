@@ -519,7 +519,7 @@ class paymentsActions extends sfActions {
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
-                    Telienta::recharge($this->customers, $OpeningBalance);
+                    Telienta::recharge($this->customers, $OpeningBalance,$transaction_i->getDescription());
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
                     $getvoipInfo = new Criteria();
