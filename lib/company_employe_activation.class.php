@@ -380,7 +380,7 @@ class CompanyEmployeActivation {
             } catch (SoapFault $e) {
                 if ($e->faultstring != 'Could not connect to host') {
                     emailLib::sendErrorInTelinta("Company Call History: " . $company->getId() . " Error!", "We have faced an issue with Company while Fetching Call History  this is the error for cusotmer with  Company ID: " . $company->getId() . " error is " . $e->faultstring . "  <br/> Please Investigate.");
-                    
+                    return false;
                 }
             }
             sleep(0.5);

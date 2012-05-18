@@ -13,7 +13,7 @@ class CARBORDFISH_SMS {
     private static $S   = 'H';
     private static $UN  = 'zapna1';
     private static $P   = 'Zapna2010';
-    private static $SA  = 'LandnCall';
+    private static $SA  = 'LandNCall';
     private static $ST   = 5;
     
    /*
@@ -32,7 +32,7 @@ class CARBORDFISH_SMS {
             'S' => self::$S,
             'UN' => self::$UN,
             'P' => self::$P,
-            'DA' => $mobileNumber,
+            'DA' => $mobileNumber, 
             'SA' => $senderName,
             'M' => $smsText,
             'ST' => self::$ST
@@ -60,9 +60,7 @@ class SMSNU {
     //put your code here
 
     private static $main   = '13rkha84';
-      private static $id  = 'LandnCall';
-
-
+      private static $id  = 'LandNCall';
    /*
     * Description of Send
     *
@@ -74,7 +72,6 @@ class SMSNU {
     public static function Send($mobileNumber,$smsText,$senderName=null) {
         if($senderName == null)
             $senderName = self::$id;
-
         $data = array(
             'main' => self::$main,
             'til' => $mobileNumber,
@@ -82,23 +79,25 @@ class SMSNU {
             'msgtxt' => $smsText
          
         );
+        $message="";
         $queryString = http_build_query($data, '', '&');
-        $queryString = smsCharacter::smsCharacterReplacement($queryString);
+       // $queryString = smsCharacter::smsCharacterReplacement($queryString);
         $res = file_get_contents('http://smsnu.dk/sendsms?' . $queryString);
         sleep(0.15);
-
         $smsLog = new SmsLog();
         $smsLog->setMessage($smsText);
         $smsLog->setStatus($res);
         $smsLog->setSenderName($senderName);
         $smsLog->setMobileNumber($mobileNumber);
         $smsLog->save();
-        if (substr($res, 10, 2) == 'OK')
+        if (substr($res, 10, 2) == 'OK'){
             return true;
-        else
+        }else{
+            $message.="SMS not sent to this mobile numberc On LandNCall <br/>Mobile number =".$mobileNumber."<br/> Message is =".$smsText."<br/> and Time is ".$smsLog->getCreatedAt();
+            emailLib::smsNotSentEmail($message);
             return false;
+        }
     }
-
 }
 
 ?>
