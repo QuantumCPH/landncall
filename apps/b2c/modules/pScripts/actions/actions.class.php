@@ -2713,7 +2713,8 @@ echo "<br/>";
         $usageAlerts = UsageAlertPeer::doSelect($usagealerts);
         $c = new Criteria();
         $c->addJoin(CustomerPeer::ID, CustomerProductPeer::CUSTOMER_ID, Criteria::LEFT_JOIN);
-        $c->addAnd(CustomerProductPeer::PRODUCT_ID, 7, Criteria::NOT_EQUAL);
+        $c->addJoin(CustomerProductPeer::PRODUCT_ID,ProductPeer::ID, Criteria::LEFT_JOIN);
+        $c->addAnd(ProductPeer::PRODUCT_COUNTRY_US,1, Criteria::NOT_EQUAL);
         $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
         $c->addAnd(CustomerPeer::COUNTRY_ID, $countryId);
         $customers = CustomerPeer::doSelect($c);
@@ -3181,6 +3182,7 @@ $headers .= "From:" . $from;
         return sfView::NONE;
    }
 
+
        public function executeGetBalanceFromTelienta(sfWebRequest $request){
         $c = new Criteria();
         $c->add(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
@@ -3192,9 +3194,11 @@ $headers .= "From:" . $from;
     }
 
 
+
        public function executeGetSms(sfWebRequest $request){
        $smstext ="Du är registrerad framgångsrikt. ditt saldo är 99";
        SMSNU::Send(46732801013, $smstext);
          return sfView::NONE;
 }
+
 }

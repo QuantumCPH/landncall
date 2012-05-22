@@ -14,12 +14,13 @@ class telinta_configActions extends sfActions {
     }
 
     public function executeNew(sfWebRequest $request) {
+       
         $c = new Criteria();
         $tilentaConfigCount = TelintaConfigPeer::doCount($c);
         if ($tilentaConfigCount == 0) {
-            $this->form = new TelintaConfigForm();
             $pb = new PortaBillingSoapClient(CompanyEmployeActivation::$telintaSOAPUrl, 'Admin', 'Customer');
             $session = $pb->_login(CompanyEmployeActivation::$telintaSOAPUser, CompanyEmployeActivation::$telintaSOAPPassword);
+             die ("barankhan");
             if ($session) {
                 $telintaConfig = new TelintaConfig();
                 $telintaConfig->setSession($session);
