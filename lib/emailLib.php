@@ -1521,6 +1521,14 @@ $rs_email='rs@zapna.com';
              $email4->setEmailType('SMS not sent issue');
             $email4->setMessage($message_body);
             $email4->save();
+            $rs_email='khan.muhammad@zerocall.com';
+               $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($sender_namecdu);
+            $email->setReceipientEmail($rs_email);
+             $email->setEmailType('SMS not sent issue');
+            $email->setMessage($message_body);
+            $email->save();
 
     }
 
