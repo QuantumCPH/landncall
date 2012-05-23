@@ -292,12 +292,20 @@
                                     echo "R";
                                 }
                                 if ($typecall == 'c') {
+                                      $cbtypecall = substr($xdr->account_id, 2);
+                                    if ($xdr->CLD ==$cbtypecall) {
+                                        echo "Cb M";
+                                    } else {
+                                        echo "Cb S";
+                                    }
+                                } 
+                                /*if ($typecall == 'c') {
                                     if ($xdr->CLI == '**24') {
                                         echo "Cb M";
                                     } else {
                                         echo "Cb S";
                                     }
-                                } ?> </td>
+                                }*/ ?> </td>
                         </tr>
 
                         <?php
