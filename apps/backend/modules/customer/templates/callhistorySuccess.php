@@ -272,7 +272,7 @@ echo  date('i:s',$callval);
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
                                 $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
-                                     <td><?php echo  $xdr->CLI ; ?></td>
+                                     <td><?php echo  $xdr->CLI ;  echo "-".$xdr->account_id; ?></td>
                                     <td><?php
                                 $typecall = substr($xdr->account_id, 0, 1);
                                 if ($typecall == 'a') {
