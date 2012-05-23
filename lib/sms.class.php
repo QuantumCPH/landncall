@@ -26,6 +26,7 @@ class CARBORDFISH_SMS {
      */
 
     public static function Send($mobileNumber, $smsText, $senderName=null) {
+        $message = "";
         if ($senderName == null)
             $senderName = self::$SA;
 
@@ -43,6 +44,8 @@ class CARBORDFISH_SMS {
         $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
         sleep(0.15);
         if (!$res) {
+            $message.="SMS not sent via CardboradFish to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText ;
+            emailLib::smsNotSentEmail($message);
             return false;
         }
         $smsLog = new SmsLog();
