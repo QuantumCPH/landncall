@@ -283,7 +283,7 @@ echo  date('i:s',$callval);
                                 }
                                 if ($typecall == 'c') {
                                       $cbtypecall = substr($xdr->account_id, 2);
-                                    if ($xdr-$cbtypecall>CLD ==$cbtypecall) {
+                                    if ($xdr->CLD ==$cbtypecall) {
                                         echo "Cb M";
                                     } else {
                                         echo "Cb S";
