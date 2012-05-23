@@ -216,7 +216,7 @@ if($pus==1){
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
                     <th  width="10%"  align="left"><?php echo __('VAT') ?></th>
                     <th width="20%"   align="left"><?php echo __('Cost') ?></th>
-                     <th width="20%"   align="left"><?php echo __('cli') ?></th>
+                   
                     <th  width="20%"   align="left">Samtalstyp</th>
                   </tr>
    <?php
@@ -272,7 +272,7 @@ echo  date('i:s',$callval);
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
                                 $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
-                                     <td><?php echo  $xdr->CLI ;  echo "-".$xdr->account_id; ?></td>
+                                   
                                     <td><?php
                                 $typecall = substr($xdr->account_id, 0, 1);
                                 if ($typecall == 'a') {
@@ -282,7 +282,8 @@ echo  date('i:s',$callval);
                                     echo "R";
                                 }
                                 if ($typecall == 'c') {
-                                    if ($xdr->CLI == '**24') {
+                                      $cbtypecall = substr($xdr->CLI, 0, 1);
+                                    if ($cbtypecall == '4') {
                                         echo "Cb M";
                                     } else {
                                         echo "Cb S";
