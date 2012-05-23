@@ -283,7 +283,7 @@ echo  date('i:s',$callval);
                                 }
                                 if ($typecall == 'c') {
                                       $cbtypecall = substr($xdr->CLI, 0, 1);
-                                    if ($cbtypecall == '4') {
+                                    if ($cbtypecall == 'c') {
                                         echo "Cb M";
                                     } else {
                                         echo "Cb S";
