@@ -2063,10 +2063,10 @@ public function executeAgentOrder(sfRequest $request){
                          $sms_text = $sms->getMessageText();
                          $sms_text = str_replace(array("(oldnumber)", "(newnumber)"),array($mobile_number, $newnumber),$sms_text);
                     
-                         SMSNU::Send($number, $sms_text,"LandNCall");
+                         ROUTED_SMS::Send($number, $sms_text,"LandNCall");
                          //Send SMS ----
                          $number = $newMobileNo;
-                         SMSNU::Send($number, $sms_text,"LandNCall");
+                         ROUTED_SMS::Send($number, $sms_text,"LandNCall");
                        
                     }
 //exit;
