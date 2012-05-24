@@ -2057,12 +2057,12 @@ public function executeAgentOrder(sfRequest $request){
                             $callbacklog->setcallingCode($countrycode);
                             $callbacklog->save();
 
-                        
+                         $mobile_number=substr($mobile_number,1);
                          $number = $countrycode . $mobile_number;
                          $sms = SmsTextPeer::retrieveByPK(12);
                          $sms_text = $sms->getMessageText();
                          $sms_text = str_replace(array("(oldnumber)", "(newnumber)"),array($mobile_number, $newnumber),$sms_text);
-                    
+                                   
                          ROUTED_SMS::Send($number, $sms_text,"LandNCall");
                          //Send SMS ----
                          $number = $newMobileNo;
