@@ -1857,6 +1857,18 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $uc->addAnd(UniqueIdsPeer::STATUS, 0);
                 $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
 
+                $ucc = new Criteria();
+                $ucc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
+
+                if (UniqueIdsPeer::doCount($uc) == 0) {
+                    echo "Unique Id Not Found";
+                    $sms = SmsTextPeer::retrieveByPK(13);
+                    ROUTED_SMS::Send($number, $sms->getMessageText());
+                    die;
+                }
+
+
+
                 $cc = new Criteria();
                 $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
                 $cc->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
