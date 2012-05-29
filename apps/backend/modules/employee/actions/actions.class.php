@@ -267,7 +267,6 @@ class employeeActions extends sfActions {
         $employee->setCountryMobileNumber($contrymobilenumber);
         $employee->setMobileNumber($request->getParameter('mobile_number'));
         $employee->setEmail($request->getParameter('email'));
-        
         $employee->setProductId($request->getParameter('productid'));
        // $employee->setProductPrice($request->getParameter('price'));
         $employee->save();
