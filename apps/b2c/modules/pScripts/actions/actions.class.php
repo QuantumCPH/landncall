@@ -1800,7 +1800,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $callbacklog->setcallingCode(46);
             $callbacklog->save();
 
-            Telienta::createCBAccount($number, $customer);
+            Telienta::createCBAccount($number, $customer,11648);  //11648 is Call back product for IC call
 
             $telintaGetBalance = Telienta::getBalance($customer);
 
