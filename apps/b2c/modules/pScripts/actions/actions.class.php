@@ -1860,7 +1860,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $ucc = new Criteria();
                 $ucc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
 
-                if (UniqueIdsPeer::doCount($uc) == 0) {
+                if (UniqueIdsPeer::doCount($ucc) == 0) {
                     echo "Unique Id Not Found";
                     $sms = SmsTextPeer::retrieveByPK(13);
                     ROUTED_SMS::Send($number, $sms->getMessageText());
