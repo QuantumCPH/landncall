@@ -2548,7 +2548,15 @@ echo "<br/>";
     
           //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
             changeLanguageCulture::languageCulture($request,$this);
-            
+
+
+              $urlval = "autorefill-" . $request->getURI();
+
+        $email21 = new DibsCall();
+        $email21->setCallurl($urlval);
+
+        $email21->save();
+
            $urlval=0;
             $urlval="autorefil-".$request->getParameter('transact');
     
