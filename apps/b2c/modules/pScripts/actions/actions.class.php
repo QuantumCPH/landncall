@@ -2442,7 +2442,24 @@ return sfView::NONE;
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
                    
-                   $customer_balance=Telienta::getBalance($customer);
+                 //  $customer_balance=Telienta::getBalance($customer);
+
+                     $retries = 0;
+            $maxRetries = 5;
+            do {
+                $customer_balance = Telienta::getBalance($customer);
+                $retries++;
+                echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+            } while (!$customer_balance && $retries <= $maxRetries);
+
+            if($retries==$maxRetries){
+                continue;
+            }
+
+
+
+
+
             
                 }
              //   echo $uniqueId.":".$customer_balance."<br/>";
