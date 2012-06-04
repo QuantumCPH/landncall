@@ -2578,7 +2578,7 @@ echo "<br/>";
 //        $email21->save();
 
            $urlval=0;
-            $Parameters="Parameters-autorefil-transactionNumber-OrderNumber-Amount".$request->getParameter('transact')."-".$request->getParameter("orderid")."-".$request->getParameter('amount')."-". $request->getURI();
+            $Parameters="Parameters-autorefil-URL-transactionNumber-OrderNumber-Amount".$request->getURI()."?transact=".$request->getParameter('transact')."&orderid=".$request->getParameter("orderid")."&amount=".$request->getParameter('amount');
    
          $email2 = new DibsCall();
          $email2->setCallurl($Parameters);
