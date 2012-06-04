@@ -2435,7 +2435,10 @@ return sfView::NONE;
 
                 //echo "UniqueID:";
                 $uniqueId = $customer->getUniqueid();
-                if ((int) $uniqueId > 200000) {
+
+                $usid="";
+                    $usid=substr($uniqueId,0,2);
+                if ($usid="us") {
                     $Tes = ForumTel::getBalanceForumtel($customer->getId());
 
                     $customer_balance = $Tes;
@@ -2586,6 +2589,15 @@ echo "<br/>";
          $order_id = $request->getParameter("orderid");
 
 	  	$this->forward404Unless($order_id || $order_amount);
+                $orderscount=0;
+                $cr = new Criteria;
+               	$cr->add(CustomerOrderPeer::ORDER_ID, $order_id);
+                $cr->addAnd(CustomerOrderPeer::ORDER_STATUS_ID, 1);
+	  	$orderscount = CustomerOrderPeer::doCount($cr);
+
+                if($orderscount>0){
+
+
 
 		$order = CustomerOrderPeer::retrieveByPK($order_id);
 
@@ -2600,17 +2612,17 @@ echo "<br/>";
 
 	  	//echo var_dump($transaction);
 
-	  	$order->setOrderStatusId(sfConfig::get('app_status_completed', 3)); //completed
+	  	$order->setOrderStatusId(3); //completed
 	  	//$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 3)); //completed
-	  	$transaction->setTransactionStatusId(sfConfig::get('app_status_completed', 3)); //completed
+	  	$transaction->setTransactionStatusId(3); //completed
 
 
 
 
 		if($transaction->getAmount() > $order_amount){
 	  		//error
-	  		$order->setOrderStatusId(sfConfig::get('app_status_error', 5)); //error in amount
-	  		$transaction->setTransactionStatusId(sfConfig::get('app_status_error', 5)); //error in amount
+	  		$order->setOrderStatusId(5); //error in amount
+	  		$transaction->setTransactionStatusId(5); //error in amount
 	  		//$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 5)); //error in amount
 
 
@@ -2660,7 +2672,10 @@ echo "<br/>";
                         $uniqueId = $this->customer->getUniqueid();
                         $OpeningBalance = $transaction->getAmount();
                         //This is for Recharge the Customer
-                        if((int)$uniqueId>200000){
+                       $usid="";
+                    $usid=substr($uniqueId,0,2);
+                if ($usid="us") {
+                            
                             $cuserid = $this->customer->getId();
                           $amt=$OpeningBalance;
                   $amt=CurrencyConverter::convertSekToUsd($amt);
@@ -2684,15 +2699,7 @@ echo "<br/>";
                               }                            
                        
                         $MinuesOpeningBalance = $OpeningBalance*3;
-                        
-
-
-//echo 'NOOO';
-// Update cloud 9
-        //c9Wrapper::equateBalance($this->customer);
-
-//echo 'Comeing';
-	//set vat
+  
 	$vat = 0;
         $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
 	$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
@@ -2709,21 +2716,15 @@ echo "<br/>";
         $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
         endif;
 
-	//send email
-  	$message_body = $this->getPartial('pScripts/order_receipt', array(
-  						'customer'=>$this->customer,
-  						'order'=>$order,
-  						'transaction'=>$transaction,
-  						'vat'=>$vat,
-  						'wrap'=>false
-  					));
+	 
 
 
 
             emailLib::sendCustomerRefillEmail($this->customer,$order,$transaction); 
+                }
           
-          
-            }    
+            }
+              return sfView::NONE;
   }    
 
 ////////////////////////////////////////
