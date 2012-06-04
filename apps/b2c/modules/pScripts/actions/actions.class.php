@@ -2591,7 +2591,7 @@ echo "<br/>";
 	  	$this->forward404Unless($order_id || $order_amount);
                 $orderscount=0;
                 $cr = new Criteria;
-               	$cr->add(CustomerOrderPeer::ORDER_ID, $order_id);
+               	$cr->add(CustomerOrderPeer::ID, $order_id);
                 $cr->addAnd(CustomerOrderPeer::ORDER_STATUS_ID, 1);
 	  	$orderscount = CustomerOrderPeer::doCount($cr);
 
