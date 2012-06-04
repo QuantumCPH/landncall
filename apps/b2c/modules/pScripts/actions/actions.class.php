@@ -2438,7 +2438,7 @@ return sfView::NONE;
 
                 $usid="";
                     $usid=substr($uniqueId,0,2);
-                if ($usid="us") {
+                if ($usid=="us") {
                     $Tes = ForumTel::getBalanceForumtel($customer->getId());
 
                     $customer_balance = $Tes;
@@ -2674,7 +2674,7 @@ echo "<br/>";
                         //This is for Recharge the Customer
                        $usid="";
                     $usid=substr($uniqueId,0,2);
-                if ($usid="us") {
+                if ($usid=="us") {
                             
                             $cuserid = $this->customer->getId();
                           $amt=$OpeningBalance;
