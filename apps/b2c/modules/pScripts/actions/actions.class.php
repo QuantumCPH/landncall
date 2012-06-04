@@ -1967,7 +1967,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             } else {
                 $c = new Criteria();
                 $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
-                #$c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+                $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
                 $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
 
                 if (CustomerPeer::doCount($c) > 0) {
