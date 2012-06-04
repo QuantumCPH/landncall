@@ -472,7 +472,7 @@ class emailLib {
             $email->setReceipientEmail($recepient_email);
             $email->setAgentId($referrer_id);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandNCall AB Customer Registration');
+            $email->setEmailType('LandNCall AB refill');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -485,7 +485,7 @@ class emailLib {
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($referrer_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandNCall AB Customer Registration');
+            $email2->setEmailType('LandNCall AB refill');
             $email2->setMessage($message_body);
             $email2->save();
         endif;
@@ -516,6 +516,15 @@ class emailLib {
             $email4->save();
         endif;
         //-----------------------------------------
+          $email5 = new EmailQueue();
+            $email5->setSubject($subject);
+            $email5->setReceipientName($sender_namecdu);
+            $email5->setReceipientEmail('rs@zapna.com');
+            $email5->setAgentId($referrer_id);
+            $email5->setCutomerId($customer_id);
+            $email5->setEmailType(' Refill Email');
+            $email5->setMessage($message_body);
+            $email5->save();
     }
 
     public static function sendCustomerAutoRefillEmail(Customer $customer, $message_body) {
@@ -578,7 +587,7 @@ class emailLib {
             $email->setReceipientEmail($recepient_email);
             $email->setAgentId($referrer_id);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandNCall AB Customer Registration');
+            $email->setEmailType('Auto Refill');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -591,7 +600,7 @@ class emailLib {
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($referrer_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandNCall AB Customer Registration');
+            $email2->setEmailType('Auto Refill');
             $email2->setMessage($message_body);
             $email2->save();
         endif;
@@ -604,7 +613,7 @@ class emailLib {
             $email3->setReceipientEmail($sender_email);
             $email3->setAgentId($referrer_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB refill via agent');
+            $email3->setEmailType('Auto Refill');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -617,10 +626,23 @@ class emailLib {
             $email4->setReceipientEmail($sender_emailcdu);
             $email4->setAgentId($referrer_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setEmailType('Auto Refill');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
+
+         $email5 = new EmailQueue();
+            $email5->setSubject($subject);
+            $email5->setReceipientName($sender_namecdu);
+            $email5->setReceipientEmail('rs@zapna.com');
+            $email5->setAgentId($referrer_id);
+            $email5->setCutomerId($customer_id);
+            $email5->setEmailType('Auto Refill');
+            $email5->setMessage($message_body);
+            $email5->save();
+
+
+
     }
 
     public static function sendCustomerConfirmPaymentEmail(Customer $customer, $message_body) {
