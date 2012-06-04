@@ -2682,8 +2682,8 @@ echo "<br/>";
                         }else{
 
 
-
-                        Telienta::recharge($this->customer, $OpeningBalance);
+                        $description="Auto Refill";
+                        Telienta::recharge($this->customer, $OpeningBalance,$description);
                         
                         }
                         //This is for Recharge the Account
@@ -2699,23 +2699,7 @@ echo "<br/>";
                        
                       
   
-	$vat = 0;
-        $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-	$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-	$sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
-
-	$recepient_email = trim($this->customer->getEmail());
-	$recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
-        $referrer_id = trim($this->customer->getReferrerId());
-        if($referrer_id):
-        $c = new Criteria();
-        $c->add(AgentCompanyPeer::ID, $referrer_id);
-
-        $recepient_agent_email  = AgentCompanyPeer::doSelectOne($c)->getEmail();
-        $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
-        endif;
-
-	 
+ 
 
 
 
