@@ -2440,8 +2440,8 @@ return sfView::NONE;
                     $usid=substr($uniqueId,0,2);
                 if ($usid=="us") {
                     $Tes = ForumTel::getBalanceForumtel($customer->getId());
-
-                    $customer_balance = $Tes;
+                     $customer_balance =CurrencyConverter::convertUsdToSek($Tes);
+                    //$Tes;
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
                    
@@ -2569,19 +2569,19 @@ echo "<br/>";
           //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
             changeLanguageCulture::languageCulture($request,$this);
 
-
-              $urlval = "autorefill-" . $request->getURI();
-
-        $email21 = new DibsCall();
-        $email21->setCallurl($urlval);
-
-        $email21->save();
+//
+//              $urlval = "autorefill-" . $request->getURI();
+//
+//        $email21 = new DibsCall();
+//        $email21->setCallurl($urlval);
+//
+//        $email21->save();
 
            $urlval=0;
-            $urlval="autorefil-".$request->getParameter('transact');
-    
+            $Parameters="Parameters-autorefil-transactionNumber-OrderNumber-Amount".$request->getParameter('transact')."-".$request->getParameter("orderid")."-".$request->getParameter('amount')."-". $request->getURI();
+   
          $email2 = new DibsCall();
-         $email2->setCallurl($urlval);
+         $email2->setCallurl($Parameters);
 
             $email2->save();
            $urlval=$request->getParameter('transact');
@@ -2596,7 +2596,6 @@ echo "<br/>";
 	  	$orderscount = CustomerOrderPeer::doCount($cr);
 
                 if($orderscount>0){
-
 
 
 		$order = CustomerOrderPeer::retrieveByPK($order_id);
@@ -2683,7 +2682,7 @@ echo "<br/>";
                         }else{
 
 
-                        $MinuesOpeningBalance = $OpeningBalance*3;
+
                         Telienta::recharge($this->customer, $OpeningBalance);
                         
                         }
@@ -2698,7 +2697,7 @@ echo "<br/>";
                            }else{
                               }                            
                        
-                        $MinuesOpeningBalance = $OpeningBalance*3;
+                      
   
 	$vat = 0;
         $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
