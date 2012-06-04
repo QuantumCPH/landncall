@@ -2703,7 +2703,7 @@ echo "<br/>";
 
 
 
-            emailLib::sendCustomerRefillEmail($this->customer,$order,$transaction); 
+            emailLib::sendCustomerAutoRefillEmail($this->customer,$order,$transaction);
                 }
           
             }

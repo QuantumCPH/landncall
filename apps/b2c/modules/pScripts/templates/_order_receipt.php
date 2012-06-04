@@ -50,59 +50,31 @@ $wrap_content  = isset($wrap)?$wrap:false;
  ?>
  
 <?php if($wrap_content): ?>
-	<p><?php echo __('Hej') ?>&nbsp;<?php echo $customer->getFirstName();?></p>
+	<p><?php echo __('Dear Customer') ?></p>
 	
 	<p>
-	<?php echo __('Tack för din beställning av <b>%1%</b>.', array('%1%'=>$order->getProduct()->getName())) ?>
+	<?php echo __('Thank you for ordering <b>%1%</b> and becoming LandNCall AB Customer. We welcome you to a new and huge mobile world.', array('%1%'=>$order->getProduct()->getName())) ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice
 	</p>
 	
 	<p>
-	<?php echo __('Dina varor kommer att skickas i dag. Du bör ha leverans senast inom två arbertsdagar.'); ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice</p>
+	<?php echo __('With <b>%1%</b>, you can easily call your friends and family for free.', array('%1%'=>$order->getProduct()->getName())) ?></p>
 	
 	<p>
-	<?php echo __('Tveka inte att ta kontakt med oss om det är något du undrar över.') ?>
-	</p>
-        <p>
-            <a href="mailto:Support@landncall.com">Support@landncall.com</a>
-	</p>
-        <p>
-	<?php echo __('Med vänlig hälsning') ?>
-	</p>
-        <p>
-	<?php echo __('Johanna') ?>
+	<?php echo __('Below is the receipt of the product indicated.') ?>
 	</p>
 	<br />
 <?php endif; ?>
 <table width="600px">
-	<tr style="border:0px solid #fff">
+<tr style="border:0px solid #fff">
 		<td colspan="4" align="right" style="text-align:right; border:0px solid #fff"><?php echo image_tag('http://landncall.zerocall.com/images/logo.gif');?></td>
 	</tr>
 </table>
 <table class="receipt" cellspacing="0" width="600px">
-<!--<tr bgcolor="#CCCCCC" class="receipt_header"> 
-    <td colspan="4"> LandNCall AB
-    </td>
-  </tr>
-  <tr>
-  <td colspan="4" class="payer_summary">
-	Telefonv&atilde;gen 30
-	<br />
-	126 37 H&atilde;gersten
-	<br />
 	
-	<br />
-	Tel:      +46 85 17 81 100
-	<br />	
-	<br />
-	Cvr:     32068219
-	<br />
-  </td>
-  </tr>-->
-  <tr bgcolor="#CCCCCC" class="receipt_header"> 
+  <tr bgcolor="#CCCCCC" class="receipt_header">   	
     <th colspan="3"><?php echo __('Order Receipt') ?></th>
     <th><?php echo __('Order No.') ?> <?php echo $order->getId() ?></th>
   </tr>
-  
   <tr> 
     <td colspan="4" class="payer_summary">
       <?php echo __('Customer Number') ?>   <?php echo $customer->getUniqueId(); ?><br/>
@@ -114,14 +86,30 @@ $wrap_content  = isset($wrap)?$wrap:false;
 	  $eC->add(EnableCountryPeer::ID, $customer->getCountryId());
 	  $eC = EnableCountryPeer::doSelectOne($eC);
 	  echo $eC->getName();
-	  ?>
-      
-      
+	  //echo $customer->getCountry()->getName() ?> 
       <br /><br />
-      <?php echo __('Mobile Number') ?>: <br />
-      <?php echo $customer->getMobileNumber() ?><br />
+      
+      
+      <?php    $unid=$customer->getUniqueid();
 
-      <?php if($agent_name!=''){ echo __('Agent Name') ?>:  <?php echo $agent_name; } ?>
+        $usvar=substr($unid,0,2);
+      if($usvar=="us"){?>
+         <?php echo __('US Mobile Number') ?>: <br />
+      <?php    $eCu = new Criteria();
+	  $eCu->add(UsNumberPeer::CUSTOMER_ID, $customer->getId());
+	  $eCum = UsNumberPeer::doSelectOne($eCu);
+	  echo $eCum->getUsMobileNumber();  ?>
+     
+<?php     }else{   ?>
+     <?php     $customer->getMobileNumber()    ?>
+      <?php echo __('Mobile Number') ?>: <br />
+      <?php echo $customer->getMobileNumber() ?>
+ 
+<?php }
+?>      
+
+
+
     </td>
   </tr>
   <tr class="order_summary_header" bgcolor="#CCCCCC"> 
@@ -135,20 +123,20 @@ $wrap_content  = isset($wrap)?$wrap:false;
     <td>
     <?php if ($order->getIsFirstOrder())
     {
-        echo $order->getProduct()->getName(); 
+        echo $order->getProduct()->getName();
         if($transaction->getDescription()=="Registrering inkl. taletid"){
           echo "<br />[Smartsim inklusive pott]";
         }else{
             echo  '<br />['. $transaction->getDescription() .']';
-        }
+        }		
     }
     else
     {
-	if($transaction->getDescription()=="LandNCall AB Refill"){
+        if($transaction->getDescription()=="LandNCall AB Refill"){
           echo "Refill ".$transaction->getAmount();
         }else{
-          echo $transaction->getDescription();  
-        }           	
+          echo $transaction->getDescription(); 
+        }		   	
     }
     ?>
 	</td>
@@ -181,7 +169,35 @@ $wrap_content  = isset($wrap)?$wrap:false;
   </tr>
   <tr class="footer">
     <td class="payer_summary" colspan="4" style="font-weight:normal; white-space: nowrap;"> 
-    Landncall AB&nbsp;&nbsp;&nbsp;&nbsp;Box 42017, SE-126 12 Stockholm&nbsp;&nbsp;&nbsp; Org.nr.556810-8921 </td>    
+    Landncall AB&nbsp;&nbsp;&nbsp;Box 42017, SE-126 12 Stockholm&nbsp;&nbsp;&nbsp; Org.nr.556810-8921 </td>    
   </tr>
 </table>
-        
+<?php if($wrap_content): ?>
+<br />
+<p>
+<?php
+	$c = new  Criteria();
+	$c->add(GlobalSettingPeer::NAME, 'expected_delivery_time_agent_order');
+	
+	$global_setting_expected_delivery = GlobalSettingPeer::doSelectOne($c);
+	
+	if ($global_setting_expected_delivery)
+		$expected_delivery = $global_setting_expected_delivery->getValue();
+	else
+		$expected_delivery = "3 business days";
+?>
+<p style="font-weight: bold;">
+	<?php echo __('You will receive your package within %1%.', array('%1%'=>$expected_delivery)) ?> 
+</p>
+<?php endif; ?>
+
+<p style="font-weight: bold;">
+	<?php echo __('If you have any questions please feel free to contact our customer support center at'); ?>
+	<a href="mailto:support@landncall.com">support@landncall.com</a>
+</p>
+
+<p style="font-weight: bold;"><?php echo __('Cheers') ?></p>
+
+<p style="font-weight: bold;">
+<?php echo __('Support') ?>&nbsp;LandNCall AB
+</p>
