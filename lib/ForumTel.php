@@ -155,8 +155,8 @@ class ForumTel {
 
     public static function getBalanceForumtel($customer) {
 
-       echo  $customerid = $customer;
-die;
+        $customerid = $customer;
+
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
