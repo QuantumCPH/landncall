@@ -527,7 +527,7 @@ class emailLib {
             $email5->save();
     }
 
-    public static function sendCustomerAutoRefillEmail(Customer $customer, $message_body) {
+    public static function sendCustomerAutoRefillEmail(Customer $customer, $order, $transaction) {
 
              $vat = 0;
         $subject ='Payment Confirmation';
