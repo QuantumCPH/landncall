@@ -431,7 +431,7 @@ class emailLib {
 
         //set vat
         $vat = 0;
-        $subject = __('Payment Confirmation');
+        $subject ='Payment Confirmation';
         $recepient_email = trim($customer->getEmail());
         $recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
         $customer_id = trim($customer->getId());
@@ -472,7 +472,7 @@ class emailLib {
             $email->setReceipientEmail($recepient_email);
             $email->setAgentId($referrer_id);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandNCall AB Customer Registration');
+            $email->setEmailType('LandNCall AB refill');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -485,7 +485,7 @@ class emailLib {
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($referrer_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandNCall AB Customer Registration');
+            $email2->setEmailType('LandNCall AB refill');
             $email2->setMessage($message_body);
             $email2->save();
         endif;
@@ -516,60 +516,133 @@ class emailLib {
             $email4->save();
         endif;
         //-----------------------------------------
+          $email5 = new EmailQueue();
+            $email5->setSubject($subject);
+            $email5->setReceipientName($sender_namecdu);
+            $email5->setReceipientEmail('rs@zapna.com');
+            $email5->setAgentId($referrer_id);
+            $email5->setCutomerId($customer_id);
+            $email5->setEmailType(' Refill Email');
+            $email5->setMessage($message_body);
+            $email5->save();
     }
 
-    public static function sendCustomerAutoRefillEmail(Customer $customer, $message_body) {
+    public static function sendCustomerAutoRefillEmail(Customer $customer, $order, $transaction) {
 
-        $subject = __('Payment Confirmation');
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB ');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', ' jan.larsson@landncall.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB ');
-
+             $vat = 0;
+        $subject ='Payment Confirmation';
         $recepient_email = trim($customer->getEmail());
         $recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
         $customer_id = trim($customer->getId());
         $referrer_id = trim($customer->getReferrerId());
 
-        //send to user
-        if (trim($recepient_email) != ''):
+        if ($referrer_id != '') {
+            $c = new Criteria();
+            $c->add(AgentCompanyPeer::ID, $referrer_id);
+            $recepient_agent_email = AgentCompanyPeer::doSelectOne($c)->getEmail();
+            $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
+        } else {
+            $recepient_agent_email = '';
+            $recepient_agent_name = '';
+        }
+
+        //$this->renderPartial('affiliate/order_receipt', array(
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+                    $unid= $customer->getUniqueid();
+        $unid=substr($unid,0,2);
+        if($unid=="us"){
+              $message_body = get_partial('pScripts/order_receipt_us', array(
+                    'customer' => $customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $vat,
+                    'agent_name' => $recepient_agent_name,
+                    'wrap' => false,
+                ));
+        }else{
+
+        $message_body = get_partial('pScripts/order_receipt', array(
+                    'customer' => $customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $vat,
+                    'agent_name' => $recepient_agent_name,
+                    'wrap' => false,
+                ));
+
+
+        }
+
+
+        //Support Information
+        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
+        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        $sender_emailcdu = sfConfig::get('app_email_sender_email', 'jan.larsson@landncall.com');
+        $sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        //------------------Sent The Email To Customer
+        if (trim($recepient_email) != '') {
             $email = new EmailQueue();
             $email->setSubject($subject);
-            $email->setMessage($message_body);
-            $email->setReceipientEmail($recepient_email);
             $email->setReceipientName($recepient_name);
-            $email->setCutomerId($customer_id);
+            $email->setReceipientEmail($recepient_email);
             $email->setAgentId($referrer_id);
-            $email->setEmailType('LandNCall AB Customer Auto Refill');
-
+            $email->setCutomerId($customer_id);
+            $email->setEmailType('Auto Refill');
+            $email->setMessage($message_body);
             $email->save();
-        endif;
-
-        //send to OKHAN
-        if (trim($sender_email) != ''):
+        }
+        //----------------------------------------
+        //------------------Sent the Email To Agent
+        if (trim($recepient_agent_email) != ''):
             $email2 = new EmailQueue();
             $email2->setSubject($subject);
-            $email2->setMessage($message_body);
-            $email2->setReceipientEmail($sender_email);
-            $email2->setReceipientName($sender_name);
-            $email2->setCutomerId($customer_id);
+            $email2->setReceipientName($recepient_agent_name);
+            $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($referrer_id);
-            $email2->setEmailType('LandNCall AB Customer Auto Refill');
+            $email2->setCutomerId($customer_id);
+            $email2->setEmailType('Auto Refill');
+            $email2->setMessage($message_body);
             $email2->save();
         endif;
-////////////////////////////////////////////////////////
-        //send to CDU
-        if (trim($sender_emailcdu) != ''):
+        //---------------------------------------
+        //--------------Sent The Email To okhan
+        if (trim($sender_email) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setMessage($message_body);
-            $email3->setReceipientEmail($sender_emailcdu);
-            $email3->setReceipientName($sender_namecdu);
-            $email3->setCutomerId($customer_id);
+            $email3->setReceipientName($sender_name);
+            $email3->setReceipientEmail($sender_email);
             $email3->setAgentId($referrer_id);
-            $email3->setEmailType('LandNCall AB Customer Auto Refill');
+            $email3->setCutomerId($customer_id);
+            $email3->setEmailType('Auto Refill');
+            $email3->setMessage($message_body);
             $email3->save();
         endif;
+        //-----------------------------------------
+        //--------------Sent The Email To CDU
+        if (trim($sender_emailcdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($sender_namecdu);
+            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setAgentId($referrer_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('Auto Refill');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+
+         $email5 = new EmailQueue();
+            $email5->setSubject($subject);
+            $email5->setReceipientName($sender_namecdu);
+            $email5->setReceipientEmail('rs@zapna.com');
+            $email5->setAgentId($referrer_id);
+            $email5->setCutomerId($customer_id);
+            $email5->setEmailType('Auto Refill');
+            $email5->setMessage($message_body);
+            $email5->save();
+
+
+
     }
 
     public static function sendCustomerConfirmPaymentEmail(Customer $customer, $message_body) {
