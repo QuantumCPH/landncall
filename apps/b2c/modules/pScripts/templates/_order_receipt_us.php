@@ -9,8 +9,6 @@ use_helper('Number');
 	
 	table.receipt {
 		width: 600px;
-		//font-family: arial;
-		//font-size: .7em;
 		
 		border: 2px solid #ccc;
 	}
@@ -57,7 +55,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
 	</p>
 	
 	<p>
-	<?php echo __('Dina varor kommer att skickas i dag. Du bör ha leverans senast inom två arbertsdagar.'); ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice</p>
+	<?php echo __('Dina varor kommer att skickas i dag. Du bör ha leverans senast inom två arbertsdagar.'); ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice.</p>
 	
 	<p>
 	<?php echo __('Tveka inte att ta kontakt med oss om det är något du undrar över.') ?>
