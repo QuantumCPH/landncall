@@ -269,9 +269,9 @@ $minute=date('i',$rval);
 echo  date('i:s',$callval);
 
 }       ?></td>
-                                    <td><?php echo $xdr->charged_amount / 4; ?></td>
-                                    <td><?php echo $xdr->charged_amount;
-                                $amount_total+= $xdr->charged_amount; ?> SEK</td>
+                                    <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
+                                    <td><?php echo number_format($xdr->charged_amount, 2);
+                                $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
                                    
                                     <td><?php
                                 $typecall = substr($xdr->account_id, 0, 1);
