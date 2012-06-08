@@ -192,7 +192,7 @@
 			 </span>
 			 <?php endif; ?>
              <div class='inline-error'><?php echo $error_password?$form['password']->renderError():'&nbsp;'?></div>
-             <label style="float:right;width:85px;<?php if ($error_mobile_number): ?> margin-right:85px; <?php endif; ?>"><?php echo __('Minimum 6 digits') ?></label>
+             <label style="float:right;width:84px;<?php if ($error_mobile_number): ?> margin-right:84px; <?php endif; ?>"><?php echo __('Minimum 6 digits') ?></label>
             </li>
             <!-- end password -->
             <?php
