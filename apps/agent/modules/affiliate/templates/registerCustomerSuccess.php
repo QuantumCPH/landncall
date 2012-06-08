@@ -149,21 +149,21 @@
       </div>
       <div class="fr col">
         <ul>
-               <?php
-            $error_date_of_birth = false;;
-            if($form['date_of_birth']->hasError())
-            	$error_date_of_birth = true;
+<!--               <?php
+//            $error_date_of_birth = false;;
+//            if($form['date_of_birth']->hasError())
+//            	$error_date_of_birth = true;
             ?>
             <li>
-             <?php echo $form['date_of_birth']->renderLabel() ?>
-             <?php echo $form['date_of_birth']->render(array('class'=>'shrinked_select_box')) ?>
-             <?php if ($error_date_of_birth): ?>
+             <?php //echo $form['date_of_birth']->renderLabel() ?>
+             <?php //echo $form['date_of_birth']->render(array('class'=>'shrinked_select_box')) ?>
+             <?php //if ($error_date_of_birth): ?>
              <span id="cardno_decl" class="alertstep1">
-			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
+			  	<?php //echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
 			 </span>
-			 <?php endif; ?>
-             <div class='inline-error'><?php echo $error_date_of_birth?$form['date_of_birth']->renderError():'&nbsp;'?></div>
-            </li>
+			 <?php //endif; ?>
+             <div class='inline-error'><?php// echo $error_date_of_birth?$form['date_of_birth']->renderError():'&nbsp;'?></div>
+            </li>-->
             <!-- end date of birth -->
             <?php
             $error_password = false;;
@@ -214,21 +214,21 @@
             </li>
             <!-- end email -->
           
-            <?php 
-            $error_telecom_operator_id = false;
-            if($form['telecom_operator_id']->hasError())
-            	$error_telecom_operator_id = true;
+<!--            <?php
+//            $error_telecom_operator_id = false;
+//            if($form['telecom_operator_id']->hasError())
+//            	$error_telecom_operator_id = true;
             ?>
             <li>
-             <?php echo $form['telecom_operator_id']->renderLabel() ?>
-             <?php echo $form['telecom_operator_id'] ?>
-             <?php if ($error_telecom_operator_id): ?>
+             <?php //echo $form['telecom_operator_id']->renderLabel() ?>
+             <?php //echo $form['telecom_operator_id'] ?>
+             <?php //if ($error_telecom_operator_id): ?>
              <span id="cardno_decl" class="alertstep1">
-			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
+			  	<?php //echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
 			 </span>
-			 <?php endif; ?>
-             <div class='inline-error'><?php echo $error_telecom_operator_id?$form['telecom_operator_id']->renderError():'&nbsp;'?></div>
-            </li>
+			 <?php //endif; ?>
+             <div class='inline-error'><?php //echo $error_telecom_operator_id?$form['telecom_operator_id']->renderError():'&nbsp;'?></div>
+            </li>-->
             <!-- end telecom operator -->
           
            
