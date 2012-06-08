@@ -765,6 +765,8 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
 						$this->form->setDefault('referrer_id', $referrer_id);
 						unset($this->form['terms_conditions']);
 						unset($this->form['imsi']);
+                                                unset($this->form['telecom_operator_id']);
+                                                unset($this->form['date_of_birth']);
 						unset($this->form['uniqueid']);
 //                        //unset($this->form['password']);
 //                        unset($this->form['terms_conditions']);
@@ -2057,16 +2059,16 @@ public function executeAgentOrder(sfRequest $request){
                             $callbacklog->setcallingCode($countrycode);
                             $callbacklog->save();
 
-                        
+                         $mobile_number=substr($mobile_number,1);
                          $number = $countrycode . $mobile_number;
                          $sms = SmsTextPeer::retrieveByPK(12);
                          $sms_text = $sms->getMessageText();
                          $sms_text = str_replace(array("(oldnumber)", "(newnumber)"),array($mobile_number, $newnumber),$sms_text);
-                    
-                         SMSNU::Send($number, $sms_text,"LandNCall");
+                                   
+                         ROUTED_SMS::Send($number, $sms_text,"LandNCall");
                          //Send SMS ----
                          $number = $newMobileNo;
-                         SMSNU::Send($number, $sms_text,"LandNCall");
+                         ROUTED_SMS::Send($number, $sms_text,"LandNCall");
                        
                     }
 //exit;

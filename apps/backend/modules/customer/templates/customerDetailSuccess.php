@@ -111,11 +111,11 @@ if(isset($val) && $val!=""){  ?>
                             <td><?php echo  $customer->getCreatedAt() ?></td>
 
   </tr>
-                         <tr>
+<!--                         <tr>
 
                     <td id="sf_admin_list_th_date_of_birth" class="leftHeadign" >Date Of Birth</td>
-                      <td><?php echo  $customer->getDateOfBirth() ?></td>
-                      </tr>
+                      <td><?php //echo  $customer->getDateOfBirth() ?></td>
+                      </tr>-->
                          <tr>
                       <td id="sf_admin_list_th_auto_refill" class="leftHeadign" >Auto Refill</td>
                         <?php if ($customer->getAutoRefillAmount()!=NULL && $customer->getAutoRefillAmount()>1){ ?>

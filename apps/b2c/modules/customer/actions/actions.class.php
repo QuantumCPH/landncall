@@ -364,6 +364,7 @@ class customerActions extends sfActions {
                 $invite->save();
             }
         }
+               
 
         //set referrer id
         if ($referrer_id = $request->getParameter('ref')) {
@@ -373,8 +374,8 @@ class customerActions extends sfActions {
             if (AgentCompanyPeer::doSelectOne($c))
                 $this->form->setDefault('referrer_id', $referrer_id);
         }
-
-
+        unset($this->form['date_of_birth']);
+        unset($this->form['telecom_operator_id']);
         unset($this->form['manufacturer']);
         unset($this->form['device_id']);
 
@@ -649,7 +650,9 @@ class customerActions extends sfActions {
 
                     //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
                     //This is for Recharge the Customer
-                    Telienta::charge($this->customer, $OpeningBalance,"Resenummer Payment");
+
+                    Telienta::charge($this->customer, $OpeningBalance,"Resenumber Payment");
+
                 }
 
 //exit;
@@ -1199,6 +1202,8 @@ class customerActions extends sfActions {
         unset($this->form['password_confirm']);
         /////////////////////////////////////
         unset($this->form['created_at']);
+          unset($this->form['date_of_birth']);
+            unset($this->form['telecom_operator_id']);
         unset($this->form['fonet_customer_id']);
         unset($this->form['referrer_id']);
         unset($this->form['registration_type_id']);

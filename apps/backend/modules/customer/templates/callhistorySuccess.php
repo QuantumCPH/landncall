@@ -153,7 +153,7 @@ if($pus==1){
         </div>
             
 
-                <h1><?php echo __('Credit History'); ?> </h1>
+                <h1><?php echo 'Övriga händelser'; ?> </h1>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                         <tr>
                             <td class="title"><?php echo __('Date &amp; time') ?></td>
@@ -179,7 +179,7 @@ if($pus==1){
                             } ?>
                         </table><br/><br/>
 
-                           <h1><?php echo __('Payment History'); ?> </h1>
+                           <h1><?php echo 'Betalningshistorik'; ?> </h1>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                         <tr>
                             <td class="title"><?php echo __('Date &amp; time') ?></td>
@@ -207,7 +207,7 @@ if($pus==1){
 
 
 
-    <h1>Call History</h1>
+    <h1>Samtal</h1>
 
                 <table width="100%" cellspacing="0" cellpadding="2" class="tblAlign" border='0'>
                 <tr class="headings">
@@ -216,6 +216,7 @@ if($pus==1){
                     <th width="10%"   align="left"><?php echo __('Duration') ?></th>
                     <th  width="10%"  align="left"><?php echo __('VAT') ?></th>
                     <th width="20%"   align="left"><?php echo __('Cost') ?></th>
+                   
                     <th  width="20%"   align="left">Samtalstyp</th>
                   </tr>
    <?php
@@ -271,6 +272,7 @@ echo  date('i:s',$callval);
                                     <td><?php echo number_format($xdr->charged_amount / 4, 2); ?></td>
                                     <td><?php echo number_format($xdr->charged_amount, 2);
                                 $amount_total+= number_format($xdr->charged_amount, 2); ?> SEK</td>
+                                   
                                     <td><?php
                                 $typecall = substr($xdr->account_id, 0, 1);
                                 if ($typecall == 'a') {
@@ -280,7 +282,8 @@ echo  date('i:s',$callval);
                                     echo "R";
                                 }
                                 if ($typecall == 'c') {
-                                    if ($xdr->CLI == '**24') {
+                                      $cbtypecall = substr($xdr->account_id, 2);
+                                    if ($xdr->CLD ==$cbtypecall) {
                                         echo "Cb M";
                                     } else {
                                         echo "Cb S";

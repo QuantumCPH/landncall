@@ -59,7 +59,7 @@ class PortaBillingSoapClient extends SoapClient {
                 $soap_client = new SoapClient($this->_constructUri($this->serverUrl, $this->interface, 'Session'));
                 $result = $soap_client->login($login, $password);
             } catch (SoapFault $e) {
-                if ($e->faultstring != 'Could not connect to host') {
+                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
                     emailLib::sendErrorInTelinta("Login Issue", "Could not Login with Billing Server. Error is " . $e->faultstring . "  <br/> Please Investigate.");
                     return false;
                 }

@@ -1719,7 +1719,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($cusCount < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(2);
                 echo $smstext->getMessageText();
-                SMSNU::Send($number, $smstext->getMessageText());
+                ROUTED_SMS::Send($number, $smstext->getMessageText());
                 die;
             }
             $customer = CustomerPeer::doSelectOne($mnc);
@@ -1731,7 +1731,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($callbackq < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
                 echo $smstext->getMessageText();
-                SMSNU::Send($number, $smstext->getMessageText());
+                ROUTED_SMS::Send($number, $smstext->getMessageText());
                 die;
             }
 
@@ -1760,7 +1760,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
 
             $smstext = SmsTextPeer::retrieveByPK(1);
-            SMSNU::Send($number, $smstext->getMessageText());
+            ROUTED_SMS::Send($number, $smstext->getMessageText());
             die;
             return sfView::NONE;
         } elseif ($requestType == "ic") {
@@ -1778,7 +1778,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
 
             if ($callbackq < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
-                SMSNU::Send($number, $smstext->getMessageText());
+                ROUTED_SMS::Send($number, $smstext->getMessageText());
                 die;
             }
 
@@ -1789,7 +1789,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
 
             if ($cusCount < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(2);
-                SMSNU::Send($number, $smstext->getMessageText());
+                ROUTED_SMS::Send($number, $smstext->getMessageText());
                 die;
             }
             $customer = CustomerPeer::doSelectOne($mnc);
@@ -1800,7 +1800,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $callbacklog->setcallingCode(46);
             $callbacklog->save();
 
-            Telienta::createCBAccount($number, $customer);
+            Telienta::createCBAccount($number, $customer,11648);  //11648 is Call back product for IC call
 
             $telintaGetBalance = Telienta::getBalance($customer);
 
@@ -1823,7 +1823,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             }
 
             $smstext = SmsTextPeer::retrieveByPK(3);
-            SMSNU::Send($number, $smstext->getMessageText());
+            ROUTED_SMS::Send($number, $smstext->getMessageText());
             die;
             return sfView::NONE;
         } else {
@@ -1833,7 +1833,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($splitedText[3] != sfConfig::get("app_dialer_pin")) {
                 echo "Invalid Request<br/>";
                 $sms = SmsTextPeer::retrieveByPK(7);
-                SMSNU::Send($number, $sms->getMessageText());
+                ROUTED_SMS::Send($number, $sms->getMessageText());
                 die;
             }
             $mobileNumber = substr($number, 2, strlen($number) - 2);
@@ -1857,6 +1857,18 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $uc->addAnd(UniqueIdsPeer::STATUS, 0);
                 $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
 
+                $ucc = new Criteria();
+                $ucc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
+
+                if (UniqueIdsPeer::doCount($ucc) == 0) {
+                    echo "Unique Id Not Found";
+                    $sms = SmsTextPeer::retrieveByPK(13);
+                    ROUTED_SMS::Send($number, $sms->getMessageText());
+                    die;
+                }
+
+
+
                 $cc = new Criteria();
                 $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
                 $cc->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
@@ -1864,7 +1876,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 if (CustomerPeer::doCount($cc) > 0) {
                     echo "Already Registerd";
                     $sms = SmsTextPeer::retrieveByPK(10);
-                    SMSNU::Send($number, $sms->getMessageText());
+                    ROUTED_SMS::Send($number, $sms->getMessageText());
                     die;
                 }
 
@@ -1936,18 +1948,18 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     $sms = SmsTextPeer::retrieveByPK(9);
                     $smsText = $sms->getMessageText();
                     $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
-                    SMSNU::Send($number, $smsText);
+                    ROUTED_SMS::Send($number, $smsText);
 
                     $sms = SmsTextPeer::retrieveByPK(11);
                     $smsText = $sms->getMessageText();
                     $smsText = str_replace("(username)", $mobileNumber, $smsText);
                     $smsText = str_replace("(password)", $password, $smsText);
-                    SMSNU::Send($number, $smsText);
+                    ROUTED_SMS::Send($number, $smsText);
                     emailLib::sendCustomerRegistrationViaRetail($customer, $order);
                 } else {
                     $sms = SmsTextPeer::retrieveByPK(6);
                     $smsText = $sms->getMessageText();
-                    SMSNU::Send($number, $smsText);
+                    ROUTED_SMS::Send($number, $smsText);
                     die;
                 }
 
@@ -1955,7 +1967,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             } else {
                 $c = new Criteria();
                 $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
-                #$c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+                $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
                 $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
 
                 if (CustomerPeer::doCount($c) > 0) {
@@ -1971,7 +1983,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                         $sms = SmsTextPeer::retrieveByPK(5);
                         $smsText = $sms->getMessageText();
                         $smsText = str_replace("(balance)", $balance, $smsText);
-                        SMSNU::Send($number, $smsText);
+                        ROUTED_SMS::Send($number, $smsText);
                     } elseif ($command == "re") {
                         echo "Recharge Request<br/>";
                         $cc = new Criteria();
@@ -2011,25 +2023,25 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                                 $sms = SmsTextPeer::retrieveByPK(5);
                                 $smsText = $sms->getMessageText();
                                 $smsText = str_replace("(balance)", $balance, $smsText);
-                                SMSNU::Send($number, $smsText);
+                                ROUTED_SMS::Send($number, $smsText);
                                 // Send email to Support after Recharge
                                 emailLib::sendRetailRefillEmail($customer, $order);
                             } else {
                                 echo "Unable to charge";
                                 $sms = SmsTextPeer::retrieveByPK(8);
-                                SMSNU::Send($number, $sms->getMessageText());
+                                ROUTED_SMS::Send($number, $sms->getMessageText());
                             }
                         } else {
                             echo "CARD ALREADY USED<br/>";
                             $sms = SmsTextPeer::retrieveByPK(7);
-                            SMSNU::Send($number, $sms->getMessageText());
+                            ROUTED_SMS::Send($number, $sms->getMessageText());
                         }
                         die;
                     }
                 } else {
                     echo "Invalid Command 1";
                     $sms = SmsTextPeer::retrieveByPK(7);
-                    SMSNU::Send($number, $sms->getMessageText());
+                    ROUTED_SMS::Send($number, $sms->getMessageText());
                     die;
                 }
             }
@@ -2423,14 +2435,34 @@ return sfView::NONE;
 
                 //echo "UniqueID:";
                 $uniqueId = $customer->getUniqueid();
-                if ((int) $uniqueId > 200000) {
-                    $Tes = ForumTel::getBalanceForumtel($customer->getId());
 
-                    $customer_balance = $Tes;
+                $usid="";
+                    $usid=substr($uniqueId,0,2);
+                if ($usid=="us") {
+                    $Tes = ForumTel::getBalanceForumtel($customer->getId());
+                     $customer_balance =CurrencyConverter::convertUsdToSek($Tes);
+                    //$Tes;
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
                    
-                   $customer_balance=Telienta::getBalance($customer);
+                 //  $customer_balance=Telienta::getBalance($customer);
+
+                     $retries = 0;
+            $maxRetries = 5;
+            do {
+                $customer_balance = Telienta::getBalance($customer);
+                $retries++;
+                echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+            } while (!$customer_balance && $retries <= $maxRetries);
+
+            if($retries==$maxRetries){
+                continue;
+            }
+
+
+
+
+
             
                 }
              //   echo $uniqueId.":".$customer_balance."<br/>";
@@ -2536,12 +2568,20 @@ echo "<br/>";
     
           //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
             changeLanguageCulture::languageCulture($request,$this);
-            
+
+//
+//              $urlval = "autorefill-" . $request->getURI();
+//
+//        $email21 = new DibsCall();
+//        $email21->setCallurl($urlval);
+//
+//        $email21->save();
+
            $urlval=0;
-            $urlval="autorefil-".$request->getParameter('transact');
-    
+            $Parameters="Parameters-autorefil-URL-transactionNumber-OrderNumber-Amount".$request->getURI()."?transact=".$request->getParameter('transact')."&orderid=".$request->getParameter("orderid")."&amount=".$request->getParameter('amount');
+   
          $email2 = new DibsCall();
-         $email2->setCallurl($urlval);
+         $email2->setCallurl($Parameters);
 
             $email2->save();
            $urlval=$request->getParameter('transact');
@@ -2549,6 +2589,14 @@ echo "<br/>";
          $order_id = $request->getParameter("orderid");
 
 	  	$this->forward404Unless($order_id || $order_amount);
+                $orderscount=0;
+                $cr = new Criteria;
+               	$cr->add(CustomerOrderPeer::ID, $order_id);
+                $cr->addAnd(CustomerOrderPeer::ORDER_STATUS_ID, 1);
+	  	$orderscount = CustomerOrderPeer::doCount($cr);
+
+                if($orderscount>0){
+
 
 		$order = CustomerOrderPeer::retrieveByPK($order_id);
 
@@ -2563,17 +2611,17 @@ echo "<br/>";
 
 	  	//echo var_dump($transaction);
 
-	  	$order->setOrderStatusId(sfConfig::get('app_status_completed', 3)); //completed
+	  	$order->setOrderStatusId(3); //completed
 	  	//$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 3)); //completed
-	  	$transaction->setTransactionStatusId(sfConfig::get('app_status_completed', 3)); //completed
+	  	$transaction->setTransactionStatusId(3); //completed
 
 
 
 
 		if($transaction->getAmount() > $order_amount){
 	  		//error
-	  		$order->setOrderStatusId(sfConfig::get('app_status_error', 5)); //error in amount
-	  		$transaction->setTransactionStatusId(sfConfig::get('app_status_error', 5)); //error in amount
+	  		$order->setOrderStatusId(5); //error in amount
+	  		$transaction->setTransactionStatusId(5); //error in amount
 	  		//$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 5)); //error in amount
 
 
@@ -2623,7 +2671,10 @@ echo "<br/>";
                         $uniqueId = $this->customer->getUniqueid();
                         $OpeningBalance = $transaction->getAmount();
                         //This is for Recharge the Customer
-                        if((int)$uniqueId>200000){
+                       $usid="";
+                    $usid=substr($uniqueId,0,2);
+                if ($usid=="us") {
+                            
                             $cuserid = $this->customer->getId();
                           $amt=$OpeningBalance;
                   $amt=CurrencyConverter::convertSekToUsd($amt);
@@ -2631,8 +2682,8 @@ echo "<br/>";
                         }else{
 
 
-                        $MinuesOpeningBalance = $OpeningBalance*3;
-                        Telienta::recharge($this->customer, $OpeningBalance);
+                        $description="Auto Refill";
+                        Telienta::recharge($this->customer, $OpeningBalance,$description);
                         
                         }
                         //This is for Recharge the Account
@@ -2646,47 +2697,17 @@ echo "<br/>";
                            }else{
                               }                            
                        
-                        $MinuesOpeningBalance = $OpeningBalance*3;
-                        
-
-
-//echo 'NOOO';
-// Update cloud 9
-        //c9Wrapper::equateBalance($this->customer);
-
-//echo 'Comeing';
-	//set vat
-	$vat = 0;
-        $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-	$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-	$sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
-
-	$recepient_email = trim($this->customer->getEmail());
-	$recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
-        $referrer_id = trim($this->customer->getReferrerId());
-        if($referrer_id):
-        $c = new Criteria();
-        $c->add(AgentCompanyPeer::ID, $referrer_id);
-
-        $recepient_agent_email  = AgentCompanyPeer::doSelectOne($c)->getEmail();
-        $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
-        endif;
-
-	//send email
-  	$message_body = $this->getPartial('pScripts/order_receipt', array(
-  						'customer'=>$this->customer,
-  						'order'=>$order,
-  						'transaction'=>$transaction,
-  						'vat'=>$vat,
-  						'wrap'=>false
-  					));
+                      
+  
+ 
 
 
 
-            emailLib::sendCustomerRefillEmail($this->customer,$order,$transaction); 
+            emailLib::sendCustomerAutoRefillEmail($this->customer,$order,$transaction);
+                }
           
-          
-            }    
+            }
+              return sfView::NONE;
   }    
 
 ////////////////////////////////////////
@@ -2713,7 +2734,8 @@ echo "<br/>";
         $usageAlerts = UsageAlertPeer::doSelect($usagealerts);
         $c = new Criteria();
         $c->addJoin(CustomerPeer::ID, CustomerProductPeer::CUSTOMER_ID, Criteria::LEFT_JOIN);
-        $c->addAnd(CustomerProductPeer::PRODUCT_ID, 7, Criteria::NOT_EQUAL);
+        $c->addJoin(CustomerProductPeer::PRODUCT_ID,ProductPeer::ID, Criteria::LEFT_JOIN);
+        $c->addAnd(ProductPeer::PRODUCT_COUNTRY_US,1, Criteria::NOT_EQUAL);
         $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
         $c->addAnd(CustomerPeer::COUNTRY_ID, $countryId);
         $customers = CustomerPeer::doSelect($c);
@@ -2789,7 +2811,7 @@ echo "<br/>";
                             echo "SMS Active<br/>";
                             $customerMobileNumber = $CallCode . substr($customer->getMobileNumber(), 1);
                             $sms_text = $usageAlert->getSmsAlertMessage();
-                            $response = SMSNU::Send($customerMobileNumber, $sms_text, $senderName);
+                            $response = ROUTED_SMS::Send($customerMobileNumber, $sms_text, $senderName);
 
                             if ($response) {
                                 $msgSent->setAlertSent(1);
@@ -3191,5 +3213,13 @@ $headers .= "From:" . $from;
             Telienta::getBalance($customer);
         }
     }
+
+
+
+       public function executeGetSms(sfWebRequest $request){
+       $smstext ="Du är registrerad framgångsrikt. ditt saldo är 99";
+       ROUTED_SMS::Send(46732801013, $smstext);
+         return sfView::NONE;
+}
 
 }

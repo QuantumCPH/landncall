@@ -9,8 +9,6 @@ use_helper('Number');
 	
 	table.receipt {
 		width: 600px;
-		//font-family: arial;
-		//font-size: .7em;
 		
 		border: 2px solid #ccc;
 	}
@@ -53,7 +51,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
 	<p><?php echo __('Dear Customer') ?></p>
 	
 	<p>
-	<?php echo __('Thank you for ordering <b>%1%</b> and becoming LandNCall AB Customer. We welcome you to a new and huge mobile world.', array('%1%'=>$order->getProduct()->getName())) ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice
+	<?php echo __('Thank you for ordering <b>%1%</b> and becoming LandNCall AB Customer. We welcome you to a new and huge mobile world.', array('%1%'=>$order->getProduct()->getName())) ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice.
 	</p>
 	
 	<p>

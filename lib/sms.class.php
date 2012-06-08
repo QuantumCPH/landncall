@@ -1,4 +1,5 @@
 <?php
+
 require_once(sfConfig::get('sf_lib_dir') . '/smsCharacterReplacement.php');
 
 /**
@@ -10,22 +11,23 @@ class CARBORDFISH_SMS {
 
     //put your code here
 
-    private static $S   = 'H';
-    private static $UN  = 'zapna1';
-    private static $P   = 'Zapna2010';
-    private static $SA  = 'LandnCall';
-    private static $ST   = 5;
-    
-   /*
-    * Description of Send
-    *
-    * @param $mobilenumber is the mobile number leading with country code;
-    * @smsText is for the text that will be sent.
-    * @param $Sender will be the sender name of the SMS;
-    */
+    private static $S = 'H';
+    private static $UN = 'zapna1';
+    private static $P = 'Zapna2010';
+    private static $SA = 'LandNCall';
+    private static $ST = 5;
 
-    public static function Send($mobileNumber,$smsText,$senderName=null) {
-        if($senderName == null)
+    /*
+     * Description of Send
+     *
+     * @param $mobilenumber is the mobile number leading with country code;
+     * @smsText is for the text that will be sent.
+     * @param $Sender will be the sender name of the SMS;
+     */
+
+    public static function Send($mobileNumber, $smsText, $senderName=null) {
+        $message = "";
+        if ($senderName == null)
             $senderName = self::$SA;
 
         $data = array(
@@ -41,7 +43,11 @@ class CARBORDFISH_SMS {
         $queryString = smsCharacter::smsCharacterReplacement($queryString);
         $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
         sleep(0.15);
-
+        if (!$res) {
+            $message.="SMS not sent via CardboradFish to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText ;
+            emailLib::smsNotSentEmail($message);
+            return false;
+        }
         $smsLog = new SmsLog();
         $smsLog->setMessage($smsText);
         $smsLog->setStatus($res);
@@ -55,48 +61,70 @@ class CARBORDFISH_SMS {
     }
 
 }
+
 class SMSNU {
 
     //put your code here
 
-    private static $main   = '13rkha84';
-      private static $id  = 'LandnCall';
+    private static $main = '13rkha84';
+    private static $id = 'LandNCall';
+    /*
+     * Description of Send
+     *
+     * @param $mobilenumber is the mobile number leading with country code;
+     * @smsText is for the text that will be sent.
+     * @param $Sender will be the sender name of the SMS;
+     */
 
-
-   /*
-    * Description of Send
-    *
-    * @param $mobilenumber is the mobile number leading with country code;
-    * @smsText is for the text that will be sent.
-    * @param $Sender will be the sender name of the SMS;
-    */
-
-    public static function Send($mobileNumber,$smsText,$senderName=null) {
-        if($senderName == null)
+    public static function Send($mobileNumber, $smsText, $senderName=null) {
+        if ($senderName == null)
             $senderName = self::$id;
-
         $data = array(
             'main' => self::$main,
             'til' => $mobileNumber,
             'id' => $senderName,
             'msgtxt' => $smsText
-         
         );
+        $message = "";
         $queryString = http_build_query($data, '', '&');
-        $queryString = smsCharacter::smsCharacterReplacement($queryString);
+        // $queryString = smsCharacter::smsCharacterReplacement($queryString);
         $res = file_get_contents('http://smsnu.dk/sendsms?' . $queryString);
         sleep(0.15);
-
+        if (!$res) {
+            return false;
+        }
         $smsLog = new SmsLog();
         $smsLog->setMessage($smsText);
         $smsLog->setStatus($res);
         $smsLog->setSenderName($senderName);
         $smsLog->setMobileNumber($mobileNumber);
         $smsLog->save();
-        if (substr($res, 10, 2) == 'OK')
+        if (substr($res, 10, 2) == 'OK') {
             return true;
-        else
+        } else {
+            $message.="SMS not sent to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText . "<br/> and Time is " . $smsLog->getCreatedAt();
+            emailLib::smsNotSentEmail($message);
             return false;
+        }
+    }
+
+}
+
+class ROUTED_SMS {
+
+    public static function Send($mobileNumber, $smsText, $senderName=null) {
+        if (!CARBORDFISH_SMS::Send($mobileNumber, $smsText, $senderName)) {
+            if (!SMSNU::Send($mobileNumber, $smsText, $senderName)) {
+                if ($senderName == null)
+                    $senderName = "LandNCall";
+                $smsLog = new SmsLog();
+                $smsLog->setMessage($smsText);
+                $smsLog->setStatus("Unable to send from both");
+                $smsLog->setSenderName($senderName);
+                $smsLog->setMobileNumber($mobileNumber);
+                $smsLog->save();
+            }
+        }
     }
 
 }

@@ -181,7 +181,7 @@
 
                         <?php } else {
  ?>
-                    <h1><?php echo __('Credit History'); ?> </h1>
+                    <h1><?php echo "Övriga händelser"; ?> </h1>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                         <tr>
                             <td class="title"><?php echo __('Date &amp; time') ?></td>
@@ -207,7 +207,7 @@
                             } ?>
                         </table><br/><br/>
 
-                                            <h1><?php echo __('Payment History'); ?> </h1>
+                                            <h1><?php echo "Betalningshistorik"; ?> </h1>
                     <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                         <tr>
                             <td class="title"><?php echo __('Date &amp; time') ?></td>
@@ -232,7 +232,7 @@
 
                             } ?>
                         </table><br/><br/>
-                    <h1><?php echo __('Call History'); ?> </h1>
+                    <h1><?php echo "Samtal"; ?> </h1>
                         <table width="100%" border="0" cellspacing="0" cellpadding="0" class="callhistory">
                             <tr>
                                 <td class="title"><?php echo __('Date &amp; time') ?></td>
@@ -292,12 +292,20 @@
                                     echo "R";
                                 }
                                 if ($typecall == 'c') {
+                                      $cbtypecall = substr($xdr->account_id, 2);
+                                    if ($xdr->CLD ==$cbtypecall) {
+                                        echo "Cb M";
+                                    } else {
+                                        echo "Cb S";
+                                    }
+                                } 
+                                /*if ($typecall == 'c') {
                                     if ($xdr->CLI == '**24') {
                                         echo "Cb M";
                                     } else {
                                         echo "Cb S";
                                     }
-                                } ?> </td>
+                                }*/ ?> </td>
                         </tr>
 
                         <?php
