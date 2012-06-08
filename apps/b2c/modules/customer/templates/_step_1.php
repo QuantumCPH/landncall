@@ -36,7 +36,7 @@
                 
              <div class='inline-error'><?php echo $error_mobile_number?$form['mobile_number']->renderError():'&nbsp;'?>
                  </div>
-                <label style="float:right;width:85px;<?php if ($error_mobile_number): ?> margin-right:85px; <?php endif; ?>">ex. 0701234567</label>
+                <label style="font-size: x-small;float:right;width:84px;<?php if ($error_mobile_number): ?> margin-right:84px; <?php endif; ?>">ex. 0701234567</label>
             </li>
             <!-- end mobile_number -->
 
@@ -50,8 +50,9 @@
                 <b>
          <?php    echo $product->getName();  ?></b>
                 <input type="hidden" name="customer[product]" id="customer_product" value="<?php echo $product->getId();  ?>" />
-
-
+  <span id="cardno_decl" class="alertstep1">&nbsp;
+  </span>
+  <div class='inline-error'>&nbsp;</div>
             </li>
               <?php  }else{ ?>
             <?php
@@ -191,7 +192,7 @@
 			 </span>
 			 <?php endif; ?>
              <div class='inline-error'><?php echo $error_password?$form['password']->renderError():'&nbsp;'?></div>
-             <label style="float:right;width:95px;<?php if ($error_mobile_number): ?> margin-right:85px; <?php endif; ?>"><?php echo __('Minimum 6 digits') ?></label>
+             <label style="float:right;width:85px;<?php if ($error_mobile_number): ?> margin-right:85px; <?php endif; ?>"><?php echo __('Minimum 6 digits') ?></label>
             </li>
             <!-- end password -->
             <?php
