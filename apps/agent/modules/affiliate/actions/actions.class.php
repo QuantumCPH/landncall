@@ -765,6 +765,8 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
 						$this->form->setDefault('referrer_id', $referrer_id);
 						unset($this->form['terms_conditions']);
 						unset($this->form['imsi']);
+                                                unset($this->form['telecom_operator_id']);
+                                                unset($this->form['date_of_birth']);
 						unset($this->form['uniqueid']);
 //                        //unset($this->form['password']);
 //                        unset($this->form['terms_conditions']);

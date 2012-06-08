@@ -38,7 +38,22 @@
                  </div>
                 <label style="float:right;width:85px;<?php if ($error_mobile_number): ?> margin-right:85px; <?php endif; ?>">ex. 0701234567</label>
             </li>
-            <!-- end mobile_number -->           
+            <!-- end mobile_number -->
+
+                <?php   if(isset($_REQUEST['pid'])  && $_REQUEST['pid']!=""){       ?>
+              <li>
+
+             <?php echo $form['product']->renderLabel() ?>  <?php
+              $cp = new Criteria();
+            $cp->add(ProductPeer::ID, $_REQUEST['pid']);
+                $product=ProductPeer::doSelectOne($cp); ?>
+                <b>
+         <?php    echo $product->getName();  ?></b>
+                <input type="hidden" name="customer[product]" id="customer_product" value="<?php echo $product->getId();  ?>" />
+
+
+            </li>
+              <?php  }else{ ?>
             <?php
             $error_product = false;;
             if($form['product']->hasError())
@@ -46,6 +61,7 @@
             ?>
             <li>
              <?php echo $form['product']->renderLabel() ?>
+                
              <?php echo $form['product'] ?>
              <?php if ($error_product): ?>
              <span id="cardno_decl" class="alertstep1">
@@ -54,6 +70,8 @@
 			 <?php endif; ?>
              <div class='inline-error'><?php echo $error_product?$form['product']->renderError():'&nbsp;'?></div>
             </li>
+
+            <?php  } ?>
             <!--  end product -->
             <?php
             $error_first_name = false;;
@@ -151,21 +169,7 @@
              <div class='inline-error'><?php echo $error_country_id?$form['country_id']->renderError():'&nbsp;'?></div>
             </li>
             <!-- end country -->
-            <?php
-            $error_date_of_birth = false;;
-            if($form['date_of_birth']->hasError())
-            	$error_date_of_birth = true;
-            ?>
-            <li>
-             <?php echo $form['date_of_birth']->renderLabel() ?>
-             <?php echo $form['date_of_birth']->render(array('class'=>'shrinked_select_box')) ?>
-             <?php if ($error_date_of_birth): ?>
-             <span id="cardno_decl" class="alertstep1">
-			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
-			 </span>
-			 <?php endif; ?>
-             <div class='inline-error'><?php echo $error_date_of_birth?$form['date_of_birth']->renderError():'&nbsp;'?></div>
-            </li>
+          
             <!-- end date of birth -->
           </ul>
 
@@ -222,21 +226,7 @@
              <div class='inline-error'><?php echo $error_email?$form['email']->renderError():'&nbsp;'?></div>
             </li>
             <!-- end email -->
-            <?php 
-            $error_telecom_operator_id = false;
-            if($form['telecom_operator_id']->hasError())
-            	$error_telecom_operator_id = true;
-            ?>
-            <li>
-             <?php echo $form['telecom_operator_id']->renderLabel() ?>
-             <?php echo $form['telecom_operator_id'] ?>
-             <?php if ($error_telecom_operator_id): ?>
-             <span id="cardno_decl" class="alertstep1">
-			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
-			 </span>
-			 <?php endif; ?>
-             <div class='inline-error'><?php echo $error_telecom_operator_id?$form['telecom_operator_id']->renderError():'&nbsp;'?></div>
-            </li>
+           
             <!-- end telecom operator -->
             
             <!-- 

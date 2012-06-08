@@ -55,7 +55,8 @@ class CustomerForm extends BaseCustomerForm
 //        }else if (strcmp(sfConfig::get('sf_app'),'b2c')){
 //        $product_criteria->add(ProductPeer::INCLUDE_IN_ZEROCALL, 1, Criteria::EQUAL);
 //        }
-	$this->widgetSchema['product'] = new sfWidgetFormPropelChoice(array(
+        //sfWidgetFormInputHidden    sfWidgetFormPropelChoice
+	$this->widgetSchema['product'] = new sfWidgetFormInputHidden(array(
 	                'model' => 'Product',
 	                'order_by' => array('ProductOrder','asc'),
 					'criteria'	=>	$product_criteria,
