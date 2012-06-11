@@ -8,6 +8,7 @@
 
 <?php
 $unid = $customer->getUniqueid();
+$amount_tot=0;
 $amount_total=0;
     $cuid=$customer->getId();
     $cp = new Criteria();
@@ -101,7 +102,7 @@ if($pus==1){
                 <td ><?php
             $cld = 'called-date';
             echo $calls->$cld; ?></td> <td><?php echo $calls->to; ?></td><td><?php echo $calls->from; ?></td><td> <?php echo $calls->duration; ?></td><td>
-        <?php echo $amount_total=CurrencyConverter::convertUsdToSek($calls->cost); ?></td>
+        <?php echo $amount_tot=CurrencyConverter::convertUsdToSek($calls->cost);       $amount_total=$amount_total+$amount_tot; ?></td>
              <td> <?php  echo   $calls->type;   ?></td></tr>
 <?php } ?>
 
