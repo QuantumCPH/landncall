@@ -42,53 +42,53 @@
             <td style="padding: 5px;"><input type="text" name="email" value="<?php echo $editCust->getEmail();?>" />
             </td>
         </tr> 
-        <tr>
+<!--        <tr>
             <td style="padding: 5px;">Date Of Birth</td>
             <td style="padding: 5px;">
-                <?php
-                $dt = "";
-                $dd = "";
-                $dm = "";
-                $dy ="";
-                $dt = $editCust->getDateOfBirth();
-                if($dt){
-                          $dd = date('d',strtotime($dt));
-                          $dm = date('m',strtotime($dt));
-                          $dy = date('Y',strtotime($dt));
-                         } 
+                //<?php
+//                $dt = "";
+//                $dd = "";
+//                $dm = "";
+//                $dy ="";
+//                $dt = $editCust->getDateOfBirth();
+//                if($dt){
+//                          $dd = date('d',strtotime($dt));
+//                          $dm = date('m',strtotime($dt));
+//                          $dy = date('Y',strtotime($dt));
+//                         }
                 ?>
                 <select name="dd">
                     <option value="">Day</option>
                     <?php
-                    for($d = 1;$d<=31; $d++){
+//                    for($d = 1;$d<=31; $d++){
                     ?>
-                    <option value="<?php echo $d;?>"<?php echo (@$dd!=$d)?'':' selected="selected" ' ?> ><?php echo $d;?></option>
+                    <option value="<?php //echo $d;?>"<?php //echo (@$dd!=$d)?'':' selected="selected" ' ?> ><?php // echo $d;?></option>
                     <?php    
-                    }
+//                    }
                     ?>
                 </select>&nbsp;
                 <select name="dm">
                     <option value="">Month</option>
                     <?php
-                    for($m = 1;$m<=12; $m++){
+                  //  for($m = 1;$m<=12; $m++){
                     ?>
-                    <option value="<?php echo $m;?>"<?php echo (@$dm!=$m)?'':' selected="selected" ' ?> ><?php echo $m;?></option>
+                    <option value="<?php //echo $m;?>"<?php //echo (@$dm!=$m)?'':' selected="selected" ' ?> ><?php //echo $m;?></option>
                     <?php    
-                    }
+                  //  }
                     ?>
                 </select>&nbsp;
                 <select name="dy">
                     <option value="">Year</option>
                     <?php
-                    for($y =1901;$y<=1998; $y++){
+                  //  for($y =1901;$y<=1998; $y++){
                     ?>
-                    <option value="<?php echo $y;?>"<?php echo (@$dy!=$y)?'':' selected="selected" ' ?> ><?php echo $y;?></option>
+                    <option value="<?php //echo $y;?>"<?php //echo (@$dy!=$y)?'':' selected="selected" ' ?> ><?php //echo $y;?></option>
                     <?php    
-                    }
+                  //  }
                     ?>
                 </select>
             </td>
-        </tr>
+        </tr>-->
         <tr>
             <td style="padding: 5px;">Usage Email Alerts</td>
             <td style="padding: 5px;">

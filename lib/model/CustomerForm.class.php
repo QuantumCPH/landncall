@@ -198,7 +198,7 @@ class CustomerForm extends BaseCustomerForm
         $product_criteria = new Criteria();
         if(sfConfig::get('sf_app')=='agent'){
          sfContext::getInstance()->getUser()->getAttribute('agent_company_id', '', 'usersession');
-		 
+		
             //-----------------------------------
 			if( $temp>0){
 		$product_criteria->add(ProductPeer::IS_IN_STORE, true);
@@ -241,7 +241,7 @@ class CustomerForm extends BaseCustomerForm
 
         } else if(sfConfig::get('sf_app')=='b2c'){          
 
- 
+
 
 
    if(isset($_REQUEST['ref'])){
@@ -269,7 +269,8 @@ class CustomerForm extends BaseCustomerForm
 			}else{
 				
 			 $product_criteria->add(ProductPeer::IS_IN_STORE, true);
-			
+                       
+
             $product_criteria->add(ProductPeer::COUNTRY_ID, $lngId);	
 				
 			}
@@ -279,7 +280,9 @@ class CustomerForm extends BaseCustomerForm
 			}else{
 				
 			 $product_criteria->add(ProductPeer::INCLUDE_IN_ZEROCALL, true);
-
+                         if(isset($_REQUEST['pid']) && $_REQUEST['pid']!=""){
+                           $product_criteria->addAnd(ProductPeer::ID, $_REQUEST['pid']);
+                         }
               if($actionmodule=='signupus'){
                   $product_criteria->addAnd(ProductPeer::PRODUCT_COUNTRY_US,1);
               }else{
@@ -289,7 +292,7 @@ class CustomerForm extends BaseCustomerForm
 			
             //-----------------------------------
            
-
+              //sfWidgetFormInputHidden    sfWidgetFormPropelChoice
             //-----------------For get the Products---------------------
             $this->widgetSchema['product'] = new sfWidgetFormPropelChoice(array(
                     'model' => 'Product',

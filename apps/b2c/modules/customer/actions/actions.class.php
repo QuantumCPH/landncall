@@ -364,6 +364,7 @@ class customerActions extends sfActions {
                 $invite->save();
             }
         }
+            
 
         //set referrer id
         if ($referrer_id = $request->getParameter('ref')) {
@@ -373,8 +374,8 @@ class customerActions extends sfActions {
             if (AgentCompanyPeer::doSelectOne($c))
                 $this->form->setDefault('referrer_id', $referrer_id);
         }
-
-
+        unset($this->form['date_of_birth']);
+        unset($this->form['telecom_operator_id']);
         unset($this->form['manufacturer']);
         unset($this->form['device_id']);
 
@@ -596,7 +597,7 @@ class customerActions extends sfActions {
                     //$c->setLimit(1);
                     $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
                     if (SeVoipNumberPeer::doCount($c) < 10) {
-                        emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                       // emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                     if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
                         emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
@@ -1201,6 +1202,8 @@ class customerActions extends sfActions {
         unset($this->form['password_confirm']);
         /////////////////////////////////////
         unset($this->form['created_at']);
+          unset($this->form['date_of_birth']);
+            unset($this->form['telecom_operator_id']);
         unset($this->form['fonet_customer_id']);
         unset($this->form['referrer_id']);
         unset($this->form['registration_type_id']);

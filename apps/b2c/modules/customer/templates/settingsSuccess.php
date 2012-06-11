@@ -180,21 +180,7 @@
              <div class='inline-error'><?php echo $error_country_id?$form['country_id']->renderError():'&nbsp;'?></div>
             </li>
             <!-- end country -->
-            <?php
-            $error_date_of_birth = false;;
-            if($form['date_of_birth']->hasError())
-            	$error_date_of_birth = true;
-            ?>
-            <li >
-             <?php echo $form['date_of_birth']->renderLabel() ?>
-             <?php echo $form['date_of_birth']->render(array('class'=>'strselect')) ?>
-             <?php if ($error_date_of_birth): ?>
-             <span id="cardno_decl" class="alertstep1">
-			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
-			 </span>
-			 <?php endif; ?>
-             <div class='inline-error'><?php echo $error_date_of_birth?$form['date_of_birth']->renderError():'&nbsp;'?></div>
-            </li>
+           
             <!-- end date of birth -->
 <?php /*
             <?php
@@ -247,21 +233,7 @@
             </li>
               
             
-            <?php
-            $error_telecom_operator_id = false;
-            if($form['telecom_operator_id']->hasError())
-            	$error_telecom_operator_id = true;
-            ?>
-            <li>
-             <?php echo $form['telecom_operator_id']->renderLabel() ?>
-             <?php echo $form['telecom_operator_id'] ?>
-             <?php if ($error_telecom_operator_id): ?>
-             <span id="cardno_decl" class="alertstep1">
-			  	<?php echo image_tag('../zerocall/images/decl.png', array('absolute'=>true)) ?>
-			 </span>
-			 <?php endif; ?>
-             <div class='inline-error'><?php echo $error_telecom_operator_id?$form['telecom_operator_id']->renderError():'&nbsp;'?></div>
-            </li>
+            
             <!-- end telecom operator -->
             
             <!--

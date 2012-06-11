@@ -332,7 +332,7 @@ public function executePaymenthistory(sfWebRequest $request)
       $customer->setCity($request->getParameter('city'));
       $customer->setPoBoxNumber($request->getParameter('pob'));
       $customer->setEmail($request->getParameter('email'));
-      $customer->setDateOfBirth($dob);
+     // $customer->setDateOfBirth($dob);
       $customer->setUsageAlertEmail($usage_email);
       $customer->setUsageAlertSMS($usage_sms);
 
