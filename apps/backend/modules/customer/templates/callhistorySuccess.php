@@ -110,9 +110,10 @@ if($pus==1){
              <tr>
                         <td colspan="4" align="right"><strong><?php echo __('Subtotal') ?></strong></td>
 
-                        <td><?php //echo format_number($amount_total - $amount_total * .20) ?> SEK</td>
+                      
 
                         <td><?php echo number_format($amount_total, 2, ',', '') ?> SEK</td>
+                          <td><?php //echo format_number($amount_total - $amount_total * .20)SEK  ?> </td>
                     <td>&nbsp;</td>
                 </tr>
 
