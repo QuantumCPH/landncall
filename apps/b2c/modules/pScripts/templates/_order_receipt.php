@@ -48,12 +48,12 @@ $wrap_content  = isset($wrap)?$wrap:false;
 // text only if its a product order.
 
  ?>
- 
+<!-- 
 <?php if($wrap_content): ?>
 	<p><?php echo __('Dear Customer') ?></p>
 	
 	<p>
-	<?php echo __('Thank you for ordering <b>%1%</b> and becoming LandNCall AB Customer. We welcome you to a new and huge mobile world.', array('%1%'=>$order->getProduct()->getName())) ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice
+	<?php echo __('Thank you for ordering <b>%1%</b> and becoming LandNCall AB Customer. We welcome you to a new and huge mobile world.', array('%1%'=>$order->getProduct()->getName())) ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice.
 	</p>
 	
 	<p>
@@ -61,6 +61,31 @@ $wrap_content  = isset($wrap)?$wrap:false;
 	
 	<p>
 	<?php echo __('Below is the receipt of the product indicated.') ?>
+	</p>
+	<br />
+<?php endif; ?>
+-->
+<?php if($wrap_content): ?>
+	<p><?php echo __('Hej') ?>&nbsp;<?php echo $customer->getFirstName();?></p>
+	
+	<p>
+	<?php echo __('Tack för din beställning av <b>%1%</b>.', array('%1%'=>$order->getProduct()->getName())) ?>
+	</p>
+	
+	<p>
+	<?php echo __('Dina varor kommer att skickas i dag. Du bör ha leverans senast inom två arbertsdagar.'); ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice.</p>
+	
+	<p>
+	<?php echo __('Tveka inte att ta kontakt med oss om det är något du undrar över.') ?>
+	</p>
+        <p>
+            <a href="mailto:Support@landncall.com">Support@landncall.com</a>
+	</p>
+        <p>
+	<?php echo __('Med vänlig hälsning') ?>
+	</p>
+        <p>
+	<?php echo __('Johanna') ?>
 	</p>
 	<br />
 <?php endif; ?>

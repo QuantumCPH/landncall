@@ -187,7 +187,7 @@ class employeeActions extends sfActions {
                 $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
 
                 if (SeVoipNumberPeer::doCount($c) < 10) {
-                     emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                   //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                  }
 
                 if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)){
@@ -308,7 +308,7 @@ $companyCVR=$compny->getVatNo();
                 $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
 
                 if (SeVoipNumberPeer::doCount($c) < 10) {
-                     emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                   //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                 if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)){
                    emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by Employee id: " .$request->getParameter('id'));
