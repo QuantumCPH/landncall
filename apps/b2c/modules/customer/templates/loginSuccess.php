@@ -15,7 +15,7 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
 	<div id="login-modal" style="background-repeat: repeat-x; width: 470px; margin-top: 16px; background: none;">
 	<div class="login-left">
 	<h4  style="text-align:left;"><?php echo __('Logga in p&aacute; dina sidor') ?></h4>
-	<form method="post" id="login_form" action="<?php echo $target; ?>customer/login">
+	<form method="post" id="login_form" action="<?php echo url_for("customer/login");?>">
 	<label  style="text-align:left;"><?php echo __('Ange mobilnummer') ?></label><br />
 	<input type="text"  class="input"  name="mobile_number" id="mobile_number" />
 	<p style="color: red; margin-bottom:1px; position: relative; top: -2px;">
