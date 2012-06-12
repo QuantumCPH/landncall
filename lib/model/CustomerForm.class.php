@@ -276,17 +276,20 @@ class CustomerForm extends BaseCustomerForm
 			}
 			  }
 			if(isset($_REQUEST['ref']) && $_REQUEST['ref']!=""){
-				
+
+                             $product_criteria->add(ProductPeer::INCLUDE_IN_ZEROCALL, true);
+                        
+
 			}else{
-				
-			 $product_criteria->add(ProductPeer::INCLUDE_IN_ZEROCALL, true);
-                         if(isset($_REQUEST['pid']) && $_REQUEST['pid']!=""){
+			 if(isset($_REQUEST['pid']) && $_REQUEST['pid']!=""){
                            $product_criteria->addAnd(ProductPeer::ID, $_REQUEST['pid']);
                          }
+			
               if($actionmodule=='signupus'){
                   $product_criteria->addAnd(ProductPeer::PRODUCT_COUNTRY_US,1);
               }else{
             $product_criteria->add(ProductPeer::COUNTRY_ID, $lngId);
+               $product_criteria->add(ProductPeer::INCLUDE_IN_ZEROCALL, true);
               }
 			}
 			
