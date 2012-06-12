@@ -32,7 +32,7 @@ class Telienta {
 
         $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Customer');
 
-        $uniqueId ="LCB2C".$customer->getUniqueid();
+        $uniqueId ="LNB2C".$customer->getUniqueid();
         if ($USReseller) {
             $Parent = self::$iParentUS;
         } else {
@@ -352,7 +352,7 @@ class Telienta {
                                 'password' => 'asdf1asd',
                                 'h323_password' => 'asdf1asd',
                                 'activation_date' => date('Y-m-d'),
-                                'batch_name' => "LCB2C".$customer->getUniqueid(),
+                                'batch_name' => "LNB2C".$customer->getUniqueid(),
                                 'follow_me_enabled' => $followMeEnabled
                                 )));
             } catch (SoapFault $e) {
