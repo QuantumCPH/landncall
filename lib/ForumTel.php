@@ -203,14 +203,15 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
         curl_setopt($ch, CURLOPT_HEADER, true);
 
-         $data = curl_exec($ch);
-       $output=$data;
+     $data = curl_exec($ch);
+$output=$data;
         $data = substr($data, 215);
         $xml_obj = new SimpleXMLElement($data);
-//var_dump($xml_obj);
+ //var_dump($xml_obj);
 //echo "<hr/>";
-//die;$xml_obj->balance[0]->attributes()->amount;
-        $data = $xml_obj->balance[0];
+//die;$data = $xml_obj->balance[0]->attributes()->amount;
+      $data = $xml_obj->balance[0];
+
 
              $ftr = new ForumTelRequests();
                     $ftr->setRequestid($transactionid);

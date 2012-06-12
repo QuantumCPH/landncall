@@ -8,7 +8,8 @@
 
 <?php
 $unid = $customer->getUniqueid();
-
+$amount_tot=0;
+$amount_total=0;
     $cuid=$customer->getId();
     $cp = new Criteria();
     $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
@@ -52,7 +53,7 @@ if($pus==1){
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
 
-        $tomorrow1 = mktime(0, 0, 0, date("m") - 2, date("d") - 15, date("Y"));
+        $tomorrow1 = mktime(0, 0, 0, date("m") - 2, date("d") - 29, date("Y"));
         $fromdate = date("Y-m-d h:m:s", $tomorrow1);
         $tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
         $todate = date("Y-m-d h:m:s", $tomorrow);
@@ -101,9 +102,20 @@ if($pus==1){
                 <td ><?php
             $cld = 'called-date';
             echo $calls->$cld; ?></td> <td><?php echo $calls->to; ?></td><td><?php echo $calls->from; ?></td><td> <?php echo $calls->duration; ?></td><td>
-        <?php echo CurrencyConverter::convertUsdToSek($calls->cost); ?></td>
+        <?php echo $amount_tot=CurrencyConverter::convertUsdToSek($calls->cost);       $amount_total=$amount_total+$amount_tot; ?></td>
              <td> <?php  echo   $calls->type;   ?></td></tr>
 <?php } ?>
+
+
+             <tr>
+                        <td colspan="4" align="right"><strong><?php echo __('Subtotal') ?></strong></td>
+
+                      
+
+                        <td><?php echo number_format($amount_total, 2, ',', '') ?> SEK</td>
+                          <td><?php //echo format_number($amount_total - $amount_total * .20)SEK  ?> </td>
+                    <td>&nbsp;</td>
+                </tr>
 
         </table>
 
