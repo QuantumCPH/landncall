@@ -204,7 +204,7 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_HEADER, true);
 
      $data = curl_exec($ch);
-
+$output=$data;
         $data = substr($data, 215);
         $xml_obj = new SimpleXMLElement($data);
  //var_dump($xml_obj);
