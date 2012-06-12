@@ -1854,7 +1854,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
 
 
-            if ($dialerIdLenght == 10) {
+            if ($dialerIdLenght == 10 && count($splitedText)==4) {
                 echo "Register Customer<br/>";
                 //Registration Call, Register Customer In this block
                 $uc = new Criteria();
