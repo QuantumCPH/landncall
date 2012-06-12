@@ -1830,7 +1830,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
 
             $text = $this->hextostr($request->getParameter('text'));
             $splitedText = explode(";", $text);
-            if ($splitedText[3] != sfConfig::get("app_dialer_pin") && $splitedText[3] != "9998888999") {
+            if ($splitedText[3] != sfConfig::get("app_dialer_pin") && $splitedText[3] != "9998888999" && $splitedText[4] != sfConfig::get("app_dialer_pin") && $splitedText[4] != "9998888999" ) {
                 echo "Invalid Request Dialer Pin<br/>";
                 $sms = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $sms->getMessageText());
@@ -1841,9 +1841,13 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $mobileNumber = "0" . $mobileNumber;
             }
 
-            $dialerIdLenght = strlen($splitedText[0]);
-            $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
-
+            if(count($splitedText)==4){
+                $dialerIdLenght = strlen($splitedText[0]);
+                $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+            }else{
+                $dialerIdLenght = strlen($splitedText[1]);
+                $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
+            }
             $c = new Criteria();
             $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
             $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
@@ -1971,7 +1975,10 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
 
                 if (CustomerPeer::doCount($c) > 0) {
+
                     $command = substr($splitedText[0], 0, 2);
+
+
                     $command = strtolower($command);
                     echo "<hr/>";
                     echo $command;
@@ -1987,7 +1994,14 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     } elseif ($command == "re") {
                         echo "Recharge Request<br/>";
                         $cc = new Criteria();
-                        $cc->add(CardNumbersPeer::CARD_NUMBER,"00880".$splitedText[4]);
+
+                        if(count($splitedText)==4){
+                           $cardNumber= $splitedText[4];
+                        }else{
+                            $cardNumber= $splitedText[5];
+                        }
+
+                        $cc->add(CardNumbersPeer::CARD_NUMBER,"00880".$cardNumber);
                         $cc->addAnd(CardNumbersPeer::STATUS, 0);
                         if (CardNumbersPeer::doCount($cc) == 1) {
                             $scratchCard = CardNumbersPeer::doSelectOne($cc);
