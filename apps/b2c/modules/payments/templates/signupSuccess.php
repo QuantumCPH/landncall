@@ -135,7 +135,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 att3= $('#user_attr_3').val();
                 var accepturlstr = "<?php echo $relay_script_url.url_for('@epay_accept_url', true);  ?>?user_attr_2="+att2+"&user_attr_3="+att3+"&accept=yes&subscriptionid=1&orderid=<?php echo $order_id; ?>&amount="+total*100;
                  var callbackurlstr = "<?php echo $relay_script_url.url_for('@dibs_accept_url', true);  ?>?user_attr_2="+att2+"&user_attr_3="+att3+"&accept=yes&subscriptionid=3&orderid=<?php echo $order_id; ?>&amount="+total*100;
-                $('#idaccepturl').val(accepturlstr);
+                //$('#idaccepturl').val(accepturlstr);
 
                  if(document.getElementById('user_attr_1').checked){
                 $('#idcallbackurl').val(callbackurlstr);
