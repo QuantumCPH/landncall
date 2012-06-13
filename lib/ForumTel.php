@@ -25,8 +25,9 @@ class ForumTel {
 <balance-alert-level>0</balance-alert-level>
 </activate-account>';
 
-
-        $URL = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";
+//https://api.forum-mobile.com/ExternalApi/
+     //   $URL = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   old url
+          $URL = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";
 
         $ch = curl_init($URL);
         //curl_setopt($ch, CURLOPT_MUTE, 1);
@@ -79,7 +80,10 @@ class ForumTel {
 <iccid>' . $iccid . '</iccid>
 </suspend-account>';
 
-        $URL = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";
+
+        //https://api.forum-mobile.com/ExternalApi/
+   //     $URL = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   old url
+           $URL = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";
 
         $ch = curl_init($URL);
         //curl_setopt($ch, CURLOPT_MUTE, 1);
@@ -128,8 +132,9 @@ class ForumTel {
 <amount>' . $amount . '</amount>
 </top-up-subscriber>';
 
-
-        $URL = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";
+  //https://api.forum-mobile.com/ExternalApi/
+   //     $URL = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";   old URL
+            $URL = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";
 
         $ch = curl_init($URL);
         //curl_setopt($ch, CURLOPT_MUTE, 1);
@@ -167,7 +172,10 @@ class ForumTel {
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
 
-        $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";
+
+          //https://api.forum-mobile.com/ExternalApi/
+        $url = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";
+       ///     $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";   old url
         $post_string = '<get-subscriber-balance trid="'.$transactionid.'">
 <authentication>
 <username>' . $username . '</username>
@@ -195,14 +203,15 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
         curl_setopt($ch, CURLOPT_HEADER, true);
 
-         $data = curl_exec($ch);
-       $output=$data;
+     $data = curl_exec($ch);
+$output=$data;
         $data = substr($data, 215);
         $xml_obj = new SimpleXMLElement($data);
-//var_dump($xml_obj);
+ //var_dump($xml_obj);
 //echo "<hr/>";
-//die;$xml_obj->balance[0]->attributes()->amount;
-        $data = $xml_obj->balance[0];
+//die;$data = $xml_obj->balance[0]->attributes()->amount;
+      $data = $xml_obj->balance[0];
+
 
              $ftr = new ForumTelRequests();
                     $ftr->setRequestid($transactionid);
@@ -231,8 +240,9 @@ class ForumTel {
             $password = "ZUkATradafEfA4reYeWr";
             $msisdn = $usnumber->getMsisdn();
             $iccid = $usnumber->getIccid();
-
-            $url = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";
+      //https://api.forum-mobile.com/ExternalApi/
+     //       $url = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   old url
+                $url = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";
             $post_string = '<get-usa-mdn trid="'.$transactionid.'">
             <authentication>
             <username>' . $username . '</username>
@@ -296,7 +306,9 @@ $usnumber->save();
             $msisdn = $usnumber->getMsisdn();
             $iccid = $usnumber->getIccid();
 
-            $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";
+              //https://api.forum-mobile.com/ExternalApi/
+  //          $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";   old url
+             $url = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";
             $post_string = '<reset-subscriber-balance trid="'.$transactionid.'">
             <authentication>
             <username>' . $username . '</username>
