@@ -273,7 +273,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
      <input type="hidden" name="status" value="" />
 		<input type="hidden" name="cancelurl" value="<?php echo $relay_script_url.url_for('@epay_reject_url', true)  ?>?accept=cancel&subscriptionid=&orderid=<?php echo $order->getId(); ?>&amount=<?php echo $order->getExtraRefill(); ?>" />
                 <input type="hidden" name="callbackurl" id="idcallbackurl" value="<?php echo $relay_script_url.url_for('@dibs_accept_url', true);  ?>?accept=yes&subscriptionid=&orderid=<?php echo $order_id; ?>&amount=<?php echo $total; ?>" />
-		<input type="hidden" name="accepturl" id="idaccepturl"  value="<?php echo $relay_script_url.url_for('@epay_accept_url', true);  ?>?accept=yes&subscriptionid=&orderid=<?php echo $order_id; ?>&amount=<?php echo $total; ?>" />
+		<input type="hidden" name="accepturl" id="idaccepturl"  value="http://www.smartsim.se/index.php?option=com_content&view=article&id=48&Itemid=229" />
 		      </div>
       <div class="fr col">
           
