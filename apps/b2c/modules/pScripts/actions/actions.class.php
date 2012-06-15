@@ -2056,19 +2056,19 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                             } else {
                                 echo "Unable to charge";
                                 $sms = SmsTextPeer::retrieveByPK(8);
-                               // ROUTED_SMS::Send($number, $sms->getMessageText());
+                                ROUTED_SMS::Send($number, $sms->getMessageText());
                             }
                         } else {
                             echo "CARD ALREADY USED<br/>";
                             $sms = SmsTextPeer::retrieveByPK(7);
-                           // ROUTED_SMS::Send($number, $sms->getMessageText());
+                            ROUTED_SMS::Send($number, $sms->getMessageText());
                         }
                         die;
                     }
                 } else {
                     echo "Invalid Command 1";
                     $sms = SmsTextPeer::retrieveByPK(7);
-                    //ROUTED_SMS::Send($number, $sms->getMessageText());
+                    ROUTED_SMS::Send($number, $sms->getMessageText());
                     die;
                 }
             }
