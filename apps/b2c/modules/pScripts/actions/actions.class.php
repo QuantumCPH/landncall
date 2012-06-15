@@ -1840,16 +1840,21 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($mobileNumber[0] != "0") {
                 $mobileNumber = "0" . $mobileNumber;
             }
-
+            echo "<hr/>";
+            echo count($splitedText);
+            echo "<hr/>";
             if(count($splitedText)==4){
                 $dialerIdLenght = strlen($splitedText[0]);
                 $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                echo "uniqueid:". $uniqueId;
             }else{
                 $dialerIdLenght = strlen($splitedText[1]);
                 if($dialerIdLenght==12 && strtolower(substr($splitedText[0],0,2))=="re"){
                     $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                    echo "uniqueid:". $uniqueId;
                 }else{
                     $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                    echo "uniqueid:". $uniqueId;
                 }
             }
             $c = new Criteria();
@@ -2059,7 +2064,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 } else {
                     echo "Invalid Command 1";
                     $sms = SmsTextPeer::retrieveByPK(7);
-                    ROUTED_SMS::Send($number, $sms->getMessageText());
+                    //ROUTED_SMS::Send($number, $sms->getMessageText());
                     die;
                 }
             }
