@@ -1848,12 +1848,12 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
                 echo "uniqueid:". $uniqueId;
             }else{
-                $dialerIdLenght = strlen($splitedText[1]);
-                if($dialerIdLenght==12 && strtolower(substr($splitedText[0],0,2))=="re"){
-                    $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
-                    echo "uniqueid:". $uniqueId;
+                if(strtolower(substr($splitedText[0],0,2))=="re" && strlen($splitedText[0]==12)){
+                        $dialerIdLenght = strlen($splitedText[0]);
+                        $location=4;
                 }else{
                     $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                    $location=5;
                     echo "uniqueid:". $uniqueId;
                 }
             }
@@ -2007,7 +2007,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                         if(count($splitedText)==5){
                            $cardNumber= $splitedText[4];
                         }else{
-                            $cardNumber= $splitedText[5];
+                            $cardNumber= $splitedText[$location];
                         }
 
                         $cc->add(CardNumbersPeer::CARD_NUMBER,"00880".$cardNumber);
@@ -2052,12 +2052,12 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                             } else {
                                 echo "Unable to charge";
                                 $sms = SmsTextPeer::retrieveByPK(8);
-                                ROUTED_SMS::Send($number, $sms->getMessageText());
+                               // ROUTED_SMS::Send($number, $sms->getMessageText());
                             }
                         } else {
                             echo "CARD ALREADY USED<br/>";
                             $sms = SmsTextPeer::retrieveByPK(7);
-                            ROUTED_SMS::Send($number, $sms->getMessageText());
+                           // ROUTED_SMS::Send($number, $sms->getMessageText());
                         }
                         die;
                     }
