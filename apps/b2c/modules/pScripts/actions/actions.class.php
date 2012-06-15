@@ -1846,7 +1846,11 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
             }else{
                 $dialerIdLenght = strlen($splitedText[1]);
-                $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                if($dialerIdLenght==12 && strtolower(substr($splitedText[0],0,2))=="re"){
+                    $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                }else{
+                    $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                }
             }
             $c = new Criteria();
             $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
