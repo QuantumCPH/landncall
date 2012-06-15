@@ -1995,7 +1995,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                         echo "Recharge Request<br/>";
                         $cc = new Criteria();
 
-                        if(count($splitedText)==4){
+                        if(count($splitedText)==5){
                            $cardNumber= $splitedText[4];
                         }else{
                             $cardNumber= $splitedText[5];
