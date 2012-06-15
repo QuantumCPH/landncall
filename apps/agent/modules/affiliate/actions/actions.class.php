@@ -595,7 +595,12 @@ public function executeRefill(sfWebRequest $request)
                                         $OpeningBalance =    $transaction->getAmount();
 
                                         if(strtolower(substr($uniqueId, 0, 2))=="us"){
-                                              ForumTel::rechargeForumtel($customer->getId(),$OpeningBalance);
+                                            $amt = CurrencyConverter::convertSekToUsd($OpeningBalance);
+                                            $Test = ForumTel::rechargeForumtel($customer->getId(),$amt);
+                                            $dibsf = new DibsCall();
+                                            $dibsf->setCallurl("original amout SEK:".$OpeningBalance."converted amout".$amt."Fr response".$Test);
+                                            $dibsf->save();
+                                             
                                         }
                                         else
                                         {
