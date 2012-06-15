@@ -1848,9 +1848,13 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
                 echo "uniqueid:". $uniqueId;
             }else{
-                if(strtolower(substr($splitedText[0],0,2))=="re" && strlen($splitedText[0]==12)){
-                        $dialerIdLenght = strlen($splitedText[0]);
-                        $location=4;
+                echo strtolower(substr($splitedText[0],0,2));
+                echo "<br/>";
+                echo $splitedText[0];
+                if(strtolower(substr($splitedText[0],0,2))=="re" && strlen($splitedText[0])==12){
+                    $dialerIdLenght = strlen($splitedText[0]);
+                    $location=4;
+                    $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);    
                 }else{
                     $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
                     $location=5;
