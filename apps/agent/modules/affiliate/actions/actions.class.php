@@ -594,7 +594,11 @@ public function executeRefill(sfWebRequest $request)
                                         $uniqueId       =   $customer->getUniqueid();
                                         $OpeningBalance =    $transaction->getAmount();
 
-                                        if($uniqueId!=''){
+                                        if(strtolower(substr($uniqueId, 0, 2))=="us"){
+                                              ForumTel::rechargeForumtel($customer->getId(),$OpeningBalance);
+                                        }
+                                        else
+                                        {
                                             Telienta::recharge($customer, $OpeningBalance);      
                                         }
                         
