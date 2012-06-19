@@ -207,7 +207,7 @@ class ForumTel {
         $output=$data;
         $data = substr($data, 215);
         var_dump($data); die;
-        if(isset ($data) && $data!=""){
+        if(isset ($data) && strpos($data, "HTTP 404")===false){
             $xml_obj = new SimpleXMLElement($data);
      //var_dump($xml_obj);
     //echo "<hr/>";
