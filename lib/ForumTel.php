@@ -224,10 +224,6 @@ class ForumTel {
             $ftr->save(); 
             return $data;
         }else{
-      //      $xml_obj = new SimpleXMLElement($data);
-     //var_dump($xml_obj);
-    //echo "<hr/>";
-    //die;$data = $xml_obj->balance[0]->attributes()->amount;
             $output = $data;
             
             $ftr = new ForumTelRequests();
