@@ -287,7 +287,14 @@
                         <?php echo link_to('Low Credit Alert Sender', 'usage_alert_sender/index') ?>
                         <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
                         <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
-                        <?php echo link_to('Transaction Description', 'transactionDescription/index'); ?>
+                        <?php echo link_to('Transaction Description', 'transactionDescription/index'); 
+                        if($actionName=='indexAll' && $modulName=="company"){
+                          echo link_to(__('Edit All Agent Credit Limit'), 'company/indexAll',array('class'=>'subSelect'));
+                        }else{
+                          echo link_to(__('Edit All Agent Credit Limit'), 'company/indexAll');
+                        }
+                        ?>
+
                          <?php //echo link_to('Upload Client Document', 'client_documents/index') ?>
 <!--                        <a href="/client_documents/index">Upload Client Document</a>-->
                         <?php //echo link_to('global setting', 'global_setting/index') ?>
