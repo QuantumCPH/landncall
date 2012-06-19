@@ -223,6 +223,19 @@ class ForumTel {
             $ftr->save(); 
             return $data;
         }else{
+      //      $xml_obj = new SimpleXMLElement($data);
+     //var_dump($xml_obj);
+    //echo "<hr/>";
+    //die;$data = $xml_obj->balance[0]->attributes()->amount;
+            $output = $data;
+            
+            $ftr = new ForumTelRequests();
+            $ftr->setRequestid($transactionid);
+            $ftr->setResponse($output);
+            $ftr->setRequestType('get balance');
+            $ftr->setIccid($iccid);
+            $ftr->setMsisdn($msisdn);
+            $ftr->save(); 
             emailLib::sendErrorInForumTel("Error in fetching balance", "Error in fetching balance for customer $customerid .");
             return false;
         }           
