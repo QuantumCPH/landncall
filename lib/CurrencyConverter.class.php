@@ -143,7 +143,7 @@ $to ='SEK';
 $string = $amount."".$from."=?".$to;
 
 //Call Google API
-  $google_url = "http://www.google.com/ig/calculator?hl=en&q=".$string;
+ echo $google_url = "http://www.google.com/ig/calculator?hl=en&q=".$string;
 
 
 //Get and Store API results into a variable
