@@ -1607,19 +1607,19 @@ $rs_email='rs@zapna.com';
     public static function sendErrorInForumTel($subject, $message) {
 
         //To RS.
-//        $email = new EmailQueue();
-//        $email->setSubject($subject);
-//        $email->setReceipientName("Raheel Safdar");
-//        $email->setReceipientEmail("rs@zapna.com");
-//        $email->setEmailType('Telinta Error');
-//        $email->setMessage($message);
-//        $email->save();
-
-        //To Support @ Zerocall
         $email = new EmailQueue();
         $email->setSubject($subject);
-        $email->setReceipientName("Rubab");
-        $email->setReceipientEmail("rr@zerocall.com");
+        $email->setReceipientName("Raheel Safdar");
+        $email->setReceipientEmail("rs@zapna.com");
+        $email->setEmailType('ForumTel Response Error');
+        $email->setMessage($message);
+        $email->save();
+
+        //To Support @ LandNCall
+        $email = new EmailQueue();
+        $email->setSubject($subject);
+        $email->setReceipientName("Baran Khan");
+        $email->setReceipientEmail("bk@zapna.com");
         $email->setEmailType('ForumTel Response Error');
         $email->setMessage($message);
         $email->save();
