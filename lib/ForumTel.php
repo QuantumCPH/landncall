@@ -193,6 +193,7 @@ class ForumTel {
         $header[] = "Content-type: text/xml";
         $header[] = "Content-length: " . strlen($post_string);
         $header[] = "Connection: close";
+        
      while ($retry_count < $max_retries) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -210,9 +211,7 @@ class ForumTel {
         if(isset ($data) && strpos($data, "HTTP 404")===false){
             $data = substr($data, 215);
             $xml_obj = new SimpleXMLElement($data);
-     //var_dump($xml_obj);
-    //echo "<hr/>";
-    //die;$data = $xml_obj->balance[0]->attributes()->amount;
+    
             $data = $xml_obj->balance[0];
             
             $ftr = new ForumTelRequests();
@@ -233,7 +232,10 @@ class ForumTel {
             $ftr->setIccid($iccid);
             $ftr->setMsisdn($msisdn);
             $ftr->save();             
-        }           
+        }
+        
+        sleep(0.5);
+        $retry_count++;
       }
       if(strpos($data, "HTTP 404")!==false && $retry_count==$max_retries){
        emailLib::sendErrorInForumTel("Error in fetching balance", "Error in fetching balance for customer $customerid . Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
