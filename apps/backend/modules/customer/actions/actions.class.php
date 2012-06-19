@@ -207,7 +207,7 @@ class customerActions extends autocustomerActions
         $this->customer = CustomerPeer::doSelectOne($c);
 
 //$this->customer_balance =Telienta::getBalance($this->customer->getUniqueid());
-        $this->customer_balance =Telienta::getBalance($this->customer);
+        $this->customer_balance = Telienta::getBalance($this->customer);
     }
 public function executePaymenthistory(sfWebRequest $request)
 	{
