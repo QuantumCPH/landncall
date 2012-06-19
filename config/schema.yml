@@ -163,9 +163,6 @@ propel:
     call_rate_table_description: { type: VARCHAR, size: '255', required: false }
     call_rate_table_id: { type: INTEGER, size: '11', required: false }
     processing_comment: { type: VARCHAR, size: '255', required: false }
-  c:
-    _attributes: { phpName: C }
-    fonet_customer_id: { type: DOUBLE, required: true }
   c9_numbers:
     _attributes: { phpName: C9Numbers }
     c9_number: { type: VARCHAR, size: '15', required: false }
@@ -325,7 +322,6 @@ propel:
     file_path: { type: VARCHAR, size: '255', required: false }
     rate_table_id: { type: INTEGER, size: '11', required: true, defaultValue: '1' }
     i_customer: { type: VARCHAR, size: '50', required: false }
-    credit_limit: { type: INTEGER, size: '11', required: true }
     _indexes: { company_FI_1: [country_id], company_FI_2: [city_id], company_FI_3: [status_id], company_FI_4: [company_size_id], company_FI_5: [company_type_id], company_FI_6: [customer_type_id], company_FI_7: [apartment_form_id], company_FI_8: [invoice_method_id], company_FI_9: [account_manager_id], company_FI_10: [agent_company_id], rate_table_id: [rate_table_id] }
     _uniques: { vat_no: [vat_no] }
   company_bank:
