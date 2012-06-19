@@ -223,7 +223,7 @@ class ForumTel {
             $ftr->save(); 
             return $data;
         }else{
-            $output = $data;
+          //  $output = $data;
             
             $ftr = new ForumTelRequests();
             $ftr->setRequestid($transactionid);
