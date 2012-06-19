@@ -161,7 +161,11 @@ class ForumTel {
     public static function getBalanceForumtel($customer) {
 
         $customerid = $customer;
-
+        
+        
+        $max_retries = 10;
+        $retry_count = 0;
+        
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
@@ -171,7 +175,7 @@ class ForumTel {
         $password = "ZUkATradafEfA4reYeWr";
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
-
+      
 
           //https://api.forum-mobile.com/ExternalApi/
         $url = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";
@@ -184,16 +188,12 @@ class ForumTel {
         <msisdn>' . $msisdn . '</msisdn>
          <iccid>' . $iccid . '</iccid>
         </get-subscriber-balance>';
-
-
-
-
+        
         $header = array();
         $header[] = "Content-type: text/xml";
         $header[] = "Content-length: " . strlen($post_string);
         $header[] = "Connection: close";
-
-
+     while ($retry_count < $max_retries) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -204,7 +204,7 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_HEADER, true);
 
         $data = curl_exec($ch);
-        $output=$data;
+        $output = $data;
         
        // var_dump($data); die;
         if(isset ($data) && strpos($data, "HTTP 404")===false){
@@ -232,11 +232,13 @@ class ForumTel {
             $ftr->setRequestType('get balance');
             $ftr->setIccid($iccid);
             $ftr->setMsisdn($msisdn);
-            $ftr->save(); 
-            emailLib::sendErrorInForumTel("Error in fetching balance", "Error in fetching balance for customer $customerid .");
-            return false;
+            $ftr->save();             
         }           
-       
+      }
+      if(strpos($data, "HTTP 404")!==false && $retry_count==$max_retries){
+       emailLib::sendErrorInForumTel("Error in fetching balance", "Error in fetching balance for customer $customerid . Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+       return false;   
+      }
     }
 //////////////////////////////////////////////////////////////////////
      public static function getUsMobileNumber($customer) {
