@@ -238,7 +238,7 @@ class ForumTel {
         $retry_count++;
       }
       if(strpos($data, "HTTP 404")!==false && $retry_count==$max_retries){
-       emailLib::sendErrorInForumTel("Error in fetching balance", "Error in fetching balance for customer $customerid . Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+       emailLib::sendErrorInForumTel("Error in fetching balance", "Error in fetching balance for customer $customerid and request id is $transactionid. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
        return false;   
       }
     }
