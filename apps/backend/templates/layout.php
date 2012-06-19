@@ -292,9 +292,9 @@
                         <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
                         <?php echo link_to('Transaction Description', 'transactionDescription/index'); 
                         if($actionName=='indexAll' && $modulName=="company"){
-                          echo link_to(__('Edit All Agent Credit Limit'), 'company/indexAll',array('class'=>'subSelect'));
+                          echo link_to(__('Edit B2B Credit Limit'), 'company/indexAll',array('class'=>'subSelect'));
                         }else{
-                          echo link_to(__('Edit All Agent Credit Limit'), 'company/indexAll');
+                          echo link_to(__('Edit B2B Credit Limit'), 'company/indexAll');
                         }
                         ?>
 
@@ -505,6 +505,26 @@ jQuery('#sf_admin_edit_form').validate({
 
 
     });
+
+    jQuery(function(){
+
+    // add multiple select / deselect functionality
+    jQuery("#selectall").click(function () {
+          jQuery('.case').attr('checked', this.checked);
+    });
+
+    // if all checkbox are selected, check the selectall checkbox
+    // and viceversa
+    jQuery(".case").click(function(){
+
+        if(jQuery(".case").length == jQuery(".case:checked").length) {
+            jQuery("#selectall").attr("checked", "checked");
+        } else {
+            jQuery("#selectall").removeAttr("checked");
+        }
+
+    });
+});
 
 
 </script>
