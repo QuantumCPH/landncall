@@ -37,7 +37,7 @@ $pus=0;
 
                if($pus==1){
                             $Tes=ForumTel::getBalanceForumtel($customer->getId());
-                            var_dump($Tes); die;
+                           // var_dump($Tes); die;
                                echo  $amt=CurrencyConverter::convertUsdToSek($Tes);
    echo " SEK";
                             }else{
