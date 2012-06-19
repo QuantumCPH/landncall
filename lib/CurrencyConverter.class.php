@@ -136,14 +136,14 @@ return $rhs;
 	{
 
         $amount =$amount;
-$from ='USD';
-$to ='SEK';
+        $from ='USD';
+        $to ='SEK';
 
 //make string to be put in API
 $string = $amount."".$from."=?".$to;
 
 //Call Google API
- echo $google_url = "http://www.google.com/ig/calculator?hl=en&q=".$string;
+ $google_url = "http://www.google.com/ig/calculator?hl=en&q=".$string;
 
 
 //Get and Store API results into a variable
