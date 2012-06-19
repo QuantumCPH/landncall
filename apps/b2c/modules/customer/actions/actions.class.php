@@ -364,7 +364,7 @@ class customerActions extends sfActions {
                 $invite->save();
             }
         }
-            
+               
 
         //set referrer id
         if ($referrer_id = $request->getParameter('ref')) {
