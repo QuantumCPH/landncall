@@ -9,7 +9,7 @@
 		var amounts = document.getElementById("amount").value;
                // alert(amounts);
                 var orderids = document.getElementById("orderid").value;
-                var accepturlstr = "http://landncall.zerocall.com/b2c.php/pScripts/thankyouAgent?accept=yes&subscriptionid=&orderid="+orderids+"&amount="+amounts;
+                var accepturlstr = "http://landncall.zerocall.com/b2c.php/affiliate/thankyouAgent?accept=yes&subscriptionid=&orderid="+orderids+"&amount="+amounts;
                 document.getElementById("accepturl").value = accepturlstr;
                 
 		if(isNaN(objForm.amount.value) || objForm.amount.value < <?php echo 0//$amount ?>)
@@ -166,15 +166,15 @@
 		<input type="hidden" name="currency" value="752" />
 		<input type="hidden" name="orderid" id="orderid" value="<?php echo $agent_order->getAgentOrderId() ?>" />
 	 
-<input type="hidden" name="test" value="yes" />
+<!--<input type="hidden" name="test" value="yes" />-->
 		<input type="hidden" name="calcfee" value="yes" />
 		<input type="hidden" name="account" value="YTIP" />
 		<input type="hidden" name="status" value="" />
                  <input type="hidden" name="lang" value="sv" />   
               <input type="hidden" name="test" value="yes" />
-		<input type="hidden" name="cancelurl" value="http://landncall.zerocall.com/b2c.php/pScripts/thankyouAgent/?accept=cancel" />
+		<input type="hidden" name="cancelurl" value="http://landncall.zerocall.com/b2c.php/affiliate/thankyouAgent/?accept=cancel" />
 		<input type="hidden" name="callbackurl" value="http://landncall.zerocall.com/b2c.php/pScripts/accountRefill" />
-		<input type="hidden" name="accepturl" id="accepturl"  value="http://landncall.zerocall.com/b2c.php/pScripts/thankyouAgent?accept=yes&subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=50000">
+		<input type="hidden" name="accepturl" id="accepturl"  value="http://landncall.zerocall.com/b2c.php/affiliate/thankyouAgent?accept=yes&subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=50000">
 
                 
                 <input type="submit" value="Recharge" />

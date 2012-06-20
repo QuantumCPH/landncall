@@ -3287,45 +3287,6 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
         return $this->redirect('customer/dashboard');
     }
 
-    public function executeRefillAccept(sfWebRequest $request) {
-
-
-        $this->redirect('customer/dashboard');
-    }
-
-    public function executeRefillReject(sfWebRequest $request) {
-        //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
-        changeLanguageCulture::languageCulture($request, $this);
-
-
-        $order_id = $request->getParameter('orderid');
-        //$error_text = substr($request->getParameter('errortext'), 0, strpos($request->getParameter('errortext'), '!'));
-        $error_text = $this->getContext()->getI18N()->__('Payment is unfortunately not accepted because your information is incorrect, please try again by entering correct credit card information');
-
-        $order = CustomerOrderPeer::retrieveByPK($order_id);
-        $c = new Criteria();
-        $c->add(TransactionPeer::ORDER_ID, $order_id);
-        $transaction = TransactionPeer::doSelectOne($c);
-
-        $this->forward404Unless($order);
-
-        $order->setOrderStatusId(sfConfig::get('app_status_cancelled')); //cancelled
-
-        $this->getUser()->setFlash('error_message',
-                $error_text
-        );
-
-        $this->order = $order;
-        $this->forward404Unless($this->order);
-
-        //required for some templates
-        $this->customer = $this->order->getCustomer();
-
-        $this->order_id = $order->getId();
-        $this->amount = $transaction->getAmount();
-        $this->form = new ManualRefillForm($this->order->getCustomerId());
-        $this->setTemplate('refill');
-    }
 
     public function executeCalbackrefill(sfWebRequest $request) {
         $order_id = $request->getParameter("orderid");
@@ -4349,43 +4310,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
         return sfView::NONE;
     }
 /***********************************Agent Account Refill Dibs Call*******************************************/
-    public function executeThankyouAgent(sfWebRequest $request){
 
-      $order_id = $request->getParameter('orderid') ;
-      $amount = $request->getParameter('amount') ;
-
-      if( $order_id and $amount){
-          $c = new Criteria();
-          $c->add(AgentOrderPeer::AGENT_ORDER_ID, $order_id);
-          $c->add(AgentOrderPeer::STATUS, 1);
-          $agent_order = AgentOrderPeer::doSelectOne($c);
-
-          $agent_order->setAmount($amount/100);
-          $agent_order->setOrderDescription(2);///// By Credit Card for agent
-          $agent_order->setStatus(3);
-          $agent_order->save();
-
-          $agent = AgentCompanyPeer::retrieveByPK($agent_order->getAgentCompanyId());
-          $agent->setBalance($agent->getBalance() + ($amount/100));
-          $agent->save();
-          $this->agent=$agent;
-
-                     $amount=$amount/100;
-                     $remainingbalance=$agent->getBalance();
-                     $aph = new AgentPaymentHistory();
-                     $aph->setAgentId($agent_order->getAgentCompanyId());
-                     $aph->setExpeneseType(9);
-                     $aph->setOrderDescription(2);
-                     $aph->setAmount($amount);
-                     $aph->setRemainingBalance($remainingbalance);
-                     $aph->save();
-
-          $this->getUser()->setFlash('message', 'Your Credit Card recharge of '.$amount.'SEK is approved');
-          emailLib::sendAgentRefilEmail($this->agent,$agent_order);
-          $this->redirect(sfConfig::get('app_url').'agent.php/affiliate/agentOrder');
-
-                }
-  }
 
    public function executeAccountRefill(sfWebRequest $request){
 
@@ -4427,7 +4352,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
 
                     $this->agent_order = $agent_order;
 
-            }
+            }return sfView::NONE;
   }
 
 }
