@@ -213,10 +213,7 @@ class ForumTel {
         
        // var_dump($data); die;
         if(isset ($data) && strpos($data, "HTTP 404")===false){
-            $data = substr($data, 215);
-            $xml_obj = new SimpleXMLElement($data);
-    
-            $data = $xml_obj->balance[0];
+            $data = substr($data, 215);           
             
             $ftr = new ForumTelRequests();
             $ftr->setRequestid($transactionid);
@@ -225,6 +222,11 @@ class ForumTel {
             $ftr->setIccid($iccid);
             $ftr->setMsisdn($msisdn);
             $ftr->save(); 
+            
+            $xml_obj = new SimpleXMLElement($data);
+    
+            $data = $xml_obj->balance[0];
+            
             return $data;
         }else{
           //  $output = $data;
