@@ -2502,7 +2502,7 @@ return sfView::NONE;
 
                 // $customer_balance = Fonet::getBalance($customer);
                 //if customer balance is less than 10
-                echo "$customer->getAutoRefillMinBalance() customer mini autorefill balance<br />";
+//                echo "$customer->getAutoRefillMinBalance() customer mini autorefill balance<br />";
                 if ($customer_balance != null && (float)$customer_balance <= (float)$customer->getAutoRefillMinBalance()) {
 
 
