@@ -2459,21 +2459,24 @@ return sfView::NONE;
             $customers = CustomerPeer::doSelect($c);
 
             foreach ($customers as $customer) {
-
-                echo "UniqueID:";
-                $uniqueId = $customer->getUniqueid();
-                echo "<br />";
+                  
+//                echo "UniqueID:";
+                  $uniqueId = $customer->getUniqueid();
+//                echo  $uniqueId ;
+//                echo "<br />";
                 $usid="";
                     $usid=substr($uniqueId,0,2);
                 if ($usid=="us") {
                      $Tes = ForumTel::getBalanceForumtel($customer->getId());
                      if($Tes!=""){  
-                        $customer_balance =CurrencyConverter::convertUsdToSek($Tes);
+                        $customer_balance = CurrencyConverter::convertUsdToSek($Tes);
+//                        echo "$uniqueId--ForumTel balance----".$Tes;                        
                      } else{
-                        $customer_balance = NULL; 
+                        $customer_balance = null;
+//                        echo "$uniqueId--customer_balance----null---".$Tes;
                      }  
                      
-                    echo "ForumTel balance----".$Tes;
+                  //  echo "ForumTel balance----".$Tes;
                     echo "<br />";
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
@@ -2485,23 +2488,26 @@ return sfView::NONE;
                         do {
                             $customer_balance = Telienta::getBalance($customer);
                             $retries++;
-                            echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+                          //  echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+                            
                         } while (!$customer_balance && $retries <= $maxRetries);
 
                     if($retries==$maxRetries){
                         continue;
                     }
-
+//                   echo "$uniqueId--Telinta balance----".$customer_balance;
+//                   echo "<br />";
                 }
                 //   echo $uniqueId.":".$customer_balance."<br/>";
 
                 // $customer_balance = Fonet::getBalance($customer);
                 //if customer balance is less than 10
+//                echo "$customer->getAutoRefillMinBalance() customer mini autorefill balance<br />";
                 if ($customer_balance != null && (float)$customer_balance <= (float)$customer->getAutoRefillMinBalance()) {
 
 
-                     echo $uniqueId.":".$customer_balance."<br/>";
-
+                     echo "success condition---".$uniqueId.":".$customer_balance."<br/>";
+                     
 
                     $customer_id = $customer->getId();
 
@@ -2515,7 +2521,7 @@ return sfView::NONE;
                     $this->order->setCustomer($this->customer);
                     $this->order->setQuantity(1);
                     $this->order->setExtraRefill($customer->getAutoRefillAmount());
-                  //  $this->order->save();
+                    $this->order->save();
 
 
                     $transaction = new Transaction();
@@ -2525,7 +2531,7 @@ return sfView::NONE;
                     $transaction->setOrderId($this->order->getId());
                     $transaction->setCustomerId($this->order->getCustomerId());
 
-                 //   $transaction->save();
+                    $transaction->save();
 
                     $order_id = $this->order->getId();
                     $total = 100 * $this->order->getExtraRefill();
@@ -2572,8 +2578,8 @@ return sfView::NONE;
 //var_dump($post_data);
 //echo "<br/>Baran<br/>";
 
-                   // $html_data = $form->send_post_data("https://payment.architrade.com/cgi-ssl/ticket_auth.cgi", $post_data);
-                   // echo $html_data;
+                    $html_data = $form->send_post_data("https://payment.architrade.com/cgi-ssl/ticket_auth.cgi", $post_data);
+                    echo $html_data;
                     echo "<br/>";
                     // die("khan");
                 }
