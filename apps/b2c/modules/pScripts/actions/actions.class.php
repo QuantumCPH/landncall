@@ -2473,7 +2473,8 @@ return sfView::NONE;
                         $customer_balance = NULL; 
                      }  
                      
-                    //$Tes;
+                    echo "ForumTel balance----".$Tes;
+                    echo "<br />";
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
                    
