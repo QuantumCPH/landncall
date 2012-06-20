@@ -14,18 +14,19 @@ class ForumTel {
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
         $tarif_name = "PayAsYouGo-Sub";
+        
         $xml_data = '<activate-account trid="'.$transactionid.'">
-<authentication>
-<username>' . $username . '</username>
-<password>' . $password . '</password>
-</authentication>
-<msisdn>' . $msisdn . '</msisdn>
-<iccid>' . $iccid . '</iccid>
-<tariff-name>' . $tarif_name . '</tariff-name>
-<balance-alert-level>0</balance-alert-level>
-</activate-account>';
+        <authentication>
+        <username>' . $username . '</username>
+        <password>' . $password . '</password>
+        </authentication>
+        <msisdn>' . $msisdn . '</msisdn>
+        <iccid>' . $iccid . '</iccid>
+        <tariff-name>' . $tarif_name . '</tariff-name>
+        <balance-alert-level>0</balance-alert-level>
+        </activate-account>';
 
-//https://api.forum-mobile.com/ExternalApi/
+      //https://api.forum-mobile.com/ExternalApi/
      //   $URL = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   old url
           $URL = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";
 
@@ -37,25 +38,17 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/xml'));
         curl_setopt($ch, CURLOPT_POSTFIELDS, "$xml_data");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-     echo  $output = curl_exec($ch);
+        echo  $output = curl_exec($ch);
         curl_close($ch);
 
-
-
-                    $ftr = new ForumTelRequests();
-                    $ftr->setRequestid($transactionid);
-                    $ftr->setResponse($output);
-                    $ftr->setRequestType('registration');
-                    $ftr->setIccid($iccid);
-                    $ftr->setMsisdn($msisdn);
-                    $ftr->save();
-
-
-
-
-
-
-
+        $ftr = new ForumTelRequests();
+        $ftr->setRequestid($transactionid);
+        $ftr->setResponse($output);
+        $ftr->setRequestType('registration');
+        $ftr->setIccid($iccid);
+        $ftr->setMsisdn($msisdn);
+        $ftr->save();
+        
         return true;
     }
 
@@ -64,7 +57,7 @@ class ForumTel {
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-           $transactionid= "466".mt_rand(100000000,999999999);
+        $transactionid= "466".mt_rand(100000000,999999999);
 
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
@@ -123,14 +116,14 @@ class ForumTel {
         $amount = $amount;
 
         $xml_data = '<top-up-subscriber trid="'.$transactionid.'">
-<authentication>
-<username>' . $username . '</username>
-<password>' . $password . '</password>
-</authentication>
-<msisdn>' . $msisdn . '</msisdn>
-<iccid>' . $iccid . '</iccid>
-<amount>' . $amount . '</amount>
-</top-up-subscriber>';
+        <authentication>
+        <username>' . $username . '</username>
+        <password>' . $password . '</password>
+        </authentication>
+        <msisdn>' . $msisdn . '</msisdn>
+        <iccid>' . $iccid . '</iccid>
+        <amount>' . $amount . '</amount>
+        </top-up-subscriber>';
 
   //https://api.forum-mobile.com/ExternalApi/
    //     $URL = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";   old URL
@@ -147,13 +140,13 @@ class ForumTel {
         echo $output = curl_exec($ch);
         curl_close($ch);
 
-                    $ftr = new ForumTelRequests();
-                    $ftr->setRequestid($transactionid);
-                    $ftr->setResponse($output);
-                    $ftr->setRequestType('recharge');
-                    $ftr->setIccid($iccid);
-                    $ftr->setMsisdn($msisdn);
-                    $ftr->save();
+        $ftr = new ForumTelRequests();
+        $ftr->setRequestid($transactionid);
+        $ftr->setResponse($output);
+        $ftr->setRequestType('recharge');
+        $ftr->setIccid($iccid);
+        $ftr->setMsisdn($msisdn);
+        $ftr->save();
 
         return true;
     }
@@ -281,14 +274,8 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
         curl_setopt($ch, CURLOPT_HEADER, true);
 
-     echo  $data = curl_exec($ch);
-
-
-
-
-
-
-          $ftr = new ForumTelRequests();
+        echo  $data = curl_exec($ch);
+        $ftr = new ForumTelRequests();
                     $ftr->setRequestid($transactionid);
                     $ftr->setResponse($data);
                     $ftr->setRequestType('get us mobile number');
@@ -296,7 +283,7 @@ class ForumTel {
                     $ftr->setMsisdn($msisdn);
                     $ftr->save();
 
-  $data = substr($data, 215);
+        $data = substr($data, 215);
         $xml_obj = new SimpleXMLElement($data);
 
 //die;$data = $xml_obj->balance[0]->attributes()->amount;

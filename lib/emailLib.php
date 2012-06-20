@@ -1618,14 +1618,14 @@ $rs_email='rs@zapna.com';
         $email->setMessage($message);
         $email->save();
 
-        //To Support @ LandNCall
-        $email = new EmailQueue();
-        $email->setSubject($subject);
-        $email->setReceipientName("Rubab");
-        $email->setReceipientEmail("rr@zerocall.com");
-        $email->setEmailType('ForumTel Response Error');
-        $email->setMessage($message);
-        $email->save();
+//        //To Support @ LandNCall
+//        $email = new EmailQueue();
+//        $email->setSubject($subject);
+//        $email->setReceipientName("Rubab");
+//        $email->setReceipientEmail("rr@zerocall.com");
+//        $email->setEmailType('ForumTel Response Error');
+//        $email->setMessage($message);
+//        $email->save();
     }
 }
 
