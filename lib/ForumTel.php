@@ -94,7 +94,7 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         echo $output = curl_exec($ch);
         curl_close($ch);
-
+        $data = $output;
 
                     $ftr = new ForumTelRequests();
                     $ftr->setRequestid($transactionid);
@@ -103,9 +103,14 @@ class ForumTel {
                     $ftr->setIccid($iccid);
                     $ftr->setMsisdn($msisdn);
                     $ftr->save();
+                    
+        if(strpos($data, "HTTP 404")!==false){
+          emailLib::sendErrorInForumTel("Error in Suspend account on ForumTel", "Error in Suspend account on forumTel for MSISDN No $msisdn , request id is $transactionid . <br/> Following error occurred.<br /> <br />$data");
+        }else{
+            
+        }
 
-
-        return true;
+        return $output;
     }
 
     public static function rechargeForumtel($customerid, $amount) {
