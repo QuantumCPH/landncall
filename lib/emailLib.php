@@ -1496,10 +1496,6 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
 
         //create transaction
 
-
-
-
-
         //This Section For Get The Agent Information
         $agent_company_id = $agent->getId();
         if($agent_company_id!=''){
@@ -1610,22 +1606,22 @@ $rs_email='rs@zapna.com';
     public static function sendErrorInForumTel($subject, $message) {
 
         //To RS.
-        $email = new EmailQueue();
-        $email->setSubject($subject);
-        $email->setReceipientName("Raheel Safdar");
-        $email->setReceipientEmail("rs@zapna.com");
-        $email->setEmailType('ForumTel Response Error');
-        $email->setMessage($message);
-        $email->save();
-
-//        //To Support @ LandNCall
 //        $email = new EmailQueue();
 //        $email->setSubject($subject);
-//        $email->setReceipientName("Rubab");
-//        $email->setReceipientEmail("rr@zerocall.com");
+//        $email->setReceipientName("Raheel Safdar");
+//        $email->setReceipientEmail("rs@zapna.com");
 //        $email->setEmailType('ForumTel Response Error');
 //        $email->setMessage($message);
 //        $email->save();
+
+        //To Support @ LandNCall
+        $email = new EmailQueue();
+        $email->setSubject($subject);
+        $email->setReceipientName("Rubab");
+        $email->setReceipientEmail("rr@zerocall.com");
+        $email->setEmailType('ForumTel Response Error');
+        $email->setMessage($message);
+        $email->save();
     }
 }
 
