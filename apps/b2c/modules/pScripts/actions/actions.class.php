@@ -3982,11 +3982,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 $order->setAgentCommissionPackageId($order->getCustomer()->getAgentCompany()->getAgentCommissionPackageId());
                 $transaction->setAgentCompanyId($order->getCustomer()->getReferrerId()); //completed
             }
-
-
-
-
-
+            
             $order->save();
             $transaction->save();
             if ($is_transaction_ok) {

@@ -27,8 +27,8 @@ class ForumTel {
         </activate-account>';
 
       //https://api.forum-mobile.com/ExternalApi/
-     //   $URL = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   old url
-          $URL = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";
+        $URL = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   //  old url
+     //     $URL = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx"; // new url
 
         $ch = curl_init($URL);
         //curl_setopt($ch, CURLOPT_MUTE, 1);
@@ -81,8 +81,8 @@ class ForumTel {
 
 
         //https://api.forum-mobile.com/ExternalApi/
-   //     $URL = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   old url
-           $URL = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";
+        $URL = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   // old url
+//           $URL = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";    //  new url
 
         $ch = curl_init($URL);
         //curl_setopt($ch, CURLOPT_MUTE, 1);
@@ -132,8 +132,8 @@ class ForumTel {
         </top-up-subscriber>';
 
   //https://api.forum-mobile.com/ExternalApi/
-   //     $URL = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";   old URL
-            $URL = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";
+        $URL = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";    // old URL
+    //        $URL = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";   // new url
 
         $ch = curl_init($URL);
         //curl_setopt($ch, CURLOPT_MUTE, 1);
@@ -182,8 +182,8 @@ class ForumTel {
       
 
           //https://api.forum-mobile.com/ExternalApi/
-        $url = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";
-       ///     $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";   old url
+       // $url = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";  // new url
+          $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";   //  old url 
         $post_string = '<get-subscriber-balance trid="'.$transactionid.'">
         <authentication>
         <username>' . $username . '</username>
@@ -260,8 +260,8 @@ class ForumTel {
             $msisdn = $usnumber->getMsisdn();
             $iccid = $usnumber->getIccid();
       //https://api.forum-mobile.com/ExternalApi/
-     //       $url = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   old url
-            $url = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";
+            $url = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   // old url
+     //       $url = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";  //new url
             $post_string = '<get-usa-mdn trid="'.$transactionid.'">
             <authentication>
             <username>' . $username . '</username>
@@ -326,8 +326,8 @@ class ForumTel {
             $iccid = $usnumber->getIccid();
 
               //https://api.forum-mobile.com/ExternalApi/
-  //          $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";   old url
-             $url = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";
+             $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";       ///    old url
+        //     $url = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";   //// new url
             $post_string = '<reset-subscriber-balance trid="'.$transactionid.'">
             <authentication>
             <username>' . $username . '</username>
