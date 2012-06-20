@@ -3871,22 +3871,13 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
             else {
                 $this->logMessage('Error in transaction.');
             } //end else
-            //return sfView::NONE;
+          
         }
+        
     }
 
-     public function executeThankyou(sfWebRequest $request) {
-        //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 01/24/11
-        changeLanguageCulture::languageCulture($request, $this);
 
-        $urlval = "thanks-" . $request->getParameter('transact');
-
-        $email2 = new DibsCall();
-        $email2->setCallurl($urlval);
-
-        $email2->save();
-    }
-
+ /*******************************************************Customer Registeration US Dibs Call ***********************************************/
     public function executeConfirmpaymentus(sfWebRequest $request) {
         changeLanguageCulture::languageCulture($request, $this);
 
