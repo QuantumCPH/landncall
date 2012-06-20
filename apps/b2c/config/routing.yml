@@ -23,16 +23,16 @@ epay_reject_url:
   param: { module: payments, action: reject}
   
 epay_refill_accept:
-  url: /pScripts/refill/accpeted
-  param: { module: pScripts, action: refillAccept }
+  url: /customer/refill/accpeted
+  param: { module: customer, action: refillAccept }
 
 dibs_refill_accept:
   url: /pScripts/calbackrefill
   param: { module: pScripts, action: calbackrefill }
   
 epay_refill_reject:
-  url: /pScripts/refill/rejeceted
-  param: { module: pScripts, action: refillReject }
+  url: /customer/refill/rejeceted
+  param: { module: customer, action: refillReject }
   
 customer_login:
   url: /login
