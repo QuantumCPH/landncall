@@ -2459,18 +2459,22 @@ return sfView::NONE;
             $customers = CustomerPeer::doSelect($c);
 
             foreach ($customers as $customer) {
-
-                echo "UniqueID:";
-                $uniqueId = $customer->getUniqueid();
-                echo "<br />";
+                  
+//                echo "UniqueID:";
+                  $uniqueId = $customer->getUniqueid();
+//                echo  $uniqueId ;
+//                echo "<br />";
                 $usid="";
                     $usid=substr($uniqueId,0,2);
                 if ($usid=="us") {
+                     $forumTelResponse = false;
                      $Tes = ForumTel::getBalanceForumtel($customer->getId());
                      if($Tes!=""){  
-                        $customer_balance =CurrencyConverter::convertUsdToSek($Tes);
+                        $customer_balance = CurrencyConverter::convertUsdToSek($Tes);
+                        $forumTelResponse = true;
                      } else{
-                        $customer_balance = NULL; 
+                        $forumTelResponse = false; 
+                        $customer_balance = null;
                      }  
                      
                     echo "ForumTel balance----".$Tes;
@@ -2485,13 +2489,14 @@ return sfView::NONE;
                         do {
                             $customer_balance = Telienta::getBalance($customer);
                             $retries++;
-                            echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+                          //  echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+                            
                         } while (!$customer_balance && $retries <= $maxRetries);
 
                     if($retries==$maxRetries){
                         continue;
                     }
-
+                   echo "Telinta balance----".$customer_balance;
                 }
                 //   echo $uniqueId.":".$customer_balance."<br/>";
 
@@ -2500,8 +2505,8 @@ return sfView::NONE;
                 if ($customer_balance != null && (float)$customer_balance <= (float)$customer->getAutoRefillMinBalance()) {
 
 
-                     echo $uniqueId.":".$customer_balance."<br/>";
-
+                     echo "success condition---".$uniqueId.":".$customer_balance."<br/>";
+                     
 
                     $customer_id = $customer->getId();
 
