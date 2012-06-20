@@ -2471,13 +2471,15 @@ return sfView::NONE;
                      $Tes = ForumTel::getBalanceForumtel($customer->getId());
                      if($Tes!=""){  
                         $customer_balance = CurrencyConverter::convertUsdToSek($Tes);
+                        echo "$uniqueId--ForumTel balance----".$Tes;
                         $forumTelResponse = true;
                      } else{
                         $forumTelResponse = false; 
                         $customer_balance = null;
+                        echo "$uniqueId--customer_balance----null---".$Tes;
                      }  
                      
-                    echo "ForumTel balance----".$Tes;
+                  //  echo "ForumTel balance----".$Tes;
                     echo "<br />";
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
@@ -2496,7 +2498,8 @@ return sfView::NONE;
                     if($retries==$maxRetries){
                         continue;
                     }
-                   echo "Telinta balance----".$customer_balance;
+                   echo "$uniqueId--Telinta balance----".$customer_balance;
+                   echo "<br />";
                 }
                 //   echo $uniqueId.":".$customer_balance."<br/>";
 
