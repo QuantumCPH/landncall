@@ -49,6 +49,12 @@ class ForumTel {
         $ftr->setMsisdn($msisdn);
         $ftr->save();
         
+        if(strpos($data, "HTTP 404")!==false){
+          emailLib::sendErrorInForumTel("Error in Register on ForumTel", "Error in register on forumTel for MSISDN No $msisdn , request id is $transactionid , tarif name $tarif_name. <br/> Following error occurred.<br /> <br />$data");
+        }else{
+            
+        }
+        
         return true;
     }
 
@@ -147,7 +153,12 @@ class ForumTel {
         $ftr->setIccid($iccid);
         $ftr->setMsisdn($msisdn);
         $ftr->save();
-
+        
+        if(strpos($data, "HTTP 404")!==false){
+          emailLib::sendErrorInForumTel("Error in Recharge on ForumTel", "Error in recharge on forumTel for MSISDN No $msisdn , request id is $transactionid , amount $amount. <br/> Following error occurred.<br /> <br />$data");
+        }else{
+            
+        }
         return true;
     }
 
@@ -232,8 +243,8 @@ class ForumTel {
       }
       if(strpos($data, "HTTP 404")!==false && $retry_count==$max_retries){
        emailLib::sendErrorInForumTel("Error in fetching balance", "Error in fetching balance for MSISDN No $msisdn and request id is $transactionid. Error is Even After Max Retries " . $max_retries . "  <br/> Following error occurred.<br /> <br />$data");
-       return false;   
       }
+      
     }
 //////////////////////////////////////////////////////////////////////
      public static function getUsMobileNumber($customer) {
@@ -283,15 +294,21 @@ class ForumTel {
                     $ftr->setMsisdn($msisdn);
                     $ftr->save();
 
-        $data = substr($data, 215);
-        $xml_obj = new SimpleXMLElement($data);
+        if(strpos($data, "HTTP 404")!==false){
+         emailLib::sendErrorInForumTel("Error in get us mobile number", "Error in get us mobile number for MSISDN No $msisdn and request id is $transactionid. <br/> Following error occurred.<br /> <br />$data");
+           
+        }else{
+         $data = substr($data, 215);
+         $xml_obj = new SimpleXMLElement($data);
 
 //die;$data = $xml_obj->balance[0]->attributes()->amount;
-        $test = $xml_obj->xpath('usa-mdn');
-        $usnumberget=$test[0];
-        $usnumber->setUsMobileNumber($usnumberget);
+         $test = $xml_obj->xpath('usa-mdn');
+         $usnumberget=$test[0];
+         $usnumber->setUsMobileNumber($usnumberget);
 
-        $usnumber->save();
+         $usnumber->save();   
+        }
+        
          
     }
 /////////////////////////////////////////////////////////////////
