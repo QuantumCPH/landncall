@@ -579,6 +579,9 @@ class emailLib {
         $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
         $sender_emailcdu = sfConfig::get('app_email_sender_email', 'jan.larsson@landncall.com');
         $sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        $sender_emailrs = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
+        $sender_namers = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
             $email = new EmailQueue();
@@ -630,17 +633,17 @@ class emailLib {
             $email4->setMessage($message_body);
             $email4->save();
         endif;
-
-         $email5 = new EmailQueue();
+        if (trim($sender_emailrs) != ''):
+            $email5 = new EmailQueue();
             $email5->setSubject($subject);
-            $email5->setReceipientName($sender_namecdu);
-            $email5->setReceipientEmail('rs@zapna.com');
+            $email5->setReceipientName($sender_namers);
+            $email5->setReceipientEmail($sender_emailrs);
             $email5->setAgentId($referrer_id);
             $email5->setCutomerId($customer_id);
             $email5->setEmailType('Auto Refill');
             $email5->setMessage($message_body);
             $email5->save();
-
+       endif;
 
 
     }
