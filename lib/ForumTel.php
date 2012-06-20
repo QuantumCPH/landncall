@@ -257,7 +257,7 @@ class ForumTel {
             $iccid = $usnumber->getIccid();
       //https://api.forum-mobile.com/ExternalApi/
      //       $url = "https://forumtel.com/ExternalApi/Rest/ProvisionServices.ashx";   old url
-                $url = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";
+            $url = "https://api.forum-mobile.com/ExternalApi/Rest/ProvisionServices.ashx";
             $post_string = '<get-usa-mdn trid="'.$transactionid.'">
             <authentication>
             <username>' . $username . '</username>
@@ -301,10 +301,10 @@ class ForumTel {
 
 //die;$data = $xml_obj->balance[0]->attributes()->amount;
         $test = $xml_obj->xpath('usa-mdn');
-         $usnumberget=$test[0];
-$usnumber->setUsMobileNumber($usnumberget);
+        $usnumberget=$test[0];
+        $usnumber->setUsMobileNumber($usnumberget);
 
-$usnumber->save();
+        $usnumber->save();
          
     }
 /////////////////////////////////////////////////////////////////
@@ -355,7 +355,7 @@ $usnumber->save();
                         $ftr->setIccid($iccid);
                         $ftr->setMsisdn($msisdn);
                         $ftr->save();
-                         curl_close($ch);
+                        curl_close($ch);
 
     }
 }
