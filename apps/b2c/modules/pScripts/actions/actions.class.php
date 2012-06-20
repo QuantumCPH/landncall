@@ -2466,8 +2466,13 @@ return sfView::NONE;
                 $usid="";
                     $usid=substr($uniqueId,0,2);
                 if ($usid=="us") {
-                    $Tes = ForumTel::getBalanceForumtel($customer->getId());
-                     $customer_balance =CurrencyConverter::convertUsdToSek($Tes);
+                     $Tes = ForumTel::getBalanceForumtel($customer->getId());
+                     if($Tes!=""){  
+                        $customer_balance =CurrencyConverter::convertUsdToSek($Tes);
+                     } else{
+                        $customer_balance = NULL; 
+                     }  
+                     
                     //$Tes;
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
@@ -2475,24 +2480,19 @@ return sfView::NONE;
                  //  $customer_balance=Telienta::getBalance($customer);
 
                      $retries = 0;
-            $maxRetries = 5;
-            do {
-                $customer_balance = Telienta::getBalance($customer);
-                $retries++;
-                echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
-            } while (!$customer_balance && $retries <= $maxRetries);
+                     $maxRetries = 5;
+                        do {
+                            $customer_balance = Telienta::getBalance($customer);
+                            $retries++;
+                            echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+                        } while (!$customer_balance && $retries <= $maxRetries);
 
-            if($retries==$maxRetries){
-                continue;
-            }
+                    if($retries==$maxRetries){
+                        continue;
+                    }
 
-
-
-
-
-            
                 }
-             //   echo $uniqueId.":".$customer_balance."<br/>";
+                //   echo $uniqueId.":".$customer_balance."<br/>";
 
                 // $customer_balance = Fonet::getBalance($customer);
                 //if customer balance is less than 10
@@ -2514,7 +2514,7 @@ return sfView::NONE;
                     $this->order->setCustomer($this->customer);
                     $this->order->setQuantity(1);
                     $this->order->setExtraRefill($customer->getAutoRefillAmount());
-                    $this->order->save();
+                  //  $this->order->save();
 
 
                     $transaction = new Transaction();
@@ -2524,10 +2524,7 @@ return sfView::NONE;
                     $transaction->setOrderId($this->order->getId());
                     $transaction->setCustomerId($this->order->getCustomerId());
 
-
-                    $transaction->save();
-
-
+                 //   $transaction->save();
 
                     $order_id = $this->order->getId();
                     $total = 100 * $this->order->getExtraRefill();
@@ -2574,12 +2571,11 @@ return sfView::NONE;
 //var_dump($post_data);
 //echo "<br/>Baran<br/>";
 
-                    $html_data = $form->send_post_data("https://payment.architrade.com/cgi-ssl/ticket_auth.cgi", $post_data);
-echo $html_data;
-echo "<br/>";
+                   // $html_data = $form->send_post_data("https://payment.architrade.com/cgi-ssl/ticket_auth.cgi", $post_data);
+                   // echo $html_data;
+                    echo "<br/>";
                     // die("khan");
                 }
-
                 sleep(0.5);
             }
         }
