@@ -161,39 +161,40 @@ class ForumTel {
     public static function getBalanceForumtel($customer) {
 
         $customerid = $customer;
-
+        
+        
+        $max_retries = 10;
+        $retry_count = 0;
+        
         $tc = new Criteria();
         $tc->add(UsNumberPeer::CUSTOMER_ID, $customerid);
         $usnumber = UsNumberPeer::doSelectOne($tc);
-              $transactionid= "466".mt_rand(100000000,999999999);
+        $transactionid= "466".mt_rand(100000000,999999999);
 
         $username = "Zapna";
         $password = "ZUkATradafEfA4reYeWr";
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
-
+      
 
           //https://api.forum-mobile.com/ExternalApi/
         $url = "https://api.forum-mobile.com/ExternalApi/Rest/BillingServices.ashx";
        ///     $url = "https://forumtel.com/ExternalApi/Rest/BillingServices.ashx";   old url
         $post_string = '<get-subscriber-balance trid="'.$transactionid.'">
-<authentication>
-<username>' . $username . '</username>
-<password>' . $password . '</password>
-</authentication>
-<msisdn>' . $msisdn . '</msisdn>
- <iccid>' . $iccid . '</iccid>
-</get-subscriber-balance>';
-
-
-
-
+        <authentication>
+        <username>' . $username . '</username>
+        <password>' . $password . '</password>
+        </authentication>
+        <msisdn>' . $msisdn . '</msisdn>
+         <iccid>' . $iccid . '</iccid>
+        </get-subscriber-balance>';
+        
         $header = array();
         $header[] = "Content-type: text/xml";
         $header[] = "Content-length: " . strlen($post_string);
         $header[] = "Connection: close";
-
-
+        
+     while ($retry_count < $max_retries) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -203,29 +204,43 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_string);
         curl_setopt($ch, CURLOPT_HEADER, true);
 
-     $data = curl_exec($ch);
-$output=$data;
-        $data = substr($data, 215);
-        $xml_obj = new SimpleXMLElement($data);
- //var_dump($xml_obj);
-//echo "<hr/>";
-//die;$data = $xml_obj->balance[0]->attributes()->amount;
-      $data = $xml_obj->balance[0];
-
-
-             $ftr = new ForumTelRequests();
-                    $ftr->setRequestid($transactionid);
-                    $ftr->setResponse($output);
-                    $ftr->setRequestType('get balance');
-                    $ftr->setIccid($iccid);
-                    $ftr->setMsisdn($msisdn);
-                    $ftr->save();
-
-
-
-
-
-        return $data;
+        $data = curl_exec($ch);
+        $output = $data;
+        
+       // var_dump($data); die;
+        if(isset ($data) && strpos($data, "HTTP 404")===false){
+            $data = substr($data, 215);
+            $xml_obj = new SimpleXMLElement($data);
+    
+            $data = $xml_obj->balance[0];
+            
+            $ftr = new ForumTelRequests();
+            $ftr->setRequestid($transactionid);
+            $ftr->setResponse($output);
+            $ftr->setRequestType('get balance');
+            $ftr->setIccid($iccid);
+            $ftr->setMsisdn($msisdn);
+            $ftr->save(); 
+            return $data;
+        }else{
+          //  $output = $data;
+            
+            $ftr = new ForumTelRequests();
+            $ftr->setRequestid($transactionid);
+            $ftr->setResponse($output);
+            $ftr->setRequestType('get balance');
+            $ftr->setIccid($iccid);
+            $ftr->setMsisdn($msisdn);
+            $ftr->save();             
+        }
+        
+        sleep(0.5);
+        $retry_count++;
+      }
+      if(strpos($data, "HTTP 404")!==false && $retry_count==$max_retries){
+       emailLib::sendErrorInForumTel("Error in fetching balance", "Error in fetching balance for MSISDN No $msisdn and request id is $transactionid. Error is Even After Max Retries " . $max_retries . "  <br/> Following error occurred.<br /> <br />$data");
+       return false;   
+      }
     }
 //////////////////////////////////////////////////////////////////////
      public static function getUsMobileNumber($customer) {

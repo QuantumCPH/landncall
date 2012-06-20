@@ -65,7 +65,10 @@
             <div class="clr"></div>
 
   	</div>
-    <?php if($sf_user->isAuthenticated()): ?>
+    <?php if($sf_user->isAuthenticated()): 
+        $modulName = $sf_context->getModuleName();
+        $actionName = $sf_context->getActionName();
+        ?>
       <div id="slogan">
            <h1><?php echo __('Admin Portal'); ?></h1>
         </div>
