@@ -172,9 +172,9 @@
 		<input type="hidden" name="status" value="" />
                  <input type="hidden" name="lang" value="sv" />   
               <input type="hidden" name="test" value="yes" />
-		<input type="hidden" name="cancelurl" value="http://landncall.zerocall.com/agent.php/affiliate/thankyou/?accept=cancel" />
-		<input type="hidden" name="callbackurl" value="http://landncall.zerocall.com/agent.php/affiliate/accountRefill" />
-		<input type="hidden" name="accepturl" id="accepturl"  value="http://landncall.zerocall.com/agent.php/affiliate/thankyou?accept=yes&subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=50000">
+		<input type="hidden" name="cancelurl" value="http://landncall.zerocall.com/agent.php/pScripts/thankyou/?accept=cancel" />
+		<input type="hidden" name="callbackurl" value="http://landncall.zerocall.com/agent.php/pScripts/accountRefill" />
+		<input type="hidden" name="accepturl" id="accepturl"  value="http://landncall.zerocall.com/agent.php/pScripts/thankyou?accept=yes&subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=50000">
 
                 
                 <input type="submit" value="Recharge" />
