@@ -40,7 +40,7 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         echo  $output = curl_exec($ch);
         curl_close($ch);
-
+        $data = $output;
         $ftr = new ForumTelRequests();
         $ftr->setRequestid($transactionid);
         $ftr->setResponse($output);
@@ -145,7 +145,7 @@ class ForumTel {
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         echo $output = curl_exec($ch);
         curl_close($ch);
-
+        $data = $output;
         $ftr = new ForumTelRequests();
         $ftr->setRequestid($transactionid);
         $ftr->setResponse($output);
