@@ -3512,7 +3512,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
         echo 'Yes';
         return sfView::NONE;
     }
-
+ /*******************************************************Customer Registeration Dibs Call ***********************************************/
     public function executeConfirmpayment(sfWebRequest $request) {
         changeLanguageCulture::languageCulture($request, $this);
         $urlval = $request->getParameter('transact');
@@ -3873,38 +3873,6 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
             } //end else
             //return sfView::NONE;
         }
-    }
-
-    public function executeReject(sfWebRequest $request) {
-        changeLanguageCulture::languageCulture($request, $this);
-        //get the order_id
-        $order_id = $request->getParameter('orderid');
-        //$error_text = substr($request->getParameter('errortext'), 0, strpos($request->getParameter('errortext'), '!'));
-        $error_text = $this->getContext()->getI18N()->__('Payment is unfortunately not accepted because your information is incorrect, please try again by entering correct credit card information');
-
-        $this->forward404Unless($order_id);
-
-        $order = CustomerOrderPeer::retrieveByPK($order_id);
-        $c = new Criteria();
-        $c->add(TransactionPeer::ORDER_ID, $order_id);
-        $transaction = TransactionPeer::doSelectOne($c);
-
-        $this->forward404Unless($order);
-
-        $order->setOrderStatusId(4); //cancelled
-
-        $this->getUser()->setFlash('error_message',
-                $error_text
-        );
-
-        $this->order = $order;
-        $this->forward404Unless($this->order);
-
-        $this->order_id = $order->getId();
-        $this->amount = $transaction->getAmount();
-        $this->form = new PaymentForm();
-
-        $this->setTemplate('signup');
     }
 
      public function executeThankyou(sfWebRequest $request) {

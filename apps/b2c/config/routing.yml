@@ -19,8 +19,8 @@ epay_accept_url:
   param: { module: payments, action: thankyou}
   
 epay_reject_url:
-  url: /b2c/pScripts/reject
-  param: { module: pScripts, action: reject}
+  url: /payments/reject
+  param: { module: payments, action: reject}
   
 epay_refill_accept:
   url: /pScripts/refill/accpeted
