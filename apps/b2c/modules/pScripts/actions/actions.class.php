@@ -4386,7 +4386,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
         }
         return sfView::NONE;
     }
-
+/***********************************Agent Account Refill Dibs Call*******************************************/
     public function executeThankyou(sfWebRequest $request){
 
       $order_id = $request->getParameter('orderid') ;
@@ -4420,7 +4420,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
 
           $this->getUser()->setFlash('message', 'Your Credit Card recharge of '.$amount.'SEK is approved');
           emailLib::sendAgentRefilEmail($this->agent,$agent_order);
-          $this->redirect('affiliate/agentOrder');
+          $this->redirect(sfConfig::get('app_url').'agent.php/affiliate/agentOrder');
 
                 }
   }
