@@ -9,7 +9,7 @@
 		var amounts = document.getElementById("amount").value;
                // alert(amounts);
                 var orderids = document.getElementById("orderid").value;
-                var accepturlstr = "http://landncall.zerocall.com/agent.php/affiliate/thankyou?accept=yes&subscriptionid=&orderid="+orderids+"&amount="+amounts;
+                var accepturlstr = "http://landncall.zerocall.com/agent.php/pScripts/thankyou?accept=yes&subscriptionid=&orderid="+orderids+"&amount="+amounts;
                 document.getElementById("accepturl").value = accepturlstr;
                 
 		if(isNaN(objForm.amount.value) || objForm.amount.value < <?php echo 0//$amount ?>)
