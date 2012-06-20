@@ -166,7 +166,7 @@
 		<input type="hidden" name="currency" value="752" />
 		<input type="hidden" name="orderid" id="orderid" value="<?php echo $agent_order->getAgentOrderId() ?>" />
 	 
-<!--<input type="hidden" name="test" value="yes" />-->
+<input type="hidden" name="test" value="yes" />
 		<input type="hidden" name="calcfee" value="yes" />
 		<input type="hidden" name="account" value="YTIP" />
 		<input type="hidden" name="status" value="" />
