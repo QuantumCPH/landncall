@@ -2460,9 +2460,9 @@ return sfView::NONE;
 
             foreach ($customers as $customer) {
 
-                //echo "UniqueID:";
+                echo "UniqueID:";
                 $uniqueId = $customer->getUniqueid();
-
+                echo "<br />";
                 $usid="";
                     $usid=substr($uniqueId,0,2);
                 if ($usid=="us") {
