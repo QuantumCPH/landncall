@@ -4387,7 +4387,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
         return sfView::NONE;
     }
 /***********************************Agent Account Refill Dibs Call*******************************************/
-    public function executeThankyou(sfWebRequest $request){
+    public function executeThankyouAgent(sfWebRequest $request){
 
       $order_id = $request->getParameter('orderid') ;
       $amount = $request->getParameter('amount') ;
