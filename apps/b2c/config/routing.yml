@@ -19,20 +19,20 @@ epay_accept_url:
   param: { module: payments, action: thankyou}
   
 epay_reject_url:
-  url: /b2c/payments/reject
-  param: { module: payments, action: reject}
+  url: /b2c/pScripts/reject
+  param: { module: pScripts, action: reject}
   
 epay_refill_accept:
-  url: /customer/refill/accpeted
-  param: { module: customer, action: refillAccept }
+  url: /pScripts/refill/accpeted
+  param: { module: pScripts, action: refillAccept }
 
 dibs_refill_accept:
-  url: /customer/calbackrefill
-  param: { module: customer, action: calbackrefill }
+  url: /pScripts/calbackrefill
+  param: { module: pScripts, action: calbackrefill }
   
 epay_refill_reject:
-  url: /customer/refill/rejeceted
-  param: { module: customer, action: refillReject }
+  url: /pScripts/refill/rejeceted
+  param: { module: pScripts, action: refillReject }
   
 customer_login:
   url: /login
@@ -60,11 +60,11 @@ default_index:
 default:
   url:   /:module/:action/*
 dibs_accept_url:
-  url: /payments/confirmpayment
-  param: { module: payments, action: confirmpayment}
+  url: /pScripts/confirmpayment
+  param: { module: pScripts, action: confirmpayment}
 dibs_us_accept_url:
-  url: /payments/confirmpaymentus
-  param: { module: payments, action: confirmpaymentus}
+  url: /pScripts/confirmpaymentus
+  param: { module: pScripts, action: confirmpaymentus}
 
 dibs_autoaccept_url:
   url: /pScripts/autorefilconfirmation
