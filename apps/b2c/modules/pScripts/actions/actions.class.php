@@ -4350,5 +4350,12 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
 
             }return sfView::NONE;
   }
-
+  
+  
+      public function executeSuspendForumtelCustomer(sfWebRequest $request){
+          
+         $customer_id = $request->getParameter("customer_id");
+         
+         ForumTel::suspendForumtel($customer_id);
+      }
 }
