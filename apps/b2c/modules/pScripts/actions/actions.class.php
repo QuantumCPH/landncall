@@ -3656,6 +3656,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 echo $uniqueId."<br/>";
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
+                $uc->addAnd(UniqueIdsPeer::SIM_TYPE_ID,$customer_product->getProduct()->getSimTypeId());
                 $selectedUniqueId = UniqueIdsPeer::doSelectOne($uc);
                 echo $selectedUniqueId->getStatus()."<br/>Baran";
 
@@ -3667,6 +3668,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                     }else{
                         $uc = new Criteria();
                         $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 1);
+                        $uc->addAnd(UniqueIdsPeer::SIM_TYPE_ID,$customer_product->getProduct()->getSimTypeId());
                         $uc->addAnd(UniqueIdsPeer::STATUS, 0);
                         $availableUniqueCount = UniqueIdsPeer::doCount($uc);
                         $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);

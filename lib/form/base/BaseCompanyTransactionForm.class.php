@@ -13,7 +13,7 @@ class BaseCompanyTransactionForm extends BaseFormPropel
   {
     $this->setWidgets(array(
       'id'                    => new sfWidgetFormInputHidden(),
-      'company_id'            => new sfWidgetFormPropelChoice(array('model' => 'Company', 'add_empty' => false)),
+      'company_id'            => new sfWidgetFormInput(),
       'amount'                => new sfWidgetFormInput(),
       'extra_refill'          => new sfWidgetFormInput(),
       'created_at'            => new sfWidgetFormDateTime(),
@@ -24,7 +24,7 @@ class BaseCompanyTransactionForm extends BaseFormPropel
 
     $this->setValidators(array(
       'id'                    => new sfValidatorPropelChoice(array('model' => 'CompanyTransaction', 'column' => 'id', 'required' => false)),
-      'company_id'            => new sfValidatorPropelChoice(array('model' => 'Company', 'column' => 'id')),
+      'company_id'            => new sfValidatorInteger(),
       'amount'                => new sfValidatorNumber(),
       'extra_refill'          => new sfValidatorNumber(),
       'created_at'            => new sfValidatorDateTime(),
