@@ -333,9 +333,7 @@ class customerActions extends sfActions {
             $this->redirect("http://www.smartsim.se");
         }
 
-        if($this->getResponse()->getCookie('reffer_id')){
-            echo "I got cookie here";
-        }
+       
 
 
 
