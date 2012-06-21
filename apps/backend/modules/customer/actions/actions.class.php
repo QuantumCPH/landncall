@@ -39,64 +39,44 @@ class customerActions extends autocustomerActions {
 
                 $this->response_text = $response_text;
             } else {
-
                 $response_text .= "Customer Found";
                 $response_text .="<br/>";
-
-                $response_text .="Mobile Number = " . $customer->getMobileNumber() . " , Fonet ID = " . $customer->getFonetCustomerId();
+                $response_text .="Mobile Number = " . $customer->getMobileNumber() . " , Unique ID = " . $customer->getUniqueid();
                 $response_text .="<br/>";
-                if (Fonet::unregister($customer, false))
-                    $response_text .= sprintf("%s is unregistered<br />", $customer->getMobileNumber());
-                if ($current_balance = Fonet::getBalance($customer, false))
-                    $response_text .= sprintf("Current balance of custoemr is %s<br />", $current_balance);
-                if (Fonet::recharge($customer, -$current_balance, false))
-                    $response_text .= sprintf("current balance is made 0<br />");
+                $cp = new Criteria;
+                $cp->add(TelintaAccountsPeer::I_CUSTOMER, $customer->getICustomer());
+                $cp->addAnd(TelintaAccountsPeer::STATUS, 3);
 
-                $con = Propel::getConnection();
-
-                $con->exec('set foreign_key_checks=0');
-                $response_text .= 'disabling foreign keys';
-                $response_text .= '<br/>';
-
-
-                $con->exec('UPDATE transaction  SET  transaction_status_id=6  where customer_id=' . $customer_id);
-                $response_text .= 'transactions deleted';
-                $response_text .= '<br/>';
-
-                $con->exec('UPDATE customer_order  SET  order_status_id=6 where customer_id=' . $customer_id);
-                $response_text .= 'customer order deleted';
-                $response_text .= '<br/>';
-
-                //   $con->exec('DELETE FROM customer_product where customer_id='.$customer_id);
-                // $response_text .= 'customer product deleted';
-                // $response_text .= '<br/>';
-
-                if ($customer->getFonetCustomerId() != NULL) {
-                    $con->exec("UPDATE fonet_customer SET activated_on = NULL where fonet_customer_id=" . $customer->getFonetCustomerId());
-                    $response_text .= 'fonet id freed ';
-                    $response_text .= '<br/>';
+                if (TelintaAccountsPeer::doCount($cp) > 0) {
+                    $telintaAccounts = TelintaAccountsPeer::doSelect($cp);
+                    foreach ($telintaAccounts as $account) {
+                        $response_text .="Deleting Account: " . $account->getAccountTitle() . "<br/>";
+                        Telienta::terminateAccount($account);
+                    }
                 }
 
-                $con->exec('Update customer set customer_status_id=' . $deactive_code . ' where id=' . $customer_id);
-                $response_text .= 'customer status set to 6 (de-activated)';
-                $response_text .= '<br/>';
+                $uc = new Criteria();
+                $uc->add(UniqueIdsPeer::UNIQUE_NUMBER,$customer->getUniqueid());
+                $uniqueIdObj = UniqueIdsPeer::doSelectOne($uc);
+                $uniqueIdObj->setStatus(0);
+                $uniqueIdObj->setAssignedAt("0000-00-00 00:00:00");
+                $uniqueIdObj->save();
 
                 $response_text .= "Customer De-activated, Customer Id=" . $customer_id;
                 $response_text .= '<br/>';
 
                 $response_text .= "Exiting gracefully ... done!";
-                ForumTel::reSetBalance($customer_id);
 
                 $tc = new Criteria();
                 $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
-                $usnumber = UsNumberPeer::doSelectOne($tc);
-                $usnumber->setActiveStatus(1);
-                $usnumber->setUsMobileNumber(null);
-                $usnumber->setCustomerId(null);
-
-                $usnumber->save();
-
-
+                if (UsNumberPeer::doCount($tc) > 0) {
+                    ForumTel::reSetBalance($customer_id);
+                    $usnumber = UsNumberPeer::doSelectOne($tc);
+                    $usnumber->setActiveStatus(1);
+                    $usnumber->setUsMobileNumber(null);
+                    $usnumber->setCustomerId(null);
+                    $usnumber->save();
+                }
                 $this->response_text = $response_text;
             }
         }
@@ -347,12 +327,13 @@ class customerActions extends autocustomerActions {
 
 
 
-            if(Telienta::createAAccount("46" . substr($this->customer->getMobileNumber(), 1), $this->customer)){
+            if (Telienta::createAAccount("46" . substr($this->customer->getMobileNumber(), 1), $this->customer)) {
                 echo "<br/> A Account Created Successfully<br/>";
             }
-            
-            if(Telienta::createCBAccount("46" . substr($this->customer->getMobileNumber(), 1), $this->customer)){
-                echo "<br/> CB Account Created Successfully<br/>";;
+
+            if (Telienta::createCBAccount("46" . substr($this->customer->getMobileNumber(), 1), $this->customer)) {
+                echo "<br/> CB Account Created Successfully<br/>";
+                ;
             }
 
             $getvoipInfo = new Criteria();
@@ -367,12 +348,10 @@ class customerActions extends autocustomerActions {
 
 
             $callbacklog = new CallbackLog();
-            $callbacklog->setMobileNumber("46".substr($this->customer->getMobileNumber(), 1));
+            $callbacklog->setMobileNumber("46" . substr($this->customer->getMobileNumber(), 1));
             $callbacklog->setuniqueId($this->customer->getUniqueid());
             $callbacklog->setcallingCode("46");
             $callbacklog->save();
-
-
         }
         return sfView::none;
     }
