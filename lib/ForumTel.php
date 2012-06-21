@@ -217,7 +217,7 @@ class ForumTel {
         $output = $data;
         
        // var_dump($data); die;
-        if(isset ($data) && strpos($data, "HTTP 404")===false){
+        if(isset ($data) && $data!="" && strpos($data, "HTTP 404")===false){
             $data = substr($data, 215);           
             
             $ftr = new ForumTelRequests();
