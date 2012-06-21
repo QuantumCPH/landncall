@@ -594,7 +594,16 @@ public function executeRefill(sfWebRequest $request)
                                         $uniqueId       =   $customer->getUniqueid();
                                         $OpeningBalance =    $transaction->getAmount();
 
-                                        if($uniqueId!=''){
+                                        if(strtolower(substr($uniqueId, 0, 2))=="us"){
+                                            $amt = CurrencyConverter::convertSekToUsd($OpeningBalance);
+                                            $Test = ForumTel::rechargeForumtel($customer->getId(),$amt);
+                                            $dibsf = new DibsCall();
+                                            $dibsf->setCallurl("original amout SEK:".$OpeningBalance."converted amout".$amt."Fr response".$Test);
+                                            $dibsf->save();
+                                             
+                                        }
+                                        else
+                                        {
                                             Telienta::recharge($customer, $OpeningBalance);      
                                         }
                         
