@@ -329,12 +329,18 @@ class customerActions extends sfActions {
 
     public function executeSignup(sfWebRequest $request) {
         if ($request->getParameter('ref')) {
-            $this->getResponse()->setCookie('reffer_id', $request->getParameter('ref'),360000);
+            //setcookie("user", "XXXXXXX", time()+3600);
+
+            $this->getResponse()->setCookie('mycookie', "ssssssss",time()+36000);
+            //$this->getResponse()->setCookie('reffer_id', $request->getParameter('ref'),360000);
             $this->redirect("http://www.smartsim.se");
         }
 
        
-
+        if($this->getRequest()->getCookie('mycookie')){
+            echo $string = $this->getRequest()->getCookie('mycookie');
+            die;
+        }
 
 
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
