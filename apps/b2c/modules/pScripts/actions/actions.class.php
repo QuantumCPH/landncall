@@ -4358,5 +4358,6 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
          
          $output =  ForumTel::suspendForumtel($customer_id);
          echo $output;
+         return sfView::NONE;
       }
 }
