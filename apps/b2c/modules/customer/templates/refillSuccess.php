@@ -76,7 +76,7 @@ kreditkort.
     <div  style="float:left;width:250px;font-weight:bold; ">Potten fylls då på med:</div>
     <div  style="margin-left: 20px;float:left;width:100px;font-weight:bold;">  <?php echo   $customer_form->getObject()->getAutoRefillAmount() ?> SEK</div>
     <div style="float: left; margin-top: 61px; text-align: left; width: 134px;">
-    <form method="post" action="http://landncall.zerocall.com/b2c.php/customer/deActivateAutoRefill">
+    <form method="post" action="<?php echo sfConfig::get('app_main_url'); ?>customer/deActivateAutoRefill">
     <input type="hidden" name="customer_id" value="<?php echo   $customer_form->getObject()->getId() ?>" />
                 <input type="submit" class="butonsigninsmall" name="button" style="cursor: pointer;float: right; margin-left: 134px; margin-top: -10px;"  value="<?php echo __('Avaktivera') ?>" >
                 </form>			
@@ -117,9 +117,9 @@ kreditkort.
    <input type="hidden" name="account" value="YTIP" />
   <input type="hidden" name="lang" value="sv" />
   <input type="hidden" name="preauth" value="true">
-  <input type="hidden" name="cancelurl" value="http://landncall.zerocall.com/b2c.php/customer/dashboard" />
-  <input type="hidden" name="callbackurl" id="idcallbackURLauto" value="http://landncall.zerocall.com/b2c.php/pScripts/activateAutoRefill?customerid=<?php echo   $customer_form->getObject()->getId() ?>" />
-  <input type="hidden" name="accepturl" value="http://landncall.zerocall.com/b2c.php/customer/dashboard" />
+  <input type="hidden" name="cancelurl" value="<?php echo sfConfig::get('app_main_url'); ?>customer/dashboard" />
+  <input type="hidden" name="callbackurl" id="idcallbackURLauto" value="<?php echo sfConfig::get('app_main_url'); ?>pScripts/activateAutoRefill?customerid=<?php echo   $customer_form->getObject()->getId() ?>" />
+  <input type="hidden" name="accepturl" value="<?php echo sfConfig::get('app_main_url'); ?>customer/dashboard" />
  <div style="width:348px;float:left;">
         <ul>
             <!-- auto fill -->
