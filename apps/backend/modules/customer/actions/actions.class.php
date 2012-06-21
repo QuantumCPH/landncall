@@ -61,7 +61,7 @@ class customerActions extends autocustomerActions {
                 $uniqueIdObj->setStatus(0);
                 $uniqueIdObj->setAssignedAt("0000-00-00 00:00:00");
                 $uniqueIdObj->save();
-                $customer->getCustomerStatusId(6);
+                $customer->getCustomerStatusId(5);
                 $customer->save();
                 $response_text .= "Customer De-activated, Customer Id=" . $customer_id;
                 $response_text .= '<br/>';
