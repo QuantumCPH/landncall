@@ -75,10 +75,11 @@ class customerActions extends sfActions {
             $endnumberlength = $numberlength - 2;
             $number = substr($number, 2, $endnumberlength);
             //$uniqueId  = $text;
-
+            $productObj = ProductPeer::retrieveByPK($product);
 
             $uc = new Criteria();
             $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 1);
+            $uc->addAnd(UniqueIdsPeer::SIM_TYPE_ID, $productObj->getSimTypeId());
             $uc->addAnd(UniqueIdsPeer::STATUS, 0);
             $availableUniqueCount = UniqueIdsPeer::doCount($uc);
             $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);

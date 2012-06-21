@@ -30,6 +30,7 @@ class BaseProductForm extends BaseFormPropel
       'product_order'         => new sfWidgetFormInput(),
       'product_type_package'  => new sfWidgetFormInputCheckbox(),
       'product_country_us'    => new sfWidgetFormInputCheckbox(),
+      'sim_type_id'           => new sfWidgetFormPropelChoice(array('model' => 'SimTypes', 'add_empty' => false)),
     ));
 
     $this->setValidators(array(
@@ -51,6 +52,7 @@ class BaseProductForm extends BaseFormPropel
       'product_order'         => new sfValidatorInteger(array('required' => false)),
       'product_type_package'  => new sfValidatorBoolean(),
       'product_country_us'    => new sfValidatorBoolean(),
+      'sim_type_id'           => new sfValidatorPropelChoice(array('model' => 'SimTypes', 'column' => 'id')),
     ));
 
     $this->widgetSchema->setNameFormat('product[%s]');
