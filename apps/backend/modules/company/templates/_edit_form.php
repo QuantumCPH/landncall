@@ -33,7 +33,7 @@
   <?php $value = object_input_tag($company, 'getVatNo', array (
   'size' => 7,
   'control_name' => 'company[vat_no]',
-)); echo $value ? $value : '&nbsp;' ?>
+)); echo $value ? $value : '&nbsp;' ?><span id="msgbox" style="display:none"></span>
       <?php }else{
 
           $value = object_input_tag($company, 'getVatNo', array (
@@ -43,7 +43,7 @@
 )); echo $value ? $value : '&nbsp;' ;
 
       }?>
- <span id="msgbox" style="display:none"></span>
+ 
     </div>
 </div>
 

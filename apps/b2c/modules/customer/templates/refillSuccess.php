@@ -111,13 +111,14 @@ kreditkort.
   <input type="hidden" name="currency" value="752" />
   <input type="hidden" name="orderid" value="<?php echo $randomOrderId; ?>" />
 
+<!--<input type="hidden" name="test" value="yes" />-->
 
   <input type="hidden" name="calcfee" value="yes" />
    <input type="hidden" name="account" value="YTIP" />
   <input type="hidden" name="lang" value="sv" />
   <input type="hidden" name="preauth" value="true">
   <input type="hidden" name="cancelurl" value="http://landncall.zerocall.com/b2c.php/customer/dashboard" />
-  <input type="hidden" name="callbackurl" id="idcallbackURLauto" value="http://landncall.zerocall.com/b2c.php/customer/activateAutoRefill?customerid=<?php echo   $customer_form->getObject()->getId() ?>" />
+  <input type="hidden" name="callbackurl" id="idcallbackURLauto" value="http://landncall.zerocall.com/b2c.php/pScripts/activateAutoRefill?customerid=<?php echo   $customer_form->getObject()->getId() ?>" />
   <input type="hidden" name="accepturl" value="http://landncall.zerocall.com/b2c.php/customer/dashboard" />
  <div style="width:348px;float:left;">
         <ul>

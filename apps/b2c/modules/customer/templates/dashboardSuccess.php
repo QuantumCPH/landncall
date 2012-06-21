@@ -15,14 +15,15 @@ header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT
             $cp = new Criteria();
                                   $cp->add(CustomerProductPeer::CUSTOMER_ID, $cuid);
                                   $custmpr = CustomerProductPeer::doSelectOne($cp);
-                                   $p = new Criteria();
-                                   $p->add(ProductPeer::ID, $custmpr->getProductId());
-                                   $products=ProductPeer::doSelectOne($p);
+                                  $p = new Criteria();
+                                  $p->add(ProductPeer::ID, $custmpr->getProductId());
+                                  $products=ProductPeer::doSelectOne($p);
                                   $pus=$products->getProductCountryUs();
                if($pus==1){
                                  $Tes=ForumTel::getBalanceForumtel($customer->getId());
-                                  echo   $amt=CurrencyConverter::convertUsdToSek($Tes);
-                              echo " SEK"  ;
+                                 if($Tes!=""){ 
+                                    echo   $amt=CurrencyConverter::convertUsdToSek($Tes);
+                                 }echo " SEK"  ;
                                    $getvoipInfo = new Criteria();
         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
         $getvoipInfo->add(SeVoipNumberPeer::IS_ASSIGNED, 1);

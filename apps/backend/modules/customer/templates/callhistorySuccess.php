@@ -53,7 +53,7 @@ if($pus==1){
         $msisdn = $usnumber->getMsisdn();
         $iccid = $usnumber->getIccid();
 
-        $tomorrow1 = mktime(0, 0, 0, date("m") - 2, date("d") - 29, date("Y"));
+        $tomorrow1 = mktime(0, 0, 0, date("m") - 3, date("d") - 29, date("Y"));
         $fromdate = date("Y-m-d h:m:s", $tomorrow1);
         $tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
         $todate = date("Y-m-d h:m:s", $tomorrow);
