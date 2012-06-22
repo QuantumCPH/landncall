@@ -677,6 +677,12 @@ propel:
     _attributes: { phpName: OrderStatus }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
     name: { type: VARCHAR, size: '255', required: true }
+  orders:
+    _attributes: { phpName: Orders }
+    O_Id: { type: INTEGER, size: '11', primaryKey: true, required: true }
+    OrderNo: { type: INTEGER, size: '11', required: true }
+    P_Id: { type: INTEGER, size: '11', required: false }
+    _indexes: { fk_PerOrders: [P_Id] }
   other_cost:
     _attributes: { phpName: OtherCost }
     id: { type: INTEGER, size: '8', primaryKey: true, autoIncrement: true, required: true }
@@ -947,7 +953,7 @@ propel:
   transaction:
     _attributes: { phpName: Transaction }
     id: { type: BIGINT, size: '20', primaryKey: true, autoIncrement: true, required: true }
-    amount: { type: BIGINT, size: '20', required: true }
+    amount: { type: DOUBLE, required: true }
     description: { type: VARCHAR, size: '255', required: false }
     order_id: { type: BIGINT, size: '20', required: false, foreignTable: customer_order, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     customer_id: { type: BIGINT, size: '20', required: false, foreignTable: customer, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
@@ -955,6 +961,7 @@ propel:
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     agent_company_id: { type: BIGINT, size: '20', required: false }
     commission_amount: { type: FLOAT, required: false }
+    transaction_from: { type: INTEGER, size: '11', required: false, defaultValue: '1' }
     _indexes: { FK_transaction_transaction_status: [transaction_status_id], FK_transaction_customer: [customer_id], FK_transaction_order: [order_id] }
   transaction_description:
     _attributes: { phpName: TransactionDescription }
