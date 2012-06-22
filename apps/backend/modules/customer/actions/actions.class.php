@@ -45,7 +45,7 @@ class customerActions extends autocustomerActions {
                 $response_text .="<br/>";
                 
                 $uniqueid = $customer->getUniqueid();   
-             echo "--".  $us = substr($uniqueid,0,1); 
+             echo "--".  $us = substr($uniqueid,0,2); 
                   if($us =='us'){  
                     $tc = new Criteria();
                     $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
