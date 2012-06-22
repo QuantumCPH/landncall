@@ -43,18 +43,52 @@ class customerActions extends autocustomerActions {
                 $response_text .="<br/>";
                 $response_text .="Mobile Number = " . $customer->getMobileNumber() . " , Unique ID = " . $customer->getUniqueid();
                 $response_text .="<br/>";
-                $cp = new Criteria;
-                $cp->add(TelintaAccountsPeer::I_CUSTOMER, $customer->getICustomer());
-                $cp->addAnd(TelintaAccountsPeer::STATUS, 3);
-
-                if (TelintaAccountsPeer::doCount($cp) > 0) {
-                    $telintaAccounts = TelintaAccountsPeer::doSelect($cp);
-                    foreach ($telintaAccounts as $account) {
-                        $response_text .="Deleting Account: " . $account->getAccountTitle() . "<br/>";
-                        Telienta::terminateAccount($account);
+                
+                $uniqueid = $customer->getUniqueid();   
+                $us = substr($uniqueid,0,1); 
+                  if($us =='us'){  
+                    $tc = new Criteria();
+                    $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
+                    if (UsNumberPeer::doCount($tc) > 0) { echo $uniqueid;
+//                        ForumTel::reSetBalance($customer_id);
+//                        $usnumber = UsNumberPeer::doSelectOne($tc);
+//                        $usnumber->setActiveStatus(1);
+//                        $usnumber->setUsMobileNumber(null);
+//                        $usnumber->setCustomerId(null);
+//                        $usnumber->save();
+//
+//                        /******* Terminate ReseNumber Account ************/
+//                        $getvoipInfo = new Criteria();
+//                        $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer_id);
+//                        $getvoipInfo->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 1);
+//                        $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
+//                        if(isset($getvoipInfos)){
+//                            $voipnumbers = $getvoipInfos->getNumber() ;
+//                            $voipnumbers =  substr($voipnumbers,2);
+//
+//                            $tc = new Criteria();
+//                            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+//                            $tc->add(TelintaAccountsPeer::STATUS,3);
+//                            if(TelintaAccountsPeer::doCount($tc)>0){
+//                                $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
+//                                Telienta::terminateAccount($telintaAccountR);
+//                            }
+//                        }else{
+//                        }
                     }
-                }
-
+                  }else{
+//                      $cp = new Criteria;
+//                      $cp->add(TelintaAccountsPeer::I_CUSTOMER, $customer->getICustomer());
+//                      $cp->addAnd(TelintaAccountsPeer::STATUS, 3);
+//
+//                      if (TelintaAccountsPeer::doCount($cp) > 0) {
+//                           $telintaAccounts = TelintaAccountsPeer::doSelect($cp);
+//                           foreach ($telintaAccounts as $account) {
+//                               $response_text .="Deleting Account: " . $account->getAccountTitle() . "<br/>";
+//                               Telienta::terminateAccount($account);
+//                           }
+//                       }
+                  } 
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER,$customer->getUniqueid());
                 $uniqueIdObj = UniqueIdsPeer::doSelectOne($uc);
@@ -68,16 +102,7 @@ class customerActions extends autocustomerActions {
 
                 $response_text .= "Exiting gracefully ... done!";
 
-                $tc = new Criteria();
-                $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
-                if (UsNumberPeer::doCount($tc) > 0) {
-                    ForumTel::reSetBalance($customer_id);
-                    $usnumber = UsNumberPeer::doSelectOne($tc);
-                    $usnumber->setActiveStatus(1);
-                    $usnumber->setUsMobileNumber(null);
-                    $usnumber->setCustomerId(null);
-                    $usnumber->save();
-                }
+                
                 $this->response_text = $response_text;
             }
         }
