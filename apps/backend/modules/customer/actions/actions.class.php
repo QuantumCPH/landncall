@@ -45,7 +45,7 @@ class customerActions extends autocustomerActions {
                 $response_text .="<br/>";
                 
                 $uniqueid = $customer->getUniqueid();   
-                $us = substr($uniqueid,0,1); 
+             echo "--".  $us = substr($uniqueid,0,1); 
                   if($us =='us'){  
                     $tc = new Criteria();
                     $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
@@ -94,7 +94,7 @@ class customerActions extends autocustomerActions {
                 $uniqueIdObj = UniqueIdsPeer::doSelectOne($uc);
                 $uniqueIdObj->setStatus(0);
                 $uniqueIdObj->setAssignedAt("0000-00-00 00:00:00");
-                $uniqueIdObj->save();
+             //   $uniqueIdObj->save();
                 $customer->setCustomerStatusId(5);
                 //$customer->save();
                 $response_text .= "Customer De-activated, Customer Id=" . $customer_id;
