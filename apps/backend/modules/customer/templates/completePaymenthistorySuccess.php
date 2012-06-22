@@ -8,13 +8,15 @@
             <div class="form-row">
                 <label>From:</label>
                 <div class="content">
-                    <input type="text"   name="startdate" autocomplete="off" id="stdate" value="<?php  if(isset($startdate)){ echo $startdate; }  ?>" />
+                     <?php echo input_date_tag('startdate', date("Y-m-d"), 'rich=true') ?>
+                    
                 </div>
             </div>
             <div class="form-row">
                 <label>To:</label>
                 <div class="content">
-                    <input type="text"   name="enddate" autocomplete="off" id="endate" value="<?php   if(isset($enddate)){ echo $enddate; }  ?>" />
+                     <?php echo input_date_tag('enddate', date("Y-m-d"), 'rich=true') ?>
+                    
                 </div>
             </div>
             <div class="form-row">
