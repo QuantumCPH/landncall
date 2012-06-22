@@ -1672,7 +1672,7 @@ $rs_email='rs@zapna.com';
                     'wrap'=>false,
                 ));
             }else{
-                $message_body = get_partial('payments/order_receipt', array(
+                $message_body = get_partial('customer/order_receipt', array(
                     'customer'=>$customer,
                     'order'=>$order,
                     'transaction'=>$transaction,
