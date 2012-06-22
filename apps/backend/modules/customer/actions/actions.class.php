@@ -437,6 +437,7 @@ class customerActions extends autocustomerActions {
 
             if ($uidcount==1) {
                 $amtt = CurrencyConverter::convertSekToUsd($transaction->getAmount());
+                $amtt=-$amtt;
                 $Test = ForumTel::rechargeForumtel($customer->getId(), -$amtt);
             } else {
                     Telienta::charge($customer, $extra_refill,$request->getParameter('transaction_description'));
