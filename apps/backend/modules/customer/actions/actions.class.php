@@ -447,7 +447,7 @@ class customerActions extends autocustomerActions {
                     $transaction->save();
                     $this->customer = $order->getCustomer();
                     emailLib::sendAdminRefillEmail($this->customer, $order);
-                    $this->getUser()->setFlash('message', '%1% account is successfully charged with %2% SEK.', array("%1%" => $customer->getMobileNumber(), "%2%" => $transaction->getAmount()));
+                    $this->getUser()->setFlash('message', $customer->getMobileNumber().' account is successfully charged with '.$transaction->getAmount().' SEK.');
 //                                        echo 'rehcarged, redirecting';
                     $this->redirect($this->getTargetURL() . 'customer/selectChargeCustomer');
                 } else {
@@ -538,7 +538,7 @@ class customerActions extends autocustomerActions {
                 $transaction->save();
                 $this->customer = $order->getCustomer();
                 emailLib::sendAdminRefillEmail($this->customer, $order);
-                $this->getUser()->setFlash('message', '%1% account is successfully refilled with %2% SEK.', array("%1%" => $customer->getMobileNumber(), "%2%" => $transaction->getAmount()));
+                $this->getUser()->setFlash('message', $customer->getMobileNumber().' account is successfully refilled with '.$transaction->getAmount().' SEK.');
                 //                                        echo 'rehcarged, redirecting';
                 $this->redirect($this->getTargetURL() . 'customer/selectRefillCustomer');
                 } else {
