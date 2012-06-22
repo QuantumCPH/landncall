@@ -77,17 +77,17 @@ class customerActions extends autocustomerActions {
 //                        }
                     }
                   }else{
-//                      $cp = new Criteria;
-//                      $cp->add(TelintaAccountsPeer::I_CUSTOMER, $customer->getICustomer());
-//                      $cp->addAnd(TelintaAccountsPeer::STATUS, 3);
-//
-//                      if (TelintaAccountsPeer::doCount($cp) > 0) {
+                      $cp = new Criteria;
+                      $cp->add(TelintaAccountsPeer::I_CUSTOMER, $customer->getICustomer());
+                      $cp->addAnd(TelintaAccountsPeer::STATUS, 3);
+
+                      if (TelintaAccountsPeer::doCount($cp) > 0) { echo "here";
 //                           $telintaAccounts = TelintaAccountsPeer::doSelect($cp);
 //                           foreach ($telintaAccounts as $account) {
 //                               $response_text .="Deleting Account: " . $account->getAccountTitle() . "<br/>";
 //                               Telienta::terminateAccount($account);
 //                           }
-//                       }
+                       }
                   } 
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER,$customer->getUniqueid());
@@ -96,7 +96,7 @@ class customerActions extends autocustomerActions {
                 $uniqueIdObj->setAssignedAt("0000-00-00 00:00:00");
                 $uniqueIdObj->save();
                 $customer->setCustomerStatusId(5);
-                $customer->save();
+                //$customer->save();
                 $response_text .= "Customer De-activated, Customer Id=" . $customer_id;
                 $response_text .= '<br/>';
 
