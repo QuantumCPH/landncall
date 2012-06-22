@@ -328,6 +328,16 @@ class customerActions extends sfActions {
     }
 
     public function executeSignup(sfWebRequest $request) {
+        if ($request->getParameter('ref')) {
+            //setcookie("user", "XXXXXXX", time()+3600);
+
+            $this->getResponse()->setCookie('agent_id', $request->getParameter('ref'),time()+36000);
+            //$this->getResponse()->setCookie('reffer_id', $request->getParameter('ref'),360000);
+            $this->redirect("http://www.smartsim.se");
+        }
+
+       
+        
 
 
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
@@ -368,12 +378,14 @@ class customerActions extends sfActions {
             
 
         //set referrer id
-        if ($referrer_id = $request->getParameter('ref')) {
+        if ($this->getRequest()->getCookie('agent_id')) {
+            $referrer_id = $this->getRequest()->getCookie('agent_id');
             $c = new Criteria();
             $c->add(AgentCompanyPeer::ID, $referrer_id);
 
-            if (AgentCompanyPeer::doSelectOne($c))
+            if (AgentCompanyPeer::doCount($c)==1){
                 $this->form->setDefault('referrer_id', $referrer_id);
+            }
         }
         unset($this->form['date_of_birth']);
         unset($this->form['telecom_operator_id']);
