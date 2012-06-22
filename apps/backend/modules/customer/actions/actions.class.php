@@ -49,7 +49,7 @@ class customerActions extends autocustomerActions {
                   if($us =='us'){  
                     $tc = new Criteria();
                     $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
-                    if (UsNumberPeer::doCount($tc) > 0) { echo $uniqueid;
+                    if (UsNumberPeer::doCount($tc) > 0) { //echo $uniqueid;
                         ForumTel::reSetBalance($customer_id);
                         $usnumber = UsNumberPeer::doSelectOne($tc);
                         $usnumber->setActiveStatus(1);
