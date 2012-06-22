@@ -1,0 +1,3 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46856269543,915278325508,14.88,360,INDIA,,,16,O,1338216526,2012-05-28T16:54:00,1338216840,2012-05-28T16:48:46
+46707777085,982166505950,19.84,480,IRAN,,Tehran,16,O,1338216005,2012-05-28T16:47:21,1338216441,2012-05-28T16:40:05

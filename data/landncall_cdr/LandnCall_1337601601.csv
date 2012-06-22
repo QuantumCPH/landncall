@@ -1,0 +1,3 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46703629092,4663551572,2.48,60,SWEDEN,,Proper,16,O,1337597809,2012-05-21T12:57:39,1337597859,2012-05-21T12:56:49
+cb46703629092,46703629092,4.96,120,SWEDEN,,,16,O,1337597779,2012-05-21T12:57:39,1337597859,2012-05-21T12:56:19

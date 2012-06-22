@@ -1,0 +1,3 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46737830370,61423271155,7.44,180,AUSTRALIA,,,16,O,1339820849,2012-06-16T06:30:21,1339821021,2012-06-16T06:27:29
+46737830370,61423271155,2.48,60,AUSTRALIA,,,16,O,1339820665,2012-06-16T06:24:28,1339820668,2012-06-16T06:24:25

@@ -1,0 +1,3 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46733478712,353872463619,44.64,1080,IRELAND,,Mobile,16,O,1338237868,2012-05-28T23:01:34,1338238894,2012-05-28T22:44:28
+46735999321,989190905438,62,1500,IRAN,,Mobile,16,O,1338237666,2012-05-28T23:06:05,1338239165,2012-05-28T22:41:06

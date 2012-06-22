@@ -1,0 +1,3 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46707144902,9613946466,2.48,60,LEBANON,,Mobile,16,O,1338273235,2012-05-29T08:34:51,1338273291,2012-05-29T08:33:55
+46704665761,256712604468,2.48,60,UGANDA,,,16,O,1338271618,2012-05-29T08:07:40,1338271660,2012-05-29T08:06:58

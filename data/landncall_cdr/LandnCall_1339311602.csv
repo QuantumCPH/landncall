@@ -1,0 +1,2 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46762544366,903423231975,2.48,60,TURKEY,,Proper,16,O,1339306082,2012-06-10T07:28:27,1339306107,2012-06-10T07:28:02

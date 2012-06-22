@@ -1,0 +1,3 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46708197442,92652006761,37.2,900,PAKISTAN,,Proper,16,O,1338291127,2012-05-29T13:46:24,1338291984,2012-05-29T13:32:07
+46708127742,201151952636,4.96,120,EGYPT,,,16,O,1338289609,2012-05-29T13:07:53,1338289673,2012-05-29T13:06:49

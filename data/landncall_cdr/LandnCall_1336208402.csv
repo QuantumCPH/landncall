@@ -1,0 +1,2 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46721711111,914426187200,7.44,180,INDIA,,Madras,16,O,1336204646,2012-05-05T10:00:11,1336204811,2012-05-05T09:57:26

@@ -1,0 +1,2 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46733478712,4551844233,0.00533,4,DENMARK,,Proper,16,O,1336282959,2012-05-06T07:42:43,1336282963,2012-05-06T07:42:39

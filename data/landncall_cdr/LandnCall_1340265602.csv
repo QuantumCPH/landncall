@@ -1,0 +1,2 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46738600000,918861524747,7.44,180,INDIA,,,16,O,1340261147,2012-06-21T08:48:11,1340261291,2012-06-21T08:45:47

@@ -1,0 +1,3 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+cb34615897588,34615897588,14.88,360,SPAIN,,,16,O,1336499968,2012-05-08T20:05:24,1336500324,2012-05-08T19:59:28
+46707140056,9647705483659,22.32,540,IRAQ,,,16,O,1336498985,2012-05-08T19:51:37,1336499497,2012-05-08T19:43:05

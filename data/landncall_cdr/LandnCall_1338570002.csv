@@ -1,0 +1,2 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46736925612,33625643382,2.48,60,FRANCE,,,16,O,1338563978,2012-06-01T17:20:09,1338564009,2012-06-01T17:19:38

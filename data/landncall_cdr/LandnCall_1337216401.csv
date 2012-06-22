@@ -1,0 +1,2 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46707606545,36308271521,24.8,600,HUNGARY,,Mobile,16,O,1337210139,2012-05-17T01:25:06,1337210706,2012-05-17T01:15:39

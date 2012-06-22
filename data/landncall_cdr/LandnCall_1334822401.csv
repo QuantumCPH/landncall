@@ -1,0 +1,3 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46705676068,61408617296,22.32,540,AUSTRALIA,,Mobile,16,O,1334818026,2012-04-19T08:55:57,1334818557,2012-04-19T08:47:06
+46705676068,61408617296,24.8,600,AUSTRALIA,,Mobile,16,O,1334817393,2012-04-19T08:46:30,1334817990,2012-04-19T08:36:33

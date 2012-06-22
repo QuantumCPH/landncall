@@ -1,0 +1,3 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46721711111,37253305876,2.48,60,ESTONIA,,,16,O,1339162179,2012-06-08T15:29:54,1339162194,2012-06-08T15:29:39
+46707882558,48226334421,2.48,60,POLAND,,Warsaw,16,O,1339160415,2012-06-08T15:01:12,1339160472,2012-06-08T15:00:15

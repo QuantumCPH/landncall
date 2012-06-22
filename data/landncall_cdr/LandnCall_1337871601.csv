@@ -1,0 +1,2 @@
+CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time
+46708127742,201151952636,2.48,60,EGYPT,,,16,O,1337867225,2012-05-24T15:48:04,1337867284,2012-05-24T15:47:05
