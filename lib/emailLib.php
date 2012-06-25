@@ -1707,7 +1707,7 @@ $rs_email='rs@zapna.com';
             $email->setEmailType('LandnCall refill/charge via admin');
             $email->setMessage($message_body);
             $email->save();
-        }/*
+        }
         //----------------------------------------
 
         //------------------Sent the Email To Agent
@@ -1764,7 +1764,7 @@ $rs_email='rs@zapna.com';
             $email4->setMessage($message_body);
             $email4->save();
         endif;
-        //-----------------------------------------*/
+        //-----------------------------------------
     }
 }
 
