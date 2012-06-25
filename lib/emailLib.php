@@ -1623,6 +1623,149 @@ $rs_email='rs@zapna.com';
         $email->setMessage($message);
         $email->save();
     }
+
+    public static function sendAdminRefillEmail(Customer $customer,$order)
+    {
+        $vat = 0;
+
+
+        if($order){
+            $vat = $order->getIsFirstOrder() ?
+                    ($order->getProduct()->getPrice() * $order->getQuantity() -
+                    $order->getProduct()->getInitialBalance()) * .20 :
+                    0;
+        }
+        //create transaction
+        $tc  =new Criteria();
+        $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId() );
+        $tc->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
+        $transaction = TransactionPeer::doSelectOne($tc);
+
+        //This Section For Get The Agent Information
+        $agent_company_id = $customer->getReferrerId();
+        if($agent_company_id!=''){
+            $c = new Criteria();
+            $c->add(AgentCompanyPeer::ID, $agent_company_id);
+            $recepient_agent_email  = AgentCompanyPeer::doSelectOne($c)->getEmail();
+            $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
+        }else{
+            $recepient_agent_email  = '';
+            $recepient_agent_name = '';
+        }
+        //$this->renderPartial('affiliate/order_receipt', array(
+        sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
+
+        $unidc = $customer->getUniqueid();
+                $uidcount=0;
+                $uc = new Criteria;
+                $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $unidc);
+                $uc->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
+                $uidcount = UniqueIdsPeer::doCount($uc);
+
+            if ($uidcount==1) {
+                $message_body = get_partial('customer/order_receipt_us', array(
+                    'customer'=>$customer,
+                    'order'=>$order,
+                    'transaction'=>$transaction,
+                    'vat'=>$vat,
+                    'agent_name'=>$recepient_agent_name,
+                    'wrap'=>false,
+                ));
+            }else{
+                $message_body = get_partial('customer/order_receipt', array(
+                    'customer'=>$customer,
+                    'order'=>$order,
+                    'transaction'=>$transaction,
+                    'vat'=>$vat,
+                    'agent_name'=>$recepient_agent_name,
+                    'wrap'=>false,
+                ));
+                
+            }
+        
+
+        $subject = __('Payment Confirmation');
+        $recepient_email    = trim($customer->getEmail());
+        $recepient_name     = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
+        $customer_id        = trim($customer->getId());
+
+        //Support Information
+        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
+        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'support@zapna.no');
+        $sender_name = sfConfig::get('app_email_sender_name', 'Zapna');
+        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'Zapna');
+        $rs_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
+
+        //------------------Sent The Email To Customer
+        if(trim($recepient_email)!=''){
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recepient_name);
+            $email->setReceipientEmail($recepient_email);
+            $email->setAgentId($agent_company_id);
+            $email->setCutomerId($customer_id);
+            $email->setEmailType('LandnCall refill/charge via admin');
+            $email->setMessage($message_body);
+            $email->save();
+        }/*
+        //----------------------------------------
+
+        //------------------Sent the Email To Agent
+        if (trim($recepient_agent_email)!=''):
+
+            $email2 = new EmailQueue();
+            $email2->setSubject($subject);
+            $email2->setReceipientName($recepient_agent_name);
+            $email2->setReceipientEmail($recepient_agent_email);
+            $email2->setAgentId($agent_company_id);
+            $email2->setCutomerId($customer_id);
+            $email2->setEmailType('LandnCall  Refill/charge via admin');
+            $email2->setMessage($message_body);
+
+            $email2->save();
+         endif;
+        //---------------------------------------
+
+       //--------------Sent The Email To okhan
+         if (trim($sender_email)!=''):
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setReceipientName($sender_name);
+            $email3->setReceipientEmail($sender_email);
+            $email3->setAgentId($agent_company_id);
+            $email3->setCutomerId($customer_id);
+            $email3->setEmailType('LandnCall  Refill/charge via admin');
+            $email3->setMessage($message_body);
+            $email3->save();
+        endif;
+        //-----------------------------------------
+      //--------------Sent The Email To cdu
+         if (trim($sender_emailcdu)!=''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($sender_namecdu);
+            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandnCall Refill/charge via admin');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+         //--------------Sent The Email To RS
+         if (trim($rs_email)!=''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($sender_namecdu);
+            $email4->setReceipientEmail($rs_email);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandnCall refill/charge via admin');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------*/
+    }
 }
 
 ?>

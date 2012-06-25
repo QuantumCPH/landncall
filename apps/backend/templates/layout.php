@@ -98,15 +98,18 @@
                 <div id="m5"
                     onmouseover="mcancelclosetime()"
                     onmouseout="mclosetime()">
-                    <?php echo link_to('All Registered Customer', 'customer/allRegisteredCustomer'); ?>
-                    <?php echo link_to('Registered Customer(Web)', 'customer/registeredByWeb'); ?>
-                    <?php echo link_to('Registered Customer(Agent)', 'customer/registeredByAgent'); ?>
-                    <?php echo link_to('Registered Customer(Agent Link)', 'customer/registeredByAgentLink'); ?>
-                    <?php //echo link_to('Registered Customer(Agent SMS)', 'customer/registeredBySms'); ?>
-                    <?php //echo link_to('Registered Customer(Mobile App)', 'customer/registeredByApp'); ?>
-                    <?php echo link_to('Partial Registeration(Web)', 'customer/partialRegisteredByWeb'); ?>
-                    <?php echo link_to('Partial Registeration(Agent)', 'customer/partialRegisteredByAgent'); ?>
-                    <?php echo link_to('Partial Registeration(Agent Link)', 'customer/partialRegisteredByAgentLink'); ?>
+                    <?php 
+                        echo link_to('All Registered Customer', 'customer/allRegisteredCustomer');
+                        echo link_to('Registered Customer(Web)', 'customer/registeredByWeb');
+                        echo link_to('Registered Customer(Agent)', 'customer/registeredByAgent');
+                        echo link_to('Registered Customer(Agent Link)', 'customer/registeredByAgentLink');
+                        echo link_to('Partial Registeration(Web)', 'customer/partialRegisteredByWeb');
+                        echo link_to('Partial Registeration(Agent)', 'customer/partialRegisteredByAgent');
+                        echo link_to('Partial Registeration(Agent Link)', 'customer/partialRegisteredByAgentLink');
+                        echo link_to('Charge Customer', 'customer/selectChargeCustomer');
+                        echo link_to('Refill Customers', 'customer/selectRefillCustomer');
+                        echo link_to('Payment History', 'customer/completePaymenthistory');
+                    ?>
                 </div>
             </li>
 
@@ -291,12 +294,7 @@
                         <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
                         <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
                         <?php echo link_to('Transaction Description', 'transactionDescription/index'); 
-                        if($actionName=='indexAll' && $modulName=="company"){
-                          echo link_to(__('Edit B2B Credit Limit'), 'company/indexAll',array('class'=>'subSelect'));
-                        }else{
-                          echo link_to(__('Edit B2B Credit Limit'), 'company/indexAll');
-                        }
-                        ?>
+                              echo link_to('Edit B2B Credit Limit', 'company/indexAll');?>
 
                          <?php //echo link_to('Upload Client Document', 'client_documents/index') ?>
 <!--                        <a href="/client_documents/index">Upload Client Document</a>-->
