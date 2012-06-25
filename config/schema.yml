@@ -336,6 +336,13 @@ propel:
     account_number: { type: VARCHAR, size: '100', required: true }
     created_at: { type: TIMESTAMP, required: false }
     _indexes: { company_bank_FI_1: [company_id] }
+  company_cdr_fetch_failed_log:
+    _attributes: { phpName: CompanyCdrFetchFailedLog }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    company_id: { type: INTEGER, size: '11', required: true }
+    to_date: { type: TIMESTAMP, required: true }
+    from_date: { type: TIMESTAMP, required: true }
+    status: { type: INTEGER, size: '11', required: true, defaultValue: '1' }
   company_size:
     _attributes: { phpName: CompanySize }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }

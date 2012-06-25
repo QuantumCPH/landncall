@@ -1853,14 +1853,18 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 echo $splitedText[0];
                 if(strtolower(substr($splitedText[0],0,2))=="re" && strlen($splitedText[0])==12){
                     $dialerIdLenght = strlen($splitedText[0]);
-                    $location=4;
-                    $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);    
+                    echo $location=4;
+                    echo "<br/>";
+                    $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                    echo "uniqueid:". $uniqueId;
                 }else{
                     $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
-                    $location=5;
+                    echo $location=5;
+                    echo "<br/>";
                     echo "uniqueid:". $uniqueId;
                 }
             }
+            die;
             $c = new Criteria();
             $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
             $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
@@ -3135,9 +3139,8 @@ $headers .= "From:" . $from;
    public function executeCsvFiles(sfWebRequest $request)
   {
 
-  $tomorrow1 = mktime(date("H") - 4, date("i"), date("s"), date("m"), date("d"), date("Y"));
-        $fromdate = date("Y-m-d H:00:00", $tomorrow1);
-        $todate = date("Y-m-d H:59:59", $tomorrow1);
+        $fromDate = date("Y-m-d 00:00:00", strtotime('-1 day'));
+        $toDate = date("Y-m-d 23:59:59", strtotime('-1 day'));
 
         $filename = "LandnCall_" . time() . ".csv";
         $cdrlog = new LandncallCdrLog();
@@ -3145,20 +3148,46 @@ $headers .= "From:" . $from;
         $cdrlog->setFromTime($fromdate);
         $cdrlog->setToTime($todate);
         $cdrlog->save();
-        $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate, true);
 
         $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
         $fh = fopen($myFile, 'w') or die("can't open file");
         $comma = ",";
-        $stringData = "CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
+        $stringData = "company_vat,CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time,Samtalstyp";
         $stringData.= "\n";
         fwrite($fh, $stringData);
-        foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
 
-            $stringData = $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time;
-            $stringData.= "\n";
-            fwrite($fh, $stringData);
+        $companies = CompanyPeer::doSelect(new Criteria());
+        foreach($companies as $company){
+            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate,true);
+            if($tilentaCallHistryResult){
+                foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                    $callerTyper = "";
+                     $typecall = substr($xdr->account_id, 0, 1);
+                                if ($typecall == 'a') {
+                                    $callerTyper =  "Int.";
+                                }
+                                if ($typecall == '4') {
+                                    $callerTyper =  "R";
+                                }
+                                if ($typecall == 'c') {
+                                      $cbtypecall = substr($xdr->account_id, 2);
+                                    if ($xdr->CLD ==$cbtypecall) {
+                                        $callerTyper =  "Cb M";
+                                    } else {
+                                        $callerTyper =  "Cb S";
+                                    }
+                                }
+
+                    $stringData = $company->getVatNo(). $comma .$xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time. $comma.$typecall;
+                    $stringData.= "\n";
+                    fwrite($fh, $stringData);
+                }
+            }
         }
+
+
+
+
         $destination_file = "/zapna/zapna/" . $filename;
         $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
         $ftp_user_name = "zapna"; // Username
