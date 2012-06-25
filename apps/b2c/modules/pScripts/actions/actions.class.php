@@ -1853,14 +1853,18 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 echo $splitedText[0];
                 if(strtolower(substr($splitedText[0],0,2))=="re" && strlen($splitedText[0])==12){
                     $dialerIdLenght = strlen($splitedText[0]);
-                    $location=4;
-                    $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);    
+                    echo $location=4;
+                    echo "<br/>";
+                    $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                    echo "uniqueid:". $uniqueId;
                 }else{
                     $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
-                    $location=5;
+                    echo $location=5;
+                    echo "<br/>";
                     echo "uniqueid:". $uniqueId;
                 }
             }
+            die;
             $c = new Criteria();
             $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
             $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
