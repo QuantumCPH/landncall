@@ -17,6 +17,7 @@ class BaseCompanyCdrFetchFailedLogForm extends BaseFormPropel
       'to_date'    => new sfWidgetFormDateTime(),
       'from_date'  => new sfWidgetFormDateTime(),
       'status'     => new sfWidgetFormInput(),
+      'created_at' => new sfWidgetFormDateTime(),
     ));
 
     $this->setValidators(array(
@@ -25,6 +26,7 @@ class BaseCompanyCdrFetchFailedLogForm extends BaseFormPropel
       'to_date'    => new sfValidatorDateTime(),
       'from_date'  => new sfValidatorDateTime(),
       'status'     => new sfValidatorInteger(),
+      'created_at' => new sfValidatorDateTime(),
     ));
 
     $this->widgetSchema->setNameFormat('company_cdr_fetch_failed_log[%s]');

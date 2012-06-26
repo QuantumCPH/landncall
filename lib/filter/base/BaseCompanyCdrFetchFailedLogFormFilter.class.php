@@ -18,6 +18,7 @@ class BaseCompanyCdrFetchFailedLogFormFilter extends BaseFormFilterPropel
       'to_date'    => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
       'from_date'  => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
       'status'     => new sfWidgetFormFilterInput(),
+      'created_at' => new sfWidgetFormFilterDate(array('from_date' => new sfWidgetFormDate(), 'to_date' => new sfWidgetFormDate(), 'with_empty' => false)),
     ));
 
     $this->setValidators(array(
@@ -25,6 +26,7 @@ class BaseCompanyCdrFetchFailedLogFormFilter extends BaseFormFilterPropel
       'to_date'    => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'from_date'  => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
       'status'     => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'created_at' => new sfValidatorDateRange(array('required' => false, 'from_date' => new sfValidatorDate(array('required' => false)), 'to_date' => new sfValidatorDate(array('required' => false)))),
     ));
 
     $this->widgetSchema->setNameFormat('company_cdr_fetch_failed_log_filters[%s]');
@@ -47,6 +49,7 @@ class BaseCompanyCdrFetchFailedLogFormFilter extends BaseFormFilterPropel
       'to_date'    => 'Date',
       'from_date'  => 'Date',
       'status'     => 'Number',
+      'created_at' => 'Date',
     );
   }
 }
