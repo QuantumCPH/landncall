@@ -541,6 +541,7 @@ propel:
     product_id: { type: INTEGER, size: '11', required: false }
     country_code: { type: VARCHAR, size: '50', required: false }
     country_mobile_number: { type: VARCHAR, size: '250', required: false }
+    unique_id: { type: VARCHAR, size: '50', required: false }
     _indexes: { employee_FI_1: [company_id] }
   employee_product:
     _attributes: { phpName: EmployeeProduct }
