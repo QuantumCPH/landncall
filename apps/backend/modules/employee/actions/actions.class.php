@@ -182,7 +182,7 @@ class employeeActions extends sfActions {
             ////////////////////////////////////////////////
 
             $this->getbalance = CompanyEmployeActivation::getBalance($this->companys);
-            if ($this->getbalance > 40) {
+            
                 $c = new Criteria();
                 $c->setLimit(1);
                 $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
@@ -251,10 +251,7 @@ class employeeActions extends sfActions {
                         }
                     }
                 }
-            } else {
-
-                $msg = "To activate Resenummer Refill account";
-            }
+            
         }
 
         $employee->setCompanyId($request->getParameter('company_id'));
