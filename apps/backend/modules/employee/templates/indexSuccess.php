@@ -43,7 +43,7 @@
        <?php  if(isset($companyval) && $companyval!=""){  ?>
         <th align="left"  id="sf_admin_list_th_name">Employee balance</th>
         <?php } ?>
-
+        <th align="left"  id="sf_admin_list_th_name">Unique Id</th>
         
       <th align="left"  id="sf_admin_list_th_name">Created at</th>
    
@@ -160,6 +160,7 @@
                                                 ?></td>
 
       <?php } ?>
+      <td><?php echo $employee->getUniqueId(); ?></td>
       <td><?php echo substr($employee->getCreatedAt(),0,10); ?></td>
    
     <!--  <td align="center">  <?php //$appval=$employee->getIsAppRegistered();  if(isset($appval) && $appval==1){   ?> <img alt="Tick" src="/sf/sf_admin/images/tick.png">  <?php //} ?></td>
