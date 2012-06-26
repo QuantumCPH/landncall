@@ -2,6 +2,21 @@ propel:
   _attributes:
     package: lib.model
     defaultIdMethod: native
+  'Pay as you card':
+    _attributes: { phpName: 'Pay as you card' }
+    A: { type: VARCHAR, size: '19', required: false }
+    B: { type: VARCHAR, size: '19', required: false }
+    C: { type: VARCHAR, size: '21', required: false }
+    D: { type: VARCHAR, size: '21', required: false }
+    E: { type: VARCHAR, size: '19', required: false }
+    F: { type: VARCHAR, size: '17', required: false }
+    G: { type: VARCHAR, size: '19', required: false }
+    H: { type: VARCHAR, size: '12', required: false }
+    I: { type: VARCHAR, size: '4', required: false }
+    J: { type: VARCHAR, size: '8', required: false }
+    K: { type: VARCHAR, size: '4', required: false }
+    L: { type: VARCHAR, size: '8', required: false }
+    M: { type: VARCHAR, size: '10', required: false }
   accounts_new:
     _attributes: { phpName: AccountsNew }
     fonet_customer_id: { type: INTEGER, size: '10', required: false }
@@ -171,6 +186,15 @@ propel:
     c9_number: { type: VARCHAR, size: '15', required: false }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
     is_assigned: { type: boolean, required: false, defaultValue: '0' }
+  call_history:
+    _attributes: { phpName: CallHistory }
+    id: { type: VARCHAR, size: '255', required: false }
+    mobile_number: { type: VARCHAR, size: '255', required: true, defaultValue: '' }
+    call_date: { type: TIMESTAMP, required: false }
+    call_duration: { type: VARCHAR, size: '13', required: false }
+    destination: { type: VARCHAR, size: '255', required: false }
+    user_charge: { type: VARCHAR, size: '255', required: false }
+    vendor: { type: VARCHAR, size: '5', required: true, defaultValue: '' }
   call_log:
     _attributes: { phpName: CallLog }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -517,6 +541,7 @@ propel:
     product_id: { type: INTEGER, size: '11', required: false }
     country_code: { type: VARCHAR, size: '50', required: false }
     country_mobile_number: { type: VARCHAR, size: '250', required: false }
+    unique_id: { type: VARCHAR, size: '50', required: false }
     _indexes: { employee_FI_1: [company_id] }
   employee_product:
     _attributes: { phpName: EmployeeProduct }
@@ -576,6 +601,63 @@ propel:
     iccid: { type: VARCHAR, size: '255', required: true }
     msisdn: { type: VARCHAR, size: '255', required: true }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+  getrefferredtransactionforextrarefills:
+    _attributes: { phpName: Getrefferredtransactionforextrarefills }
+    amount: { type: DECIMAL, size: '41', scale: '0', required: false }
+    amount_cur_month: { type: DECIMAL, size: '41', scale: '0', required: false }
+    customer_id: { type: BIGINT, size: '20', required: false }
+    referrer_id: { type: INTEGER, size: '11', required: false }
+    ere_todate: { type: DOUBLE, required: false }
+    ere_cur_month: { type: DOUBLE, required: false }
+    total_transactions: { type: BIGINT, size: '21', required: true, defaultValue: '0' }
+  getrefferredtransactionforregistrations:
+    _attributes: { phpName: Getrefferredtransactionforregistrations }
+    amount: { type: DECIMAL, size: '41', scale: '0', required: false }
+    amount_cur_month: { type: DECIMAL, size: '41', scale: '0', required: false }
+    customer_id: { type: BIGINT, size: '20', required: false }
+    created_at: { type: TIMESTAMP, required: true, defaultValue: '0000-00-00 00:00:00' }
+    referrer_id: { type: INTEGER, size: '11', required: false }
+    re_todate: { type: DOUBLE, required: false }
+    re_cur_month: { type: DOUBLE, required: false }
+  getrefferredtransactions:
+    _attributes: { phpName: Getrefferredtransactions }
+    transaction_id: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
+    customer_order_id: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
+    amount: { type: BIGINT, size: '20', required: true }
+    customer_id: { type: BIGINT, size: '20', required: false }
+    is_first_order: { type: boolean, required: true, defaultValue: '0' }
+    registration_earning: { type: DOUBLE, required: false }
+    extra_refills_earning: { type: DOUBLE, required: false }
+    created_at: { type: TIMESTAMP, required: true, defaultValue: '0000-00-00 00:00:00' }
+    referrer_id: { type: INTEGER, size: '11', required: false }
+    name: { type: VARCHAR, size: '50', required: true }
+    first_name: { type: VARCHAR, size: '255', required: true }
+  getrefferredtransactionsgroupbycustomer:
+    _attributes: { phpName: Getrefferredtransactionsgroupbycustomer }
+    customer_id: { type: BIGINT, size: '20', required: false }
+    is_first_order: { type: boolean, required: true, defaultValue: '0' }
+    amount: { type: DECIMAL, size: '41', scale: '0', required: false }
+    amount_cur_month: { type: DECIMAL, size: '41', scale: '0', required: false }
+    referrer_id: { type: INTEGER, size: '11', required: false }
+    re_todate: { type: DOUBLE, required: false }
+    re_cur_month: { type: DOUBLE, required: false }
+    ere_todate: { type: DOUBLE, required: false }
+    ere_cur_month: { type: DOUBLE, required: false }
+    total_transactions: { type: BIGINT, size: '21', required: true, defaultValue: '0' }
+  getrefferredtransactionsplitted:
+    _attributes: { phpName: Getrefferredtransactionsplitted }
+    transaction_id: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
+    customer_order_id: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
+    amount: { type: BIGINT, size: '20', required: true }
+    amount_cur_month: { type: BIGINT, size: '20', required: true, defaultValue: '0' }
+    customer_id: { type: BIGINT, size: '20', required: false }
+    is_first_order: { type: boolean, required: true, defaultValue: '0' }
+    referrer_id: { type: INTEGER, size: '11', required: false }
+    re_todate: { type: DOUBLE, required: false }
+    re_cur_month: { type: DOUBLE, required: false }
+    ere_todate: { type: DOUBLE, required: false }
+    ere_cur_month: { type: DOUBLE, required: false }
+    created_at: { type: TIMESTAMP, required: true, defaultValue: '0000-00-00 00:00:00' }
   global_setting:
     _attributes: { phpName: GlobalSetting }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -737,6 +819,7 @@ propel:
     product_type_package: { type: boolean, required: true, defaultValue: '0' }
     product_country_us: { type: boolean, required: true, defaultValue: '0' }
     sim_type_id: { type: INTEGER, size: '11', required: true, foreignTable: sim_types, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
+    is_in_b2b: { type: boolean, required: true, defaultValue: '0' }
     _indexes: { enable_country: [country_id], sim_type_id: [sim_type_id] }
   product_order:
     _attributes: { phpName: ProductOrder }
