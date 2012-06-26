@@ -343,6 +343,7 @@ propel:
     to_date: { type: TIMESTAMP, required: true }
     from_date: { type: TIMESTAMP, required: true }
     status: { type: INTEGER, size: '11', required: true, defaultValue: '1' }
+    created_at: { type: TIMESTAMP, required: true }
   company_size:
     _attributes: { phpName: CompanySize }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
