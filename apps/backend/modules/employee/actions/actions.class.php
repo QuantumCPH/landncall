@@ -587,6 +587,7 @@ class employeeActions extends sfActions {
 
         $c->add(UniqueIdsPeer::SIM_TYPE_ID, $product->getSimTypeId());
         $c->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 1);
+        $c->addAnd(UniqueIdsPeer::STATUS, 0);
         $c->addAscendingOrderByColumn(UniqueIdsPeer::UNIQUE_NUMBER);
 
 
