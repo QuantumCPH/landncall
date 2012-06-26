@@ -274,6 +274,19 @@ class employeeActions extends sfActions {
         $uniqueIdObj->setStatus(1);
         $uniqueIdObj->save();
 
+        $productObj = ProductPeer::retrieveByPK($request->getParameter('productid'));
+        CompanyEmployeActivation::charge($employee->getCompany(), $productObj->getPrice());
+        $transaction = new CompanyTransaction();
+        $transaction->setAmount(-$productObj->getPrice());
+        $transaction->setCompanyId($employee->getCompanyId());
+        $transaction->setExtraRefill(-$productObj->getPrice());
+        $transaction->setTransactionStatusId(3);
+        $transaction->setPaymenttype(3); //Resenummer Charge
+        $transaction->setDescription('Product Registration Fee');
+        $transaction->save();
+
+
+
         $this->getUser()->setFlash('messageAdd', 'Employee has been Add Sucessfully ' . (isset($msg) ? "and " . $msg : ''));
         $this->redirect('employee/index?message=add');
     }
