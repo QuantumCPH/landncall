@@ -10,9 +10,9 @@
 <form action="" method="get">
 
     <table border="0">
-        <tr><td>Customer Id:</td><td><input type="text" name="customer_id" /></td></tr>
-          <tr><td>Make Unique Id Available Again:</td> <td><input type="checkbox" value="1" name="uniqueId" /></td></tr>
-            <tr><td></td><td> <input type="submit" value="De-Activate"></td></tr>
+        <tr><td style="border:none;">Customer Id:</td><td style="border:none;"><input type="text" name="customer_id" /></td></tr>
+          <tr><td style="border:none;">Make Unique Id Available Again:</td> <td style="border:none;"><input type="checkbox" value="1" name="uniqueId" /></td></tr>
+            <tr><td style="border:none;"></td><td> <input type="submit" value="De-Activate"></td></tr>
 
 
 
