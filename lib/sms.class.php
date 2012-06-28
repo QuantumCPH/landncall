@@ -112,15 +112,20 @@ class SMSNU {
 
 class ROUTED_SMS {
 
-    public static function Send($mobileNumber, $smsText, $senderName=null) {
+    public static function Send($mobileNumber, $smsText, $senderName=null,$smsType=null) {
         if (!CARBORDFISH_SMS::Send($mobileNumber, $smsText, $senderName)) {
             if (!SMSNU::Send($mobileNumber, $smsText, $senderName)) {
                 if ($senderName == null)
                     $senderName = "LandNCall";
+                 if ($smsType == null)
+                    $smsType = 1;
+
+
                 $smsLog = new SmsLog();
                 $smsLog->setMessage($smsText);
                 $smsLog->setStatus("Unable to send from both");
                 $smsLog->setSenderName($senderName);
+                $smsLog->setSmsType($smsType);
                 $smsLog->setMobileNumber($mobileNumber);
                 $smsLog->save();
             }
