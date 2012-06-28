@@ -8,11 +8,17 @@
 <h1>De-Activate Customer</h1>
 <br>
 <form action="" method="get">
-    <label>Customer Id:</label>
-    <input type="text" name="customer_id" /><br/><br/>
-  <label>Make Unique Id Available Again:</label>
-  <input type="checkbox" value="1" name="uniqueId" /><br/><br/>
-    <label>&nbsp;&nbsp;</label> <input type="submit" value="De-Activate">
+
+    <table>
+        <tr><td>Customer Id:</td><td><input type="text" name="customer_id" /></td></tr>
+          <tr><td>Make Unique Id Available Again:</td> <input type="checkbox" value="1" name="uniqueId" /><td></td></tr>
+            <tr><td></td><td> <input type="submit" value="De-Activate"></td></tr>
+
+
+
+
+    </table>
+    
 </form>
 
 <br/>
