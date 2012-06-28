@@ -10,7 +10,7 @@
 <form action="" method="get">
     <label>Customer Id:</label>
     <input type="text" name="customer_id" /><br/><br/>
-  <label>Unique Id Available:</label>
+  <label>Make Unique Id Available Again:</label>
   <input type="checkbox" value="1" name="uniqueId" /><br/><br/>
     <label>&nbsp;&nbsp;</label> <input type="submit" value="De-Activate">
 </form>
