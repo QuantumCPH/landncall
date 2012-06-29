@@ -1710,13 +1710,94 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
         if ($requestType == "hc") {
 
             $dialerIdLenght = strlen($textParamter);
-            $uniqueId = substr($textParamter, 7);
+            $uniqueId = substr($textParamter, $dialerIdLenght - 6, $dialerIdLenght - 1);
             $mnc = new Criteria();
             $mnc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
             $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
             $cusCount = CustomerPeer::doCount($mnc);
-
             if ($cusCount < 1) {
+                $uc = new Criteria();
+                $uc->add(UniqueIdsPeer::UNIQUEID, $uniqueId);
+                $uc->addAnd(UniqueIdsPeer::STATUS, 0);
+                $callbackq = UniqueIdsPeer::doCount($uc);
+            if ($callbackq== 1) {
+               $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+                    $pc = new Criteria();
+                    $pc->add(ProductPeer::SMS_CODE, "50");
+                    $product = ProductPeer::doSelectOne($pc);
+                    $calingcode = sfConfig::get('app_country_code');
+                    $password = $this->randomNumbers(6);
+                    $customer = new Customer();
+                    $customer->setFirstName($mobileNumber);
+                    $customer->setLastName($mobileNumber);
+                    $customer->setMobileNumber($mobileNumber);
+                    $customer->setPassword($password);
+                    $customer->setEmail("retail@example.com");
+                    $customer->setCountryId(2);
+                    $customer->setCity("");
+                    $customer->setAddress("");
+                    $customer->setTelecomOperatorId(1);
+                    $customer->setDeviceId(1474);
+                    $customer->setUniqueId($uniqueId);
+                    $customer->setCustomerStatusId(3);
+                    $customer->setPlainText($password);
+                    $customer->setRegistrationTypeId(6);
+                    $customer->save();
+
+                    $order = new CustomerOrder();
+                    $order->setProductId($product->getId());
+                    $order->setCustomerId($customer->getId());
+                    $order->setExtraRefill($order->getProduct()->getInitialBalance());
+                    $order->setIsFirstOrder(1);
+                    $order->setOrderStatusId(3);
+                    $order->save();
+
+                    $transaction = new Transaction();
+                    $transaction->setAgentCompanyId($customer->getReferrerId());
+                    $transaction->setAmount($order->getProduct()->getPrice());
+                    $transaction->setDescription('Registration of Retail');
+                    $transaction->setOrderId($order->getId());
+                    $transaction->setCustomerId($customer->getId());
+                    $transaction->setTransactionStatusId(3);
+                    $transaction->save();
+
+                    $customer_product = new CustomerProduct();
+                    $customer_product->setCustomer($order->getCustomer());
+                    $customer_product->setProduct($order->getProduct());
+                    $customer_product->save();
+
+                    $callbacklog = new CallbackLog();
+                    $callbacklog->setMobileNumber($number);
+                    $callbacklog->setuniqueId($uniqueId);
+                    $callbacklog->setImei($splitedText[1]);
+                    $callbacklog->setImsi($splitedText[2]);
+                    $callbacklog->setCheckStatus(3);
+                    $callbacklog->save();
+
+                    if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
+                        $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
+                        $availableUniqueId->setStatus(1);
+                        $availableUniqueId->setRegistrationTypeId(4);
+                        $availableUniqueId->save();
+                        Telienta::createAAccount($number, $customer);
+                        Telienta::createCBAccount($number, $customer);
+                    }
+
+                    $sms = SmsTextPeer::retrieveByPK(9);
+                    $smsText = $sms->getMessageText();
+                    $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
+                    ROUTED_SMS::Send($number, $smsText);
+
+                    $sms = SmsTextPeer::retrieveByPK(11);
+                    $smsText = $sms->getMessageText();
+                    $smsText = str_replace("(username)", $mobileNumber, $smsText);
+                    $smsText = str_replace("(password)", $password, $smsText);
+                    ROUTED_SMS::Send($number, $smsText);
+                    emailLib::sendCustomerRegistrationViaRetail($customer, $order);
+                die;
+            }
+
+                
                 $smstext = SmsTextPeer::retrieveByPK(2);
                 echo $smstext->getMessageText();
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
@@ -2009,7 +2090,36 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                         $sms = SmsTextPeer::retrieveByPK(5);
                         $smsText = $sms->getMessageText();
                         $smsText = str_replace("(balance)", $balance, $smsText);
-                        ROUTED_SMS::Send($number, $smsText);
+                        echo $number;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                      $c = new Criteria();
+                      $c->add(SmsLogPeer::MOBILE_NUMBER, $mobileNumber);
+                      $c->addAnd(SmsLogPeer::SMS_TYPE, 2);
+                      $c->addDescendingOrderByColumn(SmsLogPeer::CREATED_AT);
+                      $value=SmsLogPeer::doCount($c);
+                      if($value>0){
+
+                         $smsRow=SmsLogPeer::doSelectOne($c);
+                        $createdAtValue= $smsRow->getCreatedAt();
+                        $date1 =$createdAtValue;
+                        $asd=0;
+$d1=$date1;
+$d2=date("Y-m-d h:m:s");
+$asd=((strtotime($d2)-strtotime($d1))/3600);
+  $asd=intval($asd);
+if($asd>3){
+    ROUTED_SMS::Send($number, $smsText,null,2);
+}
+die;
+                      }else{
+                      
+  ROUTED_SMS::Send($number, $smsText,null,2);
+  die;
+                      }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                      
+                      
                     } elseif ($command == "re") {
                         echo "Recharge Request<br/>";
                         $cc = new Criteria();
