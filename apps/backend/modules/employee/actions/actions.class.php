@@ -231,7 +231,12 @@ class employeeActions extends sfActions {
                             $OpeningBalance = 40;
                             $employee->setRegistrationType($request->getParameter('registration_type'));
                             //$resenummerCharge=file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=manual_charge&name=' . $voipnumbers . '&amount=40&customer='.$companyCVR);
-                            CompanyEmployeActivation::charge($this->companys, $OpeningBalance);
+
+                            $ct = new Criteria();
+                            $ct->add(TransactionDescriptionPeer::ID,6); // For Resenummer change
+                            $transDesc = TransactionDescriptionPeer::doSelectOne($ct);
+
+                            CompanyEmployeActivation::charge($this->companys, $OpeningBalance, $transDesc->getTitle());
                             $transaction = new CompanyTransaction();
                             $transaction->setAmount(-40);
                             $transaction->setCompanyId($request->getParameter('company_id'));
@@ -271,8 +276,15 @@ class employeeActions extends sfActions {
         $uniqueIdObj->setStatus(1);
         $uniqueIdObj->save();
 
+
+
         $productObj = ProductPeer::retrieveByPK($request->getParameter('productid'));
-        CompanyEmployeActivation::charge($employee->getCompany(), $productObj->getPrice());
+
+        $ct = new Criteria();
+        $ct->add(TransactionDescriptionPeer::ID,4); // For Employee Product Charge
+        $transDesc = TransactionDescriptionPeer::doSelectOne($ct);
+                            
+        CompanyEmployeActivation::charge($employee->getCompany(), $productObj->getPrice(), $transDesc->getTitle());
         $transaction = new CompanyTransaction();
         $transaction->setAmount(-$productObj->getPrice());
         $transaction->setCompanyId($employee->getCompanyId());
@@ -367,7 +379,11 @@ class employeeActions extends sfActions {
                             $employee->setRegistrationType($rtype);
                             //$resenummerCharge=file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=account&action=manual_charge&name=' . $voipnumbers . '&amount=40&customer='.$companyCVR);
 
-                            CompanyEmployeActivation::charge($this->companys, $OpeningBalance);
+                            $ct = new Criteria();
+                            $ct->add(TransactionDescriptionPeer::ID,6); // For Resenummer change
+                            $transDesc = TransactionDescriptionPeer::doSelectOne($ct);
+
+                            CompanyEmployeActivation::charge($this->companys, $OpeningBalance, $transDesc->getTitle());
                             $transaction = new CompanyTransaction();
                             $transaction->setAmount(-40);
                             $transaction->setCompanyId($employee->getCompanyId());
