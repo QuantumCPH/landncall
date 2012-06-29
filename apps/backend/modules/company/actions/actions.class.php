@@ -383,7 +383,9 @@ class companyActions extends sfActions {
         $fromdate = date("Y-m-d", $tomorrow1);
         $tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
         $todate = date("Y-m-d", $tomorrow);
-        $this->callHistory = CompanyEmployeActivation::callHistory($this->company, $fromdate, $todate);
+        $this->events = CompanyEmployeActivation::callHistory($this->company, $fromdate . ' 00:00:00', $todate . ' 23:59:59', false, 1);
+        $this->paymentHistory = CompanyEmployeActivation::callHistory($this->company, $fromdate . ' 00:00:00', $todate . ' 23:59:59', false, 2);
+        $this->callHistory = CompanyEmployeActivation::callHistory($this->company, $fromdate . ' 00:00:00', $todate . ' 23:59:59');
     }
 
     public function executeRefill(sfWebRequest $request)
@@ -411,7 +413,11 @@ class companyActions extends sfActions {
             $transaction->save();
           
             if($companyCVR!=''){
-                CompanyEmployeActivation::recharge($this->company, $refill_amount);
+                $ct = new Criteria();
+                $ct->add(TransactionDescriptionPeer::ID,5); // For Company Refill
+                $transDesc = TransactionDescriptionPeer::doSelectOne($ct);
+
+                CompanyEmployeActivation::recharge($this->company, $refill_amount, $transDesc->getTitle());
                 $transaction->setTransactionStatusId(3);
                 $transaction->save();
                 $this->getUser()->setFlash('message', 'B2B Company Refill Successfully');
