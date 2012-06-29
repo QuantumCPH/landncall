@@ -3259,8 +3259,11 @@ $headers .= "From:" . $from;
    public function executeCsvFiles(sfWebRequest $request)
   {
 
-        $fromDate = date("Y-m-d 00:00:00", strtotime('-1 day'));
-        $toDate = date("Y-m-d 23:59:59", strtotime('-1 day'));
+//        $fromDate = date("Y-m-d 00:00:00", strtotime('-1 day'));
+//        $toDate = date("Y-m-d 23:59:59", strtotime('-1 day'));
+//
+          $fromDate = date("Y-m-d 00:00:00");
+        $toDate = date("Y-m-d 23:59:59");
 
         $filename = "LandnCall_" . time() . ".csv";
         $cdrlog = new LandncallCdrLog();
