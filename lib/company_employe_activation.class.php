@@ -150,12 +150,12 @@ class CompanyEmployeActivation {
         return true;
     }
 
-    public static function recharge(Company $company, $amount) {
-        return self::makeTransaction($company, "Manual payment", $amount);
+    public static function recharge(Company $company, $amount, $description) {
+        return self::makeTransaction($company, "Manual payment", $amount, $description);
     }
 
-    public static function charge(Company $company, $amount) {
-        return self::makeTransaction($company, "Manual charge", $amount);
+    public static function charge(Company $company, $amount, $description) {
+        return self::makeTransaction($company, "Manual charge", $amount, $description);
     }
 
     public static function terminateAccount(TelintaAccounts $telintaAccount) {
@@ -332,7 +332,7 @@ class CompanyEmployeActivation {
         return true;
     }
 
-    private static function makeTransaction(Company $company, $action, $amount) {
+    private static function makeTransaction(Company $company, $action, $amount, $description) {
         $accounts = false;
         $max_retries = 10;
         $retry_count = 0;
@@ -345,7 +345,7 @@ class CompanyEmployeActivation {
                             'i_customer' => $company->getICustomer(),
                             'action' => $action, //Manual payment, Manual charge
                             'amount' => $amount,
-                            'visible_comment' => 'charge by SOAP ' . $action
+                            'visible_comment' => $description
                         ));
             } catch (SoapFault $e) {
                 if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
@@ -365,7 +365,7 @@ class CompanyEmployeActivation {
         return true;
     }
 
-    public static function callHistory(Company $company, $fromDate, $toDate, $csv=false) {
+    public static function callHistory(Company $company, $fromDate, $toDate, $reseller=false,$iService=3, $csv=false) {
         $xdrList = false;
         $max_retries = 10;
         $retry_count = 0;
@@ -374,7 +374,7 @@ class CompanyEmployeActivation {
 
         while (!$xdrList && $retry_count < $max_retries) {
             try {
-                $xdrList = $pb->get_customer_xdr_list(array('i_customer' => $company->getICustomer(), 'from_date' => $fromDate, 'to_date' => $toDate));
+                $xdrList = $pb->get_customer_xdr_list(array('i_customer' => $company->getICustomer(), 'from_date' => $fromDate, 'to_date' => $toDate, 'i_service' => $iService));
             } catch (SoapFault $e) {
                 if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
                     emailLib::sendErrorInTelinta("Company Call History: " . $company->getId() . " Error!", "We have faced an issue with Company while Fetching Call History  this is the error for cusotmer with  Company ID: " . $company->getId() . " error is " . $e->faultstring . "  <br/> Please Investigate.");
