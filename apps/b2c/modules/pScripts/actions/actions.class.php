@@ -4457,4 +4457,16 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
          echo $output;
          return sfView::NONE;
       }
+      public function executeCreateReseAccountTelinta(sfWebRequest $request){
+          $customer_id = $request->getParameter("customer_id");
+          $voipnumbers = $request->getParameter("voip");
+          $this->customer = CustomerPeer::retrieveByPK($customer_id);
+          if ($getFirstnumberofMobile == 0) {
+                    $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
+                    $TelintaMobile = '46' . $TelintaMobile;
+                } else {
+                    $TelintaMobile = '46' . $this->customer->getMobileNumber();
+                }
+          Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
+      }
 }
