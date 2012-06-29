@@ -2085,34 +2085,41 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     echo "<hr/>";
                     $customer = CustomerPeer::doSelectOne($c);
                     if ($command == "cb") {
+                      
                         echo "Check Balance Request<br/>";
                         $balance = Telienta::getBalance($customer);
                         $sms = SmsTextPeer::retrieveByPK(5);
                         $smsText = $sms->getMessageText();
                         $smsText = str_replace("(balance)", $balance, $smsText);
-                        echo $number;
+                         $number;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                       $c = new Criteria();
-                      $c->add(SmsLogPeer::MOBILE_NUMBER, $mobileNumber);
+                      $c->add(SmsLogPeer::MOBILE_NUMBER, $number);
                       $c->addAnd(SmsLogPeer::SMS_TYPE, 2);
                       $c->addDescendingOrderByColumn(SmsLogPeer::CREATED_AT);
-                      $value=SmsLogPeer::doCount($c);
+                       $value=SmsLogPeer::doCount($c);
+
                       if($value>0){
+
 
                          $smsRow=SmsLogPeer::doSelectOne($c);
                         $createdAtValue= $smsRow->getCreatedAt();
-                        $date1 =$createdAtValue;
+                     echo   $date1 =$createdAtValue;
                         $asd=0;
 $d1=$date1;
 $d2=date("Y-m-d h:m:s");
 $asd=((strtotime($d2)-strtotime($d1))/3600);
-  $asd=intval($asd);
+    $asd=intval($asd);
+
+
 if($asd>3){
     ROUTED_SMS::Send($number, $smsText,null,2);
+     
+              die;
 }
-die;
+ 
                       }else{
-                      
+              
   ROUTED_SMS::Send($number, $smsText,null,2);
   die;
                       }
@@ -2189,6 +2196,7 @@ die;
                 }
             }
         }
+         return sfView::NONE;
     }
 
 public function executeSmsRegisterationsmscb(sfWebrequest $request){
