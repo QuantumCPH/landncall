@@ -3281,7 +3281,7 @@ $headers .= "From:" . $from;
 
         $companies = CompanyPeer::doSelect(new Criteria());
         foreach($companies as $company){
-            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate,true);
+            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate,false,3,1);
             if($tilentaCallHistryResult){
                 foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
                     $callerTyper = "";
