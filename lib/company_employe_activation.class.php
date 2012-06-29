@@ -154,7 +154,7 @@ class CompanyEmployeActivation {
         return self::makeTransaction($company, "Manual payment", $amount, $description);
     }
 
-    public static function charge(Company $company, $amount) {
+    public static function charge(Company $company, $amount, $description) {
         return self::makeTransaction($company, "Manual charge", $amount, $description);
     }
 
