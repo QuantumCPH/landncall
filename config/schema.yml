@@ -164,9 +164,6 @@ propel:
     call_rate_table_description: { type: VARCHAR, size: '255', required: false }
     call_rate_table_id: { type: INTEGER, size: '11', required: false }
     processing_comment: { type: VARCHAR, size: '255', required: false }
-  c:
-    _attributes: { phpName: C }
-    fonet_customer_id: { type: DOUBLE, required: true }
   c9_numbers:
     _attributes: { phpName: C9Numbers }
     c9_number: { type: VARCHAR, size: '15', required: false }
@@ -992,7 +989,7 @@ propel:
     assigned_at: { type: TIMESTAMP, required: true }
     registration_type_id: { type: INTEGER, size: '11', required: true }
     status: { type: boolean, required: true, defaultValue: '0' }
-    sim_type_id: { type: INTEGER, size: '11', required: true, foreignTable: sim_types, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
+    sim_type_id: { type: INTEGER, size: '11', required: true }
     _indexes: { new_fk_constraint: [sim_type_id] }
   us_number:
     _attributes: { phpName: UsNumber }
