@@ -25,11 +25,12 @@ class CARBORDFISH_SMS {
      * @param $Sender will be the sender name of the SMS;
      */
 
-    public static function Send($mobileNumber, $smsText, $senderName=null) {
+    public static function Send($mobileNumber, $smsText, $senderName=null, $smsType=null) {
         $message = "";
         if ($senderName == null)
             $senderName = self::$SA;
-
+  if ($smsType == null)
+                    $smsType =1;
         $data = array(
             'S' => self::$S,
             'UN' => self::$UN,
@@ -51,6 +52,7 @@ class CARBORDFISH_SMS {
         $smsLog = new SmsLog();
         $smsLog->setMessage($smsText);
         $smsLog->setStatus($res);
+        $smsLog->setSmsType($smsType);
         $smsLog->setSenderName($senderName);
         $smsLog->setMobileNumber($mobileNumber);
         $smsLog->save();
@@ -76,7 +78,7 @@ class SMSNU {
      * @param $Sender will be the sender name of the SMS;
      */
 
-    public static function Send($mobileNumber, $smsText, $senderName=null) {
+    public static function Send($mobileNumber, $smsText, $senderName=null, $smsType=null) {
         if ($senderName == null)
             $senderName = self::$id;
         $data = array(
@@ -85,6 +87,10 @@ class SMSNU {
             'id' => $senderName,
             'msgtxt' => $smsText
         );
+
+         if ($smsType == null)
+                    $smsType =1;
+         
         $message = "";
         $queryString = http_build_query($data, '', '&');
         // $queryString = smsCharacter::smsCharacterReplacement($queryString);
@@ -96,6 +102,7 @@ class SMSNU {
         $smsLog = new SmsLog();
         $smsLog->setMessage($smsText);
         $smsLog->setStatus($res);
+        $smsLog->setSmsType($smsType);
         $smsLog->setSenderName($senderName);
         $smsLog->setMobileNumber($mobileNumber);
         $smsLog->save();
@@ -113,14 +120,13 @@ class SMSNU {
 class ROUTED_SMS {
 
     public static function Send($mobileNumber, $smsText, $senderName=null,$smsType=null) {
-        if (!CARBORDFISH_SMS::Send($mobileNumber, $smsText, $senderName)) {
-            if (!SMSNU::Send($mobileNumber, $smsText, $senderName)) {
+        if (!CARBORDFISH_SMS::Send($mobileNumber, $smsText, $senderName,$smsType)) {
+            if (!SMSNU::Send($mobileNumber, $smsText, $senderName,$smsType)) {
                 if ($senderName == null)
                     $senderName = "LandNCall";
                  if ($smsType == null)
-                    $smsType = 1;
-
-
+                    $smsType =1;
+ 
                 $smsLog = new SmsLog();
                 $smsLog->setMessage($smsText);
                 $smsLog->setStatus("Unable to send from both");

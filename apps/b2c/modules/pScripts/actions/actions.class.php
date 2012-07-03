@@ -2085,34 +2085,41 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     echo "<hr/>";
                     $customer = CustomerPeer::doSelectOne($c);
                     if ($command == "cb") {
+                      
                         echo "Check Balance Request<br/>";
                         $balance = Telienta::getBalance($customer);
                         $sms = SmsTextPeer::retrieveByPK(5);
                         $smsText = $sms->getMessageText();
                         $smsText = str_replace("(balance)", $balance, $smsText);
-                        echo $number;
+                         $number;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
                       $c = new Criteria();
-                      $c->add(SmsLogPeer::MOBILE_NUMBER, $mobileNumber);
+                      $c->add(SmsLogPeer::MOBILE_NUMBER, $number);
                       $c->addAnd(SmsLogPeer::SMS_TYPE, 2);
                       $c->addDescendingOrderByColumn(SmsLogPeer::CREATED_AT);
-                      $value=SmsLogPeer::doCount($c);
+                       $value=SmsLogPeer::doCount($c);
+
                       if($value>0){
+
 
                          $smsRow=SmsLogPeer::doSelectOne($c);
                         $createdAtValue= $smsRow->getCreatedAt();
-                        $date1 =$createdAtValue;
+                     echo   $date1 =$createdAtValue;
                         $asd=0;
 $d1=$date1;
 $d2=date("Y-m-d h:m:s");
 $asd=((strtotime($d2)-strtotime($d1))/3600);
-  $asd=intval($asd);
+    $asd=intval($asd);
+
+
 if($asd>3){
     ROUTED_SMS::Send($number, $smsText,null,2);
+     
+              die;
 }
-die;
+ 
                       }else{
-                      
+              
   ROUTED_SMS::Send($number, $smsText,null,2);
   die;
                       }
@@ -2189,6 +2196,7 @@ die;
                 }
             }
         }
+         return sfView::NONE;
     }
 
 public function executeSmsRegisterationsmscb(sfWebrequest $request){
@@ -3251,8 +3259,11 @@ $headers .= "From:" . $from;
    public function executeCsvFiles(sfWebRequest $request)
   {
 
-        $fromDate = date("Y-m-d 00:00:00", strtotime('-1 day'));
-        $toDate = date("Y-m-d 23:59:59", strtotime('-1 day'));
+//        $fromDate = date("Y-m-d 00:00:00", strtotime('-1 day'));
+//        $toDate = date("Y-m-d 23:59:59", strtotime('-1 day'));
+//
+          $fromDate = date("Y-m-d 00:00:00");
+        $toDate = date("Y-m-d 23:59:59");
 
         $filename = "LandnCall_" . time() . ".csv";
         $cdrlog = new LandncallCdrLog();
@@ -3270,7 +3281,7 @@ $headers .= "From:" . $from;
 
         $companies = CompanyPeer::doSelect(new Criteria());
         foreach($companies as $company){
-            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate,true);
+            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate,false,3,1);
             if($tilentaCallHistryResult){
                 foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
                     $callerTyper = "";
@@ -3290,7 +3301,7 @@ $headers .= "From:" . $from;
                                     }
                                 }
 
-                    $stringData = $company->getVatNo(). $comma .$xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time. $comma.$typecall;
+                    $stringData = $company->getVatNo(). $comma .$xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time. $comma.$callerTyper;
                     $stringData.= "\n";
                     fwrite($fh, $stringData);
                 }
