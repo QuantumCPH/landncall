@@ -1979,8 +1979,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
 
                 if (CustomerPeer::doCount($cc) > 0) {
                     echo "Already Registerd";
-                    $sms = SmsTextPeer::retrieveByPK(10);
-                    ROUTED_SMS::Send($number, $sms->getMessageText());
+                    //$sms = SmsTextPeer::retrieveByPK(10);
+                    //ROUTED_SMS::Send($number, $sms->getMessageText());
                     die;
                 }
 
