@@ -1766,6 +1766,48 @@ $rs_email='rs@zapna.com';
         endif;
         //-----------------------------------------
     }
+    
+    public static function sendSMSRegistrationErrorEmail($customer_mobile,$subject, $message_body) {
+
+        if($subject=="") $subject = 'Error Email';
+        $recepient_name = '';
+        $recepient_email = '';
+        //// Customer
+        $mobileNumber = substr($customer_mobile, 2, strlen($customer_mobile) - 2);
+        if ($mobileNumber[0] != "0") {
+           $mobileNumber = "0" . $mobileNumber;
+        }
+               
+        //Support Information
+        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'Zapna');
+        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'support@zapna.com');
+        $sender_name = sfConfig::get('app_email_sender_name', 'Zapna');
+        $rs_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
+        $rs_name = sfConfig::get('app_email_sender_name', 'Raheel Safdar');
+        
+        
+        ////// Email to Support
+        if (trim($sender_emailcdu) != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setMessage($message_body);
+            $email->setReceipientEmail($sender_emailcdu);
+            $email->setEmailType('LandnCall-'.$subject);
+            $email->setReceipientName($sender_name);
+            $email->save();
+        endif;
+        
+        ///// Email to RS
+        if (trim($rs_email) != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setMessage($message_body);
+            $email->setReceipientEmail($rs_email);
+            $email->setEmailType('LandnCall-'.$subject);
+            $email->setReceipientName($rs_name);
+            $email->save();
+        endif;
+    }
 }
 
 ?>
