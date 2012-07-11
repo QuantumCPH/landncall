@@ -1717,7 +1717,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $cusCount = CustomerPeer::doCount($mnc);
             if ($cusCount < 1) {
                 $uc = new Criteria();
-                $uc->add(UniqueIdsPeer::UNIQUEID, $uniqueId);
+                $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
                 $uc->addAnd(UniqueIdsPeer::STATUS, 0);
                 $callbackq = UniqueIdsPeer::doCount($uc);
             if ($callbackq== 1) {
@@ -1797,7 +1797,6 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 die;
             }
 
-                
                 $smstext = SmsTextPeer::retrieveByPK(2);
                 echo $smstext->getMessageText();
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
@@ -1829,7 +1828,6 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $voipnumbers = substr($voipnumbers, 2);
             }
 
-
             $tc = new Criteria();
             $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
             $tc->add(TelintaAccountsPeer::STATUS, 3);
@@ -1850,9 +1848,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $uniqueId = substr($textParamter, 3);
             echo "<br/>";
             echo $uniqueId."<hr/>";
-
-
-
+            
             $callbackq = new Criteria();
             $callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
             $callbackq = CallbackLogPeer::doCount($callbackq);
@@ -1970,8 +1966,6 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     ROUTED_SMS::Send($number, $sms->getMessageText());
                     die;
                 }
-
-
 
                 $cc = new Criteria();
                 $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
@@ -2100,32 +2094,26 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                        $value=SmsLogPeer::doCount($c);
 
                       if($value>0){
-
-
                          $smsRow=SmsLogPeer::doSelectOne($c);
-                        $createdAtValue= $smsRow->getCreatedAt();
-                     echo   $date1 =$createdAtValue;
-                        $asd=0;
-$d1=$date1;
-$d2=date("Y-m-d h:m:s");
-$asd=((strtotime($d2)-strtotime($d1))/3600);
-    $asd=intval($asd);
+                         $createdAtValue= $smsRow->getCreatedAt();
+                         echo   $date1 =$createdAtValue;
+                         $asd=0;
+                            $d1=$date1;
+                            $d2=date("Y-m-d h:m:s");
+                            $asd=((strtotime($d2)-strtotime($d1))/3600);
+                            $asd=intval($asd);
 
 
-if($asd>3){
-    ROUTED_SMS::Send($number, $smsText,null,2);
-     
-              die;
-}
- 
+                            if($asd>3){
+                                ROUTED_SMS::Send($number, $smsText,null,2);
+                                die;
+                            }
+
                       }else{
-              
-  ROUTED_SMS::Send($number, $smsText,null,2);
-  die;
+                          ROUTED_SMS::Send($number, $smsText,null,2);
+                          die;
                       }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                      
                       
                     } elseif ($command == "re") {
                         echo "Recharge Request<br/>";

@@ -737,7 +737,7 @@ propel:
     product_order: { type: INTEGER, size: '11', required: false }
     product_type_package: { type: boolean, required: true, defaultValue: '0' }
     product_country_us: { type: boolean, required: true, defaultValue: '0' }
-    sim_type_id: { type: INTEGER, size: '11', required: true, foreignTable: sim_types, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
+    sim_type_id: { type: INTEGER, size: '11', required: true }
     is_in_b2b: { type: boolean, required: false, defaultValue: '0' }
     _indexes: { enable_country: [country_id], sim_type_id: [sim_type_id] }
   product_order:
@@ -1072,3 +1072,29 @@ propel:
     amount: { type: DOUBLE, required: true }
     type: { type: VARCHAR, size: '4', required: false }
     used_on: { type: TIMESTAMP, required: false }
+  zerocall_cdr:
+    _attributes: { phpName: ZerocallCdr }
+    CdrKey: { type: VARCHAR, size: '255', primaryKey: true, required: true }
+    CustomID: { type: VARCHAR, size: '255', required: false }
+    AnswerTimeB: { type: VARCHAR, size: '255', required: false }
+    EndTimeB: { type: VARCHAR, size: '255', required: false }
+    BillSec: { type: VARCHAR, size: '255', required: false }
+    BillingTime: { type: VARCHAR, size: '255', required: false }
+    Extension: { type: VARCHAR, size: '255', required: false }
+    SourceCty: { type: VARCHAR, size: '255', required: false }
+    Ani: { type: VARCHAR, size: '255', required: false }
+    DestCty: { type: VARCHAR, size: '255', required: false }
+    Rounding: { type: VARCHAR, size: '255', required: false }
+    UsedValue: { type: VARCHAR, size: '255', required: false }
+    InitialAccount: { type: VARCHAR, size: '255', required: false }
+    DST_CustomID: { type: VARCHAR, size: '255', required: false }
+    DestinationName: { type: VARCHAR, size: '255', required: false }
+    COST_RateMatchPhno: { type: VARCHAR, size: '255', required: false }
+    COST_DestinationName: { type: VARCHAR, size: '255', required: false }
+    COST_RateValue: { type: VARCHAR, size: '255', required: false }
+    COST_RateValueFirst: { type: VARCHAR, size: '255', required: false }
+    COST_CcsConnectCharge: { type: VARCHAR, size: '255', required: false }
+    COST_UsedValue: { type: VARCHAR, size: '255', required: false }
+    BZ2_Rate1Minute: { type: VARCHAR, size: '255', required: false }
+    BZ1_RateAddMinute: { type: VARCHAR, size: '255', required: false }
+    execute_status: { type: boolean, required: false, defaultValue: '1' }
