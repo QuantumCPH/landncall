@@ -1787,26 +1787,26 @@ $rs_email='rs@zapna.com';
         
         
         ////// Email to Support
-        if (trim($sender_emailcdu) != ''):
-            $email = new EmailQueue();
-            $email->setSubject($subject);
-            $email->setMessage($message_body);
-            $email->setReceipientEmail($sender_emailcdu);
-            $email->setEmailType('LandnCall-'.$subject);
-            $email->setReceipientName($sender_name);
-            $email->save();
-        endif;
-        
-        ///// Email to RS
-        if (trim($rs_email) != ''):
-            $email = new EmailQueue();
-            $email->setSubject($subject);
-            $email->setMessage($message_body);
-            $email->setReceipientEmail($rs_email);
-            $email->setEmailType('LandnCall-'.$subject);
-            $email->setReceipientName($rs_name);
-            $email->save();
-        endif;
+//        if (trim($sender_emailcdu) != ''):
+//            $email = new EmailQueue();
+//            $email->setSubject($subject);
+//            $email->setMessage($message_body);
+//            $email->setReceipientEmail($sender_emailcdu);
+//            $email->setEmailType('LandnCall-'.$subject);
+//            $email->setReceipientName($sender_name);
+//            $email->save();
+//        endif;
+//        
+//        ///// Email to RS
+//        if (trim($rs_email) != ''):
+//            $email = new EmailQueue();
+//            $email->setSubject($subject);
+//            $email->setMessage($message_body);
+//            $email->setReceipientEmail($rs_email);
+//            $email->setEmailType('LandnCall-'.$subject);
+//            $email->setReceipientName($rs_name);
+//            $email->save();
+//        endif;
     }
 }
 
