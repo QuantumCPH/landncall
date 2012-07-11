@@ -92,9 +92,13 @@ class customerActions extends autocustomerActions {
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER,$customer->getUniqueid());
                 $uniqueIdObj = UniqueIdsPeer::doSelectOne($uc);
-                $uniqueIdObj->setStatus(0);
+                $unid=0;
+               $unid= $request->getParameter('uniqueId');
+                if(isset($unid) && $unid==1){
+              $uniqueIdObj->setStatus(0);
                 $uniqueIdObj->setAssignedAt("0000-00-00 00:00:00");
-                $uniqueIdObj->save();
+                 $uniqueIdObj->save();
+                } 
                 $customer->setCustomerStatusId(5);
                 $customer->save();
                 $response_text .= "Customer De-activated, Customer Id=" . $customer_id;
@@ -563,6 +567,7 @@ class customerActions extends autocustomerActions {
    public function executeSelectRefillCustomer($request){
         $ct = new Criteria();
         $ct->add(TransactionDescriptionPeer::TRANSACTION_TYPE_ID,1); // For Refill
+        $ct->add(TransactionDescriptionPeer::B2C,1);
         $ct->addAnd(TransactionDescriptionPeer::TRANSACTION_SECTION_ID,1); // 1, Description is for Admin and 2, for  Agent
         $this->transactionDescriptions = TransactionDescriptionPeer::doSelect($ct);
    }
@@ -570,6 +575,7 @@ class customerActions extends autocustomerActions {
    public function executeSelectChargeCustomer($request){
         $ct = new Criteria();
         $ct->add(TransactionDescriptionPeer::TRANSACTION_TYPE_ID,2); // For charge
+        $ct->add(TransactionDescriptionPeer::B2C,1);
         $ct->addAnd(TransactionDescriptionPeer::TRANSACTION_SECTION_ID,1); // 1, Description is for Admin and 2, for  Agent
         $this->transactionDescriptions = TransactionDescriptionPeer::doSelect($ct);
    }
