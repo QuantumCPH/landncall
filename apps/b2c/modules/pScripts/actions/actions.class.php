@@ -1786,22 +1786,22 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     $sms = SmsTextPeer::retrieveByPK(9);
                     $smsText = $sms->getMessageText();
                     $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
-                    ROUTED_SMS::Send('923334414765', $smsText);
+                    ROUTED_SMS::Send($number, $smsText);
 
                     $sms = SmsTextPeer::retrieveByPK(11);
                     $smsText = $sms->getMessageText();
                     $smsText = str_replace("(username)", $mobileNumber, $smsText);
                     $smsText = str_replace("(password)", $password, $smsText);
-                    ROUTED_SMS::Send('923334414765', $smsText);
+                    ROUTED_SMS::Send($number, $smsText);
                     emailLib::sendCustomerRegistrationViaRetail($customer, $order);
                 die;
             }
 
                 $smstext = SmsTextPeer::retrieveByPK(2);
                 echo $smstext->getMessageText();
-                ROUTED_SMS::Send('923334414765', $smstext->getMessageText());
+                ROUTED_SMS::Send($number, $smstext->getMessageText());
                 die;
-            }die('here');
+            }
             $customer = CustomerPeer::doSelectOne($mnc);
 
             $callbackq = new Criteria();
