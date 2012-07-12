@@ -39,64 +39,74 @@ class customerActions extends autocustomerActions {
 
                 $this->response_text = $response_text;
             } else {
-
                 $response_text .= "Customer Found";
                 $response_text .="<br/>";
-
-                $response_text .="Mobile Number = " . $customer->getMobileNumber() . " , Fonet ID = " . $customer->getFonetCustomerId();
+                $response_text .="Mobile Number = " . $customer->getMobileNumber() . " , Unique ID = " . $customer->getUniqueid();
                 $response_text .="<br/>";
-                if (Fonet::unregister($customer, false))
-                    $response_text .= sprintf("%s is unregistered<br />", $customer->getMobileNumber());
-                if ($current_balance = Fonet::getBalance($customer, false))
-                    $response_text .= sprintf("Current balance of custoemr is %s<br />", $current_balance);
-                if (Fonet::recharge($customer, -$current_balance, false))
-                    $response_text .= sprintf("current balance is made 0<br />");
+                
+                $uniqueid = $customer->getUniqueid();   
+                $us = substr($uniqueid,0,2); 
+                  if($us =='us'){  
+                    $tc = new Criteria();
+                    $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
+                    if (UsNumberPeer::doCount($tc) > 0) { //echo $uniqueid;
+                        ForumTel::reSetBalance($customer_id);
+                        $usnumber = UsNumberPeer::doSelectOne($tc);
+                        $usnumber->setActiveStatus(1);
+                        $usnumber->setUsMobileNumber(null);
+                        $usnumber->setCustomerId(null);
+                        $usnumber->save();
 
-                $con = Propel::getConnection();
+                        /******* Terminate ReseNumber Account ************/
+                        $getvoipInfo = new Criteria();
+                        $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer_id);
+                        $getvoipInfo->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 1);
+                        $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
+                        if(isset($getvoipInfos)){
+                            $voipnumbers = $getvoipInfos->getNumber() ;
+                            $voipnumbers =  substr($voipnumbers,2);
 
-                $con->exec('set foreign_key_checks=0');
-                $response_text .= 'disabling foreign keys';
-                $response_text .= '<br/>';
+                            $tc = new Criteria();
+                            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                            $tc->add(TelintaAccountsPeer::STATUS,3);
+                            if(TelintaAccountsPeer::doCount($tc)>0){
+                                $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
+                                Telienta::terminateAccount($telintaAccountR);
+                            }
+                        }else{
+                        }
+                    }
+                  }else{
+                      $cp = new Criteria;
+                      $cp->add(TelintaAccountsPeer::I_CUSTOMER, $customer->getICustomer());
+                      $cp->addAnd(TelintaAccountsPeer::STATUS, 3);
 
-
-                $con->exec('UPDATE transaction  SET  transaction_status_id=6  where customer_id=' . $customer_id);
-                $response_text .= 'transactions deleted';
-                $response_text .= '<br/>';
-
-                $con->exec('UPDATE customer_order  SET  order_status_id=6 where customer_id=' . $customer_id);
-                $response_text .= 'customer order deleted';
-                $response_text .= '<br/>';
-
-                //   $con->exec('DELETE FROM customer_product where customer_id='.$customer_id);
-                // $response_text .= 'customer product deleted';
-                // $response_text .= '<br/>';
-
-                if ($customer->getFonetCustomerId() != NULL) {
-                    $con->exec("UPDATE fonet_customer SET activated_on = NULL where fonet_customer_id=" . $customer->getFonetCustomerId());
-                    $response_text .= 'fonet id freed ';
-                    $response_text .= '<br/>';
-                }
-
-                $con->exec('Update customer set customer_status_id=' . $deactive_code . ' where id=' . $customer_id);
-                $response_text .= 'customer status set to 6 (de-activated)';
-                $response_text .= '<br/>';
-
+                      if (TelintaAccountsPeer::doCount($cp) > 0) { //echo "here";
+                           $telintaAccounts = TelintaAccountsPeer::doSelect($cp);
+                           foreach ($telintaAccounts as $account) {
+                               $response_text .="Deleting Account: " . $account->getAccountTitle() . "<br/>";
+                               Telienta::terminateAccount($account);
+                           }
+                       }
+                  } 
+                $uc = new Criteria();
+                $uc->add(UniqueIdsPeer::UNIQUE_NUMBER,$customer->getUniqueid());
+                $uniqueIdObj = UniqueIdsPeer::doSelectOne($uc);
+                $unid=0;
+               $unid= $request->getParameter('uniqueId');
+                if(isset($unid) && $unid==1){
+              $uniqueIdObj->setStatus(0);
+                $uniqueIdObj->setAssignedAt("0000-00-00 00:00:00");
+                 $uniqueIdObj->save();
+                } 
+                $customer->setCustomerStatusId(5);
+                $customer->save();
                 $response_text .= "Customer De-activated, Customer Id=" . $customer_id;
                 $response_text .= '<br/>';
 
                 $response_text .= "Exiting gracefully ... done!";
-                ForumTel::reSetBalance($customer_id);
 
-                $tc = new Criteria();
-                $tc->add(UsNumberPeer::CUSTOMER_ID, $customer_id);
-                $usnumber = UsNumberPeer::doSelectOne($tc);
-                $usnumber->setActiveStatus(1);
-                $usnumber->setUsMobileNumber(null);
-                $usnumber->setCustomerId(null);
-
-                $usnumber->save();
-
-
+                
                 $this->response_text = $response_text;
             }
         }
@@ -347,12 +357,13 @@ class customerActions extends autocustomerActions {
 
 
 
-            if(Telienta::createAAccount("46" . substr($this->customer->getMobileNumber(), 1), $this->customer)){
+            if (Telienta::createAAccount("46" . substr($this->customer->getMobileNumber(), 1), $this->customer)) {
                 echo "<br/> A Account Created Successfully<br/>";
             }
-            
-            if(Telienta::createCBAccount("46" . substr($this->customer->getMobileNumber(), 1), $this->customer)){
-                echo "<br/> CB Account Created Successfully<br/>";;
+
+            if (Telienta::createCBAccount("46" . substr($this->customer->getMobileNumber(), 1), $this->customer)) {
+                echo "<br/> CB Account Created Successfully<br/>";
+                ;
             }
 
             $getvoipInfo = new Criteria();
@@ -367,15 +378,258 @@ class customerActions extends autocustomerActions {
 
 
             $callbacklog = new CallbackLog();
-            $callbacklog->setMobileNumber("46".substr($this->customer->getMobileNumber(), 1));
+            $callbacklog->setMobileNumber("46" . substr($this->customer->getMobileNumber(), 1));
             $callbacklog->setuniqueId($this->customer->getUniqueid());
             $callbacklog->setcallingCode("46");
             $callbacklog->save();
-
-
         }
         return sfView::none;
     }
 
+    public function executeChargeCustomer(sfWebRequest $request)
+    {
+          if(($request->getParameter('mobile_number')) && $request->getParameter('charge_amount')!=''){
+             $validated = false;
+            $mobile_number = $request->getParameter('mobile_number');
+            $extra_refill = $request->getParameter('charge_amount');
+            $is_recharged = true;
+            $transaction = new Transaction();
+            $order = new CustomerOrder();
+            $customer = NULL;
+            $cc = new Criteria();
+            $cc->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
+            $cc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+           
+            $customer = CustomerPeer::doSelectOne($cc);
+            
+            if ($customer and $mobile_number != "") {
+                $validated = true;
+            } else {
+                $validated = false;
+                $is_recharged = false;
+                $this->error_mobile_number = 'invalid mobile number';
+                return;
+            }
+//			echo 'validating form';
+            if ($validated) {
+                 $c = new Criteria();
+                $c->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
+                $customer_product = CustomerProductPeer::doSelectOne($c)->getProduct();
+                $order->setCustomerId($customer->getId());
+                $order->setProductId($customer_product->getId());
+                $order->setQuantity(1);
+                $order->setExtraRefill(-$extra_refill);
+                $order->setIsFirstOrder(false);
+                $order->setOrderStatusId(1);
+                
+                $order->save();
+                $transaction->setOrderId($order->getId());
+                $transaction->setCustomerId($customer->getId());
+                $transaction->setAmount(-$extra_refill);
+                //get agent name
+                $transaction->setDescription($request->getParameter('transaction_description'));
+                $transaction->setTransactionFrom(2);
+
+                    $transaction->save();
+
+                    echo $unidc = $customer->getUniqueid();
+                $uidcount=0;
+                $uc = new Criteria;
+                $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $unidc);
+                $uc->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
+                $uidcount = UniqueIdsPeer::doCount($uc);
+
+            if ($uidcount==1) {
+                $amtt = CurrencyConverter::convertSekToUsd($transaction->getAmount());
+                $amtt=-$amtt;
+                $Test = ForumTel::rechargeForumtel($customer->getId(), -$amtt);
+            } else {
+                    Telienta::charge($customer, $extra_refill,$request->getParameter('transaction_description'));
+            }        //set status
+                    $order->setOrderStatusId(3);
+                    $transaction->setTransactionStatusId(3);
+                    $order->save();
+                    $transaction->save();
+                    $this->customer = $order->getCustomer();
+                    emailLib::sendAdminRefillEmail($this->customer, $order);
+                    $this->getUser()->setFlash('message', $customer->getMobileNumber().' account is successfully charged with '.$transaction->getAmount().' SEK.');
+//                                        echo 'rehcarged, redirecting';
+                    $this->redirect($this->getTargetURL() . 'customer/selectChargeCustomer');
+                } else {
+//                                        echo 'NOT rehcarged, redirecting';
+                    $this->balance_error = 1;
+
+                } //end else
+            } else {
+//              echo 'Form Invalid, redirecting';
+                $this->balance_error = 1;
+               
+                $is_recharged = false;
+                $this->error_mobile_number = 'invalid mobile number';
+                 $this->redirect($this->getTargetURL() . 'customer/selectChargeCustomer');
+
+        }
+  $this->redirect($this->getTargetURL() . 'customer/selectChargeCustomer');
+        return sfView::NONE;
+    }
+    public function executeRefillCustomer(sfWebRequest $request){
+      if(($request->getParameter('mobile_number')) && $request->getParameter('refill_amount')!=''){
+            $validated = false;
+            $mobile_number = $request->getParameter('mobile_number');
+            $extra_refill = $request->getParameter('refill_amount');
+            $is_recharged = true;
+            $transaction = new Transaction();
+            $order = new CustomerOrder();
+            $customer = NULL;
+            $cc = new Criteria();
+            $cc->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
+            $cc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+            //$cc->add(CustomerPeer::FONET_CUSTOMER_ID, NULL, Criteria::ISNOTNULL);
+            $customer = CustomerPeer::doSelectOne($cc);
+            //echo $customer->getId();
+
+            if ($customer and $mobile_number != "") {
+                $validated = true;
+            } else {
+                $validated = false;
+                $is_recharged = false;
+                $this->error_mobile_number = 'invalid mobile number';
+                return;
+            }
+//			echo 'validating form';
+            if ($validated) {
+
+                //create order
+                //get customer first product purchase
+                $c = new Criteria();
+                $c->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
+                $customer_product = CustomerProductPeer::doSelectOne($c)->getProduct();
+                $order->setCustomerId($customer->getId());
+                $order->setProductId($customer_product->getId());
+                $order->setQuantity(1);
+                $order->setExtraRefill($extra_refill);
+                $order->setIsFirstOrder(false);
+                $order->setOrderStatusId(1);
+
+                $order->save();
+                $transaction->setOrderId($order->getId());
+                $transaction->setCustomerId($customer->getId());
+                $transaction->setAmount($extra_refill);
+                //get agent name
+                $transaction->setDescription($request->getParameter('transaction_description'));
+                $transaction->setTransactionFrom('2');
+                $transaction->save();
+
+
+                $unidc = $customer->getUniqueid();
+                $uidcount=0;
+                $uc = new Criteria;
+                $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $unidc);
+                $uc->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
+                $uidcount = UniqueIdsPeer::doCount($uc);
+
+            if ($uidcount==1) {
+                $amtt = CurrencyConverter::convertSekToUsd($transaction->getAmount());
+                $Test = ForumTel::rechargeForumtel($customer->getId(), $amtt);
+            } else {
+                Telienta::recharge($customer, $transaction->getAmount(),$request->getParameter('transaction_description'));
+            }
+
+                
+                //set status
+                $order->setOrderStatusId(3);
+                $transaction->setTransactionStatusId(3);
+                $order->save();
+                $transaction->save();
+                $this->customer = $order->getCustomer();
+                emailLib::sendAdminRefillEmail($this->customer, $order);
+                $this->getUser()->setFlash('message', $customer->getMobileNumber().' account is successfully refilled with '.$transaction->getAmount().' SEK.');
+                //                                        echo 'rehcarged, redirecting';
+                $this->redirect($this->getTargetURL() . 'customer/selectRefillCustomer');
+                } else {
+                //                                        echo 'NOT rehcarged, redirecting';
+                $this->balance_error = 1;
+
+                } //end else
+                } else {
+                //              echo 'Form Invalid, redirecting';
+                $this->balance_error = 1;
+
+                $is_recharged = false;
+                $this->error_mobile_number = 'invalid mobile number';
+                $this->redirect($this->getTargetURL() . 'customer/selectRefillCustomer');
+
+        }
+  $this->redirect($this->getTargetURL() . 'customer/selectRefillCustomer');
+    return sfView::NONE;
+    }
+
+   public function executeSelectRefillCustomer($request){
+        $ct = new Criteria();
+        $ct->add(TransactionDescriptionPeer::TRANSACTION_TYPE_ID,1); // For Refill
+        $ct->add(TransactionDescriptionPeer::B2C,1);
+        $ct->addAnd(TransactionDescriptionPeer::TRANSACTION_SECTION_ID,1); // 1, Description is for Admin and 2, for  Agent
+        $this->transactionDescriptions = TransactionDescriptionPeer::doSelect($ct);
+   }
+
+   public function executeSelectChargeCustomer($request){
+        $ct = new Criteria();
+        $ct->add(TransactionDescriptionPeer::TRANSACTION_TYPE_ID,2); // For charge
+        $ct->add(TransactionDescriptionPeer::B2C,1);
+        $ct->addAnd(TransactionDescriptionPeer::TRANSACTION_SECTION_ID,1); // 1, Description is for Admin and 2, for  Agent
+        $this->transactionDescriptions = TransactionDescriptionPeer::doSelect($ct);
+   }
+
+    public function getTargetURL() {
+        return sfConfig::get('backend_url');
+    }
+
+    public function executeCompletePaymenthistory(sfWebRequest $request){
+
+        $tr = new Criteria();
+        $tr->add(TransactionPeer::TRANSACTION_STATUS_ID,3);
+        $tr->addGroupbycolumn(TransactionPeer::DESCRIPTION);
+        $alltransaction= TransactionPeer::doSelect($tr);
+        $this->alltransactions=$alltransaction;
+        $c = new Criteria();
+        $c->add(TransactionPeer::TRANSACTION_STATUS_ID,3);
+        if(isset($_POST['startdate']) && $_POST['startdate']!=""){
+
+            $this->startdate=$request->getParameter('startdate');
+            $startdate=date("Y-m-d 00:00:00",  strtotime($request->getParameter('startdate')));
+            $c->addAnd(TransactionPeer::CREATED_AT,$startdate,Criteria::GREATER_THAN);
+        }
+        if(isset($_POST['enddate']) && $_POST['enddate']!=""){
+            $this->enddate=$request->getParameter('enddate');
+            $enddate=date("Y-m-d 23:59:59",strtotime($request->getParameter('enddate')));
+            $c->addAnd(TransactionPeer::CREATED_AT,$enddate,Criteria::LESS_THAN);
+        }
+        if(isset($_POST['description']) && $_POST['description']!=""){
+            $this->description=$request->getParameter('description');
+            $c->addAnd(TransactionPeer::DESCRIPTION,$request->getParameter('description'));
+        }
+        $enableCountry = new Criteria();
+        $enableCountry->add(EnableCountryPeer::ID,2);
+        $country_id = EnableCountryPeer::doSelectOne($enableCountry);//->getId();
+        if($country_id){
+            $langSym = $country_id->getLanguageSymbol();
+        }else{
+            $langSym = 'no';
+        }
+        $lang =  $langSym;
+        $this->lang = $lang;
+
+        $c->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
+        //set paging
+        $items_per_page = 50000; //shouldn't be 0
+        $this->page = $request->getParameter('page');
+        if($this->page == '') $this->page = 1;
+        $pager = new sfPropelPager('Transaction', $items_per_page);
+        $pager->setPage($this->page);
+        $pager->setCriteria($c);
+        $pager->init();
+        $this->transactions = $pager->getResults();
+        $this->total_pages = $pager->getNbResults() / $items_per_page;
+    }
 }
 

@@ -1710,13 +1710,93 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
         if ($requestType == "hc") {
 
             $dialerIdLenght = strlen($textParamter);
-            $uniqueId = substr($textParamter, 7);
+            $uniqueId = substr($textParamter, $dialerIdLenght - 6, $dialerIdLenght - 1);
             $mnc = new Criteria();
             $mnc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
             $mnc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
             $cusCount = CustomerPeer::doCount($mnc);
-
             if ($cusCount < 1) {
+                $uc = new Criteria();
+                $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
+                $uc->addAnd(UniqueIdsPeer::STATUS, 0);
+                $callbackq = UniqueIdsPeer::doCount($uc);
+            if ($callbackq== 1) {
+               $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+                    $pc = new Criteria();
+                    $pc->add(ProductPeer::SMS_CODE, "50");
+                    $product = ProductPeer::doSelectOne($pc);
+                    $calingcode = sfConfig::get('app_country_code');
+                    $password = $this->randomNumbers(6);
+                    $customer = new Customer();
+                    $customer->setFirstName($mobileNumber);
+                    $customer->setLastName($mobileNumber);
+                    $customer->setMobileNumber($mobileNumber);
+                    $customer->setPassword($password);
+                    $customer->setEmail("retail@example.com");
+                    $customer->setCountryId(2);
+                    $customer->setCity("");
+                    $customer->setAddress("");
+                    $customer->setTelecomOperatorId(1);
+                    $customer->setDeviceId(1474);
+                    $customer->setUniqueId($uniqueId);
+                    $customer->setCustomerStatusId(3);
+                    $customer->setPlainText($password);
+                    $customer->setRegistrationTypeId(6);
+                    $customer->save();
+
+                    $order = new CustomerOrder();
+                    $order->setProductId($product->getId());
+                    $order->setCustomerId($customer->getId());
+                    $order->setExtraRefill($order->getProduct()->getInitialBalance());
+                    $order->setIsFirstOrder(1);
+                    $order->setOrderStatusId(3);
+                    $order->save();
+
+                    $transaction = new Transaction();
+                    $transaction->setAgentCompanyId($customer->getReferrerId());
+                    $transaction->setAmount($order->getProduct()->getPrice());
+                    $transaction->setDescription('Registration of Retail');
+                    $transaction->setOrderId($order->getId());
+                    $transaction->setCustomerId($customer->getId());
+                    $transaction->setTransactionStatusId(3);
+                    $transaction->save();
+
+                    $customer_product = new CustomerProduct();
+                    $customer_product->setCustomer($order->getCustomer());
+                    $customer_product->setProduct($order->getProduct());
+                    $customer_product->save();
+
+                    $callbacklog = new CallbackLog();
+                    $callbacklog->setMobileNumber($number);
+                    $callbacklog->setuniqueId($uniqueId);
+                    $callbacklog->setImei($splitedText[1]);
+                    $callbacklog->setImsi($splitedText[2]);
+                    $callbacklog->setCheckStatus(3);
+                    $callbacklog->save();
+
+                    if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
+                        $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
+                        $availableUniqueId->setStatus(1);
+                        $availableUniqueId->setRegistrationTypeId(4);
+                        $availableUniqueId->save();
+                        Telienta::createAAccount($number, $customer);
+                        Telienta::createCBAccount($number, $customer);
+                    }
+
+                    $sms = SmsTextPeer::retrieveByPK(9);
+                    $smsText = $sms->getMessageText();
+                    $smsText = str_replace("(balance)", $order->getExtraRefill(), $smsText);
+                    ROUTED_SMS::Send($number, $smsText);
+
+                    $sms = SmsTextPeer::retrieveByPK(11);
+                    $smsText = $sms->getMessageText();
+                    $smsText = str_replace("(username)", $mobileNumber, $smsText);
+                    $smsText = str_replace("(password)", $password, $smsText);
+                    ROUTED_SMS::Send($number, $smsText);
+                    emailLib::sendCustomerRegistrationViaRetail($customer, $order);
+                die;
+            }
+
                 $smstext = SmsTextPeer::retrieveByPK(2);
                 echo $smstext->getMessageText();
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
@@ -1748,7 +1828,6 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $voipnumbers = substr($voipnumbers, 2);
             }
 
-
             $tc = new Criteria();
             $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
             $tc->add(TelintaAccountsPeer::STATUS, 3);
@@ -1769,9 +1848,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $uniqueId = substr($textParamter, 3);
             echo "<br/>";
             echo $uniqueId."<hr/>";
-
-
-
+            
             $callbackq = new Criteria();
             $callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
             $callbackq = CallbackLogPeer::doCount($callbackq);
@@ -1853,14 +1930,20 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 echo $splitedText[0];
                 if(strtolower(substr($splitedText[0],0,2))=="re" && strlen($splitedText[0])==12){
                     $dialerIdLenght = strlen($splitedText[0]);
-                    $location=4;
-                    $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);    
+                    echo $location=4;
+                    echo "<br/>";
+                    $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
+                    echo "uniqueid:". $uniqueId;
                 }else{
+                    $dialerIdLenght = strlen($splitedText[1]);
+                    echo "DialerLenght:".$dialerIdLenght."<br/>";
                     $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
-                    $location=5;
+                    echo $location=5;
+                    echo "<br/>";
                     echo "uniqueid:". $uniqueId;
                 }
             }
+            
             $c = new Criteria();
             $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
             $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
@@ -1884,16 +1967,14 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     die;
                 }
 
-
-
                 $cc = new Criteria();
                 $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
                 $cc->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
 
                 if (CustomerPeer::doCount($cc) > 0) {
                     echo "Already Registerd";
-                    $sms = SmsTextPeer::retrieveByPK(10);
-                    ROUTED_SMS::Send($number, $sms->getMessageText());
+                    //$sms = SmsTextPeer::retrieveByPK(10);
+                    //ROUTED_SMS::Send($number, $sms->getMessageText());
                     die;
                 }
 
@@ -1998,12 +2079,42 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     echo "<hr/>";
                     $customer = CustomerPeer::doSelectOne($c);
                     if ($command == "cb") {
+                      
                         echo "Check Balance Request<br/>";
                         $balance = Telienta::getBalance($customer);
                         $sms = SmsTextPeer::retrieveByPK(5);
                         $smsText = $sms->getMessageText();
                         $smsText = str_replace("(balance)", $balance, $smsText);
-                        ROUTED_SMS::Send($number, $smsText);
+                         $number;
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                      $c = new Criteria();
+                      $c->add(SmsLogPeer::MOBILE_NUMBER, $number);
+                      $c->addAnd(SmsLogPeer::SMS_TYPE, 2);
+                      $c->addDescendingOrderByColumn(SmsLogPeer::CREATED_AT);
+                       $value=SmsLogPeer::doCount($c);
+
+                      if($value>0){
+                         $smsRow=SmsLogPeer::doSelectOne($c);
+                         $createdAtValue= $smsRow->getCreatedAt();
+                         echo   $date1 =$createdAtValue;
+                         $asd=0;
+                            $d1=$date1;
+                            $d2=date("Y-m-d h:m:s");
+                            $asd=((strtotime($d2)-strtotime($d1))/3600);
+                            $asd=intval($asd);
+
+
+                            if($asd>3){
+                                ROUTED_SMS::Send($number, $smsText,null,2);
+                                die;
+                            }
+
+                      }else{
+                          ROUTED_SMS::Send($number, $smsText,null,2);
+                          die;
+                      }
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                      
                     } elseif ($command == "re") {
                         echo "Recharge Request<br/>";
                         $cc = new Criteria();
@@ -2073,6 +2184,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 }
             }
         }
+         return sfView::NONE;
     }
 
 public function executeSmsRegisterationsmscb(sfWebrequest $request){
@@ -3135,9 +3247,11 @@ $headers .= "From:" . $from;
    public function executeCsvFiles(sfWebRequest $request)
   {
 
-  $tomorrow1 = mktime(date("H") - 4, date("i"), date("s"), date("m"), date("d"), date("Y"));
-        $fromdate = date("Y-m-d H:00:00", $tomorrow1);
-        $todate = date("Y-m-d H:59:59", $tomorrow1);
+        $fromDate = date("Y-m-d 00:00:00", strtotime('-1 day'));
+       $toDate = date("Y-m-d 23:59:59", strtotime('-1 day'));
+//
+//          $fromDate = date("Y-m-d 00:00:00");
+//        $toDate = date("Y-m-d 23:59:59");
 
         $filename = "LandnCall_" . time() . ".csv";
         $cdrlog = new LandncallCdrLog();
@@ -3145,20 +3259,46 @@ $headers .= "From:" . $from;
         $cdrlog->setFromTime($fromdate);
         $cdrlog->setToTime($todate);
         $cdrlog->save();
-        $tilentaCallHistryResult = Telienta::callHistory(59368, $fromdate, $todate, true);
 
         $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
         $fh = fopen($myFile, 'w') or die("can't open file");
         $comma = ",";
-        $stringData = "CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
+        $stringData = "company_vat,CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time,Samtalstyp";
         $stringData.= "\n";
         fwrite($fh, $stringData);
-        foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
 
-            $stringData = $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time;
-            $stringData.= "\n";
-            fwrite($fh, $stringData);
+        $companies = CompanyPeer::doSelect(new Criteria());
+        foreach($companies as $company){
+            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate,false,3,1);
+            if($tilentaCallHistryResult){
+                foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                    $callerTyper = "";
+                     $typecall = substr($xdr->account_id, 0, 1);
+                                if ($typecall == 'a') {
+                                    $callerTyper =  "Int.";
+                                }
+                                if ($typecall == '4') {
+                                    $callerTyper =  "R";
+                                }
+                                if ($typecall == 'c') {
+                                      $cbtypecall = substr($xdr->account_id, 2);
+                                    if ($xdr->CLD ==$cbtypecall) {
+                                        $callerTyper =  "Cb M";
+                                    } else {
+                                        $callerTyper =  "Cb S";
+                                    }
+                                }
+
+                    $stringData = $company->getVatNo(). $comma .$xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time. $comma.$callerTyper;
+                    $stringData.= "\n";
+                    fwrite($fh, $stringData);
+                }
+            }
         }
+
+
+
+
         $destination_file = "/zapna/zapna/" . $filename;
         $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
         $ftp_user_name = "zapna"; // Username
@@ -3189,46 +3329,110 @@ $headers .= "From:" . $from;
      public function executeResendFailedCsvFiles(sfWebRequest $request)
   {
 
+        // Resend CDRs of Employees whos Data was not fetched.
+
+        $c= new Criteria();
+        $c->add(CompanyCdrFetchFailedLogPeer::STATUS,1);
+
+        if(CompanyCdrFetchFailedLogPeer::doCount($c)>0){
+            $missingCompanies = CompanyCdrFetchFailedLogPeer::doSelect($c);
+
+            $filename = "LandnCall_" . time() . ".csv";
+            
+            $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
+            
+            $fh = fopen($myFile, 'w') or die("can't open file");
+            $comma = ",";
+            $stringData = "company_vat,CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time,Samtalstyp";
+            $stringData.= "\n";
+            fwrite($fh, $stringData);
+            $calls = false;
+            foreach($missingCompanies as $missingCompany){
+                $fromDate = $missingCompany->getFromDate();
+                $toDate =  $missingCompany->getToDate();
+                $company = CompanyPeer::retrieveByPK($missingCompany->getCompanyId());
+                $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate,true);
+                if($tilentaCallHistryResult){
+                    $missingCompany->setStatus(3);
+                    $missingCompany->save();
+                    foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                        $callerTyper = "";
+                         $typecall = substr($xdr->account_id, 0, 1);
+                                    if ($typecall == 'a') {
+                                        $callerTyper =  "Int.";
+                                    }
+                                    if ($typecall == '4') {
+                                        $callerTyper =  "R";
+                                    }
+                                    if ($typecall == 'c') {
+                                          $cbtypecall = substr($xdr->account_id, 2);
+                                        if ($xdr->CLD ==$cbtypecall) {
+                                            $callerTyper =  "Cb M";
+                                        } else {
+                                            $callerTyper =  "Cb S";
+                                        }
+                                    }
+
+                        $stringData = $company->getVatNo(). $comma .$xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time. $comma.$typecall;
+                        $stringData.= "\n";
+                        fwrite($fh, $stringData);
+                    }
+                    $calls = true;
+                }
+            }
+
+
+            if($calls){
+                $cdrlog = new LandncallCdrLog();
+                $cdrlog->setName($filename);
+                $cdrlog->save();
+                $destination_file = "/zapna/zapna/" . $filename;
+                $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
+                $ftp_user_name = "zapna"; // Username
+                $ftp_user_pass = "2s7G3Ms4";   // Password
+                $conn_id = ftp_connect($ftp_server);        // set up basic connection
+
+                $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
+                ftp_pasv($conn_id, true);
+                $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
+
+
+
+                if (!$upload) {
+                    emailLib::sendLandncallCdrErrorEmail($filename);
+                } else {
+
+                    $cdrlog->setStatus(3);
+                }
+                $cdrlog->save();
+            }
+        fclose($fh);
+
+
+        }
 
         $cdrq = new Criteria();
         $cdrq->add(LandncallCdrLogPeer::STATUS,1);
         $cdrrecords= LandncallCdrLogPeer::doSelect($cdrq);
-
-
         foreach($cdrrecords as $cdrrecord){
-        $filename =$cdrrecord->getName();
-        $tilentaCallHistryResult = Telienta::callHistory(59368, $cdrrecord->getFromTime(), $cdrrecord->getToTime(), true);
-//        var_dump($tilentaCallHistryResult);
-//       die;
-          sleep(.5);
-        $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
-        $fh = fopen($myFile, 'w') or die("can't open file");
-        $comma = ",";
-        $stringData = "CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time";
-        $stringData.= "\n";
-        fwrite($fh, $stringData);
-        foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
-            $stringData = $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time;
-            $stringData.= "\n";
-            fwrite($fh, $stringData);
-        }
-           sleep(.5);
-        $destination_file = "/zapna/zapna/" . $filename;
-        $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
-        $ftp_user_name = "zapna"; // Username
-        $ftp_user_pass = "2s7G3Ms4";   // Password
-        $conn_id = ftp_connect($ftp_server);        // set up basic connection
-        $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
-        ftp_pasv($conn_id, true);
-        $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
-        if (!$upload) {
-            emailLib::sendLandncallCdrErrorEmail($filename);
-        } else {
-            $cdrrecord->setStatus(3);
-              $cdrrecord->save();
-        }
-         fclose($fh);
-         sleep(1);
+            $filename =$cdrrecord->getName();
+            $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
+            $destination_file = "/zapna/zapna/" . $filename;
+            $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
+            $ftp_user_name = "zapna"; // Username
+            $ftp_user_pass = "2s7G3Ms4";   // Password
+            $conn_id = ftp_connect($ftp_server);        // set up basic connection
+            $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
+            ftp_pasv($conn_id, true);
+            $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
+            if (!$upload) {
+                emailLib::sendLandncallCdrErrorEmail($filename);
+            } else {
+                $cdrrecord->setStatus(3);
+                  $cdrrecord->save();
+            }
+             fclose($fh);
+             sleep(1);
         }
         return sfView::NONE;
    }
@@ -3656,6 +3860,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 echo $uniqueId."<br/>";
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
+                $uc->addAnd(UniqueIdsPeer::SIM_TYPE_ID,$customer_product->getProduct()->getSimTypeId());
                 $selectedUniqueId = UniqueIdsPeer::doSelectOne($uc);
                 echo $selectedUniqueId->getStatus()."<br/>Baran";
 
@@ -3667,6 +3872,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                     }else{
                         $uc = new Criteria();
                         $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 1);
+                        $uc->addAnd(UniqueIdsPeer::SIM_TYPE_ID,$customer_product->getProduct()->getSimTypeId());
                         $uc->addAnd(UniqueIdsPeer::STATUS, 0);
                         $availableUniqueCount = UniqueIdsPeer::doCount($uc);
                         $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
@@ -4359,5 +4565,31 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
          $output =  ForumTel::suspendForumtel($customer_id);
          echo $output;
          return sfView::NONE;
+      }
+      public function executeCreateReseAccountTelinta(sfWebRequest $request){
+          $customer_id = $request->getParameter("customer_id");
+          $voipnumbers = $request->getParameter("voip");
+          $this->customer = CustomerPeer::retrieveByPK($customer_id);
+          if ($getFirstnumberofMobile == 0) {
+                    $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
+                    $TelintaMobile = '46' . $TelintaMobile;
+                } else {
+                    $TelintaMobile = '46' . $this->customer->getMobileNumber();
+                }
+                $uniqueid=$this->customer->getUniqueid();
+                $stus=substr($uniqueid,0,2);
+                if($stus=='us'){
+
+                    $uc = new Criteria();
+                $uc->add(UsNumberPeer::ACTIVE_STATUS, 3);
+                  $uc->add(UsNumberPeer::CUSTOMER_ID, $this->customer->getId());
+                $selectusnumber = UsNumberPeer::doSelectOne($uc);
+
+                   $TelintaMobile=$selectusnumber->getUsMobileNumber();
+                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
+                }else{
+                 
+          Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
+                }
       }
 }
