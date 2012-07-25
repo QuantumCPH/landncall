@@ -351,6 +351,14 @@ propel:
     account_number: { type: VARCHAR, size: '100', required: true }
     created_at: { type: TIMESTAMP, required: false }
     _indexes: { company_bank_FI_1: [company_id] }
+  company_cdr_fetch_failed_log:
+    _attributes: { phpName: CompanyCdrFetchFailedLog }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    company_id: { type: INTEGER, size: '11', required: true }
+    to_date: { type: TIMESTAMP, required: true }
+    from_date: { type: TIMESTAMP, required: true }
+    status: { type: INTEGER, size: '11', required: true, defaultValue: '1' }
+    created_at: { type: TIMESTAMP, required: true }
   company_size:
     _attributes: { phpName: CompanySize }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -524,6 +532,7 @@ propel:
     product_id: { type: INTEGER, size: '11', required: false }
     country_code: { type: VARCHAR, size: '50', required: false }
     country_mobile_number: { type: VARCHAR, size: '250', required: false }
+    unique_id: { type: VARCHAR, size: '50', required: false }
     _indexes: { employee_FI_1: [company_id] }
   employee_product:
     _attributes: { phpName: EmployeeProduct }
@@ -806,7 +815,9 @@ propel:
     product_order: { type: INTEGER, size: '11', required: false }
     product_type_package: { type: boolean, required: true, defaultValue: '0' }
     product_country_us: { type: boolean, required: true, defaultValue: '0' }
-    _indexes: { enable_country: [country_id] }
+    sim_type_id: { type: INTEGER, size: '11', required: true }
+    is_in_b2b: { type: boolean, required: false, defaultValue: '0' }
+    _indexes: { enable_country: [country_id], sim_type_id: [sim_type_id] }
   product_order:
     _attributes: { phpName: ProductOrder }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -864,6 +875,10 @@ propel:
     customer_id: { type: VARCHAR, size: '250', required: false }
     is_assigned: { type: TINYINT, size: '4', required: true, defaultValue: '0' }
     updated_at: { type: TIMESTAMP, required: false }
+  sim_types:
+    _attributes: { phpName: SimTypes }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    title: { type: VARCHAR, size: '255', required: false }
   sip:
     _attributes: { phpName: Sip }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -898,6 +913,7 @@ propel:
     status: { type: VARCHAR, size: '20', required: true }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     customer_id: { type: INTEGER, size: '11', required: false }
+    sms_type: { type: INTEGER, size: '11', required: false, defaultValue: '1' }
   sms_text:
     _attributes: { phpName: SmsText }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -1028,6 +1044,7 @@ propel:
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     agent_company_id: { type: BIGINT, size: '20', required: false }
     commission_amount: { type: FLOAT, required: false }
+    transaction_from: { type: INTEGER, size: '11', required: false, defaultValue: '1' }
     _indexes: { FK_transaction_transaction_status: [transaction_status_id], FK_transaction_customer: [customer_id], FK_transaction_order: [order_id] }
   transaction_description:
     _attributes: { phpName: TransactionDescription }
@@ -1035,6 +1052,8 @@ propel:
     title: { type: VARCHAR, size: '255', required: true }
     transaction_type_id: { type: INTEGER, size: '11', required: false, foreignTable: transaction_type, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
     transaction_section_id: { type: INTEGER, size: '11', required: false, foreignTable: transaction_section, foreignReference: sectionId, onDelete: RESTRICT, onUpdate: RESTRICT }
+    b2c: { type: boolean, required: false }
+    b2b: { type: boolean, required: false }
     _indexes: { FK_transaction_description: [transaction_type_id], FK_transaction_description_section: [transaction_section_id] }
   transaction_section:
     _attributes: { phpName: TransactionSection }
@@ -1052,6 +1071,8 @@ propel:
     assigned_at: { type: TIMESTAMP, required: true }
     registration_type_id: { type: INTEGER, size: '11', required: true }
     status: { type: boolean, required: true, defaultValue: '0' }
+    sim_type_id: { type: INTEGER, size: '11', required: true, foreignTable: sim_types, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
+    _indexes: { new_fk_constraint: [sim_type_id] }
   us_number:
     _attributes: { phpName: UsNumber }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }

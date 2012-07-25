@@ -217,7 +217,7 @@ class ForumTel {
         $output = $data;
         
        // var_dump($data); die;
-        if(isset ($data) && $data!="" && strpos($data, "HTTP 404")===false){
+        if(isset ($data) && strpos($data, "HTTP/1.1 200 OK")!==false){
             $data = substr($data, 215);           
             
             $ftr = new ForumTelRequests();
@@ -248,7 +248,7 @@ class ForumTel {
         sleep(0.5);
         $retry_count++;
       }
-      if(strpos($data, "HTTP 404")!==false && $retry_count==$max_retries){
+      if(strpos($data, "HTTP/1.1 200 OK")===false  && $retry_count==$max_retries){
        emailLib::sendErrorInForumTel("Error in fetching balance", "Error in fetching balance for MSISDN No $msisdn and request id is $transactionid. Error is Even After Max Retries " . $max_retries . "  <br/> Following error occurred.<br /> <br />$data");
       }
       
