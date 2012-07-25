@@ -91,8 +91,8 @@ $wrap_content  = isset($wrap)?$wrap:false;
       
       
       <?php    $unid=$customer->getUniqueid();
-      
-      if((int)$unid>200000){?>
+       $usvar=substr($unid,0,2);
+      if($usvar=="us"){?>
          <?php echo __('US Mobile Number') ?>: <br />
       <?php    $eCu = new Criteria();
 	  $eCu->add(UsNumberPeer::CUSTOMER_ID, $customer->getId());

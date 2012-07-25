@@ -331,6 +331,7 @@ public function executeAgentCompanyPayment(sfWebrequest $request) {
         
         $ct = new Criteria();
         $ct->add(TransactionDescriptionPeer::TRANSACTION_TYPE_ID,1); // For refill
+        $ct->add(TransactionDescriptionPeer::B2C,1);
         $ct->addAnd(TransactionDescriptionPeer::TRANSACTION_SECTION_ID,1); // 1, Description is for Admin and 2, for  Agent
         $this->transactionDescriptions = TransactionDescriptionPeer::doSelect($ct);
         
@@ -345,6 +346,7 @@ public function executeAgentCompanyPayment(sfWebrequest $request) {
         
         $ct = new Criteria();
         $ct->add(TransactionDescriptionPeer::TRANSACTION_TYPE_ID,2); // For charge
+        $ct->add(TransactionDescriptionPeer::B2C,1);
         $ct->addAnd(TransactionDescriptionPeer::TRANSACTION_SECTION_ID,1); // 1, Description is for Admin and 2, for  Agent
         $this->transactionDescriptions = TransactionDescriptionPeer::doSelect($ct);
     }

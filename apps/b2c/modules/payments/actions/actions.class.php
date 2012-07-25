@@ -31,6 +31,8 @@ class paymentsActions extends sfActions {
 
     public function executeThankyou(sfWebRequest $request) {
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 01/24/11
+
+
         changeLanguageCulture::languageCulture($request, $this);
 
         $urlval = "thanks-" . $request->getParameter('transact');
@@ -39,6 +41,8 @@ class paymentsActions extends sfActions {
         $email2->setCallurl($urlval);
 
         $email2->save();
+
+        $this->redirect("http://www.smartsim.se/index.php?option=com_content&view=article&id=48&Itemid=229");
     }
 
     public function executeReject(sfWebRequest $request) {
