@@ -1611,8 +1611,8 @@ class customerActions extends sfActions {
 
                 $uniqueId = $this->customer->getUniqueid();
                 $OpeningBalance = $amt;
-                Telienta::charge($this->customer, $OpeningBalance);
-                $ReCharge = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=' . $uniqueId . '&amount=' . $OpeningBalance);
+                Telienta::charge($this->customer, $OpeningBalance,"SMS Charges");
+                //$ReCharge = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=' . $uniqueId . '&amount=' . $OpeningBalance);
 
                 $data = array(
                     'S' => 'H',

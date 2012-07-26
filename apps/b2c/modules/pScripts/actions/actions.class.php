@@ -556,7 +556,7 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
                         $uniqueId = $this->customer->getUniqueid();
                       //This is for Recharge the Customer
                        $MinuesOpeningBalance = $OpeningBalance*3;
-                       Telienta::recharge($this->customer, $OpeningBalance);
+                       Telienta::recharge($this->customer, $OpeningBalance, "Refill");
                       //This is for Recharge the Account
                       //this condition for if follow me is Active
                         $getvoipInfo = new Criteria();
@@ -2146,7 +2146,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                             $transaction->setCustomerId($order->getCustomerId());
                             $transaction->save();
 
-                            if (Telienta::recharge($customer, $scratchCard->getCardPrice())) {
+                            if (Telienta::recharge($customer, $scratchCard->getCardPrice(), "Refill")) {
                                 $scratchCard->setStatus(1);
                                 $scratchCard->setUsedAt(date("Y-m-d H:i:s"));
                                 $scratchCard->setCustomerId($customer->getId());
@@ -3608,7 +3608,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 //echo "<br/>";
                 //This is for Recharge the Customer
                 $MinuesOpeningBalance = $OpeningBalance * 3;
-                Telienta::recharge($this->customer, $OpeningBalance);
+                Telienta::recharge($this->customer, $OpeningBalance, "Refill");
                 $email2 = new DibsCall();
                 $email2->setCallurl('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $unidc . '&amount=' . $OpeningBalance . '&type=customer');
                 $email2->save();
