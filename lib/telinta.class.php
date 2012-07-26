@@ -221,8 +221,7 @@ class Telienta {
         return self::makeTransaction($customer, "Manual charge", $amount, $description);
 
     }
-
-    public static function recharge(Customer $customer, $amount, $description="Charge") {
+    public static function recharge(Customer $customer, $amount, $description="Recharge") {
         $c = new Criteria;
         $c->add(EmailAlertSentPeer::USAGE_ALERT_STATUS_ID, null, Criteria::ISNOTNULL);
         $c->addAnd(EmailAlertSentPeer::CUSTOMER_ID,$customer->getId());
