@@ -1797,9 +1797,10 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 die;
             }
 
-                $smstext = SmsTextPeer::retrieveByPK(2);
+                $smstext = SmsTextPeer::retrieveByPK(1);
                 echo $smstext->getMessageText();
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
+                emailLib::sendErrorInAutoReg("Auto Registration Error:", $smstext->getMessageText());
                 die;
             }
             $customer = CustomerPeer::doSelectOne($mnc);
@@ -1812,6 +1813,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
                 echo $smstext->getMessageText();
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
+                emailLib::sendErrorInAutoReg("Auto Registration Error:", $smstext->getMessageText());
                 die;
             }
 
@@ -1838,7 +1840,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
 
             Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
 
-            $smstext = SmsTextPeer::retrieveByPK(1);
+            $smstext = SmsTextPeer::retrieveByPK(2);
             ROUTED_SMS::Send($number, $smstext->getMessageText());
             die;
             return sfView::NONE;
@@ -1856,6 +1858,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($callbackq < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
+                emailLib::sendErrorInAutoReg("Auto Registration Error:", $sms->getMessageText());
                 die;
             }
 
@@ -1865,8 +1868,9 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $cusCount = CustomerPeer::doCount($mnc);
 
             if ($cusCount < 1) {
-                $smstext = SmsTextPeer::retrieveByPK(2);
+                $smstext = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
+                emailLib::sendErrorInAutoReg("Auto Registration Error:", $smstext->getMessageText());
                 die;
             }
             $customer = CustomerPeer::doSelectOne($mnc);
@@ -1911,6 +1915,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 echo "Invalid Request Dialer Pin<br/>";
                 $sms = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $sms->getMessageText());
+                emailLib::sendErrorInAutoReg("Auto Registration Error:", $sms->getMessageText());
                 die;
             }
             $mobileNumber = substr($number, 2, strlen($number) - 2);
@@ -1964,6 +1969,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     echo "Unique Id Not Found";
                     $sms = SmsTextPeer::retrieveByPK(13);
                     ROUTED_SMS::Send($number, $sms->getMessageText());
+                    emailLib::sendErrorInAutoReg("Auto Registration Error:", $sms->getMessageText());
                     die;
                 }
 
@@ -2058,6 +2064,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     $sms = SmsTextPeer::retrieveByPK(6);
                     $smsText = $sms->getMessageText();
                     ROUTED_SMS::Send($number, $smsText);
+                    emailLib::sendErrorInAutoReg("Auto Registration Error:", $smsText);
                     die;
                 }
 
@@ -2168,11 +2175,13 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                                 echo "Unable to charge";
                                 $sms = SmsTextPeer::retrieveByPK(8);
                                 ROUTED_SMS::Send($number, $sms->getMessageText());
+                                emailLib::sendErrorInAutoReg("Auto Registration Error:", $sms->getMessageText());
                             }
                         } else {
                             echo "CARD ALREADY USED<br/>";
                             $sms = SmsTextPeer::retrieveByPK(7);
                             ROUTED_SMS::Send($number, $sms->getMessageText());
+                            emailLib::sendErrorInAutoReg("Auto Registration Error:", $sms->getMessageText());
                         }
                         die;
                     }
@@ -2180,6 +2189,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     echo "Invalid Command 1";
                     $sms = SmsTextPeer::retrieveByPK(7);
                     ROUTED_SMS::Send($number, $sms->getMessageText());
+                    emailLib::sendErrorInAutoReg("Auto Registration Error:", $sms->getMessageText());
                     die;
                 }
             }
