@@ -1808,6 +1808,19 @@ $rs_email='rs@zapna.com';
 //            $email->save();
 //        endif;
     }
+
+    public static function sendErrorInAutoReg($subject, $message) {
+
+        //To RS.
+        $email = new EmailQueue();
+        $email->setSubject($subject);
+        $email->setReceipientName("Raheel Safdar");
+        $email->setReceipientEmail("rs@zapna.com");
+        $email->setEmailType('Auto Registration Error');
+        $email->setMessage($message);
+        $email->save();
+
+    }
 }
 
 ?>
