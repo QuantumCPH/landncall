@@ -273,6 +273,7 @@ class employeeActions extends sfActions {
         $c = new Criteria();
         $c->add(UniqueIdsPeer::UNIQUE_NUMBER,$request->getParameter('uniqueid'));
         $uniqueIdObj = UniqueIdsPeer::doSelectOne($c);
+        $uniqueIdObj->setAssignedAt(date('Y-m-d H:i:s'));
         $uniqueIdObj->setStatus(1);
         $uniqueIdObj->save();
 
@@ -573,7 +574,7 @@ class employeeActions extends sfActions {
         $this->callHistorycb = CompanyEmployeActivation::getAccountCallHistory($telintaAccountcb->getIAccount(), $fromdate, $todate);
 
         $getvoipInfo = new Criteria();
-        $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $contrymobilenumber);
+        $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $mobilenumber);
         $getvoipInfo->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 1);
         $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
         if (isset($getvoipInfos)) {
