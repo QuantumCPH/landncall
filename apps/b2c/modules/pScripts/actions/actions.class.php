@@ -1830,18 +1830,17 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if (isset($getvoipInfos)) {
                 $voipnumbers = $getvoipInfos->getNumber();
                 $voipnumbers = substr($voipnumbers, 2);
+
+                $tc = new Criteria();
+                $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                $tc->add(TelintaAccountsPeer::STATUS, 3);
+                if (TelintaAccountsPeer::doCount($tc) > 0) {
+                    $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
+                    Telienta::terminateAccount($telintaAccount);
+                }
+
+                Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
             }
-
-            $tc = new Criteria();
-            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-            $tc->add(TelintaAccountsPeer::STATUS, 3);
-            if (TelintaAccountsPeer::doCount($tc) > 0) {
-                $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
-                Telienta::terminateAccount($telintaAccount);
-            }
-
-            Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
-
             $smstext = SmsTextPeer::retrieveByPK(2);
             ROUTED_SMS::Send($number, $smstext->getMessageText());
             die;
