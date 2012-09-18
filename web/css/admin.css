@@ -92,7 +92,7 @@ h2{
 #sddm .submenu li{
         display: block !important;
         float: none !important;
-        z-index: 4000000 !important;
+        z-index: 25 !important;
         border-left:0 !important;
 }
 #sddm .submenu li a
@@ -107,7 +107,7 @@ h2{
         background: #716F70;
         color: #FFFFFF;
         font: 11px arial;
-        z-index: 4000000 !important;
+        z-index: 30 !important;
 }
 #sddm .submenu li a:hover
 {	background: #FFFFFF;
