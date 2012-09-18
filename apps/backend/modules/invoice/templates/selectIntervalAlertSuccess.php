@@ -1,4 +1,4 @@
-<div id="sf_admin_container"><h1><?php echo __('Low Credit Alert Report') ?></h1><br>
+<div id="sf_admin_container"><h1><?php echo __('Low Credit Alert Report') ?></h1><br />
 <?php if ($sf_user->hasFlash('notice')): ?>
 	<div class='notice'>
 	  <?php echo $sf_user->getFlash('notice') ?>

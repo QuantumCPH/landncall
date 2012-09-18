@@ -11,7 +11,7 @@ default:
 
   stylesheets:    [admin.css, /sf/calendar/skins/aqua/theme.css, /sf/sf_admin/css/admin_main.css]
 
-  javascripts:    [/sf/prototype/js/prototype.js]
+  javascripts:    [jquery-1.7.1.js,/sf/prototype/js/prototype.js]
 
   has_layout:     on
   layout:         layout

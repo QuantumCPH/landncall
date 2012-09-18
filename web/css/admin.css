@@ -39,9 +39,12 @@ h2{
     float:none;
     clear:both;
 }
+.menuarrange{
+    margin: 0 auto;
+    width: 58em;
+}
 #sddm
 {
-    margin: 0;
     padding: 0;
     z-index: 30;
 }
@@ -75,16 +78,42 @@ h2{
         color:#ffffff;
 }
 
-#sddm div
+#sddm .submenu
 {	position: absolute;
-	visibility: hidden;
+	display:none;
 	margin: 0;
 	padding: 0;
-	background: #ADCA30;
+	background: #716F70;
 	border: 1px solid #8b898a;
 }
-
-#sddm div a
+#sddm .hover .submenu {
+        display:block !important;
+}
+#sddm .submenu li{
+        display: block !important;
+        float: none !important;
+        z-index: 4000000 !important;
+}
+#sddm .submenu li a
+{	
+        display: block !important;
+        margin: 0;
+        padding: 5px 10px;
+        width: auto;
+        white-space: nowrap;
+        text-align: left;
+        text-decoration: none;
+        background: #716F70;
+        color: #FFFFFF;
+        font: 11px arial;
+        z-index: 4000000 !important;
+}
+#sddm .submenu li a:hover
+{	background: #FFFFFF;
+        color: #716F70;
+        display: block;
+}
+/*#sddm div a
 {	position: relative;
         display: block;
         margin: 0;
@@ -100,8 +129,8 @@ h2{
 #sddm div a:hover
 {	background: #FFFFFF;
         color: #716F70;
-}
-#sddm div a.subSelect
+}*/
+#sddm .submenu a.subSelect
 {	background: #FFFFFF;
         color: #716F70;
 }
