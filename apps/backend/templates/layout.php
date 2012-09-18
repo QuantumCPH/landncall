@@ -384,7 +384,7 @@ jQuery(function()
                                  var poid=jQuery("#company_post_code").val();
                                  poid = poid.replace(/\s+/g, '');
                                  var poidlenght=poid.length;
-                                 alert(poidlenght);
+                                 //alert(poidlenght);
                                  var poida= poid.charAt(0);
                                  var poidb= poid.charAt(1);
                                  var poidc= poid.charAt(2);
