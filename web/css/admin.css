@@ -93,6 +93,7 @@ h2{
         display: block !important;
         float: none !important;
         z-index: 4000000 !important;
+        border-left:0 !important;
 }
 #sddm .submenu li a
 {	
