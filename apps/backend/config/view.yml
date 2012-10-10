@@ -11,7 +11,7 @@ default:
 
   stylesheets:    [admin.css, ../sf/sf_admin/css/admin_main.css, backend.css]
 
-  javascripts:    [/sf/prototype/js/prototype.js, jquery-1.4.2.min.js,jquery.validate1.js, main.js]
+  javascripts:    [jquery-1.7.1.js,/sf/prototype/js/prototype.js,jquery.validate1.js, main.js]
 
   has_layout:     on
   layout:         layout
