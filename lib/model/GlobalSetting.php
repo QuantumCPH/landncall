@@ -1,5 +1,5 @@
 <?php
 
-class GlobalSetting extends BaseGlobalSetting
+class GlobalSetting extends BaseGlobalSettings
 {
 }
