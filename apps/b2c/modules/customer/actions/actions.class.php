@@ -375,7 +375,7 @@ class customerActions extends sfActions {
                 $invite->save();
             }
         }
-            
+               
 
         //set referrer id
         if ($this->getRequest()->getCookie('agent_id')) {

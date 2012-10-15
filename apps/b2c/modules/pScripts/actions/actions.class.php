@@ -4611,4 +4611,170 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
           Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
                 }
       }
+      
+          public function executeSaveCompanyCallHistory(sfWebRequest $request)
+    {
+        $c = new Criteria;
+        $c->add(CompanyPeer::STATUS_ID,1);  // active
+        $companies = CompanyPeer::doSelect($c);
+        
+        $bill_start_date = date('Y-m-1 00:00:00', strtotime("last month"));
+        $start_date = date('Y-m-1 00:00:00');
+        $start_date = date('Y-m-d 21:00:00', strtotime("-1 day",strtotime($bill_start_date)));
+        echo "<hr/>";
+       // echo $end_date = date('Y-m-t 21:59:59', strtotime("last month"));
+        echo $end_date = date('Y-m-t 21:59:59', strtotime("last month"));
+        $bill_end_date = date('Y-m-t 23:59:59', strtotime("last month"));
+        echo "<hr/>";
+        foreach($companies as $company){
+           
+           $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $start_date, $end_date);
+//     var_dump($tilentaCallHistryResult);
+//     die;
+           if($tilentaCallHistryResult){
+            foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                
+                
+                $emCalls = new EmployeeCustomerCallhistory();
+                $emCalls->setAccountId($xdr->account_id);
+                $type = substr($xdr->account_id,0,1);
+                   if($type=='a'){
+                     $emCalls->setAccountType('a');  
+                   }elseif($type =='c'){
+                     $emCalls->setAccountType('cb');    
+                   }elseif(is_int($type)){
+                     $emCalls->setAccountType('r');     
+                   }
+                $emCalls->setBillStatus($xdr->bill_status);
+                $emCalls->setBillTime($xdr->bill_time);
+                $emCalls->setChargedAmount($xdr->charged_amount);
+                $emCalls->setChargedQuantity($xdr->charged_quantity);
+                $emCalls->setPhoneNumber($xdr->CLD);
+                $emCalls->setCli($xdr->CLI);
+                $emCalls->setConnectTime($xdr->connect_time);
+                $emCalls->setCountry($xdr->country);
+                $country = $xdr->country;
+                $cc = new Criteria();
+                $cc->add(CountryPeer::NAME,$country, Criteria::LIKE);
+                $ccount = CountryPeer::doCount($cc);
+                if($ccount > 0){
+                   $csel = CountryPeer::doSelectOne($cc); 
+                   $countryid = $csel->getId();
+                }else{
+                   $cin = new Country();
+                   $cin->setName($country);
+                   $cin->save();
+                   $countryid = $cin->getId();
+                }
+                $emCalls->setParentTable('employee');
+                $emCalls->setCountryId($countryid);
+                    $ce = new Criteria();
+                    $ce->add(TelintaAccountsPeer::ACCOUNT_TITLE,$xdr->account_id);
+                    $ce->addAnd(TelintaAccountsPeer::PARENT_TABLE,'employee');
+                    $ce->add(TelintaAccountsPeer::STATUS,3);
+                    if(TelintaAccountsPeer::doCount($ce)>0){
+                        $emp = TelintaAccountsPeer::doSelectOne($ce);
+                        $emCalls->setParentId($emp->getParentId());
+                    }
+                $emCalls->setCompanyId($company->getId());
+                $emCalls->setDescription($xdr->description);
+                $emCalls->setDisconnectCause($xdr->disconnect_cause);
+                $emCalls->setDisconnectTime($xdr->disconnect_time);
+               // $emCalls->setDurationMinutes($duration_minutes);
+                $emCalls->setICustomer($company->getICustomer());
+                $emCalls->setIXdr($xdr->i_xdr);
+                $emCalls->setStatus(3);
+                $emCalls->setSubdivision($xdr->subdivision);
+                $emCalls->setUnixConnectTime($xdr->unix_connect_time);
+                $emCalls->setUnixDisconnectTime($xdr->unix_disconnect_time);
+                $emCalls->setVatIncludedAmount($xdr->charged_amount + $xdr->charged_amount * sfConfig::get('app_vat_percentage'));
+                $emCalls->setChargedVatValue(sfConfig::get('app_vat_percentage'));
+                $emCalls->save();
+             }
+          }else{
+                $callsHistory = new CallHistoryCallsLog();
+                $callsHistory->setParent('company');
+                $callsHistory->setParentId($company->getId());
+                $callsHistory->setTodate($this->todate);
+                $callsHistory->setFromdate($this->fromdate);
+                $callsHistory->save();
+          } 
+        } 
+                return sfView::NONE;
+    }
+    
+    public function executeSaveCompanyCallHistoryNotFetch(sfWebRequest $request)
+    {
+        $c = new Criteria;
+        $c->add(CallHistoryCallsLogPeer::PARENT,'company');
+        $c->add(CallHistoryCallsLogPeer::STATUS,1);
+        $callLogs =CallHistoryCallsLogPeer::doSelect($c);
+
+        foreach($callLogs as $callLog){
+
+            $this->fromdate = $callLog->getFromdate();
+
+            $this->todate = $callLog->getTodate();
+            $company =  CompanyPeer::retrieveByPK($callLog->getCompanyId());
+            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $this->fromdate . ' 00:00:00', $this->todate . ' 23:59:59');
+//     var_dump($tilentaCallHistryResult);
+//     die;
+           if($tilentaCallHistryResult){
+            foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                
+                
+                $emCalls = new EmployeeCustomerCallhistory();
+                $emCalls->setAccountId($xdr->account_id);
+                $emCalls->setBillStatus($xdr->bill_status);
+                $emCalls->setBillTime($xdr->bill_time);
+                $emCalls->setChargedAmount($xdr->charged_amount);
+                $emCalls->setChargedQuantity($xdr->charged_quantity);
+                $emCalls->setPhoneNumber($xdr->CLD);
+                $emCalls->setCli($xdr->CLI);
+                $emCalls->setConnectTime($xdr->connect_time);
+                $emCalls->setCountry($xdr->country);
+                $country = $xdr->country;
+                $cc = new Criteria();
+                $cc->add(CountryPeer::NAME,$country, Criteria::LIKE);
+                $ccount = CountryPeer::doCount($cc);
+                if($ccount > 0){
+                   $csel = CountryPeer::doSelectOne($cc); 
+                   $countryid = $csel->getId();
+                }else{
+                   $cin = new Country();
+                   $cin->setName($country);
+                   $cin->save();
+                   $countryid = $cin->getId();
+                }
+                $emCalls->setParentTable('employee');
+                $emCalls->setCountryId($countryid);
+                    $ce = new Criteria();
+                    $ce->add(TelintaAccountsPeer::ACCOUNT_TITLE,$xdr->account_id);
+                    $ce->addAnd(TelintaAccountsPeer::PARENT_TABLE,'employee');
+                    $ce->add(TelintaAccountsPeer::STATUS,3);
+                    if(TelintaAccountsPeer::doCount($ce)>0){
+                        $emp = TelintaAccountsPeer::doSelectOne($ce);
+                        $emCalls->setParentId($emp->getParentId());
+                    }
+                $emCalls->setCompanyId($callLog->getParentId());
+                $emCalls->setDescription($xdr->description);
+                $emCalls->setDisconnectCause($xdr->disconnect_cause);
+                $emCalls->setDisconnectTime($xdr->disconnect_time);
+               // $emCalls->setDurationMinutes($duration_minutes);
+                $emCalls->setICustomer($company->getICustomer());
+                $emCalls->setIXdr($xdr->i_xdr);
+                $emCalls->setStatus(1);
+                $emCalls->setSubdivision($xdr->subdivision);
+                $emCalls->setUnixConnectTime($xdr->unix_connect_time);
+                $emCalls->setUnixDisconnectTime($xdr->unix_disconnect_time);
+                $emCalls->save();
+             }
+             
+             $callLog->setStatus(3);
+             $callLog->save();
+             
+          }
+        } 
+                return sfView::NONE;
+    }
 }
