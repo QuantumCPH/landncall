@@ -603,8 +603,8 @@ public function executeRefill(sfWebRequest $request)
                                              
                                         }
                                         else
-                                        {
-                                            Telienta::recharge($customer, $OpeningBalance, "Refill");
+                                        {   $telintaObj = new Telienta();
+                                            $telintaObj->recharge($customer, $OpeningBalance, "Refill");
                                         }
                         
 					//set status
@@ -1559,10 +1559,10 @@ if(isset($_REQUEST['mobileno']) && $_REQUEST['mobileno']!=""){
                 $callbacklog->save();
 
                  //Section For Telinta Add Cusomter
-
-                Telienta::ResgiterCustomer($this->customer, $order->getExtraRefill());
-                Telienta::createAAccount($TelintaMobile, $this->customer);
-                Telienta::createCBAccount($TelintaMobile, $this->customer);
+                $telintaObj = new Telienta();
+                $telintaObj->ResgiterCustomer($this->customer, $order->getExtraRefill());
+                $telintaObj->createAAccount($TelintaMobile, $this->customer);
+                $telintaObj->createCBAccount($TelintaMobile, $this->customer);
 
                
 
@@ -2025,10 +2025,11 @@ public function executeAgentOrder(sfRequest $request){
 
                             if(TelintaAccountsPeer::doCount($cp)>0){
                                 $telintaAccount = TelintaAccountsPeer::doSelectOne($cp);
-                                Telienta::terminateAccount($telintaAccount);
+                                $telintaObj = new Telienta();
+                                $telintaObj->terminateAccount($telintaAccount);
                             }
-
-                            Telienta::createAAccount($newMobileNo, $customer);
+                            $telintaObj = new Telienta();
+                            $telintaObj->createAAccount($newMobileNo, $customer);
 
                             $cb = new Criteria;
                             $cb->add(TelintaAccountsPeer::ACCOUNT_TITLE, 'cb'. $activeNumber->getMobileNumber());
@@ -2036,9 +2037,10 @@ public function executeAgentOrder(sfRequest $request){
 
                             if(TelintaAccountsPeer::doCount($cb)>0){
                                 $telintaAccountsCB = TelintaAccountsPeer::doSelectOne($cb);
-                                Telienta::terminateAccount($telintaAccountsCB);
-                            }
-                            Telienta::createCBAccount($newMobileNo, $customer);
+                                $telintaObj = new Telienta();
+                                $telintaObj->terminateAccount($telintaAccountsCB);
+                            }                            
+                            $telintaObj->createCBAccount($newMobileNo, $customer);
 
                             $getvoipInfo = new Criteria();
                             $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
@@ -2053,9 +2055,9 @@ public function executeAgentOrder(sfRequest $request){
                                 $tc->add(TelintaAccountsPeer::STATUS,3);
                                 if(TelintaAccountsPeer::doCount($tc)>0){
                                     $telintaAccountR = TelintaAccountsPeer::doSelectOne($tc);
-                                    Telienta::terminateAccount($telintaAccountR);
+                                    $telintaObj->terminateAccount($telintaAccountR);
                                 }
-                                Telienta::createReseNumberAccount($voipnumbers, $customer, $newMobileNo);
+                                $telintaObj->createReseNumberAccount($voipnumbers, $customer, $newMobileNo);
                             }else{
                             }
 

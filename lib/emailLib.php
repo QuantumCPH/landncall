@@ -44,8 +44,18 @@ class emailLib {
         $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
         $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
 
-        //------------------Sent The Email To Customer
-        //----------------------------------------
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
+        
         //------------------Sent the Email To Agent
         if (trim($recepient_agent_email) != ''):
 
@@ -61,11 +71,11 @@ class emailLib {
         endif;
         //---------------------------------------
         //--------------Sent The Email To okhan
-        if (trim($sender_email) != ''):
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setEmailType('LandNCall AB refill via agent');
             $email3->setMessage($message_body);
@@ -73,11 +83,24 @@ class emailLib {
         endif;
         //-----------------------------------------
         //--------------Sent The Email To cdu
-        if (trim($sender_emailcdu) != ''):
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
+            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setEmailType('LandNCall AB refill via agent');
             $email4->setMessage($message_body);

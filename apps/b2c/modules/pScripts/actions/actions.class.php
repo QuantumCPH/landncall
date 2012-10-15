@@ -556,7 +556,8 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
                         $uniqueId = $this->customer->getUniqueid();
                       //This is for Recharge the Customer
                        $MinuesOpeningBalance = $OpeningBalance*3;
-                       Telienta::recharge($this->customer, $OpeningBalance, "Refill");
+                       $telintaObj = new Telienta();
+                       $telintaObj->recharge($this->customer, $OpeningBalance, "Refill");
                       //This is for Recharge the Account
                       //this condition for if follow me is Active
                         $getvoipInfo = new Criteria();
@@ -1773,14 +1774,14 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     $callbacklog->setImsi($splitedText[2]);
                     $callbacklog->setCheckStatus(3);
                     $callbacklog->save();
-
-                    if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
+                    $telintaObj = new Telienta();
+                    if ($telintaObj->ResgiterCustomer($customer, $order->getExtraRefill())) {
                         $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
                         $availableUniqueId->setStatus(1);
                         $availableUniqueId->setRegistrationTypeId(4);
                         $availableUniqueId->save();
-                        Telienta::createAAccount($number, $customer);
-                        Telienta::createCBAccount($number, $customer);
+                        $telintaObj->createAAccount($number, $customer);
+                        $telintaObj->createCBAccount($number, $customer);
                     }
 
                     $sms = SmsTextPeer::retrieveByPK(9);
@@ -1836,10 +1837,11 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $tc->add(TelintaAccountsPeer::STATUS, 3);
                 if (TelintaAccountsPeer::doCount($tc) > 0) {
                     $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
-                    Telienta::terminateAccount($telintaAccount);
+                    $telintaObj = new Telienta();
+                    $telintaObj->terminateAccount($telintaAccount);
                 }
-
-                Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
+                $telintaObj = new Telienta();
+                $telintaObj->createReseNumberAccount($voipnumbers, $customer, $number);
             }
             $smstext = SmsTextPeer::retrieveByPK(2);
             ROUTED_SMS::Send($number, $smstext->getMessageText());
@@ -1883,10 +1885,11 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $callbacklog->setuniqueId($uniqueId);
             $callbacklog->setcallingCode(46);
             $callbacklog->save();
-
-            Telienta::createCBAccount($number, $customer,11648);  //11648 is Call back product for IC call
-
-            $telintaGetBalance = Telienta::getBalance($customer);
+            
+            $telintaObj = new Telienta();
+            $telintaObj->createCBAccount($number, $customer,11648);  //11648 is Call back product for IC call
+            $telintaObj = new Telienta();
+            $telintaGetBalance = $telintaObj->getBalance($customer);
 
             $getvoipInfo = new Criteria();
             $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
@@ -1900,10 +1903,11 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $tc->add(TelintaAccountsPeer::STATUS, 3);
                 if (TelintaAccountsPeer::doCount($tc) > 0) {
                     $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
-                    Telienta::terminateAccount($telintaAccount);
+                    $telintaObj = new Telienta();
+                    $telintaObj->terminateAccount($telintaAccount);
                 }
-
-                Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
+                $telintaObj = new Telienta();
+                $telintaObj->createReseNumberAccount($voipnumbers, $customer, $number);
             }
 
             $smstext = SmsTextPeer::retrieveByPK(3);
@@ -2044,14 +2048,14 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     $callbacklog->setImsi($splitedText[2]);
                     $callbacklog->setCheckStatus(3);
                     $callbacklog->save();
-
-                    if (Telienta::ResgiterCustomer($customer, $order->getExtraRefill())) {
+                    $telintaObj = new Telienta();
+                    if ($telintaObj->ResgiterCustomer($customer, $order->getExtraRefill())) {
                         $availableUniqueId->setAssignedAt(date("Y-m-d H:i:s"));
                         $availableUniqueId->setStatus(1);
                         $availableUniqueId->setRegistrationTypeId(4);
                         $availableUniqueId->save();
-                        Telienta::createAAccount($number, $customer);
-                        Telienta::createCBAccount($number, $customer);
+                        $telintaObj->createAAccount($number, $customer);
+                        $telintaObj->createCBAccount($number, $customer);
                     }
 
                     $sms = SmsTextPeer::retrieveByPK(9);
@@ -2094,7 +2098,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     if ($command == "cb") {
                       
                         echo "Check Balance Request<br/>";
-                        $balance = Telienta::getBalance($customer);
+                        $telintaObj = new Telienta();
+                        $balance = $telintaObj->getBalance($customer);
                         $sms = SmsTextPeer::retrieveByPK(5);
                         $smsText = $sms->getMessageText();
                         $smsText = str_replace("(balance)", $balance, $smsText);
@@ -2158,8 +2163,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                             $transaction->setOrderId($order->getId());
                             $transaction->setCustomerId($order->getCustomerId());
                             $transaction->save();
-
-                            if (Telienta::recharge($customer, $scratchCard->getCardPrice(), "Refill")) {
+                            $telintaObj = new Telienta();
+                            if ($telintaObj->recharge($customer, $scratchCard->getCardPrice(), "Refill")) {
                                 $scratchCard->setStatus(1);
                                 $scratchCard->setUsedAt(date("Y-m-d H:i:s"));
                                 $scratchCard->setCustomerId($customer->getId());
@@ -2169,8 +2174,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                                 $transaction->setTransactionStatusId(3);
                                 $transaction->save();
 
-                                // Send Customer Balance SMS after succesful recharge
-                                $balance = Telienta::getBalance($customer);
+                                // Send Customer Balance SMS after succesful recharge                                
+                                $balance = $telintaObj->getBalance($customer);
                                 $sms = SmsTextPeer::retrieveByPK(5);
                                 $smsText = $sms->getMessageText();
                                 $smsText = str_replace("(balance)", $balance, $smsText);
@@ -2613,11 +2618,11 @@ return sfView::NONE;
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
                    
                  //  $customer_balance=Telienta::getBalance($customer);
-
+                     $telintaObj = new Telienta();
                      $retries = 0;
                      $maxRetries = 5;
                         do {
-                            $customer_balance = Telienta::getBalance($customer);
+                            $customer_balance = $telintaObj->getBalance($customer);
                             $retries++;
                           //  echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
                             
@@ -2844,7 +2849,8 @@ return sfView::NONE;
 
 
                         $description="Auto Refill";
-                        Telienta::recharge($this->customer, $OpeningBalance,$description);
+                        $telintaObj = new Telienta();
+                        $telintaObj->recharge($this->customer, $OpeningBalance,$description);
                         
                         }
                         //This is for Recharge the Account
@@ -2900,12 +2906,12 @@ return sfView::NONE;
         $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
         $c->addAnd(CustomerPeer::COUNTRY_ID, $countryId);
         $customers = CustomerPeer::doSelect($c);
-
+        $telintaObj = new Telienta();
         foreach ($customers as $customer) {
             $retries = 0;
             $maxRetries = 5;
             do {
-                $customer_balance = Telienta::getBalance($customer);
+                $customer_balance = $telintaObj->getBalance($customer);
                 $retries++;
                 echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
             } while (!$customer_balance && $retries <= $maxRetries);
@@ -3094,8 +3100,9 @@ $headers .= "From:" . $from;
        //echo CustomerPeer::doCount($c);
       // die;
        $customers = CustomerPeer::doSelect($c);
+       $telintaObj = new Telienta();
        foreach ($customers as $customer){
-           $iCustomer= Telienta::getCustomerInfo($customer->getUniqueid());
+           $iCustomer= $telintaObj->getCustomerInfo($customer->getUniqueid());
            $customer->setICustomer($iCustomer);
            $customer->save();
        }
@@ -3107,8 +3114,9 @@ $headers .= "From:" . $from;
        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
        $c->addAnd(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
        $customers = CustomerPeer::doSelect($c);
+       $telintaObj = new Telienta();
        foreach ($customers as $customer){
-           $iAccountList= Telienta::getCustomerAccountList($customer->getICustomer());
+           $iAccountList= $telintaObj->getCustomerAccountList($customer->getICustomer());
 
            foreach($iAccountList->account_list as $iAccount){
               $telintaAccount = new TelintaAccounts();
@@ -3462,8 +3470,9 @@ $headers .= "From:" . $from;
         $c->add(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
         $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
         $customers = CustomerPeer::doSelect($c);
+        $telintaObj = new Telienta();
         foreach($customers as $customer){
-            Telienta::getBalance($customer);
+            $telintaObj->getBalance($customer);
         }
     }
 
@@ -3627,7 +3636,8 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 //echo "<br/>";
                 //This is for Recharge the Customer
                 $MinuesOpeningBalance = $OpeningBalance * 3;
-                Telienta::recharge($this->customer, $OpeningBalance, "Refill");
+                $telintaObj = new Telienta();
+                $telintaObj->recharge($this->customer, $OpeningBalance, "Refill");
                 $email2 = new DibsCall();
                 $email2->setCallurl('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $unidc . '&amount=' . $OpeningBalance . '&type=customer');
                 $email2->save();
@@ -3921,10 +3931,10 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 $customerPassword = $this->customer->getPlainText();
 
                 //Section For Telinta Add Cusomter
-
-                Telienta::ResgiterCustomer($this->customer, $OpeningBalance);
-                Telienta::createAAccount($TelintaMobile, $this->customer);
-                Telienta::createCBAccount($TelintaMobile, $this->customer);
+                $telintaObj = new Telienta();
+                $telintaObj->ResgiterCustomer($this->customer, $OpeningBalance);
+                $telintaObj->createAAccount($TelintaMobile, $this->customer);
+                $telintaObj->createCBAccount($TelintaMobile, $this->customer);
 
 
 
@@ -3996,7 +4006,8 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
-                    Telienta::recharge($this->customers, $OpeningBalance,"Tipsa en van " . $invite->getInviteNumber());
+                    $telintaObj = new Telienta();
+                    $telintaObj->recharge($this->customers, $OpeningBalance,"Tipsa en van " . $invite->getInviteNumber());
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
                     $getvoipInfo = new Criteria();
@@ -4298,7 +4309,8 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
 
  $customerID=$this->customer->getId();
                 $OpeningBalance=0;
-                Telienta::ResgiterCustomer($this->customer, $OpeningBalance,null,true);
+                $telintaObj = new Telienta();
+                $telintaObj->ResgiterCustomer($this->customer, $OpeningBalance,null,true);
                 $Tes=ForumTel::registerForumtel($customerID);
                 ForumTel::getUsMobileNumber($customerID);
      //////////////////////////rese number registration ///////////////////////////////
@@ -4360,7 +4372,8 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                     }
                     //------------------------------
                     $TelintaMobile=$selectusnumber->getUsMobileNumber();
-                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
+                    $telintaObj = new Telienta();
+                    $telintaObj->createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
 
 
                  //   $OpeningBalance = '40';
@@ -4605,10 +4618,11 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                 $selectusnumber = UsNumberPeer::doSelectOne($uc);
 
                    $TelintaMobile=$selectusnumber->getUsMobileNumber();
-                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
+                   $telintaObj = new Telienta();
+                    $telintaObj->createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
                 }else{
-                 
-          Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
+          $telintaObj = new Telienta();       
+          $telintaObj->createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
                 }
       }
       
