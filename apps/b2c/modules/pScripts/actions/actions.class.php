@@ -1,11 +1,12 @@
 <?php
 set_time_limit(10000000);
-require_once(sfConfig::get('sf_lib_dir').'/changeLanguageCulture.php');
-require_once(sfConfig::get('sf_lib_dir').'/emailLib.php');
-require_once(sfConfig::get('sf_lib_dir').'/ForumTel.php');
-require_once(sfConfig::get('sf_lib_dir').'/commissionLib.php');
-require_once(sfConfig::get('sf_lib_dir').'/curl_http_client.php');
-require_once(sfConfig::get('sf_lib_dir').'/smsCharacterReplacement.php');
+require_once(sfConfig::get('sf_lib_dir') . '/changeLanguageCulture.php');
+require_once(sfConfig::get('sf_lib_dir') . '/emailLib.php');
+require_once(sfConfig::get('sf_lib_dir') . '/ForumTel.php');
+require_once(sfConfig::get('sf_lib_dir') . '/commissionLib.php');
+require_once(sfConfig::get('sf_lib_dir') . '/curl_http_client.php');
+require_once(sfConfig::get('sf_lib_dir') . '/smsCharacterReplacement.php');
+
 /**
  * scripts actions.
  *
@@ -14,234 +15,211 @@ require_once(sfConfig::get('sf_lib_dir').'/smsCharacterReplacement.php');
  * @author     Your name here
  * @version    SVN: $Id: actions.class.php,v 1.5 2010-09-19 22:20:12 orehman Exp $
  */
-class pScriptsActions extends sfActions
-{
+class pScriptsActions extends sfActions {
 
-    
     /**
-  * Executes index action
-  *
-  * @param sfRequest $request A request object
-  */
-  public function executeClearTestData(sfWebRequest $request)
-  {
+     * Executes index action
+     *
+     * @param sfRequest $request A request object
+     */
+    public function executeClearTestData(sfWebRequest $request) {
 
 
-      //clear fonet balance of test fonet accounts
-      foreach (FonetCustomerPeer::doSelect(new Criteria()) as $fonet_customer) {
-            foreach ($fonet_customer->getCustomers() as $customer)
-            {
-              if (Fonet::unregister($customer, false))
-                      echo sprintf("%s is unregistered<br />", $customer->getMobileNumber());
-              if ($current_balance = Fonet::getBalance($customer, false))
-                      echo sprintf("Current balance of custoemr is %s<br />", $current_balance);
+        //clear fonet balance of test fonet accounts
+        foreach (FonetCustomerPeer::doSelect(new Criteria()) as $fonet_customer) {
+            foreach ($fonet_customer->getCustomers() as $customer) {
+                if (Fonet::unregister($customer, false))
+                    echo sprintf("%s is unregistered<br />", $customer->getMobileNumber());
+                if ($current_balance = Fonet::getBalance($customer, false))
+                    echo sprintf("Current balance of custoemr is %s<br />", $current_balance);
 
-              if (Fonet::recharge($customer, -$current_balance, false))
-                      echo sprintf("current balance is made 0<br />");
+                if (Fonet::recharge($customer, -$current_balance, false))
+                    echo sprintf("current balance is made 0<br />");
             }
-      }
-      $con = Propel::getConnection();
+        }
+        $con = Propel::getConnection();
 
-      $con->exec('DELETE FROM transaction');
-      $con->exec('DELETE FROM customer_order');
-      $con->exec('DELETE FROM customer_product');
-      $con->exec('DELETE FROM customer');
-      $con->exec('TRUNCATE zerocall_cdr');
-      $con->exec('TRUNCATE cloud9_data');
+        $con->exec('DELETE FROM transaction');
+        $con->exec('DELETE FROM customer_order');
+        $con->exec('DELETE FROM customer_product');
+        $con->exec('DELETE FROM customer');
+        $con->exec('TRUNCATE zerocall_cdr');
+        $con->exec('TRUNCATE cloud9_data');
 
-      $con->exec("UPDATE fonet_customer SET activated_on = NULL");
-
-
-      echo "all data is flushed... customers, trnsactions, orders deleted. fonet customer id disconnected... their balances made to 0 on fonet";
-
-    return sfView::NONE;
-  }
-
-  public function executeBannerTest(){
-
-  }
+        $con->exec("UPDATE fonet_customer SET activated_on = NULL");
 
 
- public function executeAppPasswordRecovery(sfWebrequest $request){
-            //$this->forward404Unless($request->isMethod('post'));
-            $mobile_number = "";
-            $mobile_number = $request->getParameter('mobile');
+        echo "all data is flushed... customers, trnsactions, orders deleted. fonet customer id disconnected... their balances made to 0 on fonet";
 
-            if(strlen($mobile_number)==13){
-                    $arr  = explode("001", $mobile_number);
+        return sfView::NONE;
+    }
 
-                foreach($arr as $ar){
+    public function executeBannerTest() {
+        
+    }
 
-                    if ($ar!="")
+    public function executeAppPasswordRecovery(sfWebrequest $request) {
+        //$this->forward404Unless($request->isMethod('post'));
+        $mobile_number = "";
+        $mobile_number = $request->getParameter('mobile');
+
+        if (strlen($mobile_number) == 13) {
+            $arr = explode("001", $mobile_number);
+
+            foreach ($arr as $ar) {
+
+                if ($ar != "")
+                    $mobile_number = $ar;
+            }
+        }else {
+
+            if (strlen($mobile_number) == 10) {
+
+                $arr = explode("45", $mobile_number);
+
+                foreach ($arr as $ar) {
+
+                    if ($ar != "")
                         $mobile_number = $ar;
                 }
-                }else{
-
-                if (strlen($mobile_number) == 10 ){
-
-                    $arr  = explode("45", $mobile_number);
-
-                foreach($arr as $ar){
-
-                    if ($ar!="")
-                        $mobile_number = $ar;
-                }
-
-                }
-
-                }
-
-  	$c = new Criteria();
-  	$c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
-  	$c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-  	//echo $c->toString(); exit;
-  	$customer = CustomerPeer::doSelectOne($c);
-
-  	if ($customer)
-  	{
-  		//change the password to some thing uniuque and complex
-  		$new_password = substr(base64_encode($customer->getPassword()),0,8);
-  		$customer->setPassword($new_password);
-                $customer->setPlainText($new_password);
-                $customer->save();
-
-  		$message_body = $this->getContext()->getI18N()->__('Hi'). ' ' . $customer->getFirstName().'!';
-  		$message_body .= '<br /><br />';
-  		$message_body .= $this->getContext()->getI18N()->__('Dit password er blevet ?ndret. Benyt venligst f?lgende oplysninger til at logge p? din Zerocall konto.');
-  		$message_body .= '<br /><br />';
-  		$message_body .= sprintf('Mobil nummer: %s', $customer->getMobileNumber());
-  		$message_body .= '<br />';
-  		$message_body .= $this->getContext()->getI18N()->__('Adgangskode'). ': '.$new_password;
-
-                //Send Email to User --- when Forget Password Request Come --- 01/15/11
-                emailLib::sendForgetPasswordEmail($customer,$message_body);
-
-                $this->getUser()->setFlash('send_password_message', 'Your account details have been sent to your email address.');
-
-
-
-                echo 'success';
-        }
-         else{
-             echo 'error, mobile number does not exists';
-             $this->getUser()->setFlash('send_password_error_message', 'No customer is registered with this email.');
-         }
-
-         return sfView::NONE;
+            }
         }
 
+        $c = new Criteria();
+        $c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        //echo $c->toString(); exit;
+        $customer = CustomerPeer::doSelectOne($c);
+
+        if ($customer) {
+            //change the password to some thing uniuque and complex
+            $new_password = substr(base64_encode($customer->getPassword()), 0, 8);
+            $customer->setPassword($new_password);
+            $customer->setPlainText($new_password);
+            $customer->save();
+
+            $message_body = $this->getContext()->getI18N()->__('Hi') . ' ' . $customer->getFirstName() . '!';
+            $message_body .= '<br /><br />';
+            $message_body .= $this->getContext()->getI18N()->__('Dit password er blevet ?ndret. Benyt venligst f?lgende oplysninger til at logge p? din Zerocall konto.');
+            $message_body .= '<br /><br />';
+            $message_body .= sprintf('Mobil nummer: %s', $customer->getMobileNumber());
+            $message_body .= '<br />';
+            $message_body .= $this->getContext()->getI18N()->__('Adgangskode') . ': ' . $new_password;
+
+            //Send Email to User --- when Forget Password Request Come --- 01/15/11
+            emailLib::sendForgetPasswordEmail($customer, $message_body);
+
+            $this->getUser()->setFlash('send_password_message', 'Your account details have been sent to your email address.');
 
 
 
+            echo 'success';
+        } else {
+            echo 'error, mobile number does not exists';
+            $this->getUser()->setFlash('send_password_error_message', 'No customer is registered with this email.');
+        }
 
-
+        return sfView::NONE;
+    }
 
 //
-    public function executeMobAccepted(sfWebRequest $request)
-	{
-    $order_id = $request->getParameter("orderid");
+    public function executeMobAccepted(sfWebRequest $request) {
+        $order_id = $request->getParameter("orderid");
 
-	  	$this->forward404Unless($order_id || $order_amount);
+        $this->forward404Unless($order_id || $order_amount);
 
-		$order = CustomerOrderPeer::retrieveByPK($order_id);
+        $order = CustomerOrderPeer::retrieveByPK($order_id);
 
-		$subscription_id = $request->getParameter("subscriptionid");
-	  	$order_amount = ((double)$request->getParameter('amount'))/100;
+        $subscription_id = $request->getParameter("subscriptionid");
+        $order_amount = ((double) $request->getParameter('amount')) / 100;
 
-	  	$this->forward404Unless($order);
+        $this->forward404Unless($order);
 
-	  	$c = new Criteria;
-	  	$c->add(TransactionPeer::ORDER_ID, $order_id);
+        $c = new Criteria;
+        $c->add(TransactionPeer::ORDER_ID, $order_id);
 
-	  	$transaction = TransactionPeer::doSelectOne($c);
+        $transaction = TransactionPeer::doSelectOne($c);
 
-	  	//echo var_dump($transaction);
+        //echo var_dump($transaction);
 
-	  	$order->setOrderStatusId(sfConfig::get('app_status_completed', 3)); //completed
-	  	//$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 3)); //completed
-	  	$transaction->setTransactionStatusId(sfConfig::get('app_status_completed', 3)); //completed
-
+        $order->setOrderStatusId(sfConfig::get('app_status_completed', 3)); //completed
+        //$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 3)); //completed
+        $transaction->setTransactionStatusId(sfConfig::get('app_status_completed', 3)); //completed
 
 
 
-		if($transaction->getAmount() > $order_amount){
-	  		//error
-	  		$order->setOrderStatusId(sfConfig::get('app_status_error', 5)); //error in amount
-	  		$transaction->setTransactionStatusId(sfConfig::get('app_status_error', 5)); //error in amount
-	  		//$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 5)); //error in amount
 
-
-	  	} else if ($transaction->getAmount() < $order_amount){
-	  		//$extra_refill_amount = $order_amount;
-	  		$order->setExtraRefill($order_amount);
-	  		$transaction->setAmount($order_amount);
-	  	}
+        if ($transaction->getAmount() > $order_amount) {
+            //error
+            $order->setOrderStatusId(sfConfig::get('app_status_error', 5)); //error in amount
+            $transaction->setTransactionStatusId(sfConfig::get('app_status_error', 5)); //error in amount
+            //$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 5)); //error in amount
+        } else if ($transaction->getAmount() < $order_amount) {
+            //$extra_refill_amount = $order_amount;
+            $order->setExtraRefill($order_amount);
+            $transaction->setAmount($order_amount);
+        }
 
 
 
 
 
-		 //set active agent_package in case customer was registerred by an affiliate
-		  if ($order->getCustomer()->getAgentCompany())
-		  {
-		  	$order->setAgentCommissionPackageId($order->getCustomer()->getAgentCompany()->getAgentCommissionPackageId());
-		  }
+        //set active agent_package in case customer was registerred by an affiliate
+        if ($order->getCustomer()->getAgentCompany()) {
+            $order->setAgentCommissionPackageId($order->getCustomer()->getAgentCompany()->getAgentCommissionPackageId());
+        }
 
 
-		  //set subscription id in case 'use current c.c for future auto refills' is set to 1
-		  if ($request->getParameter('USER_ATTR_20')=='1')
-			$order->getCustomer()->setSubscriptionId($subscription_id);
+        //set subscription id in case 'use current c.c for future auto refills' is set to 1
+        if ($request->getParameter('USER_ATTR_20') == '1')
+            $order->getCustomer()->setSubscriptionId($subscription_id);
 
-		//set subscription id also when there is was no subscription for old customers
-		if (!$order->getCustomer()->getSubscriptionId())
-			$order->getCustomer()->setSubscriptionId($subscription_id);
+        //set subscription id also when there is was no subscription for old customers
+        if (!$order->getCustomer()->getSubscriptionId())
+            $order->getCustomer()->setSubscriptionId($subscription_id);
 
-	  	//set auto_refill amount
-	  	if ($is_auto_refill_activated = $request->getParameter('USER_ATTR_1')=='1')
-	  	{
-	  		//set subscription id
-			$order->getCustomer()->setSubscriptionId($subscription_id);
+        //set auto_refill amount
+        if ($is_auto_refill_activated = $request->getParameter('USER_ATTR_1') == '1') {
+            //set subscription id
+            $order->getCustomer()->setSubscriptionId($subscription_id);
 
-			//auto_refill_amount
-	  		$auto_refill_amount_choices = array_keys(ProductPeer::getRefillHashChoices());
+            //auto_refill_amount
+            $auto_refill_amount_choices = array_keys(ProductPeer::getRefillHashChoices());
 
-	  		$auto_refill_amount = in_array($request->getParameter('USER_ATTR_2'), $auto_refill_amount_choices)?$request->getParameter('USER_ATTR_2'):$auto_refill_amount_choices[0];
-	  		$order->getCustomer()->setAutoRefillAmount($auto_refill_amount);
+            $auto_refill_amount = in_array($request->getParameter('USER_ATTR_2'), $auto_refill_amount_choices) ? $request->getParameter('USER_ATTR_2') : $auto_refill_amount_choices[0];
+            $order->getCustomer()->setAutoRefillAmount($auto_refill_amount);
 
 
-	  		//auto_refill_lower_limit
-	  		$auto_refill_lower_limit_choices = array_keys(ProductPeer::getAutoRefillLowerLimitHashChoices());
+            //auto_refill_lower_limit
+            $auto_refill_lower_limit_choices = array_keys(ProductPeer::getAutoRefillLowerLimitHashChoices());
 
-	  		$auto_refill_min_balance = in_array($request->getParameter('USER_ATTR_3'), $auto_refill_lower_limit_choices)?$request->getParameter('USER_ATTR_3'):$auto_refill_lower_limit_choices[0];
-	  		$order->getCustomer()->setAutoRefillMinBalance($auto_refill_min_balance);
-	  	}
-                else {
-                    //disable the auto-refill feature
-                    $order->getCustomer()->setAutoRefillAmount(0);
-
-                }
+            $auto_refill_min_balance = in_array($request->getParameter('USER_ATTR_3'), $auto_refill_lower_limit_choices) ? $request->getParameter('USER_ATTR_3') : $auto_refill_lower_limit_choices[0];
+            $order->getCustomer()->setAutoRefillMinBalance($auto_refill_min_balance);
+        } else {
+            //disable the auto-refill feature
+            $order->getCustomer()->setAutoRefillAmount(0);
+        }
 
 
 
-	  	$order->save();
-	  	$transaction->save();
+        $order->save();
+        $transaction->save();
 
 
 
-	$this->customer = $order->getCustomer();
-                $c = new Criteria;
-	  	$c->add(CustomerPeer::ID, $order->getCustomerId());
-	  	$customer = CustomerPeer::doSelectOne($c);
-                $agentid=$customer->getReferrerId();
-                $productid=$order->getProductId();
-                $transactionid=$transaction->getId();
-                if(isset($agentid) && $agentid!=""){
-                commissionLib::refilCustomer($agentid,$productid,$transactionid);
+        $this->customer = $order->getCustomer();
+        $c = new Criteria;
+        $c->add(CustomerPeer::ID, $order->getCustomerId());
+        $customer = CustomerPeer::doSelectOne($c);
+        $agentid = $customer->getReferrerId();
+        $productid = $order->getProductId();
+        $transactionid = $transaction->getId();
+        if (isset($agentid) && $agentid != "") {
+            commissionLib::refilCustomer($agentid, $productid, $transactionid);
+        }
 
-                }
-
-	//TODO ask if recharge to be done is same as the transaction amount
-	Fonet::recharge($this->customer, $transaction->getAmount());
+        //TODO ask if recharge to be done is same as the transaction amount
+        Fonet::recharge($this->customer, $transaction->getAmount());
 
 
 
@@ -251,244 +229,232 @@ class pScriptsActions extends sfActions
         c9Wrapper::equateBalance($this->customer);
 
 
-	//set vat
-	$vat = 0;
+        //set vat
+        $vat = 0;
         $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-	$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-	$sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
+        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
 
-	$recepient_email = trim($this->customer->getEmail());
-	$recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
+        $recepient_email = trim($this->customer->getEmail());
+        $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
         $referrer_id = trim($this->customer->getReferrerId());
 
-        if($referrer_id):
-        $c = new Criteria();
-        $c->add(AgentCompanyPeer::ID, $referrer_id);
+        if ($referrer_id):
+            $c = new Criteria();
+            $c->add(AgentCompanyPeer::ID, $referrer_id);
 
-        $recepient_agent_email  = AgentCompanyPeer::doSelectOne($c)->getEmail();
-        $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
+            $recepient_agent_email = AgentCompanyPeer::doSelectOne($c)->getEmail();
+            $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
         endif;
 
-	//send email
-  	$message_body = $this->getPartial('payments/order_receipt', array(
-  						'customer'=>$this->customer,
-  						'order'=>$order,
-  						'transaction'=>$transaction,
-  						'vat'=>$vat,
-  						'wrap'=>false
-  					));
+        //send email
+        $message_body = $this->getPartial('payments/order_receipt', array(
+            'customer' => $this->customer,
+            'order' => $order,
+            'transaction' => $transaction,
+            'vat' => $vat,
+            'wrap' => false
+                ));
 
 
 
-	/*
-  	require_once(sfConfig::get('sf_lib_dir').'/swift/lib/swift_init.php');
+        /*
+          require_once(sfConfig::get('sf_lib_dir').'/swift/lib/swift_init.php');
 
-	$connection = Swift_SmtpTransport::newInstance()
-				->setHost(sfConfig::get('app_email_smtp_host'))
-				->setPort(sfConfig::get('app_email_smtp_port'))
-				->setUsername(sfConfig::get('app_email_smtp_username'))
-				->setPassword(sfConfig::get('app_email_smtp_password'));
+          $connection = Swift_SmtpTransport::newInstance()
+          ->setHost(sfConfig::get('app_email_smtp_host'))
+          ->setPort(sfConfig::get('app_email_smtp_port'))
+          ->setUsername(sfConfig::get('app_email_smtp_username'))
+          ->setPassword(sfConfig::get('app_email_smtp_password'));
 
-	$mailer = new Swift_Mailer($connection);
+          $mailer = new Swift_Mailer($connection);
 
-	$message_1 = Swift_Message::newInstance($subject)
-	         ->setFrom(array($sender_email => $sender_name))
-	         ->setTo(array($recepient_email => $recepient_name))
-	         ->setBody($message_body, 'text/html')
-	         ;
+          $message_1 = Swift_Message::newInstance($subject)
+          ->setFrom(array($sender_email => $sender_name))
+          ->setTo(array($recepient_email => $recepient_name))
+          ->setBody($message_body, 'text/html')
+          ;
 
-	$message_2 = Swift_Message::newInstance($subject)
-	         ->setFrom(array($sender_email => $sender_name))
-	         ->setTo(array($sender_email => $sender_name))
-	         ->setBody($message_body, 'text/html')
-	         ;
+          $message_2 = Swift_Message::newInstance($subject)
+          ->setFrom(array($sender_email => $sender_name))
+          ->setTo(array($sender_email => $sender_name))
+          ->setBody($message_body, 'text/html')
+          ;
 
-            if (!($mailer->send($message_1) && $mailer->send($message_2)))
-                $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__(
-                            "Email confirmation is not sent" ));
-            */
+          if (!($mailer->send($message_1) && $mailer->send($message_2)))
+          $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__(
+          "Email confirmation is not sent" ));
+         */
 
-            //This Seciton For Make The Log History When Complete registration complete - Agent
-            //echo sfConfig::get('sf_data_dir');
-            $invite_data_file = sfConfig::get('sf_data_dir').'/invite.txt';
-            $invite2 = "Customer Refill Account \n";
-            $invite2 .= "Recepient Email: ".$recepient_email.' \r\n';
-            $invite2 .= " Agent Email: ".$recepient_agent_email.' \r\n';
-            $invite2 .= " Sender Email: ".$sender_email.' \r\n';
+        //This Seciton For Make The Log History When Complete registration complete - Agent
+        //echo sfConfig::get('sf_data_dir');
+        $invite_data_file = sfConfig::get('sf_data_dir') . '/invite.txt';
+        $invite2 = "Customer Refill Account \n";
+        $invite2 .= "Recepient Email: " . $recepient_email . ' \r\n';
+        $invite2 .= " Agent Email: " . $recepient_agent_email . ' \r\n';
+        $invite2 .= " Sender Email: " . $sender_email . ' \r\n';
 
-            file_put_contents($invite_data_file, $invite2, FILE_APPEND);
+        file_put_contents($invite_data_file, $invite2, FILE_APPEND);
 
 
-            //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-            emailLib::sendCustomerRefillEmail($this->customer,$order,$transaction);
-    $this->setLayout(false);
-	}
+        //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
+        emailLib::sendCustomerRefillEmail($this->customer, $order, $transaction);
+        $this->setLayout(false);
+    }
 
-     
-        public function executeAppRefill(sfWebRequest $request)
-	{
+    public function executeAppRefill(sfWebRequest $request) {
 
-    //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 01/24/11
-            changeLanguageCulture::languageCulture($request,$this);
-            //-----------------------
-
+        //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 01/24/11
+        changeLanguageCulture::languageCulture($request, $this);
+        //-----------------------
         //$this->redirectUnless($this->getUser()->isAuthenticated(),'@b2c_homepage');
-
-		//$customer_id = $this->getUser()->getAttribute('customer_id',null, 'usersession');
-
-		//TODO: authentication is missing
+        //$customer_id = $this->getUser()->getAttribute('customer_id',null, 'usersession');
+        //TODO: authentication is missing
         $mobile_number = $request->getParameter('mobile_number');
 
 
         $mobile = "";
-        $country_code="";
-        $this->customer=NULL;
+        $country_code = "";
+        $this->customer = NULL;
 
 
-         if(strlen($mobile_number)==13){
+        if (strlen($mobile_number) == 13) {
 //                    echo 'number is 13 digit';
 //                    echo '<br/>';
-                    $arr  = explode("001", $mobile_number);
-                    foreach($arr as $ar){
+            $arr = explode("001", $mobile_number);
+            foreach ($arr as $ar) {
 //                    echo $ar;
 //                    echo '<br/>';
-                    if ($ar!="")
-                        $mobile_number = $ar;
-                    }
-                }else if (strlen($mobile_number) == 10 ){
+                if ($ar != "")
+                    $mobile_number = $ar;
+            }
+        }else if (strlen($mobile_number) == 10) {
 //                     echo 'number is 10 digit';
 //                     echo '<br/>';
 
-                    $arr  = explode("45", $mobile_number);
+            $arr = explode("45", $mobile_number);
 
-                foreach($arr as $ar){
+            foreach ($arr as $ar) {
 //                    echo $ar;
 //                    echo '<br/>';
-                    if ($ar!="")
-                        $mobile_number = $ar;
-                }
+                if ($ar != "")
+                    $mobile_number = $ar;
+            }
+        }
 
-                }
+        $c = new Criteria();
+        $c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $customer = CustomerPeer::doSelectOne($c);
 
-         $c = new Criteria();
-	 $c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
-	 $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-	 $customer = CustomerPeer::doSelectOne($c);
-
-        if ($customer!=NULL){
+        if ($customer != NULL) {
 //                echo 'customer found';
-		$customer_id = $customer->getId();
+            $customer_id = $customer->getId();
 //                echo $customer_id ;
 
-		$this->customer = $customer;
+            $this->customer = $customer;
 
-		//$this->redirectUnless($this->customer, "@homepage");
+            //$this->redirectUnless($this->customer, "@homepage");
 
-		$this->form = new ManualRefillForm($customer_id);
+            $this->form = new ManualRefillForm($customer_id);
 
-                //echo $this->customer->getId();
-		//new order
-		$this->order = new CustomerOrder();
+            //echo $this->customer->getId();
+            //new order
+            $this->order = new CustomerOrder();
 
-		$customer_products = $this->customer->getProducts();
+            $customer_products = $this->customer->getProducts();
 
-		$this->order->setProduct($customer_products[0]);
-		$this->order->setCustomerId($this->customer->getId());
-		$this->order->setQuantity(0);
-		$refills_options = ProductPeer::getRefillChoices();
-		$this->order->setExtraRefill($refills_options[0]);
-		$this->order->save();
+            $this->order->setProduct($customer_products[0]);
+            $this->order->setCustomerId($this->customer->getId());
+            $this->order->setQuantity(0);
+            $refills_options = ProductPeer::getRefillChoices();
+            $this->order->setExtraRefill($refills_options[0]);
+            $this->order->save();
 
-		//new transaction
-                $transaction = new Transaction();
+            //new transaction
+            $transaction = new Transaction();
 
-                $transaction->setAmount($this->order->getExtraRefill());
-                $transaction->setDescription($this->getContext()->getI18N()->__('LandNCall AB Refill'));
-                $transaction->setOrderId($this->order->getId());
-                $transaction->setCustomerId($this->order->getCustomerId());
+            $transaction->setAmount($this->order->getExtraRefill());
+            $transaction->setDescription($this->getContext()->getI18N()->__('LandNCall AB Refill'));
+            $transaction->setOrderId($this->order->getId());
+            $transaction->setCustomerId($this->order->getCustomerId());
 
-		//save
-		$transaction->save();
-             $this->setLayout(false);
-
-	}else{
+            //save
+            $transaction->save();
+            $this->setLayout(false);
+        } else {
             echo 'error, customer not found';
-             return sfView::NONE;
+            return sfView::NONE;
         }
+    }
+
+    public function executeSetAllFonetCustomersBalance0() {
+        foreach (FonetCustomerPeer::doSelect(new Criteria()) as $fonet_customer) {
+            $customer = new Customer();
+            $customer->setFonetCustomerId($fonet_customer->getFonetCustomerId());
+
+            if ($current_balance = Fonet::getBalance($customer, false))
+                echo sprintf("Current balance of custoemr is %s<br />", $current_balance);
+
+            if (Fonet::recharge($customer, -$current_balance, false))
+                echo sprintf("Now new balance is %s<br />", Fonet::getBalance($customer, false));
         }
 
+        return sfView::NONE;
+    }
 
+    public function executeUnregisterFonetCustomer(sfWebRequest $request) {
+        $customer = new Customer();
+        $customer->setMobileNumber($request->getParameter('mobile_number'));
+        $customer->setFonetCustomerId($request->getParameter('fonet_id'));
 
+        echo sprintf("Unregistering customer with mobile number %s, and fonet ID %s <br />", $request->getParameter('mobile_number'), $request->getParameter('fonet_id'));
 
-  public function executeSetAllFonetCustomersBalance0() {
-      foreach (FonetCustomerPeer::doSelect(new Criteria()) as $fonet_customer) {
-                $customer = new Customer();
-                $customer->setFonetCustomerId($fonet_customer->getFonetCustomerId());
+        if (Fonet::unregister($customer, false))
+            echo sprintf("%s is unregistered<br />", $customer->getMobileNumber());
+        if ($current_balance = Fonet::getBalance($customer, false))
+            echo sprintf("Current balance of custoemr is %s<br />", $current_balance);
 
-              if ($current_balance = Fonet::getBalance($customer, false))
-                      echo sprintf("Current balance of custoemr is %s<br />", $current_balance);
+        if (Fonet::recharge($customer, -$current_balance, false))
+            echo sprintf("current balance is made 0<br />");
 
-              if (Fonet::recharge($customer, -$current_balance, false))
-                      echo sprintf("Now new balance is %s<br />", Fonet::getBalance($customer, false));
-      }
+        return sfView::NONE;
+    }
 
-      return sfView::NONE;
-  }
-
-public function executeUnregisterFonetCustomer(sfWebRequest $request) {
-      $customer = new Customer();
-      $customer->setMobileNumber($request->getParameter('mobile_number'));
-      $customer->setFonetCustomerId($request->getParameter('fonet_id'));
-
-      echo sprintf("Unregistering customer with mobile number %s, and fonet ID %s <br />", $request->getParameter('mobile_number'), $request->getParameter('fonet_id'));
-
-      if (Fonet::unregister($customer, false))
-              echo sprintf("%s is unregistered<br />", $customer->getMobileNumber());
-      if ($current_balance = Fonet::getBalance($customer, false))
-              echo sprintf("Current balance of custoemr is %s<br />", $current_balance);
-
-      if (Fonet::recharge($customer, -$current_balance, false))
-              echo sprintf("current balance is made 0<br />");
-
-      return sfView::NONE;
-  }
-
-
-  public function executeAutoRefill(sfWebRequest $request)
-  {
+    public function executeAutoRefill(sfWebRequest $request) {
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
-        changeLanguageCulture::languageCulture($request,$this);
-            
-  	//get customers to refill
-  	$c = new Criteria();
+        changeLanguageCulture::languageCulture($request, $this);
 
-  	$c->add(CustomerPeer::CUSTOMER_STATUS_ID, sfConfig::get('app_status_completed'));
-  	$c->add(CustomerPeer::AUTO_REFILL_AMOUNT, 0, Criteria::NOT_EQUAL);
-  	$c->add(CustomerPeer::SUBSCRIPTION_ID, null, Criteria::ISNOTNULL);
+        //get customers to refill
+        $c = new Criteria();
 
-  	//$c1 = $c->getNewCriterion(CustomerPeer::LAST_AUTO_REFILL, 'TIMESTAMPDIFF(MINUTE, LAST_AUTO_REFILL, NOW()) > 1' , Criteria::CUSTOM);
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, sfConfig::get('app_status_completed'));
+        $c->add(CustomerPeer::AUTO_REFILL_AMOUNT, 0, Criteria::NOT_EQUAL);
+        $c->add(CustomerPeer::SUBSCRIPTION_ID, null, Criteria::ISNOTNULL);
+
+        //$c1 = $c->getNewCriterion(CustomerPeer::LAST_AUTO_REFILL, 'TIMESTAMPDIFF(MINUTE, LAST_AUTO_REFILL, NOW()) > 1' , Criteria::CUSTOM);
         $c1 = $c->getNewCriterion(CustomerPeer::ID, null, Criteria::ISNOTNULL); //just accomodate missing disabled $c1
-  	$c2 = $c->getNewCriterion(CustomerPeer::LAST_AUTO_REFILL, null, Criteria::ISNULL);
+        $c2 = $c->getNewCriterion(CustomerPeer::LAST_AUTO_REFILL, null, Criteria::ISNULL);
 
-  	$c1->addOr($c2);
+        $c1->addOr($c2);
 
-  	$c->add($c1);
+        $c->add($c1);
 
-  	$epay_con = new EPay();
+        $epay_con = new EPay();
 
-  	$customer = new Customer();
+        $customer = new Customer();
 
         var_dump(CustomerPeer::doCount($c));
 
 
         try {
-            foreach (CustomerPeer::doSelect($c) as $customer)   	{
+            foreach (CustomerPeer::doSelect($c) as $customer) {
 
                 $customer_balance = Fonet::getBalance($customer);
 
                 var_dump($customer_balance);
                 //if customer balance is less than 10
-                if ($customer_balance != null && $customer_balance <= $customer->getAutoRefillMinBalance())   		{
+                if ($customer_balance != null && $customer_balance <= $customer->getAutoRefillMinBalance()) {
 
 
 
@@ -526,12 +492,11 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
 
 
 
-                    if ($epay_con->authorize(sfConfig::get('app_epay_merchant_number'), $customer->getSubscriptionId(), $customer_order->getId(), $customer->getAutoRefillAmount(), 208, 1)) 			{
+                    if ($epay_con->authorize(sfConfig::get('app_epay_merchant_number'), $customer->getSubscriptionId(), $customer_order->getId(), $customer->getAutoRefillAmount(), 208, 1)) {
                         $customer->setLastAutoRefill(date('Y-m-d H:i:s'));
                         $customer_order->setOrderStatusId(sfConfig::get('app_status_completed'));
                         $transaction->setTransactionStatusId(sfConfig::get('app_status_completed'));
-                    }
-                    else {
+                    } else {
                         die('unauthorized epay');
                     }
 
@@ -539,74 +504,72 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
                     $customer_order->save();
 
                     if ($customer_order->getOrderStatusId() == sfConfig::get('app_status_completed') &&
-                            Fonet::recharge($customer, $customer->getAutoRefillAmount()))   			{
+                            Fonet::recharge($customer, $customer->getAutoRefillAmount())) {
 
                         $this->customer = $customer;
-                        $TelintaMobile = '46'.$this->customer->getMobileNumber();
+                        $TelintaMobile = '46' . $this->customer->getMobileNumber();
                         $emailId = $this->customer->getEmail();
                         $OpeningBalance = $customer->getAutoRefillAmount();
                         $customerPassword = $this->customer->getPlainText();
-                        $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0,1);     // bcdef
-                        if($getFirstnumberofMobile==0){
+                        $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
+                        if ($getFirstnumberofMobile == 0) {
                             $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-                            $TelintaMobile =  '46'.$TelintaMobile ;
-                        }else{
-                            $TelintaMobile = '46'.$this->customer->getMobileNumber();
+                            $TelintaMobile = '46' . $TelintaMobile;
+                        } else {
+                            $TelintaMobile = '46' . $this->customer->getMobileNumber();
                         }
                         $uniqueId = $this->customer->getUniqueid();
-                      //This is for Recharge the Customer
-                       $MinuesOpeningBalance = $OpeningBalance*3;
-                       Telienta::recharge($this->customer, $OpeningBalance, "Refill");
-                      //This is for Recharge the Account
-                      //this condition for if follow me is Active
+                        //This is for Recharge the Customer
+                        $MinuesOpeningBalance = $OpeningBalance * 3;
+                        Telienta::recharge($this->customer, $OpeningBalance, "Refill");
+                        //This is for Recharge the Account
+                        //this condition for if follow me is Active
                         $getvoipInfo = new Criteria();
                         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $this->customer->getMobileNumber());
-                        $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
-                        if(isset($getvoipInfos)){
-                            $voipnumbers = $getvoipInfos->getNumber() ;
-                            $voip_customer = $getvoipInfos->getCustomerId() ;
-                        }else{
+                        $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
+                        if (isset($getvoipInfos)) {
+                            $voipnumbers = $getvoipInfos->getNumber();
+                            $voip_customer = $getvoipInfos->getCustomerId();
+                        } else {
+                            
+                        }
 
 
-                           }
-                      
-                     
-                      $MinuesOpeningBalance = $OpeningBalance*3;
-                      
-
-			//update cloud 9
-			c9Wrapper::equateBalance($customer);
+                        $MinuesOpeningBalance = $OpeningBalance * 3;
 
 
-						//send invoices
+                        //update cloud 9
+                        c9Wrapper::equateBalance($customer);
+
+
+                        //send invoices
 
                         $message_body = $this->getPartial('customer/order_receipt', array(
-                                    'customer' => $customer,
-                                    'order' => $customer_order,
-                                    'transaction' => $transaction,
-                                    'vat' => 0,
-                                    'wrap' => false
+                            'customer' => $customer,
+                            'order' => $customer_order,
+                            'transaction' => $transaction,
+                            'vat' => 0,
+                            'wrap' => false
                                 ));
 
-                            $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-                            $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                            $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                        $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
+                        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
+                        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
 
-                            $recepient_email = trim($this->customer->getEmail());
-                            $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
-
-
-                            //This Seciton For Make The Log History When Complete registration complete - Agent
-                            //echo sfConfig::get('sf_data_dir');
-                            $invite_data_file = sfConfig::get('sf_data_dir').'/invite.txt';
-                            $invite2 = " AutoRefill - pScript \n";
-                            $invite2 = "Recepient Email: ".$recepient_email.' \r\n';
+                        $recepient_email = trim($this->customer->getEmail());
+                        $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
 
 
-                            //Send Email to User/Agent/Support --- when Agent register Customer --- 01/15/11
-                            emailLib::sendCustomerAutoRefillEmail($this->customer,$message_body);
+                        //This Seciton For Make The Log History When Complete registration complete - Agent
+                        //echo sfConfig::get('sf_data_dir');
+                        $invite_data_file = sfConfig::get('sf_data_dir') . '/invite.txt';
+                        $invite2 = " AutoRefill - pScript \n";
+                        $invite2 = "Recepient Email: " . $recepient_email . ' \r\n';
 
-  			}
+
+                        //Send Email to User/Agent/Support --- when Agent register Customer --- 01/15/11
+                        emailLib::sendCustomerAutoRefillEmail($this->customer, $message_body);
+                    }
                 }
             }
         } catch (Exception $exc) {
@@ -614,244 +577,217 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
         }
 
         return sfView::NONE;
-  }
+    }
 
-public function executeTest(sfWebrequest $request){
+    public function executeTest(sfWebrequest $request) {
         $form = new Curl_HTTP_Client();
 
-  $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
-                    $form->set_referrer("http://landncall.zerocall.com");
-                    $post_data = array(
-                        'Account' =>'cb4529900000',
-                        'Password' =>'asdf1asd',
-                        'Action' =>'Connect Us Now!',
-                        'First_Phone_Number' =>'923006826451',
-                        'Second_Phone_Number' =>'923218478166'
-                       
-                    );
- 
+        $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+        $form->set_referrer("http://landncall.zerocall.com");
+        $post_data = array(
+            'Account' => 'cb4529900000',
+            'Password' => 'asdf1asd',
+            'Action' => 'Connect Us Now!',
+            'First_Phone_Number' => '923006826451',
+            'Second_Phone_Number' => '923218478166'
+        );
 
-                  $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
 
+        $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
 
 
 
 
- 
-    return sfView::NONE;
-}
-  public function executeTest1(sfWebRequest $request)
-  {
-
-  	if (true && $this->run())
-  	{
-  		echo 'sadi';
-  	}
-
-  	echo sha1('test1');
-
-  	exit;
-
-  	$proxyhost = isset($_POST['proxyhost']) ? $_POST['proxyhost'] : '';
-	$proxyport = isset($_POST['proxyport']) ? $_POST['proxyport'] : '';
-	$proxyusername = isset($_POST['proxyusername']) ? $_POST['proxyusername'] : '';
-	$proxypassword = isset($_POST['proxypassword']) ? $_POST['proxypassword'] : '';
-
-	$epay_con = new EPay();
-
-	$result = $epay_con->authorize(8884184, 66529, 3923, 400, 208, 1);
-
-	if ($result)
-		var_dump($result);
-	else
-		echo "<pre>".$epay_con->getLastError()."</pre>";
-
-  	exit;
-
-  	$field_value = '1280820350';
-  	$field_value_2 = '1280820403';
-
-  	$date1 = date("Y:m:d H:i:s", $field_value);
-  	$date2 = date("Y:m:d H:i:s", $field_value_2);
-
-  	$date_dur = date("H:i:s", $field_value_2-$field_value);
-
-  	echo '<br />';
-
-  	echo sprintf("%s<br />%s<br />%s", $date1, $date2, $date_dur );
-
-  	return sfView::NONE;
-  }
-
-  public function executeProcessCdr(sfWebRequest $request)
-  {
-
-   //list any files in data/new folder
-
- //$cdr_root_dir = 'c:/zerocall_cdr';
- $cdr_root_dir = '/home/fonet_cdr/landncall_cdr';
-
- //TODO: need to fix the new_dir path on server
- $new_dir = $cdr_root_dir;
- $error_dir = $cdr_root_dir.'/error';
- $backup_dir = $cdr_root_dir.'/backup';
 
 
- $files = scandir($new_dir);
- 
-$ignore = array('.', '..', 'backup_staging_error','backup_staging', 'backup', 'error');
-$files = array_diff($files, $ignore);
+        return sfView::NONE;
+    }
 
-if (count($files)==0)
-{
-        echo 'No file to process in "'.$new_dir.'"';
-        exit(1);
-}
+    public function executeTest1(sfWebRequest $request) {
 
-echo sprintf("There are %d files <br/>", count($files));
+        if (true && $this->run()) {
+            echo 'sadi';
+        }
 
-print_r($files);
+        echo sha1('test1');
+
+        exit;
+
+        $proxyhost = isset($_POST['proxyhost']) ? $_POST['proxyhost'] : '';
+        $proxyport = isset($_POST['proxyport']) ? $_POST['proxyport'] : '';
+        $proxyusername = isset($_POST['proxyusername']) ? $_POST['proxyusername'] : '';
+        $proxypassword = isset($_POST['proxypassword']) ? $_POST['proxypassword'] : '';
+
+        $epay_con = new EPay();
+
+        $result = $epay_con->authorize(8884184, 66529, 3923, 400, 208, 1);
+
+        if ($result)
+            var_dump($result);
+        else
+            echo "<pre>" . $epay_con->getLastError() . "</pre>";
+
+        exit;
+
+        $field_value = '1280820350';
+        $field_value_2 = '1280820403';
+
+        $date1 = date("Y:m:d H:i:s", $field_value);
+        $date2 = date("Y:m:d H:i:s", $field_value_2);
+
+        $date_dur = date("H:i:s", $field_value_2 - $field_value);
+
+        echo '<br />';
+
+        echo sprintf("%s<br />%s<br />%s", $date1, $date2, $date_dur);
+
+        return sfView::NONE;
+    }
+
+    public function executeProcessCdr(sfWebRequest $request) {
+
+        //list any files in data/new folder
+        //$cdr_root_dir = 'c:/zerocall_cdr';
+        $cdr_root_dir = '/home/fonet_cdr/landncall_cdr';
+
+        //TODO: need to fix the new_dir path on server
+        $new_dir = $cdr_root_dir;
+        $error_dir = $cdr_root_dir . '/error';
+        $backup_dir = $cdr_root_dir . '/backup';
 
 
- //get connection
- $con = Propel::getConnection();
+        $files = scandir($new_dir);
+
+        $ignore = array('.', '..', 'backup_staging_error', 'backup_staging', 'backup', 'error');
+        $files = array_diff($files, $ignore);
+
+        if (count($files) == 0) {
+            echo 'No file to process in "' . $new_dir . '"';
+            exit(1);
+        }
+
+        echo sprintf("There are %d files <br/>", count($files));
+
+        print_r($files);
+
+
+        //get connection
+        $con = Propel::getConnection();
 
         $cdr_rows = array();
 
- foreach ($files as $file)
- {
+        foreach ($files as $file) {
 
-  $splits = explode('.', $file);
-  $file_extension = end($splits);
+            $splits = explode('.', $file);
+            $file_extension = end($splits);
 
-  //start transaction;
+            //start transaction;
 
-  if( $file_extension=='csv' )
-  {
-   try
-   {
-      $reader = new sfCsvReader($new_dir.'/'.$file);
+            if ($file_extension == 'csv') {
+                try {
+                    $reader = new sfCsvReader($new_dir . '/' . $file);
 
-      $reader->open();
+                    $reader->open();
 
 
-      //begin transaction
-      $con->beginTransaction();
+                    //begin transaction
+                    $con->beginTransaction();
 
-    while ($data = $reader->read())
-    {
-     /*
-     0 CdrKey
-     1 CustomID
-     2 AnswerTimeB
-     3 EndTimeB
-     4 BillSec
-     5 BillingTime
-     6 Extension
-     7 SourceCty
-     8 Ani
-     9 DestCty
-     10 Rounding
-     11 UsedValue
-     12 InitialAccount
-     13 DST_CustomID
-     14 DestinationName
-     15 COST_RateMatchPhno
-     16 COST_DestinationName
-     17 COST_RateValue
-     18 COST_RateValueFirst
-     19 COST_CcsConnectCharge
-     20 COST_UsedValue
-     21 BZ2_Rate1Minute
-     22 BZ1_RateAddMinute
-     */
+                    while ($data = $reader->read()) {
+                        /*
+                          0 CdrKey
+                          1 CustomID
+                          2 AnswerTimeB
+                          3 EndTimeB
+                          4 BillSec
+                          5 BillingTime
+                          6 Extension
+                          7 SourceCty
+                          8 Ani
+                          9 DestCty
+                          10 Rounding
+                          11 UsedValue
+                          12 InitialAccount
+                          13 DST_CustomID
+                          14 DestinationName
+                          15 COST_RateMatchPhno
+                          16 COST_DestinationName
+                          17 COST_RateValue
+                          18 COST_RateValueFirst
+                          19 COST_CcsConnectCharge
+                          20 COST_UsedValue
+                          21 BZ2_Rate1Minute
+                          22 BZ1_RateAddMinute
+                         */
 
-     $cdr_row = new ZerocallCdr();
+                        $cdr_row = new ZerocallCdr();
 
-     $cdr_row->setCdrkey($data[0]);
-     $cdr_row->setCustomid($data[1]);
-     $cdr_row->setAnswertimeb($data[2]);
-     $cdr_row->setEndtimeb($data[3]);
-     $cdr_row->setBillsec($data[4]);
-     $cdr_row->setBillingtime($data[5]);
-     $cdr_row->setExtension($data[6]);
-     $cdr_row->setSourcecty($data[7]);
-     $cdr_row->setAni($data[8]);
-     $cdr_row->setDestcty($data[9]);
-     $cdr_row->setRounding($data[10]);
-     $cdr_row->setUsedvalue($data[11]);
-     $cdr_row->setInitialaccount($data[12]);
-     $cdr_row->setDstCustomid($data[13]);
-     $cdr_row->setDestinationname($data[14]);
-     $cdr_row->setCostRatematchphno($data[15]);
-     $cdr_row->setCostDestinationname($data[16]);
-     $cdr_row->setCostRatevalue($data[17]);
-     $cdr_row->setCostRatevaluefirst($data[18]);
-     $cdr_row->setCostCcsconnectcharge($data[19]);
-     $cdr_row->setCostUsedvalue($data[20]);
-     $cdr_row->setBz2Rate1minute($data[21]);
-     $cdr_row->setBz1Rateaddminute($data[22]);
+                        $cdr_row->setCdrkey($data[0]);
+                        $cdr_row->setCustomid($data[1]);
+                        $cdr_row->setAnswertimeb($data[2]);
+                        $cdr_row->setEndtimeb($data[3]);
+                        $cdr_row->setBillsec($data[4]);
+                        $cdr_row->setBillingtime($data[5]);
+                        $cdr_row->setExtension($data[6]);
+                        $cdr_row->setSourcecty($data[7]);
+                        $cdr_row->setAni($data[8]);
+                        $cdr_row->setDestcty($data[9]);
+                        $cdr_row->setRounding($data[10]);
+                        $cdr_row->setUsedvalue($data[11]);
+                        $cdr_row->setInitialaccount($data[12]);
+                        $cdr_row->setDstCustomid($data[13]);
+                        $cdr_row->setDestinationname($data[14]);
+                        $cdr_row->setCostRatematchphno($data[15]);
+                        $cdr_row->setCostDestinationname($data[16]);
+                        $cdr_row->setCostRatevalue($data[17]);
+                        $cdr_row->setCostRatevaluefirst($data[18]);
+                        $cdr_row->setCostCcsconnectcharge($data[19]);
+                        $cdr_row->setCostUsedvalue($data[20]);
+                        $cdr_row->setBz2Rate1minute($data[21]);
+                        $cdr_row->setBz1Rateaddminute($data[22]);
 
-     //save the row
-     try {
-     $cdr_row->save($con);
-     $cdr_rows[] = $cdr_row;
-     }
-     catch (FileException  $ex) {
-         throw $ex->getMessage();
-     }
+                        //save the row
+                        try {
+                            $cdr_row->save($con);
+                            $cdr_rows[] = $cdr_row;
+                        } catch (FileException $ex) {
+                            throw $ex->getMessage();
+                        }
+                    } // end while
 
-
-
-    } // end while
-
-    $reader->close();
+                    $reader->close();
 
 
-    //commit
-    $con->commit();
+                    //commit
+                    $con->commit();
 
 
 
-    rename("$new_dir/$file", "$backup_dir/$file");
+                    rename("$new_dir/$file", "$backup_dir/$file");
+                } catch (Exception $ex) {
+                    //rollback
+                    $con->rollback();
 
-   }
-   catch (Exception $ex)
-   {
-    //rollback
-    $con->rollback();
-    
-    //move the file to error
-    rename("$new_dir/$file", "$error_dir/$file");
+                    //move the file to error
+                    rename("$new_dir/$file", "$error_dir/$file");
 
-    echo "<br />";
-    echo $ex->getLine();
-    echo " : ";
-    echo $ex->getCode();
-    echo " : ";
-    echo $ex->getMessage();
-    echo "<br />";
-
-
-
-   }
-
-
-  } //end if
-
- } //end for each
-
+                    echo "<br />";
+                    echo $ex->getLine();
+                    echo " : ";
+                    echo $ex->getCode();
+                    echo " : ";
+                    echo $ex->getMessage();
+                    echo "<br />";
+                }
+            } //end if
+        } //end for each
 //foreach ($cdr_rows as $cdr_row) {
-
-	//try deducting the c9 balance
-	//$c = new Criteria();
-	//$c->add(CustomerPeer::FONET_CUSTOMER_ID, $cdr_row->getCustomid());
-
-	//$c9_customer = CustomerPeer::doSelectOne($c);
-
+        //try deducting the c9 balance
+        //$c = new Criteria();
+        //$c->add(CustomerPeer::FONET_CUSTOMER_ID, $cdr_row->getCustomid());
+        //$c9_customer = CustomerPeer::doSelectOne($c);
         //$ch = new CallHistory();
-	//c9Wrapper::equateBalance($c9_customer);
-
+        //c9Wrapper::equateBalance($c9_customer);
         //only change c9 balance if there are fonet and c9 id for a customer
 //        if ($customer && $customer->getFonetCustomerId() && $customer->getC9CustomerNumber()) {
 //            $c9_customer_number = $customer->getC9CustomerNumber();
@@ -874,75 +810,62 @@ print_r($files);
 //            //c9Wrapper::updateBalance('12345', $customer->getC9CustomerNumber(), $c9_new_balance);
 //
 //        }
-
 //}
 //end c9 update
 
- echo 'Each CDR is iterated from ' . $new_dir;
+        echo 'Each CDR is iterated from ' . $new_dir;
 
 
-   return sfView::NONE;
-}
+        return sfView::NONE;
+    }
 
+    public function executeRemoveInactiveUsers(sfWebRequest $request) {
+        $c = new Criteria();
 
+        $c->add(CustomerOrderPeer::CUSTOMER_ID, 'customer_id IN (SELECT id FROM customer WHERE TIMESTAMPDIFF(MINUTE, NOW(), created_at) >= -30 AND customer_status_id = 1)'
+                , Criteria::CUSTOM);
 
-  public function executeRemoveInactiveUsers(sfWebRequest $request)
-  {
-  	$c = new Criteria();
+        $this->remove_propel_object_list(CustomerOrderPeer::doSelect($c));
 
-  	$c->add(CustomerOrderPeer::CUSTOMER_ID,
-  		'customer_id IN (SELECT id FROM customer WHERE TIMESTAMPDIFF(MINUTE, NOW(), created_at) >= -30 AND customer_status_id = 1)'
-  	, Criteria::CUSTOM);
+        //now transaction
+        $c = new Criteria();
 
-  	$this->remove_propel_object_list(CustomerOrderPeer::doSelect($c));
+        $c->add(TransactionPeer::CUSTOMER_ID, 'customer_id IN (SELECT id FROM customer WHERE TIMESTAMPDIFF(MINUTE, NOW(), created_at) >= -30 AND customer_status_id = 1)'
+                , Criteria::CUSTOM);
 
-  	//now transaction
-  	$c = new Criteria();
+        $this->remove_propel_object_list(TransactionPeer::doSelect($c));
 
-  	$c->add(TransactionPeer::CUSTOMER_ID,
-  		'customer_id IN (SELECT id FROM customer WHERE TIMESTAMPDIFF(MINUTE, NOW(), created_at) >= -30 AND customer_status_id = 1)'
-  	, Criteria::CUSTOM);
+        //now customer
+        $c = new Criteria();
 
-  	$this->remove_propel_object_list(TransactionPeer::doSelect($c));
+        $c->add(CustomerPeer::ID, 'id IN (SELECT id FROM customer WHERE TIMESTAMPDIFF(MINUTE, NOW(), created_at) >= -30 AND customer_status_id = 1)'
+                , Criteria::CUSTOM);
 
-  	//now customer
-   	$c = new Criteria();
+        $this->remove_propel_object_list(CustomerPeer::doSelect($c));
 
-  	$c->add(CustomerPeer::ID,
-  		'id IN (SELECT id FROM customer WHERE TIMESTAMPDIFF(MINUTE, NOW(), created_at) >= -30 AND customer_status_id = 1)'
-  	, Criteria::CUSTOM);
+        $this->renderText('last deleted on ' . date(DATE_RFC822));
 
-  	$this->remove_propel_object_list(CustomerPeer::doSelect($c));
+        return sfView::NONE;
+    }
 
-  	$this->renderText('last deleted on '. date(DATE_RFC822));
+    private function is_mobile_number_exists($mobile_number) {
+        $c = new Criteria();
 
-  	return sfView::NONE;
+        $c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
 
-  }
+        if (CustomerPeer::doSelectOne($c))
+            return true;
+    }
 
+    private function remove_propel_object_list($list) {
+        foreach ($list as $list_item) {
+            $list_item->delete();
+        }
+    }
 
-  private function is_mobile_number_exists($mobile_number)
-  {
-  	$c = new Criteria();
+    public function executeSendEmails(sfWebRequest $request) {
 
-  	$c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
-
-  	 if (CustomerPeer::doSelectOne($c))
-  	 	return true;
-  }
-
-  private function remove_propel_object_list($list)
-  {
-  	foreach($list as $list_item)
-  	{
-  		$list_item->delete();
-  	}
-  }
-
-  public function executeSendEmails(sfWebRequest $request)
-  {
-
-  require_once(sfConfig::get('sf_lib_dir').'/swift/lib/swift_init.php');
+        require_once(sfConfig::get('sf_lib_dir') . '/swift/lib/swift_init.php');
 
 
         echo 'starting the debug';
@@ -958,41 +881,40 @@ print_r($files);
         echo sfConfig::get('app_email_sender_email', 'support@landncall.com');
         echo '<br/>';
         echo sfConfig::get('app_email_sender_name', 'LandNCall AB support');
-        
-
-  	$connection = Swift_SmtpTransport::newInstance()
-			->setHost(sfConfig::get('app_email_smtp_host'))
-			->setPort(sfConfig::get('app_email_smtp_port'))
-			->setUsername(sfConfig::get('app_email_smtp_username'))
-			->setPassword(sfConfig::get('app_email_smtp_password'));
 
 
+        $connection = Swift_SmtpTransport::newInstance()
+                ->setHost(sfConfig::get('app_email_smtp_host'))
+                ->setPort(sfConfig::get('app_email_smtp_port'))
+                ->setUsername(sfConfig::get('app_email_smtp_username'))
+                ->setPassword(sfConfig::get('app_email_smtp_password'));
 
 
-	$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-	$sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+
+
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
+        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
 
         echo '<br/>';
-        echo $sender_email ;
+        echo $sender_email;
         echo '<br/>';
-        echo $sender_name ;
+        echo $sender_name;
 
 
-	$mailer = new Swift_Mailer($connection);
+        $mailer = new Swift_Mailer($connection);
 
-  	$c = new Criteria();
-  	$c->add(EmailQueuePeer::EMAIL_STATUS_ID, sfConfig::get('app_status_completed'), Criteria::NOT_EQUAL);
+        $c = new Criteria();
+        $c->add(EmailQueuePeer::EMAIL_STATUS_ID, sfConfig::get('app_status_completed'), Criteria::NOT_EQUAL);
         $emails = EmailQueuePeer::doSelect($c);
-  try{
-  	foreach( $emails as $email)
-  	{
-                
+        try {
+            foreach ($emails as $email) {
 
-		$message = Swift_Message::newInstance($email->getSubject())
-		         ->setFrom(array($sender_email => $sender_name))
-		         ->setTo(array($email->getReceipientEmail() => $email->getReceipientName()))
-		         ->setBody($email->getMessage(), 'text/html')
-		         ;
+
+                $message = Swift_Message::newInstance($email->getSubject())
+                        ->setFrom(array($sender_email => $sender_name))
+                        ->setTo(array($email->getReceipientEmail() => $email->getReceipientName()))
+                        ->setBody($email->getMessage(), 'text/html')
+                ;
 
 //                $message = Swift_Message::newInstance($email->getSubject())
 //		         ->setFrom(array("support@landncall.com"))
@@ -1001,47 +923,41 @@ print_r($files);
 //		         ;
                 echo 'inside loop';
                 echo '<br/>';
-               
+
                 echo $email->getId();
                 echo '<br/>';
                 echo '<br/>';
 
                 //This Conditon Add Update Row Which Have the 
-		 if($email->getReceipientEmail()!=''){
+                if ($email->getReceipientEmail() != '') {
                     @$mailer->send($message);
                     $email->setEmailStatusId(sfConfig::get('app_status_completed'));
                     //TODO:: add sent_at too
                     $email->save();
                     echo sprintf("Send to %s<br />", $email->getReceipientEmail());
-		}
-
-                
-
-  	}
-        }catch (Exception $e){
-
-                    echo $e->getLine();
-                    echo $e->getMessage();
                 }
-  	return sfView::NONE;
-  }
+            }
+        } catch (Exception $e) {
 
+            echo $e->getLine();
+            echo $e->getMessage();
+        }
+        return sfView::NONE;
+    }
 
-public function executeTest2(sfWebRequest $request){
+    public function executeTest2(sfWebRequest $request) {
         echo("test test");
-       return sfView::NONE;
-  }
+        return sfView::NONE;
+    }
 
-
-  public function executeC9invoke(sfWebRequest $request)
-  {
+    public function executeC9invoke(sfWebRequest $request) {
 
         $this->logMessage(print_r($_POST, true));
 
-    // creating model object
-	$c9Data = new cloud9_data();
+        // creating model object
+        $c9Data = new cloud9_data();
 
-	//setting data in model
+        //setting data in model
         $c9Data->setRequestType($request->getParameter('request_type'));
         $c9Data->setC9Timestamp($request->getParameter('timestamp'));
         $c9Data->setTransactionID($request->getParameter('transactionid'));
@@ -1076,37 +992,36 @@ public function executeTest2(sfWebRequest $request){
 
 //find the customer.
 
-            $c = new Criteria();
-            $c->add(CustomerPeer::C9_CUSTOMER_NUMBER, $c9Data->getMsisdn());            
-            $customer = CustomerPeer::doSelectOne($c);
+        $c = new Criteria();
+        $c->add(CustomerPeer::C9_CUSTOMER_NUMBER, $c9Data->getMsisdn());
+        $customer = CustomerPeer::doSelectOne($c);
 
-            
+
 //get fonet balance
 
-            $fonet = new Fonet();
-            $balance = $fonet->getBalance($customer, true);
+        $fonet = new Fonet();
+        $balance = $fonet->getBalance($customer, true);
 
 //update Balance on Fonet if there's a difference
 
-        if ($fonet->recharge($customer,number_format($amt_dkk-$balance, 2) , true)){
+        if ($fonet->recharge($customer, number_format($amt_dkk - $balance, 2), true)) {
 
 //if fonet customer found, send success response.
 
-        $this->getResponse()->setContentType("text/xml");
-        $this->getResponse()->setContent("<?xml version=\"1.0\"?>
+            $this->getResponse()->setContentType("text/xml");
+            $this->getResponse()->setContent("<?xml version=\"1.0\"?>
         <CDR_response>
-        <cdr_id>".$request->getParameter('cdr_id')."</cdr_id>
+        <cdr_id>" . $request->getParameter('cdr_id') . "</cdr_id>
         <cdr_status>1</cdr_status>
         </CDR_response> ");
-            }
-      
+        }
+
         return sfView::NONE;
-  }
+    }
 
+    public function c9_follow_up(Cloud9Data $c9Data) {
 
-  public function c9_follow_up(Cloud9Data $c9Data){
-
-         echo("inside follow up \n: ");
+        echo("inside follow up \n: ");
 
 
 
@@ -1127,8 +1042,6 @@ public function executeTest2(sfWebRequest $request){
 //        $cust->save();
 //
 //        return $cust;
-
-
 //            echo('hello/');
 //            $customer = CustomerPeer::retrieveByPK(1);
 //            echo('world/');
@@ -1144,552 +1057,504 @@ public function executeTest2(sfWebRequest $request){
 //            $balance = $fonet->getBalance($customer, true);
 //            echo('hilo 3/');
 //            echo($balance);
-
 //            echo('world');
-            //echo($balance->getBalance(&$customer));
+        //echo($balance->getBalance(&$customer));
+    }
+
+    public function unregisterFonet(sfWebRequest $request) {
 
 
-  }
+        $fonetId = $request->getParameter('fonetId');
 
-public function unregisterFonet(sfWebRequest $request){
+        $c = new Criteria();
+        $c->add(CustomerPeer::FONET_CUSTOMER_ID, $fonetId);
+        $customer = CustomerPeer::doSelectOne($c);
 
+        $result = Fonet::unregister($customer, true);
 
-$fonetId = $request->getParameter('fonetId');
+        echo $result;
 
-			$c = new Criteria();
-            $c->add(CustomerPeer::FONET_CUSTOMER_ID, $fonetId);
-            $customer = CustomerPeer::doSelectOne($c);
+        return sfView::NONE;
+    }
 
-			$result = Fonet::unregister($customer, true);
+    public function executeBalanceAlert(sfWebRequest $request) {
+        $username = 'zerocall';
+        $password = 'ok20717786';
+        //$c=new Criteria();
+        //$fonet=new Fonet();
+        //  $customers=CustomerPeer::doSelect($c);
+        $balance = $request->getParameter('balance');
+        $mobileNo = $request->getParameter('mobile');
+        //foreach($customers as $customer)
+        //{
+        $balance_data_file = sfConfig::get('sf_data_dir') . '/balanceTest.txt';
+        $baltext = "";
+        $baltext .= "Mobile No: {$mobileNo} , Balance: {$balance} \r\n";
 
-			echo $result;
+        file_put_contents($balance_data_file, $baltext, FILE_APPEND);
 
-			return sfView::NONE;
+        if ($mobileNo) {
+            if ($balance < 25 && $balance > 10) {
 
-}
- public function executeBalanceAlert(sfWebRequest $request)
-  {
-      $username= 'zerocall' ;
-      $password= 'ok20717786';
-      //$c=new Criteria();
-      //$fonet=new Fonet();
-    //  $customers=CustomerPeer::doSelect($c);
-      $balance = $request->getParameter('balance');
-      $mobileNo = $request->getParameter('mobile');
-      //foreach($customers as $customer)
-      //{
-      $balance_data_file = sfConfig::get('sf_data_dir').'/balanceTest.txt';
-      $baltext = "";
-      $baltext .= "Mobile No: {$mobileNo} , Balance: {$balance} \r\n";
-
-      file_put_contents($balance_data_file, $baltext, FILE_APPEND);
-
-          if($mobileNo)
-          {
-            if($balance < 25 && $balance > 10)
-            {
-               
-               $baltext .= "balance < 25 && balance > 10";
+                $baltext .= "balance < 25 && balance > 10";
                 $data = array(
-		      'username' => $username,
-                      'password' => $password,
-                      'mobile'=>$mobileNo,
-                      'message'=>"You balance is below 25 SEK, Please refill your account. LandNCall AB - Support "
-			  );
-		$queryString = http_build_query($data,'', '&');
-		$this->response_text =  file_get_contents('http://sms.gratisgateway.dk/send.php?'.$queryString);
+                    'username' => $username,
+                    'password' => $password,
+                    'mobile' => $mobileNo,
+                    'message' => "You balance is below 25 SEK, Please refill your account. LandNCall AB - Support "
+                );
+                $queryString = http_build_query($data, '', '&');
+                $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
                 echo $this->response_text;
-            }
-            else  if($balance< 10.00 && $balance>0.00)
-            {
-              
-               $data = array(
-		      'username' => $username,
-                      'password' => $password,
-                      'mobile'=>$mobileNo,
-                      'message'=>"You balance is below 10 SEK, Please refill your account. LandNCall AB - Support"
-			  );
-		$queryString = http_build_query($data,'', '&');
-		$this->response_text =  file_get_contents('http://sms.gratisgateway.dk/send.php?'.$queryString);
+            } else if ($balance < 10.00 && $balance > 0.00) {
+
+                $data = array(
+                    'username' => $username,
+                    'password' => $password,
+                    'mobile' => $mobileNo,
+                    'message' => "You balance is below 10 SEK, Please refill your account. LandNCall AB - Support"
+                );
+                $queryString = http_build_query($data, '', '&');
+                $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
                 $baltext .= "balance < 10 && balance > 0";
-              
+            } else if ($balance <= 0.00) {
+
+
+                $data = array(
+                    'username' => $username,
+                    'password' => $password,
+                    'mobile' => $mobileNo,
+                    'message' => "You balance is 0 SEK, Please refill your account. LandNCall AB - Support "
+                );
+                $queryString = http_build_query($data, '', '&');
+                $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
+                $baltext .= "balance 0";
             }
-            else if($balance<= 0.00)
-            {
-                
-                
-                    $data = array(
-                      'username' => $username,
-                      'password' => $password,
-                      'mobile'=>$mobileNo,
-                      'message'=>"You balance is 0 SEK, Please refill your account. LandNCall AB - Support "
-			  );
-                    $queryString = http_build_query($data,'', '&');
-                    $this->response_text =  file_get_contents('http://sms.gratisgateway.dk/send.php?'.$queryString);
-                    $baltext .= "balance 0";
-                
-            }
-          }
+        }
 
 
-      $baltext .= $this->response_text;
-      file_put_contents($balance_data_file, $baltext, FILE_APPEND);
+        $baltext .= $this->response_text;
+        file_put_contents($balance_data_file, $baltext, FILE_APPEND);
 
-      
-      $data = array(
+
+        $data = array(
             'mobile' => $mobileNo,
             'balance' => $balance
-            );
+        );
 
-      $queryString = http_build_query($data,'', '&');
-      $this->redirect('pScripts/balanceAlert?'.$queryString);
+        $queryString = http_build_query($data, '', '&');
+        $this->redirect('pScripts/balanceAlert?' . $queryString);
 
+
+
+        return sfView::NONE;
+    }
+
+    public function executeUsageAlerttest(sfWebRequest $request) {
+        $delievry = "";
+        $number = "923214745120";
+        $sms_text = "Its Test Message";
+        $data = array(
+            'S' => 'H',
+            'UN' => 'zapna1',
+            'P' => 'Zapna2010',
+            'DA' => $number,
+            'SA' => 'LandNcall',
+            'M' => $sms_text,
+            'ST' => '5'
+        );
+        $queryString = http_build_query($data, '', '&');
+        //   die;
+        sleep(0.5);
+
+        $queryString = smsCharacter::smsCharacterReplacement($queryString);
+
+        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+        $this->res_cbf = 'Response from CBF is: ';
+        $this->res_cbf .= $res;
+        //echo $res;
+        $delievry .= 'Destination: ' . $number . ', Status: ' . $res . '<br/>';
+
+        $this->delievry = $delievry;
+    }
+
+    public function executeBalanceEmail(sfWebRequest $request) {
+
+
+        $balance = $request->getParameter('balance');
+        $mobileNo = $request->getParameter('mobile');
+
+        $email_data_file = sfConfig::get('sf_data_dir') . '/EmailAlert.txt';
+        $email_msg = "";
+        $email_msg .= "Mobile No: {$mobileNo} , Balance: {$balance} \r\n";
+        file_put_contents($email_data_file, $email_msg, FILE_APPEND);
+
+        //$fonet=new Fonet();
+        //
       
+      $c = new Criteria();
+        $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNo);
+        $customers = CustomerPeer::doSelect($c);
+        $recepient_name = '';
+        $recepient_email = '';
+        foreach ($customers as $customer) {
+            $recepient_name = $customer->getFirstName() . ' ' . $customer->getLastName();
+            $recepient_email = $customer->getEmail();
+        }
 
-      return sfView::NONE;
 
-  }
-  
-  public function executeUsageAlerttest(sfWebRequest $request)
-  {
-            $delievry="";
-            $number = "923214745120";
-            $sms_text = "Its Test Message";
-            $data = array(
-              'S' => 'H',
-              'UN'=>'zapna1',
-              'P'=>'Zapna2010',
-              'DA'=>$number,
-              'SA' => 'LandNcall',
-              'M'=>$sms_text,
-              'ST'=>'5'
-            );
-            $queryString = http_build_query($data,'', '&');
-            //   die;
-            sleep(0.5);
+        //$recepient_name=
+        //foreach($customers as $customer)
+        //{
 
-            $queryString=smsCharacter::smsCharacterReplacement($queryString);
+        file_put_contents($email_data_file, $email_msg, FILE_APPEND);
 
-            $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-            $this->res_cbf = 'Response from CBF is: ';
-            $this->res_cbf .= $res;
-            //echo $res;
-            $delievry .= 'Destination: '.$number.', Status: '.$res.'<br/>';
-            
-            $this->delievry = $delievry;
-  }
-  public function executeBalanceEmail(sfWebRequest $request)
-  {
-      
-
-      $balance = $request->getParameter('balance');
-      $mobileNo = $request->getParameter('mobile');
-
-      $email_data_file = sfConfig::get('sf_data_dir').'/EmailAlert.txt';
-      $email_msg = "";
-      $email_msg .= "Mobile No: {$mobileNo} , Balance: {$balance} \r\n";
-	  file_put_contents($email_data_file, $email_msg, FILE_APPEND);
-
-      //$fonet=new Fonet();
-      //
-      
-      $c=new Criteria();
-      $c->add(CustomerPeer::MOBILE_NUMBER,$mobileNo);
-      $customers=CustomerPeer::doSelect($c);
-      $recepient_name='';
-      $recepient_email='';
-      foreach($customers as $customer)
-      {
-        $recepient_name=$customer->getFirstName().' '.$customer->getLastName();
-        $recepient_email=$customer->getEmail();
-      }
-
-      
-      //$recepient_name=
-      //foreach($customers as $customer)
-      //{
-     
-     file_put_contents($email_data_file, $email_msg, FILE_APPEND);
-     
-          if($mobileNo)
-          {
-            if($balance < 25.00 && $balance > 10.00)
-            {
-                   $email_msg .= "\r\n balance < 25 && balance > 10";
-                    //echo 'mail sent to you';
-                   $subject         = 'Test Email: Balance Email ' ;
-                   $message_body    = "Test Email:  Your balance is below 25dkk , please refill otherwise your account will be closed. \r\n - Zerocall Support \r\n Company Contact Info";
-
-                    //This Seciton For Make The Log History When Complete registration complete - Agent
-                    //echo sfConfig::get('sf_data_dir');
-                    $invite_data_file = sfConfig::get('sf_data_dir').'/invite.txt';
-                    $invite2 = " Balance Email - pScript \n";
-                    if ($recepient_email):
-                        $invite2 = "Recepient Email: ".$recepient_email.' \r\n';
-                    endif;
-
-                    //Send Email to Customer For Balance --- 01/15/11
-                    emailLib::sendCustomerBalanceEmail($customers,$message_body);
-
-                                     
-            }
-            else  if($balance< 10.00 && $balance>0.00)
-            {
-
-               $email_msg .= "\r\n balance < 10 && balance > 0";
-               $subject= 'Test Email: Balance Email ' ;
-               $message_body= "Test Email:  Your balance is below 10dkk , please refill otherwise your account will be closed. \r\n - Zerocall Support \r\n Company Contact Info";
-
-                    //This Seciton For Make The Log History When Complete registration complete - Agent
-                    //echo sfConfig::get('sf_data_dir');
-                    $invite_data_file = sfConfig::get('sf_data_dir').'/invite.txt';
-                    $invite2 = " Balance Email - pScript \n";
-                    if ($recepient_email):
-                        $invite2 = "Recepient Email: ".$recepient_email;
-                    endif;
-
-                    //Send Email to Customer For Balance --- 01/15/11
-                    emailLib::sendCustomerBalanceEmail($customers,$message_body);
-                    
-            }
-            else if($balance<= 0.00)
-            {
-                $email_msg .= "\r\n balance < 10 && balance > 0";
-                $subject= 'Test Email: Balance Email ' ;
-                $message_body= "Test Email:  Your balance is 0 SEK, please refill otherwise your account will be closed. \r\n - LandNCall AB Support \r\n Company Contact Info";
+        if ($mobileNo) {
+            if ($balance < 25.00 && $balance > 10.00) {
+                $email_msg .= "\r\n balance < 25 && balance > 10";
+                //echo 'mail sent to you';
+                $subject = 'Test Email: Balance Email ';
+                $message_body = "Test Email:  Your balance is below 25dkk , please refill otherwise your account will be closed. \r\n - Zerocall Support \r\n Company Contact Info";
 
                 //This Seciton For Make The Log History When Complete registration complete - Agent
                 //echo sfConfig::get('sf_data_dir');
-                $invite_data_file = sfConfig::get('sf_data_dir').'/invite.txt';
+                $invite_data_file = sfConfig::get('sf_data_dir') . '/invite.txt';
                 $invite2 = " Balance Email - pScript \n";
                 if ($recepient_email):
-                    $invite2 = "Recepient Email: ".$recepient_email;
+                    $invite2 = "Recepient Email: " . $recepient_email . ' \r\n';
                 endif;
-                    
+
                 //Send Email to Customer For Balance --- 01/15/11
-                emailLib::sendCustomerBalanceEmail($customers,$message_body);
+                emailLib::sendCustomerBalanceEmail($customers, $message_body);
             }
-          }
+            else if ($balance < 10.00 && $balance > 0.00) {
 
+                $email_msg .= "\r\n balance < 10 && balance > 0";
+                $subject = 'Test Email: Balance Email ';
+                $message_body = "Test Email:  Your balance is below 10dkk , please refill otherwise your account will be closed. \r\n - Zerocall Support \r\n Company Contact Info";
 
-      $email_msg .= $message_body;
-      $email_msg .= "\r\n Email Sent";
-      file_put_contents($email_data_file, $email_msg, FILE_APPEND);
-      return sfView::NONE;
+                //This Seciton For Make The Log History When Complete registration complete - Agent
+                //echo sfConfig::get('sf_data_dir');
+                $invite_data_file = sfConfig::get('sf_data_dir') . '/invite.txt';
+                $invite2 = " Balance Email - pScript \n";
+                if ($recepient_email):
+                    $invite2 = "Recepient Email: " . $recepient_email;
+                endif;
 
-  }
-
-   public function executeWebSms(sfWebRequest $request)
-	{
-            require_once(sfConfig::get('sf_lib_dir').'\SendSMS.php');
-            require_once(sfConfig::get('sf_lib_dir').'\IncomingFormat.php');
-            require_once(sfConfig::get('sf_lib_dir').'\ClientPolled.php');
-
-
-            //$sms_username = "zapna01";
-            //$sms_password = "Zapna2010";
-
-            
-
-
-            $replies = send_sms_full("923454375829","CBF", "Test SMS: Taisys Test SMS form test.Zerocall.com"); //or die ("Error: " .$errstr. " \n");
-
-            //$replies = send_sms("44123456789,44987654321,44214365870","SMS_Service", "This is a message from me.") or die ("Error: " . $errstr . "\n");
-
-            echo "<br /> Response from Taisys <br />";
-            echo $replies;
-            echo $errstr;
-            echo "<br />";
-
-            file_get_contents("http://sms1.cardboardfish.com:9001/HTTPSMS?S=H&UN=zapna1&P=Zapna2010&DA=923454375829&ST=5&SA=Zerocall&M=Test+SMS%3A+Taisys+Test+SMS+form+test.Zerocall.com");
-
-            return sfView::NONE;
-        }
-
-        public function executeTaisys(sfWebrequest $request){
-
-            $taisys = new Taisys();
-
-            $taisys->setServ($request->getParameter('serv'));
-            $taisys->setImsi($request->getParameter('imsi'));
-            $taisys->setDn($request->getParameter('dest'));
-            $taisys->setSmscontent($request->getParameter('content'));
-            $taisys->setChecksum($request->getParameter('mac'));
-            $taisys->setChecksumVerification(true);
-
-            $taisys->save();
-
-			$data = array(
-              'S' => 'H',
-              'UN'=>'zapna1',
-              'P'=>'Zapna2010',
-              'DA'=>$taisys->getDn(),
-              'SA' => 'Zerocall',
-              'M'=>$taisys->getSmscontent(),
-              'ST'=>'5'
-	);
-
-
-		$queryString = http_build_query($data,'', '&');
- $queryString=smsCharacter::smsCharacterReplacement($queryString);
-		$res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-                $this->res_cbf = 'Response from CBF is: ';
-                $this->res_cbf .= $res;
-
-            echo $this->res_cbf;
-            return sfView::NONE;
-
-
-        }
-
-
-
-public function executeSmsCode(sfWebRequest $request){
-
-    $c= new Criteria();
-    $agents = AgentCompanyPeer::doSelect($c);
-
-    $count=1;
-    foreach($agents as $agent){
-        $cvr = $agent->getCvrNumber();
-        if (strlen($cvr)==4){
-        $agent->setSmsCode($cvr);
-        $agent->save();
-        }
-        else{
-            $cvr = substr($cvr,0,4);
-            $agent->setSmsCode($cvr);
-            $agent->save();
-        }
-        echo $agent->getCvrNumber();
-        echo ' : ';
-        echo $cvr;
-        echo '<br/>';
-        $count = $count+1;
-    }
-
-    return sfView::NONE;
-
-
-}
-
-public function executeDeleteValues(sfWebRequest $request){
-
-    $c = new Criteria();
-    $orders = CustomerOrderPeer::doSelect($c);
-
-    foreach($orders as $order){
-        $cr = new Criteria();
-        $cr->add(CustomerPeer::ID, $order->getCustomerId());
-        $customer=CustomerPeer::doSelectOne($cr);
-
-        if(!$customer){
-            //$order->delete();
-            echo $order->getCustomerId();
-            echo "<br/>";
-        }
-    }
-
-    echo "transactions";
-    $ct = new Criteria();
-    $transactions = TransactionPeer::doSelect($ct);
-
-    foreach($transactions as $transaction){
-        $cr = new Criteria();
-        $cr->add(CustomerPeer::ID, $transaction->getCustomerId());
-        $customer=CustomerPeer::doSelectOne($cr);
-
-        if(!$customer){
-            //$transaction->delete();
-            echo $transaction->getCustomerId();
-            echo "<br/>";
-        }
-    }
-
-    echo "customer products";
-    $cp = new Criteria();
-    $cps = CustomerProductPeer::doSelect($cp);
-
-    foreach($cps as $cp){
-        $cr = new Criteria();
-        $cr->add(CustomerPeer::ID, $cp->getCustomerId());
-        $customer=CustomerPeer::doSelectOne($cr);
-
-        if(!$customer){
-            //$cp->delete();
-            echo $cp->getCustomerId();
-            echo "<br/>";
-        }
-    }
-
-       return sfView::NONE;
-
-
-}
-
-public function executeRegistrationType(sfWebRequest $request){
-
-    $c = new Criteria();
-    $customers=CustomerPeer::doSelect($c);
-
-    foreach($customers as $customer){
-        if($customer->getReferrerId()){
-            if(!$customer->getRegistrationTypeId() ){
-            $customer->setRegistrationTypeId(2);
-            $customer->save();
+                //Send Email to Customer For Balance --- 01/15/11
+                emailLib::sendCustomerBalanceEmail($customers, $message_body);
             }
+            else if ($balance <= 0.00) {
+                $email_msg .= "\r\n balance < 10 && balance > 0";
+                $subject = 'Test Email: Balance Email ';
+                $message_body = "Test Email:  Your balance is 0 SEK, please refill otherwise your account will be closed. \r\n - LandNCall AB Support \r\n Company Contact Info";
 
-            
-        }else{
-             $customer->setRegistrationTypeId(1);
-             $customer->save();
+                //This Seciton For Make The Log History When Complete registration complete - Agent
+                //echo sfConfig::get('sf_data_dir');
+                $invite_data_file = sfConfig::get('sf_data_dir') . '/invite.txt';
+                $invite2 = " Balance Email - pScript \n";
+                if ($recepient_email):
+                    $invite2 = "Recepient Email: " . $recepient_email;
+                endif;
+
+                //Send Email to Customer For Balance --- 01/15/11
+                emailLib::sendCustomerBalanceEmail($customers, $message_body);
+            }
         }
-     
-    }
-       return sfView::NONE;
-}
 
-public function executeGetBalanceAll(){
 
-    $balance=0;
-    $total_unassigned=0;
-    $total_assigned = 0;
-
-    $c = new Criteria();
-    $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-    $customers = CustomerPeer::doSelect($c);
-
-    echo "Total customers: ".count($customers);
-    foreach($customers as $customer){
-        $balance = Fonet::getBalance($customer);
-        if ($balance > 0){
-            echo "<br/>";
-            echo "Registered: ".$customer->getMobileNumber().", Balance: ".$balance;
-            $total_assigned ++;
-        }else{
-            echo "<br/>";
-            echo "Not Registered: ".$customer->getMobileNumber().", Balance: ".$balance;
-            $total_unassigned++;
-        }
+        $email_msg .= $message_body;
+        $email_msg .= "\r\n Email Sent";
+        file_put_contents($email_data_file, $email_msg, FILE_APPEND);
+        return sfView::NONE;
     }
 
-    echo "<br/>";
-    echo "Total UnRegistered: ".$total_unassigned++;
-    echo "<br/>";
-    echo "Total Registered: ".$total_assigned++;
-}
+    public function executeWebSms(sfWebRequest $request) {
+        require_once(sfConfig::get('sf_lib_dir') . '\SendSMS.php');
+        require_once(sfConfig::get('sf_lib_dir') . '\IncomingFormat.php');
+        require_once(sfConfig::get('sf_lib_dir') . '\ClientPolled.php');
 
-public function executeRescueRegister(){
 
-    $balance=0;    
-    $already_registered = 0;
-    $newly_registered=0;
-    $not_registered=0;
+        //$sms_username = "zapna01";
+        //$sms_password = "Zapna2010";
 
-    $c = new Criteria();
-    $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-    $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 0, Criteria::GREATER_THAN);
-    $customers = CustomerPeer::doSelect($c);
 
-    echo "Total customers: ".count($customers);
-    
-    foreach($customers as $customer){
-        
-        $balance = Fonet::getBalance($customer);
-        if ($balance > 0){
-            echo "<br/>";
-            echo ++$already_registered.") Already Registered: ".$customer->getMobileNumber().", Balance: ".$balance;
-            echo "<br/>";
-            
-        }else{
-            echo "<br/>";
-            echo ++$not_registered.") Not Registered: ".$customer->getMobileNumber().", Balance: ".$balance;
-            
 
-		$query_vars = array(
-			'Action'=>'Activate',
-			'ParentCustomID'=>1393238,
-	  		'AniNo'=>$customer->getMobileNumber(),
-	  		'DdiNo'=>25998893,
-			'CustomID'=>$customer->getFonetCustomerId()
-	  	);
 
-		$url = 'http://fax.fonet.dk/cgi-bin/ZeroCallV2Control.pl'.'?'.http_build_query($query_vars);
+        $replies = send_sms_full("923454375829", "CBF", "Test SMS: Taisys Test SMS form test.Zerocall.com"); //or die ("Error: " .$errstr. " \n");
+        //$replies = send_sms("44123456789,44987654321,44214365870","SMS_Service", "This is a message from me.") or die ("Error: " . $errstr . "\n");
+
+        echo "<br /> Response from Taisys <br />";
+        echo $replies;
+        echo $errstr;
+        echo "<br />";
+
+        file_get_contents("http://sms1.cardboardfish.com:9001/HTTPSMS?S=H&UN=zapna1&P=Zapna2010&DA=923454375829&ST=5&SA=Zerocall&M=Test+SMS%3A+Taisys+Test+SMS+form+test.Zerocall.com");
+
+        return sfView::NONE;
+    }
+
+    public function executeTaisys(sfWebrequest $request) {
+
+        $taisys = new Taisys();
+
+        $taisys->setServ($request->getParameter('serv'));
+        $taisys->setImsi($request->getParameter('imsi'));
+        $taisys->setDn($request->getParameter('dest'));
+        $taisys->setSmscontent($request->getParameter('content'));
+        $taisys->setChecksum($request->getParameter('mac'));
+        $taisys->setChecksumVerification(true);
+
+        $taisys->save();
+
+        $data = array(
+            'S' => 'H',
+            'UN' => 'zapna1',
+            'P' => 'Zapna2010',
+            'DA' => $taisys->getDn(),
+            'SA' => 'Zerocall',
+            'M' => $taisys->getSmscontent(),
+            'ST' => '5'
+        );
+
+
+        $queryString = http_build_query($data, '', '&');
+        $queryString = smsCharacter::smsCharacterReplacement($queryString);
+        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+        $this->res_cbf = 'Response from CBF is: ';
+        $this->res_cbf .= $res;
+
+        echo $this->res_cbf;
+        return sfView::NONE;
+    }
+
+    public function executeSmsCode(sfWebRequest $request) {
+
+        $c = new Criteria();
+        $agents = AgentCompanyPeer::doSelect($c);
+
+        $count = 1;
+        foreach ($agents as $agent) {
+            $cvr = $agent->getCvrNumber();
+            if (strlen($cvr) == 4) {
+                $agent->setSmsCode($cvr);
+                $agent->save();
+            } else {
+                $cvr = substr($cvr, 0, 4);
+                $agent->setSmsCode($cvr);
+                $agent->save();
+            }
+            echo $agent->getCvrNumber();
+            echo ' : ';
+            echo $cvr;
+            echo '<br/>';
+            $count = $count + 1;
+        }
+
+        return sfView::NONE;
+    }
+
+    public function executeDeleteValues(sfWebRequest $request) {
+
+        $c = new Criteria();
+        $orders = CustomerOrderPeer::doSelect($c);
+
+        foreach ($orders as $order) {
+            $cr = new Criteria();
+            $cr->add(CustomerPeer::ID, $order->getCustomerId());
+            $customer = CustomerPeer::doSelectOne($cr);
+
+            if (!$customer) {
+                //$order->delete();
+                echo $order->getCustomerId();
+                echo "<br/>";
+            }
+        }
+
+        echo "transactions";
+        $ct = new Criteria();
+        $transactions = TransactionPeer::doSelect($ct);
+
+        foreach ($transactions as $transaction) {
+            $cr = new Criteria();
+            $cr->add(CustomerPeer::ID, $transaction->getCustomerId());
+            $customer = CustomerPeer::doSelectOne($cr);
+
+            if (!$customer) {
+                //$transaction->delete();
+                echo $transaction->getCustomerId();
+                echo "<br/>";
+            }
+        }
+
+        echo "customer products";
+        $cp = new Criteria();
+        $cps = CustomerProductPeer::doSelect($cp);
+
+        foreach ($cps as $cp) {
+            $cr = new Criteria();
+            $cr->add(CustomerPeer::ID, $cp->getCustomerId());
+            $customer = CustomerPeer::doSelectOne($cr);
+
+            if (!$customer) {
+                //$cp->delete();
+                echo $cp->getCustomerId();
+                echo "<br/>";
+            }
+        }
+
+        return sfView::NONE;
+    }
+
+    public function executeRegistrationType(sfWebRequest $request) {
+
+        $c = new Criteria();
+        $customers = CustomerPeer::doSelect($c);
+
+        foreach ($customers as $customer) {
+            if ($customer->getReferrerId()) {
+                if (!$customer->getRegistrationTypeId()) {
+                    $customer->setRegistrationTypeId(2);
+                    $customer->save();
+                }
+            } else {
+                $customer->setRegistrationTypeId(1);
+                $customer->save();
+            }
+        }
+        return sfView::NONE;
+    }
+
+    public function executeGetBalanceAll() {
+
+        $balance = 0;
+        $total_unassigned = 0;
+        $total_assigned = 0;
+
+        $c = new Criteria();
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $customers = CustomerPeer::doSelect($c);
+
+        echo "Total customers: " . count($customers);
+        foreach ($customers as $customer) {
+            $balance = Fonet::getBalance($customer);
+            if ($balance > 0) {
+                echo "<br/>";
+                echo "Registered: " . $customer->getMobileNumber() . ", Balance: " . $balance;
+                $total_assigned++;
+            } else {
+                echo "<br/>";
+                echo "Not Registered: " . $customer->getMobileNumber() . ", Balance: " . $balance;
+                $total_unassigned++;
+            }
+        }
+
+        echo "<br/>";
+        echo "Total UnRegistered: " . $total_unassigned++;
+        echo "<br/>";
+        echo "Total Registered: " . $total_assigned++;
+    }
+
+    public function executeRescueRegister() {
+
+        $balance = 0;
+        $already_registered = 0;
+        $newly_registered = 0;
+        $not_registered = 0;
+
+        $c = new Criteria();
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 0, Criteria::GREATER_THAN);
+        $customers = CustomerPeer::doSelect($c);
+
+        echo "Total customers: " . count($customers);
+
+        foreach ($customers as $customer) {
+
+            $balance = Fonet::getBalance($customer);
+            if ($balance > 0) {
+                echo "<br/>";
+                echo++$already_registered . ") Already Registered: " . $customer->getMobileNumber() . ", Balance: " . $balance;
+                echo "<br/>";
+            } else {
+                echo "<br/>";
+                echo++$not_registered . ") Not Registered: " . $customer->getMobileNumber() . ", Balance: " . $balance;
+
+
+                $query_vars = array(
+                    'Action' => 'Activate',
+                    'ParentCustomID' => 1393238,
+                    'AniNo' => $customer->getMobileNumber(),
+                    'DdiNo' => 25998893,
+                    'CustomID' => $customer->getFonetCustomerId()
+                );
+
+                $url = 'http://fax.fonet.dk/cgi-bin/ZeroCallV2Control.pl' . '?' . http_build_query($query_vars);
                 $res = file_get_contents($url);
                 echo "<br/>";
-                echo 'Registered :'.$customer->getMobileNumber().", status: ".substr($res,0,2);
-                echo ++$newly_registered;
-
+                echo 'Registered :' . $customer->getMobileNumber() . ", status: " . substr($res, 0, 2);
+                echo++$newly_registered;
             }
-            
-            
         }
-    
-}
+    }
 
-public function executeRescueDefaultBalance(sfWebRequest $request){
+    public function executeRescueDefaultBalance(sfWebRequest $request) {
 
-    $balance=0;
-    $already_registered = 0;
-    $newly_registered=0;
-    $not_registered=0;
+        $balance = 0;
+        $already_registered = 0;
+        $newly_registered = 0;
+        $not_registered = 0;
 
-    $c = new Criteria();
-    $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-    $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 0, Criteria::GREATER_THAN);
-    $customers = CustomerPeer::doSelect($c);
+        $c = new Criteria();
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 0, Criteria::GREATER_THAN);
+        $customers = CustomerPeer::doSelect($c);
 
-    echo "Total customers: ".count($customers);
+        echo "Total customers: " . count($customers);
 
-    foreach($customers as $customer){
+        foreach ($customers as $customer) {
 
-        $balance = Fonet::getBalance($customer);
-        if ($balance > 0){
-            echo "<br/>";
-            echo ++$already_registered.") Already Registered: ".$customer->getMobileNumber().", Balance: ".$balance;
-            echo "<br/>";
+            $balance = Fonet::getBalance($customer);
+            if ($balance > 0) {
+                echo "<br/>";
+                echo++$already_registered . ") Already Registered: " . $customer->getMobileNumber() . ", Balance: " . $balance;
+                echo "<br/>";
+            } else {
+                $cp = new Criteria();
+                $cp->add(CustomerProductPeer::PRODUCT_ID, 7, Criteria::NOT_EQUAL);
+                $cp->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
+                $customer_product = CustomerProductPeer::doSelectOne($cp);
 
-        }else{
-            $cp = new Criteria();
-            $cp->add(CustomerProductPeer::PRODUCT_ID, 7, Criteria::NOT_EQUAL);
-            $cp->add(CustomerProductPeer::CUSTOMER_ID, $customer->getId());
-            $customer_product = CustomerProductPeer::doSelectOne($cp);
-
-            if($customer_product){
-                $query_vars = array(
-                            'Action'=>'Recharge',
-                            'ParentCustomID'=>1393238,
-                            'CustomID'=>$customer->getFonetCustomerId(),
-                            'ChargeValue'=>20*100
+                if ($customer_product) {
+                    $query_vars = array(
+                        'Action' => 'Recharge',
+                        'ParentCustomID' => 1393238,
+                        'CustomID' => $customer->getFonetCustomerId(),
+                        'ChargeValue' => 20 * 100
                     );
 
-                    $url = 'http://fax.fonet.dk/cgi-bin/ZeroCallV2Control.pl'.'?'.http_build_query($query_vars);
+                    $url = 'http://fax.fonet.dk/cgi-bin/ZeroCallV2Control.pl' . '?' . http_build_query($query_vars);
                     $res = file_get_contents($url);
                     echo "<br/>";
-                    echo ++$balance_assigned.')Recharged :'.$customer->getMobileNumber().", status: ".substr($res,0,2);
+                    echo++$balance_assigned . ')Recharged :' . $customer->getMobileNumber() . ", status: " . substr($res, 0, 2);
                     echo "<br/>";
-
+                }
+            }
         }
-
-}
-
     }
-}
 
-public function getEnableCountryId($calingcode){
-      // echo $full_mobile_number = $calingcode;
-       $enableCountry = new Criteria();
-       $enableCountry->add(EnableCountryPeer::STATUS, 1);
-       $enableCountry->add(EnableCountryPeer::LANGUAGE_SYMBOL,'en',Criteria::NOT_EQUAL);
-       $enableCountry->add(EnableCountryPeer::CALLING_CODE, '%'.$calingcode.'%', Criteria::LIKE);
-       $country_id = EnableCountryPeer::doSelectOne($enableCountry);
-       $countryId = $country_id->getId();
-       return $countryId;
- 
-}
+    public function getEnableCountryId($calingcode) {
+        // echo $full_mobile_number = $calingcode;
+        $enableCountry = new Criteria();
+        $enableCountry->add(EnableCountryPeer::STATUS, 1);
+        $enableCountry->add(EnableCountryPeer::LANGUAGE_SYMBOL, 'en', Criteria::NOT_EQUAL);
+        $enableCountry->add(EnableCountryPeer::CALLING_CODE, '%' . $calingcode . '%', Criteria::LIKE);
+        $country_id = EnableCountryPeer::doSelectOne($enableCountry);
+        $countryId = $country_id->getId();
+        return $countryId;
+    }
 
-
-public function executeSmsRegisterationwcb(sfWebrequest $request) {
+    public function executeSmsRegisterationwcb(sfWebrequest $request) {
         $urlval = "WCR-" . $request->getURI();
         $dibsCall = new DibsCall();
         $dibsCall->setCallurl($urlval);
@@ -1720,8 +1585,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
                 $uc->addAnd(UniqueIdsPeer::STATUS, 0);
                 $callbackq = UniqueIdsPeer::doCount($uc);
-            if ($callbackq== 1) {
-               $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+                if ($callbackq == 1) {
+                    $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
                     $pc = new Criteria();
                     $pc->add(ProductPeer::SMS_CODE, "50");
                     $product = ProductPeer::doSelectOne($pc);
@@ -1794,13 +1659,13 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     $smsText = str_replace("(password)", $password, $smsText);
                     ROUTED_SMS::Send($number, $smsText);
                     emailLib::sendCustomerRegistrationViaRetail($customer, $order);
-                die;
-            }
+                    die;
+                }
 
                 $smstext = SmsTextPeer::retrieveByPK(1);
                 echo $smstext->getMessageText();
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
-                $message="Unique Id not found<br>".$smstext->getMessageText()."<br>".$urlval;
+                $message = "Unique Id not found<br>" . $smstext->getMessageText() . "<br>" . $urlval;
                 emailLib::sendErrorInAutoReg("HC Error:", $message);
                 die;
             }
@@ -1814,7 +1679,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
                 echo $smstext->getMessageText();
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
-                $message="Unique Id not found<br>".$smstext->getMessageText()."<br>".$urlval;
+                $message = "Unique Id not found<br>" . $smstext->getMessageText() . "<br>" . $urlval;
                 emailLib::sendErrorInAutoReg("HC Error:", $message);
                 die;
             }
@@ -1850,8 +1715,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $dialerIdLenght = strlen($textParamter);
             $uniqueId = substr($textParamter, 3);
             echo "<br/>";
-            echo $uniqueId."<hr/>";
-            
+            echo $uniqueId . "<hr/>";
+
             $callbackq = new Criteria();
             $callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
             $callbackq = CallbackLogPeer::doCount($callbackq);
@@ -1859,7 +1724,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($callbackq < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
-                $message="Unique Id not found<br>".$smstext->getMessageText()."<br>".$urlval;
+                $message = "Unique Id not found<br>" . $smstext->getMessageText() . "<br>" . $urlval;
                 emailLib::sendErrorInAutoReg("IC Error:", $message);
                 die;
             }
@@ -1872,7 +1737,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($cusCount < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
-                $message="Customer is not exist<br>".$smstext->getMessageText()."<br>".$urlval;
+                $message = "Customer is not exist<br>" . $smstext->getMessageText() . "<br>" . $urlval;
                 emailLib::sendErrorInAutoReg("IC Error:", $message);
                 die;
             }
@@ -1884,7 +1749,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $callbacklog->setcallingCode(46);
             $callbacklog->save();
 
-            Telienta::createCBAccount($number, $customer,11648);  //11648 is Call back product for IC call
+            Telienta::createCBAccount($number, $customer, 11648);  //11648 is Call back product for IC call
 
             $telintaGetBalance = Telienta::getBalance($customer);
 
@@ -1914,11 +1779,11 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
 
             $text = $this->hextostr($request->getParameter('text'));
             $splitedText = explode(";", $text);
-            if ($splitedText[3] != sfConfig::get("app_dialer_pin") && $splitedText[3] != "9998888999" && $splitedText[4] != sfConfig::get("app_dialer_pin") && $splitedText[4] != "9998888999" ) {
+            if ($splitedText[3] != sfConfig::get("app_dialer_pin") && $splitedText[3] != "9998888999" && $splitedText[4] != sfConfig::get("app_dialer_pin") && $splitedText[4] != "9998888999") {
                 echo "Invalid Request Dialer Pin<br/>";
                 $sms = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $sms->getMessageText());
-                $message="Invalid Request Dialer Pin<br/>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                $message = "Invalid Request Dialer Pin<br/>" . $sms->getMessageText() . "<br>Mobile Number=" . $number . "<br>Text=" . $text;
                 emailLib::sendErrorInAutoReg("Auto Registration Error:", $message);
                 die;
             }
@@ -1929,37 +1794,37 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             echo "<hr/>";
             echo count($splitedText);
             echo "<hr/>";
-            if(count($splitedText)==4){
+            if (count($splitedText) == 4) {
                 $dialerIdLenght = strlen($splitedText[0]);
                 $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
-                echo "uniqueid:". $uniqueId;
-            }else{
-                echo strtolower(substr($splitedText[0],0,2));
+                echo "uniqueid:" . $uniqueId;
+            } else {
+                echo strtolower(substr($splitedText[0], 0, 2));
                 echo "<br/>";
                 echo $splitedText[0];
-                if(strtolower(substr($splitedText[0],0,2))=="re" && strlen($splitedText[0])==12){
+                if (strtolower(substr($splitedText[0], 0, 2)) == "re" && strlen($splitedText[0]) == 12) {
                     $dialerIdLenght = strlen($splitedText[0]);
-                    echo $location=4;
+                    echo $location = 4;
                     echo "<br/>";
                     $uniqueId = substr($splitedText[0], $dialerIdLenght - 6, $dialerIdLenght - 1);
-                    echo "uniqueid:". $uniqueId;
-                }else{
+                    echo "uniqueid:" . $uniqueId;
+                } else {
                     $dialerIdLenght = strlen($splitedText[1]);
-                    echo "DialerLenght:".$dialerIdLenght."<br/>";
+                    echo "DialerLenght:" . $dialerIdLenght . "<br/>";
                     $uniqueId = substr($splitedText[1], $dialerIdLenght - 6, $dialerIdLenght - 1);
-                    echo $location=5;
+                    echo $location = 5;
                     echo "<br/>";
-                    echo "uniqueid:". $uniqueId;
+                    echo "uniqueid:" . $uniqueId;
                 }
             }
-            
+
             $c = new Criteria();
             $c->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
             $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
             $c->addAnd(CustomerPeer::UNIQUEID, $uniqueId);
 
 
-            if ($dialerIdLenght == 10 && count($splitedText)==4) {
+            if ($dialerIdLenght == 10 && count($splitedText) == 4) {
                 echo "Register Customer<br/>";
                 //Registration Call, Register Customer In this block
                 $uc = new Criteria();
@@ -1973,7 +1838,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     echo "Unique Id Not Found";
                     $sms = SmsTextPeer::retrieveByPK(13);
                     ROUTED_SMS::Send($number, $sms->getMessageText());
-                    $message="Unique Id Not Found<br>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                    $message = "Unique Id Not Found<br>" . $sms->getMessageText() . "<br>Mobile Number=" . $number . "<br>Text=" . $text;
                     emailLib::sendErrorInAutoReg("Auto Registration Error:", $message);
                     die;
                 }
@@ -2069,7 +1934,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     $sms = SmsTextPeer::retrieveByPK(6);
                     $smsText = $sms->getMessageText();
                     ROUTED_SMS::Send($number, $smsText);
-                    $message="Unique Id Not Found<br>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                    $message = "Unique Id Not Found<br>" . $sms->getMessageText() . "<br>Mobile Number=" . $number . "<br>Text=" . $text;
                     emailLib::sendErrorInAutoReg("Auto Registration Error:", $message);
                     die;
                 }
@@ -2092,53 +1957,51 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     echo "<hr/>";
                     $customer = CustomerPeer::doSelectOne($c);
                     if ($command == "cb") {
-                      
+
                         echo "Check Balance Request<br/>";
                         $balance = Telienta::getBalance($customer);
                         $sms = SmsTextPeer::retrieveByPK(5);
                         $smsText = $sms->getMessageText();
                         $smsText = str_replace("(balance)", $balance, $smsText);
-                         $number;
+                        $number;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                      $c = new Criteria();
-                      $c->add(SmsLogPeer::MOBILE_NUMBER, $number);
-                      $c->addAnd(SmsLogPeer::SMS_TYPE, 2);
-                      $c->addDescendingOrderByColumn(SmsLogPeer::CREATED_AT);
-                       $value=SmsLogPeer::doCount($c);
+                        $c = new Criteria();
+                        $c->add(SmsLogPeer::MOBILE_NUMBER, $number);
+                        $c->addAnd(SmsLogPeer::SMS_TYPE, 2);
+                        $c->addDescendingOrderByColumn(SmsLogPeer::CREATED_AT);
+                        $value = SmsLogPeer::doCount($c);
 
-                      if($value>0){
-                         $smsRow=SmsLogPeer::doSelectOne($c);
-                         $createdAtValue= $smsRow->getCreatedAt();
-                         echo   $date1 =$createdAtValue;
-                         $asd=0;
-                            $d1=$date1;
-                            $d2=date("Y-m-d h:m:s");
-                            $asd=((strtotime($d2)-strtotime($d1))/3600);
-                            $asd=intval($asd);
+                        if ($value > 0) {
+                            $smsRow = SmsLogPeer::doSelectOne($c);
+                            $createdAtValue = $smsRow->getCreatedAt();
+                            echo $date1 = $createdAtValue;
+                            $asd = 0;
+                            $d1 = $date1;
+                            $d2 = date("Y-m-d h:m:s");
+                            $asd = ((strtotime($d2) - strtotime($d1)) / 3600);
+                            $asd = intval($asd);
 
 
-                            if($asd>3){
-                                ROUTED_SMS::Send($number, $smsText,null,2);
+                            if ($asd > 3) {
+                                ROUTED_SMS::Send($number, $smsText, null, 2);
                                 die;
                             }
-
-                      }else{
-                          ROUTED_SMS::Send($number, $smsText,null,2);
-                          die;
-                      }
+                        } else {
+                            ROUTED_SMS::Send($number, $smsText, null, 2);
+                            die;
+                        }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                      
                     } elseif ($command == "re") {
                         echo "Recharge Request<br/>";
                         $cc = new Criteria();
 
-                        if(count($splitedText)==5){
-                           $cardNumber= $splitedText[4];
-                        }else{
-                            $cardNumber= $splitedText[$location];
+                        if (count($splitedText) == 5) {
+                            $cardNumber = $splitedText[4];
+                        } else {
+                            $cardNumber = $splitedText[$location];
                         }
 
-                        $cc->add(CardNumbersPeer::CARD_NUMBER,"00880".$cardNumber);
+                        $cc->add(CardNumbersPeer::CARD_NUMBER, "00880" . $cardNumber);
                         $cc->addAnd(CardNumbersPeer::STATUS, 0);
                         if (CardNumbersPeer::doCount($cc) == 1) {
                             $scratchCard = CardNumbersPeer::doSelectOne($cc);
@@ -2181,14 +2044,14 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                                 echo "Unable to charge";
                                 $sms = SmsTextPeer::retrieveByPK(8);
                                 ROUTED_SMS::Send($number, $sms->getMessageText());
-                                $message="Unable to charge<br/>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                                $message = "Unable to charge<br/>" . $sms->getMessageText() . "<br>Mobile Number=" . $number . "<br>Text=" . $text;
                                 emailLib::sendErrorInAutoReg("Auto Refill Error:", $message);
                             }
                         } else {
                             echo "CARD ALREADY USED<br/>";
                             $sms = SmsTextPeer::retrieveByPK(7);
                             ROUTED_SMS::Send($number, $sms->getMessageText());
-                            $message="CARD ALREADY USED<br/>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                            $message = "CARD ALREADY USED<br/>" . $sms->getMessageText() . "<br>Mobile Number=" . $number . "<br>Text=" . $text;
                             emailLib::sendErrorInAutoReg("Auto Refill Error:", $message);
                         }
                         die;
@@ -2197,20 +2060,20 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     echo "Invalid Command 1";
                     $sms = SmsTextPeer::retrieveByPK(7);
                     ROUTED_SMS::Send($number, $sms->getMessageText());
-                    $message="Invalid Command 1<br/>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                    $message = "Invalid Command 1<br/>" . $sms->getMessageText() . "<br>Mobile Number=" . $number . "<br>Text=" . $text;
                     emailLib::sendErrorInAutoReg("Auto Refill or Balance Check Error:", $message);
                     die;
                 }
             }
         }
-         return sfView::NONE;
+        return sfView::NONE;
     }
 
-public function executeSmsRegisterationsmscb(sfWebrequest $request){
+    public function executeSmsRegisterationsmscb(sfWebrequest $request) {
 
 
 
-     $urlval = "WCR-CB-" . $request->getURI();
+        $urlval = "WCR-CB-" . $request->getURI();
 
         $email2 = new DibsCall();
         $email2->setCallurl($urlval);
@@ -2219,346 +2082,339 @@ public function executeSmsRegisterationsmscb(sfWebrequest $request){
 
 
 
-       
-    $sms_text="";
-   $number = $request->getParameter('from');
-    $mtnumber = $request->getParameter('from');
-    $frmnumberTelinta = $request->getParameter('from');
-	 $text = $request->getParameter('text');
+
+        $sms_text = "";
+        $number = $request->getParameter('from');
+        $mtnumber = $request->getParameter('from');
+        $frmnumberTelinta = $request->getParameter('from');
+        $text = $request->getParameter('text');
 
 
-          if(isset($number) && $number!=""){
+        if (isset($number) && $number != "") {
+            
+        } else {
+            echo "Error,Cannot make callback! from number is missing";
+            die;
+        }
+        if (isset($text) && $text != "") {
+            
+        } else {
+            echo "Error,Cannot make callback! To number is missing";
+            die;
+        }
 
+        $caltype = substr($text, 0, 2);
 
-        }else{
-echo "Error,Cannot make callback! from number is missing";
-die;
-    }
-     if(isset($text) && $text!=""){
+        $numberlength = strlen($number);
 
-
-        }else{
-echo "Error,Cannot make callback! To number is missing";
-die;
-    }
-
-      $caltype=substr($text,0,2);
-
-     $numberlength=strlen($number);
-
-      $endnumberlength=$numberlength-2;
+        $endnumberlength = $numberlength - 2;
 
 
 
 
 
-            $mobile = "";
-            $number = $request->getParameter('from');
-            $message = $request->getParameter('text');
+        $mobile = "";
+        $number = $request->getParameter('from');
+        $message = $request->getParameter('text');
 
 
-            if (isset($number) && $number != "") {
-                $mnc = new Criteria();
-                $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
-                $cus = CallbackLogPeer::doSelectOne($mnc);
-            }
-            if (isset($cus) && $cus != "") {
-
-                 
-                $customerid = $cus->getId();
-             
-                if (isset($customerid) && $customerid != "") {
-
- 
-
-                    $fromcbnumber = 'cb' . $number;
-                    $firstnumbernumber =$number;
-                    $secondnumber =$message;
-                    $form = new Curl_HTTP_Client();
-
-                    $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
-                    $form->set_referrer("http://landncall.zerocall.com");
-                    $post_data = array(
-                        'Account' => $fromcbnumber,
-                        'Password' => 'asdf1asd',
-                        'Action' => 'Connect Us Now!',
-                        'First_Phone_Number' => $firstnumbernumber,
-                        'Second_Phone_Number' => $secondnumber
-                    );
+        if (isset($number) && $number != "") {
+            $mnc = new Criteria();
+            $mnc->add(CallbackLogPeer::MOBILE_NUMBER, $number);
+            $cus = CallbackLogPeer::doSelectOne($mnc);
+        }
+        if (isset($cus) && $cus != "") {
 
 
-                    echo $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
+            $customerid = $cus->getId();
+
+            if (isset($customerid) && $customerid != "") {
 
 
-                    die;
-                }
-            }
 
-            if (!$cus) {
-               
+                $fromcbnumber = 'cb' . $number;
+                $firstnumbernumber = $number;
+                $secondnumber = $message;
+                $form = new Curl_HTTP_Client();
 
-               // $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
-                $sm = new Criteria();
-                $sm->add(SmsTextPeer::ID, 4);
-                    $smstext = SmsTextPeer::doSelectOne($sm);
-                    $sms_text = $smstext->getMessageText();
-                $data = array(
-                    'S' => 'H',
-                    'UN' => 'zapna1',
-                    'P' => 'Zapna2010',
-                    'DA' => $number,
-                    'SA' => 'LandNcall',
-                    'M' => $sms_text,
-                    'ST' => '5'
+                $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
+                $form->set_referrer("http://landncall.zerocall.com");
+                $post_data = array(
+                    'Account' => $fromcbnumber,
+                    'Password' => 'asdf1asd',
+                    'Action' => 'Connect Us Now!',
+                    'First_Phone_Number' => $firstnumbernumber,
+                    'Second_Phone_Number' => $secondnumber
                 );
 
-                $queryString = http_build_query($data, '', '&');
-                $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                echo  "Error,Cannot make callback!";
-                $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
-               die;
+
+                echo $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
+
+
+                die;
             }
-            
+        }
 
- 
- return sfView::NONE;
-
-}
-
-public function executeWebcall(sfWebrequest $request){
-
-  
-  $dest="";
-  $mac="";
-  $imsi = "";
-
-      $imsi = $request->getParameter('imsi');
-	$dest = $request->getParameter('dest');
+        if (!$cus) {
 
 
-  
+            // $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
+            $sm = new Criteria();
+            $sm->add(SmsTextPeer::ID, 4);
+            $smstext = SmsTextPeer::doSelectOne($sm);
+            $sms_text = $smstext->getMessageText();
+            $data = array(
+                'S' => 'H',
+                'UN' => 'zapna1',
+                'P' => 'Zapna2010',
+                'DA' => $number,
+                'SA' => 'LandNcall',
+                'M' => $sms_text,
+                'ST' => '5'
+            );
 
-   $mac = $request->getParameter('mac');
-  	//$dest = str_replace('+','000',$dest);
-
-
-	//echo $imsi;
-	$mnc = new Criteria();
-	$mnc->add(CallbackLogPeer::IMSI, $imsi);
-	$cus = CallbackLogPeer::doSelectOne($mnc);
-	$mbno=$cus->getMobileNumber();
+            $queryString = http_build_query($data, '', '&');
+            $queryString = smsCharacter::smsCharacterReplacement($queryString);
+            echo "Error,Cannot make callback!";
+            $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+            die;
+        }
 
 
 
+        return sfView::NONE;
+    }
+
+    public function executeWebcall(sfWebrequest $request) {
+
+
+        $dest = "";
+        $mac = "";
+        $imsi = "";
+
+        $imsi = $request->getParameter('imsi');
+        $dest = $request->getParameter('dest');
 
 
 
-       if(isset($mbno) && $mbno!=""){
+
+        $mac = $request->getParameter('mac');
+        //$dest = str_replace('+','000',$dest);
+        //echo $imsi;
+        $mnc = new Criteria();
+        $mnc->add(CallbackLogPeer::IMSI, $imsi);
+        $cus = CallbackLogPeer::doSelectOne($mnc);
+        $mbno = $cus->getMobileNumber();
 
 
-           $calllog = new CallLog();
-			$calllog->setMobileNumber($mbno);
-			$calllog->setmac($mac);
-                        $calllog->setimsi($imsi);
-			$calllog->setdest($dest);
-			$calllog->save();
-           
-		   $mobileno=$cus->getMobileNumber();
-			
-    		 echo $url = 'http://im.zerocall.com/webcall/webcall.php?serv=wcb&IMSI=00'.$mobileno.'&dest=00'.$dest.'&MAC';
-                echo $res = file_get_contents($url);
-			echo  "Please hold, we are connecting your call<br/><br/>";
-			?><img src="http://landncall.zapna.com/images/logo.gif" /><?php
-  		}else{
-			echo 'We are not able to process your call, because you are not a registered customer';
-		}
 
-      return sfView::NONE;
-      
-}
 
-public function executeCustomerBilling(sfWebRequest $request){
 
-                
-		
-                $cc = new Criteria();
-                $cc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-                $customers = CustomerPeer::doSelect($cc);
 
-                foreach ($customers as $customer){
+        if (isset($mbno) && $mbno != "") {
 
-                echo "customer id: ".$customer->getId();
-                echo "<br/>";
-                
-                $unid   =  $customer->getUniqueid();
-                if(isset($unid) && $unid!=""){
+
+            $calllog = new CallLog();
+            $calllog->setMobileNumber($mbno);
+            $calllog->setmac($mac);
+            $calllog->setimsi($imsi);
+            $calllog->setdest($dest);
+            $calllog->save();
+
+            $mobileno = $cus->getMobileNumber();
+
+            echo $url = 'http://im.zerocall.com/webcall/webcall.php?serv=wcb&IMSI=00' . $mobileno . '&dest=00' . $dest . '&MAC';
+            echo $res = file_get_contents($url);
+            echo "Please hold, we are connecting your call<br/><br/>";
+            ?><img src="http://landncall.zapna.com/images/logo.gif" /><?php
+        } else {
+            echo 'We are not able to process your call, because you are not a registered customer';
+        }
+
+        return sfView::NONE;
+    }
+
+    public function executeCustomerBilling(sfWebRequest $request) {
+
+
+
+        $cc = new Criteria();
+        $cc->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $customers = CustomerPeer::doSelect($cc);
+
+        foreach ($customers as $customer) {
+
+            echo "customer id: " . $customer->getId();
+            echo "<br/>";
+
+            $unid = $customer->getUniqueid();
+            if (isset($unid) && $unid != "") {
                 $un = new Criteria();
                 $un->add(CallbackLogPeer::UNIQUEID, $unid);
-                $un -> addDescendingOrderByColumn(CallbackLogPeer::CREATED);
+                $un->addDescendingOrderByColumn(CallbackLogPeer::CREATED);
                 $unumber = CallbackLogPeer::doSelectOne($un);
 
 
                 $cdrc = new Criteria();
-                $cdrc->add(ZerocallCdrPeer::ANI, "00".$unumber->getMobileNumber());
-                $cdrc->add(ZerocallCdrPeer::EXECUTE_STATUS,1);                
+                $cdrc->add(ZerocallCdrPeer::ANI, "00" . $unumber->getMobileNumber());
+                $cdrc->add(ZerocallCdrPeer::EXECUTE_STATUS, 1);
                 $cdrs = ZerocallCdrPeer::doSelect($cdrc);
 
-                
-                foreach ($cdrs as $cdr){
-                
-                
-                $rateId=0;
-                $terminal=10;
-                $count=1;
-                $ratings=NULL;
-                $number = $cdr->getExtension();
-                echo "number ".$number;
-                echo "<br/>";
-                //$number=str_replace(' ','',str_replace('-','',str_replace(')','',str_replace('(','',$number))));
-                while($terminal>1){
-                     $tcnumber=substr($number,2,$count);
-                     echo "partial number ".$tcnumber;
-                     echo "<br/>";
 
-                      $r = new Criteria();
-                      $r->add(CallRateTablePeer::DESTINATION_NO_FROM,  '%'.$tcnumber.'%', Criteria::LIKE);
-                      $terminal = CallRateTablePeer::doCount($r);
-                      echo "terminal ".$terminal;
-                      echo "<br/>";
-                    if($terminal>=1){
-                        $ratings=CallRateTablePeer::doSelect($r);
-                        foreach ($ratings as $rating){
-                            $rateId =$rating->getCallRateTableId();
+                foreach ($cdrs as $cdr) {
 
+
+                    $rateId = 0;
+                    $terminal = 10;
+                    $count = 1;
+                    $ratings = NULL;
+                    $number = $cdr->getExtension();
+                    echo "number " . $number;
+                    echo "<br/>";
+                    //$number=str_replace(' ','',str_replace('-','',str_replace(')','',str_replace('(','',$number))));
+                    while ($terminal > 1) {
+                        $tcnumber = substr($number, 2, $count);
+                        echo "partial number " . $tcnumber;
+                        echo "<br/>";
+
+                        $r = new Criteria();
+                        $r->add(CallRateTablePeer::DESTINATION_NO_FROM, '%' . $tcnumber . '%', Criteria::LIKE);
+                        $terminal = CallRateTablePeer::doCount($r);
+                        echo "terminal " . $terminal;
+                        echo "<br/>";
+                        if ($terminal >= 1) {
+                            $ratings = CallRateTablePeer::doSelect($r);
+                            foreach ($ratings as $rating) {
+                                $rateId = $rating->getCallRateTableId();
+                            }
                         }
+                        if ($terminal == 0) {
+                            
+                        }
+                        $count = $count + 1;
                     }
-                    if($terminal==0){
 
+
+                    $rc = new Criteria();
+                    $rc->add(CallRateTablePeer::CALL_RATE_TABLE_ID, $rateId);
+                    $call_rate_table = CallRateTablePeer::doSelectOne($rc);
+                    $billing = new Billing();
+                    $billing->setCostPerMinute($call_rate_table->getRate());
+                    $billing->setRateTableDescription($call_rate_table->getDestinationName());
+                    $billing->setRateTableId($call_rate_table->getCallRateTableId());
+
+
+
+
+
+                    $cost_per_minute = $billing->getCostPerMinute();
+                    $seconds = $cdr->getEndTimeB() - $cdr->getAnswerTimeB();
+                    if ($seconds < 0) {
+                        $seconds = $seconds * (-1);
                     }
-                    $count=$count+1;
-                }
-
-
-                $rc = new Criteria();
-                $rc->add(CallRateTablePeer::CALL_RATE_TABLE_ID, $rateId);
-                $call_rate_table = CallRateTablePeer::doSelectOne($rc);
-                $billing = new Billing();
-                $billing->setCostPerMinute($call_rate_table->getRate());
-                $billing->setRateTableDescription($call_rate_table->getDestinationName());
-                $billing->setRateTableId($call_rate_table->getCallRateTableId());
-
-
-
-
-
-                $cost_per_minute = $billing->getCostPerMinute();
-                $seconds = $cdr->getEndTimeB() - $cdr->getAnswerTimeB();
-                if($seconds < 0) {
-                      $seconds = $seconds * (-1);
-                }
-                    $minutes = floor($seconds/60);
-                    $secondsleft = $seconds%60;
-                if($minutes<10)
+                    $minutes = floor($seconds / 60);
+                    $secondsleft = $seconds % 60;
+                    if ($minutes < 10)
                         $minutes = "0" . $minutes;
-                if($secondsleft<10)
+                    if ($secondsleft < 10)
                         $secondsleft = "0" . $secondsleft;
-                 
-                $duration_minutes = $minutes.":".$secondsleft;
-                $billing_minutes = ceil($seconds/60);
 
-                $time =  date('Y-m-d H:i:s',$cdr->getEndTimeB());
-                echo "time: ".$time;
-                echo "<br/>";
+                    $duration_minutes = $minutes . ":" . $secondsleft;
+                    $billing_minutes = ceil($seconds / 60);
 
-                echo "fonet id: ".$customer->getFonetCustomerId();
-                echo "<br/>";
+                    $time = date('Y-m-d H:i:s', $cdr->getEndTimeB());
+                    echo "time: " . $time;
+                    echo "<br/>";
 
-                $current_balance = Fonet::getBalance($customer);
+                    echo "fonet id: " . $customer->getFonetCustomerId();
+                    echo "<br/>";
 
-                echo "current balance: ".$current_balance;
-                echo "<br/>";
+                    $current_balance = Fonet::getBalance($customer);
+
+                    echo "current balance: " . $current_balance;
+                    echo "<br/>";
 
 
 
-                $call_cost = $billing_minutes * $cost_per_minute;
+                    $call_cost = $billing_minutes * $cost_per_minute;
 
-                
-                echo "call cost: ".$call_cost;
-                echo "<br/>";
-                $recharge_amount = $call_cost;
-                 echo "recharge amount: ".$recharge_amount;
-                 echo "<br/>";
-                echo Fonet::recharge($customer, -($recharge_amount));
-                 echo "<br/>";
-                echo Fonet::getBalance($customer);
-                 echo "<br/>";
-                $cost = $billing_minutes * $billing->getCostPerMinute();
-                $vat = $cost/5;
 
-                $billing->setTime($time);
-                $billing->setCustomerId($customer->getId());
-                $billing->setMobileNumber($cdr->getAni());
-                $billing->setToNumber($cdr->getExtension());
-                $billing->getDurationSecond($seconds);
-                $billing->setDurationMinutes($duration_minutes);
-                $billing->setBillingMinutes($billing_minutes);
-                $billing->setBalanceBefore($current_balance);
-                $billing->setBalanceAfter($current_balance - $recharge_amount);
-                $billing->setBillingStatus(3);
-                $billing->setCdrId($cdr->getCdrKey());
-                $billing->setCallCost($cost);
-                $billing->setVat($vat);
-                $billing->save();
-                
+                    echo "call cost: " . $call_cost;
+                    echo "<br/>";
+                    $recharge_amount = $call_cost;
+                    echo "recharge amount: " . $recharge_amount;
+                    echo "<br/>";
+                    echo Fonet::recharge($customer, -($recharge_amount));
+                    echo "<br/>";
+                    echo Fonet::getBalance($customer);
+                    echo "<br/>";
+                    $cost = $billing_minutes * $billing->getCostPerMinute();
+                    $vat = $cost / 5;
+
+                    $billing->setTime($time);
+                    $billing->setCustomerId($customer->getId());
+                    $billing->setMobileNumber($cdr->getAni());
+                    $billing->setToNumber($cdr->getExtension());
+                    $billing->getDurationSecond($seconds);
+                    $billing->setDurationMinutes($duration_minutes);
+                    $billing->setBillingMinutes($billing_minutes);
+                    $billing->setBalanceBefore($current_balance);
+                    $billing->setBalanceAfter($current_balance - $recharge_amount);
+                    $billing->setBillingStatus(3);
+                    $billing->setCdrId($cdr->getCdrKey());
+                    $billing->setCallCost($cost);
+                    $billing->setVat($vat);
+                    $billing->save();
+
 
 
                     $cdr->setExecuteStatus(false);
                     $cdr->save();
                 }
-     
-                }
-}
+            }
+        }
 
-return sfView::NONE;
-}
+        return sfView::NONE;
+    }
 
- public static function updateLandncallBilling($number){
+    public static function updateLandncallBilling($number) {
 
-                         
+
+
+
+        $rateId = 0;
+        $terminal = 10;
+        $count = 1;
+        $ratings = NULL;
+
+        //$number=str_replace(' ','',str_replace('-','',str_replace(')','',str_replace('(','',$number))));
+        while ($terminal > 1) {
+            $tcnumber = substr($number, 2, $count);
+            $r = new Criteria();
+            $r->add(CallRateTablePeer::DESTINATION_NO_FROM, '%' . $tcnumber . '%', Criteria::LIKE);
+            $terminal = CallRateTablePeer::doCount($r);
+
+            if ($terminal == 1) {
+                $ratings = CallRateTablePeer::doSelect($r);
+            }
+            if ($terminal == 0) {
                 
-
-                $rateId=0;
-                $terminal=10;
-                $count=1;
-                $ratings=NULL;
-
-                //$number=str_replace(' ','',str_replace('-','',str_replace(')','',str_replace('(','',$number))));
-                while($terminal>1){
-                     $tcnumber=substr($number,2,$count);
-                      $r = new Criteria();
-                      $r->add(CallRateTablePeer::DESTINATION_NO_FROM,  '%'.$tcnumber.'%', Criteria::LIKE);
-                      $terminal = CallRateTablePeer::doCount($r);
-
-                    if($terminal==1){
-                        $ratings=CallRateTablePeer::doSelect($r);
-                    }
-                    if($terminal==0){
-
-                    }
-                    $count=$count+1;
-                }
-
-                
+            }
+            $count = $count + 1;
+        }
 
 
-                $billing = new Billing();
-                $billing->setCostPerMinute($rating->getRate());                
-                $billing->setRateTableDescription($ratings->getDestinationName());
-                $billing->setRateTableId($ratings->getCallRateTableId());
 
-                return $billing;
-}
-  public function executeAutorefil(sfWebRequest $request) {
+
+        $billing = new Billing();
+        $billing->setCostPerMinute($rating->getRate());
+        $billing->setRateTableDescription($ratings->getDestinationName());
+        $billing->setRateTableId($ratings->getCallRateTableId());
+
+        return $billing;
+    }
+
+    public function executeAutorefil(sfWebRequest $request) {
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         changeLanguageCulture::languageCulture($request, $this);
 
@@ -2590,55 +2446,52 @@ return sfView::NONE;
             $customers = CustomerPeer::doSelect($c);
 
             foreach ($customers as $customer) {
-                  
+
 //                echo "UniqueID:";
-                  $uniqueId = $customer->getUniqueid();
+                $uniqueId = $customer->getUniqueid();
 //                echo  $uniqueId ;
 //                echo "<br />";
-                $usid="";
-                    $usid=substr($uniqueId,0,2);
-                if ($usid=="us") {
-                     $Tes = ForumTel::getBalanceForumtel($customer->getId());
-                     if($Tes!=""){  
+                $usid = "";
+                $usid = substr($uniqueId, 0, 2);
+                if ($usid == "us") {
+                    $Tes = ForumTel::getBalanceForumtel($customer->getId());
+                    if ($Tes != "") {
                         $customer_balance = CurrencyConverter::convertUsdToSek($Tes);
 //                        echo "$uniqueId--ForumTel balance----".$Tes;                        
-                     } else{
+                    } else {
                         $customer_balance = null;
 //                        echo "$uniqueId--customer_balance----null---".$Tes;
-                     }  
-                     
-                  //  echo "ForumTel balance----".$Tes;
+                    }
+
+                    //  echo "ForumTel balance----".$Tes;
                     echo "<br />";
                 } else {
                     //echo "This is for Retrieve balance From Telinta"."<br/>";
-                   
-                 //  $customer_balance=Telienta::getBalance($customer);
+                    //  $customer_balance=Telienta::getBalance($customer);
 
-                     $retries = 0;
-                     $maxRetries = 5;
-                        do {
-                            $customer_balance = Telienta::getBalance($customer);
-                            $retries++;
-                          //  echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
-                            
-                        } while (!$customer_balance && $retries <= $maxRetries);
+                    $retries = 0;
+                    $maxRetries = 5;
+                    do {
+                        $customer_balance = Telienta::getBalance($customer);
+                        $retries++;
+                        //  echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+                    } while (!$customer_balance && $retries <= $maxRetries);
 
-                    if($retries==$maxRetries){
+                    if ($retries == $maxRetries) {
                         continue;
                     }
 //                   echo "$uniqueId--Telinta balance----".$customer_balance;
 //                   echo "<br />";
                 }
                 //   echo $uniqueId.":".$customer_balance."<br/>";
-
                 // $customer_balance = Fonet::getBalance($customer);
                 //if customer balance is less than 10
 //                echo "$customer->getAutoRefillMinBalance() customer mini autorefill balance<br />";
-                if ($customer_balance != null && (float)$customer_balance <= (float)$customer->getAutoRefillMinBalance()) {
+                if ($customer_balance != null && (float) $customer_balance <= (float) $customer->getAutoRefillMinBalance()) {
 
 
-                     echo "success condition---".$uniqueId.":".$customer_balance."<br/>";
-                     
+                    echo "success condition---" . $uniqueId . ":" . $customer_balance . "<br/>";
+
 
                     $customer_id = $customer->getId();
 
@@ -2687,7 +2540,6 @@ return sfView::NONE;
 //    'callbackurl' => "http://landncall.zerocall.com/b2c_dev.php/pScripts/autorefilconfirmation?accept=yes&subscriptionid=&orderid=$order_id&amount=$total",
 //    'accepturl' => "http://landncall.zerocall.com/b2c.php/"
 //);
-
                     //  'textreply' => true,
                     $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
                     $form->set_referrer("http://landncall.zerocall.com");
@@ -2696,7 +2548,6 @@ return sfView::NONE;
                         'amount' => $total,
                         'currency' => '752',
                         'orderid' => $order_id,
-                  
                         'account' => 'YTIP',
                         'status' => '',
                         'ticket' => $tickvalue,
@@ -2721,14 +2572,13 @@ return sfView::NONE;
         return sfView::NONE;
         // $this->setLayout(false);
     }
-         
-         ///////////////////////////////////////////////////////////////////////////////////////////////////////
-         
-      public function executeAutorefilconfirmation(sfWebRequest $request)
-  {
-    
-          //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
-            changeLanguageCulture::languageCulture($request,$this);
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public function executeAutorefilconfirmation(sfWebRequest $request) {
+
+        //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
+        changeLanguageCulture::languageCulture($request, $this);
 
 //
 //              $urlval = "autorefill-" . $request->getURI();
@@ -2738,138 +2588,134 @@ return sfView::NONE;
 //
 //        $email21->save();
 
-           $urlval=0;
-            $Parameters="Parameters-autorefil-URL-transactionNumber-OrderNumber-Amount".$request->getURI()."?transact=".$request->getParameter('transact')."&orderid=".$request->getParameter("orderid")."&amount=".$request->getParameter('amount');
-   
-         $email2 = new DibsCall();
-         $email2->setCallurl($Parameters);
+        $urlval = 0;
+        $Parameters = "Parameters-autorefil-URL-transactionNumber-OrderNumber-Amount" . $request->getURI() . "?transact=" . $request->getParameter('transact') . "&orderid=" . $request->getParameter("orderid") . "&amount=" . $request->getParameter('amount');
 
-            $email2->save();
-           $urlval=$request->getParameter('transact');
-            if(isset($urlval) && $urlval>0){
-         $order_id = $request->getParameter("orderid");
+        $email2 = new DibsCall();
+        $email2->setCallurl($Parameters);
 
-	  	$this->forward404Unless($order_id || $order_amount);
-                $orderscount=0;
-                $cr = new Criteria;
-               	$cr->add(CustomerOrderPeer::ID, $order_id);
-                $cr->addAnd(CustomerOrderPeer::ORDER_STATUS_ID, 1);
-	  	$orderscount = CustomerOrderPeer::doCount($cr);
+        $email2->save();
+        $urlval = $request->getParameter('transact');
+        if (isset($urlval) && $urlval > 0) {
+            $order_id = $request->getParameter("orderid");
 
-                if($orderscount>0){
+            $this->forward404Unless($order_id || $order_amount);
+            $orderscount = 0;
+            $cr = new Criteria;
+            $cr->add(CustomerOrderPeer::ID, $order_id);
+            $cr->addAnd(CustomerOrderPeer::ORDER_STATUS_ID, 1);
+            $orderscount = CustomerOrderPeer::doCount($cr);
 
-
-		$order = CustomerOrderPeer::retrieveByPK($order_id);
-
-	  	$order_amount = ((double)$request->getParameter('amount'))/100 ;
-
-	  	$this->forward404Unless($order);
-
-	  	$c = new Criteria;
-	  	$c->add(TransactionPeer::ORDER_ID, $order_id);
-
-	  	$transaction = TransactionPeer::doSelectOne($c);
-
-	  	//echo var_dump($transaction);
-
-	  	$order->setOrderStatusId(3); //completed
-	  	//$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 3)); //completed
-	  	$transaction->setTransactionStatusId(3); //completed
+            if ($orderscount > 0) {
 
 
+                $order = CustomerOrderPeer::retrieveByPK($order_id);
+
+                $order_amount = ((double) $request->getParameter('amount')) / 100;
+
+                $this->forward404Unless($order);
+
+                $c = new Criteria;
+                $c->add(TransactionPeer::ORDER_ID, $order_id);
+
+                $transaction = TransactionPeer::doSelectOne($c);
+
+                //echo var_dump($transaction);
+
+                $order->setOrderStatusId(3); //completed
+                //$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 3)); //completed
+                $transaction->setTransactionStatusId(3); //completed
 
 
-		if($transaction->getAmount() > $order_amount){
-	  		//error
-	  		$order->setOrderStatusId(5); //error in amount
-	  		$transaction->setTransactionStatusId(5); //error in amount
-	  		//$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 5)); //error in amount
 
 
-	  	} else if ($transaction->getAmount() < $order_amount){
-	  		//$extra_refill_amount = $order_amount;
-	  		$order->setExtraRefill($order_amount);
-	  		$transaction->setAmount($order_amount);
-	  	}
-		 //set active agent_package in case customer was registerred by an affiliate
-		  if ($order->getCustomer()->getAgentCompany())
-		  {
-		  	$order->setAgentCommissionPackageId($order->getCustomer()->getAgentCompany()->getAgentCommissionPackageId());
-		  }
+                if ($transaction->getAmount() > $order_amount) {
+                    //error
+                    $order->setOrderStatusId(5); //error in amount
+                    $transaction->setTransactionStatusId(5); //error in amount
+                    //$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 5)); //error in amount
+                } else if ($transaction->getAmount() < $order_amount) {
+                    //$extra_refill_amount = $order_amount;
+                    $order->setExtraRefill($order_amount);
+                    $transaction->setAmount($order_amount);
+                }
+                //set active agent_package in case customer was registerred by an affiliate
+                if ($order->getCustomer()->getAgentCompany()) {
+                    $order->setAgentCommissionPackageId($order->getCustomer()->getAgentCompany()->getAgentCommissionPackageId());
+                }
 
-		  //set subscription id in case 'use current c.c for future auto refills' is set to 1
-			  	//set auto_refill amount
-	  	 
-	  	$order->save();
-	  	$transaction->save();
+                //set subscription id in case 'use current c.c for future auto refills' is set to 1
+                //set auto_refill amount
 
-	$this->customer = $order->getCustomer();
-          $c = new Criteria;
-	  	$c->add(CustomerPeer::ID, $order->getCustomerId());
-	  	$customer = CustomerPeer::doSelectOne($c);
-               
-                 $customer->setLastAutoRefill(date('Y-m-d H:i:s'));
-  $customer->save();
-             echo "ag". $agentid=$customer->getReferrerId();
-                echo  "prid".   $productid=$order->getProductId();
-                echo  "trid".   $transactionid=$transaction->getId();
-                if(isset($agentid) && $agentid!=""){
+                $order->save();
+                $transaction->save();
+
+                $this->customer = $order->getCustomer();
+                $c = new Criteria;
+                $c->add(CustomerPeer::ID, $order->getCustomerId());
+                $customer = CustomerPeer::doSelectOne($c);
+
+                $customer->setLastAutoRefill(date('Y-m-d H:i:s'));
+                $customer->save();
+                echo "ag" . $agentid = $customer->getReferrerId();
+                echo "prid" . $productid = $order->getProductId();
+                echo "trid" . $transactionid = $transaction->getId();
+                if (isset($agentid) && $agentid != "") {
                     echo "getagentid";
-                commissionLib::refilCustomer($agentid,$productid,$transactionid);
+                    commissionLib::refilCustomer($agentid, $productid, $transactionid);
                 }
-	//TODO ask if recharge to be done is same as the transaction amount
-	//die;
-      //  Fonet::recharge($this->customer, $transaction->getAmount());
-                        $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0,1);     // bcdef
-                        if($getFirstnumberofMobile==0){
-                          $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-                          $TelintaMobile =  '46'.$TelintaMobile ;
-                        }else{
-                          $TelintaMobile = '46'.$this->customer->getMobileNumber();
-                        }
-                        //$TelintaMobile = '46'.$this->customer->getMobileNumber();
-                        $emailId = $this->customer->getEmail();
-                        $uniqueId = $this->customer->getUniqueid();
-                        $OpeningBalance = $transaction->getAmount();
-                        //This is for Recharge the Customer
-                       $usid="";
-                    $usid=substr($uniqueId,0,2);
-                if ($usid=="us") {
-                            
-                            $cuserid = $this->customer->getId();
-                          $amt=$OpeningBalance;
-                  $amt=CurrencyConverter::convertSekToUsd($amt);
-                $Test=ForumTel::rechargeForumtel($cuserid,$amt);
-                        }else{
-
-
-                        $description="Auto Refill";
-                        Telienta::recharge($this->customer, $OpeningBalance,$description);
-                        
-                        }
-                        //This is for Recharge the Account
-                          //this condition for if follow me is Active
-                            $getvoipInfo = new Criteria();
-                            $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $this->customer->getMobileNumber());
-                            $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo);//->getId();
-                            if(isset($getvoipInfos)){
-                                $voipnumbers = $getvoipInfos->getNumber() ;
-                                $voip_customer = $getvoipInfos->getCustomerId() ;
-                           }else{
-                              }                            
-                       
-                      
-  
- 
-
-
-
-            emailLib::sendCustomerAutoRefillEmail($this->customer,$order,$transaction);
+                //TODO ask if recharge to be done is same as the transaction amount
+                //die;
+                //  Fonet::recharge($this->customer, $transaction->getAmount());
+                $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
+                if ($getFirstnumberofMobile == 0) {
+                    $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
+                    $TelintaMobile = '46' . $TelintaMobile;
+                } else {
+                    $TelintaMobile = '46' . $this->customer->getMobileNumber();
                 }
-          
+                //$TelintaMobile = '46'.$this->customer->getMobileNumber();
+                $emailId = $this->customer->getEmail();
+                $uniqueId = $this->customer->getUniqueid();
+                $OpeningBalance = $transaction->getAmount();
+                //This is for Recharge the Customer
+                $usid = "";
+                $usid = substr($uniqueId, 0, 2);
+                if ($usid == "us") {
+
+                    $cuserid = $this->customer->getId();
+                    $amt = $OpeningBalance;
+                    $amt = CurrencyConverter::convertSekToUsd($amt);
+                    $Test = ForumTel::rechargeForumtel($cuserid, $amt);
+                } else {
+
+
+                    $description = "Auto Refill";
+                    Telienta::recharge($this->customer, $OpeningBalance, $description);
+                }
+                //This is for Recharge the Account
+                //this condition for if follow me is Active
+                $getvoipInfo = new Criteria();
+                $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $this->customer->getMobileNumber());
+                $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
+                if (isset($getvoipInfos)) {
+                    $voipnumbers = $getvoipInfos->getNumber();
+                    $voip_customer = $getvoipInfos->getCustomerId();
+                } else {
+                    
+                }
+
+
+
+
+
+
+
+                emailLib::sendCustomerAutoRefillEmail($this->customer, $order, $transaction);
             }
-              return sfView::NONE;
-  }    
+        }
+        return sfView::NONE;
+    }
 
 ////////////////////////////////////////
     public function executeUsageAlert(sfWebRequest $request) {
@@ -2895,8 +2741,8 @@ return sfView::NONE;
         $usageAlerts = UsageAlertPeer::doSelect($usagealerts);
         $c = new Criteria();
         $c->addJoin(CustomerPeer::ID, CustomerProductPeer::CUSTOMER_ID, Criteria::LEFT_JOIN);
-        $c->addJoin(CustomerProductPeer::PRODUCT_ID,ProductPeer::ID, Criteria::LEFT_JOIN);
-        $c->addAnd(ProductPeer::PRODUCT_COUNTRY_US,1, Criteria::NOT_EQUAL);
+        $c->addJoin(CustomerProductPeer::PRODUCT_ID, ProductPeer::ID, Criteria::LEFT_JOIN);
+        $c->addAnd(ProductPeer::PRODUCT_COUNTRY_US, 1, Criteria::NOT_EQUAL);
         $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
         $c->addAnd(CustomerPeer::COUNTRY_ID, $countryId);
         $customers = CustomerPeer::doSelect($c);
@@ -2907,10 +2753,10 @@ return sfView::NONE;
             do {
                 $customer_balance = Telienta::getBalance($customer);
                 $retries++;
-                echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
+                echo $customer->getId() . ":" . $customer_balance . ":" . $retries . "<br/>";
             } while (!$customer_balance && $retries <= $maxRetries);
 
-            if($retries==$maxRetries){
+            if ($retries == $maxRetries) {
                 continue;
             }
 
@@ -2979,7 +2825,6 @@ return sfView::NONE;
                             }
                         }
                         $msgSent->save();
-
                     }
 
                     $cEmailSent = new Criteria();
@@ -3017,40 +2862,38 @@ return sfView::NONE;
 
         return sfView::NONE;
     }
+
 //////////
 
- public function executeSendEmailstt(sfWebRequest $request)
-  {
+    public function executeSendEmailstt(sfWebRequest $request) {
 
-	$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-	$sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
+        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
 
         echo '<br/>';
-        echo $sender_email ;
+        echo $sender_email;
         echo '<br/>';
-        echo $sender_name ;
-  	$c = new Criteria();
-  	$c->add(EmailQueuePeer::EMAIL_STATUS_ID, sfConfig::get('app_status_completed'), Criteria::NOT_EQUAL);
+        echo $sender_name;
+        $c = new Criteria();
+        $c->add(EmailQueuePeer::EMAIL_STATUS_ID, sfConfig::get('app_status_completed'), Criteria::NOT_EQUAL);
         $emails = EmailQueuePeer::doSelect($c);
-  try{
-  	foreach( $emails as $email)
-  	{
+        try {
+            foreach ($emails as $email) {
 ////////////////////////////////////////////////////
-
 //		$message = Swift_Message::newInstance($email->getSubject())
 //		         ->setFrom(array($sender_email => $sender_name))
 //		         ->setTo(array($email->getReceipientEmail() => $email->getReceipientName()))
 //		         ->setBody($email->getMessage(), 'text/html')
 //		         ;
 
-            
-$to =  $email->getReceipientName()."<".$email->getReceipientEmail().">";
-$from =  $sender_name."<".$sender_email.">";
 
-$headers  = 'MIME-Version: 1.0' . "\r\n";
-$headers .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
-$headers .= "From:" . $from;
-@mail($to,$email->getSubject(),$email->getMessage(),$headers);
+                $to = $email->getReceipientName() . "<" . $email->getReceipientEmail() . ">";
+                $from = $sender_name . "<" . $sender_email . ">";
+
+                $headers = 'MIME-Version: 1.0' . "\r\n";
+                $headers .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
+                $headers .= "From:" . $from;
+                @mail($to, $email->getSubject(), $email->getMessage(), $headers);
 
 
 //                $message = Swift_Message::newInstance($email->getSubject())
@@ -3066,63 +2909,58 @@ $headers .= "From:" . $from;
                 echo '<br/>';
 
                 //This Conditon Add Update Row Which Have the
-		 if($email->getReceipientEmail()!=''){
+                if ($email->getReceipientEmail() != '') {
 //                    @$mailer->send($message);
                     $email->setEmailStatusId(sfConfig::get('app_status_completed'));
                     //TODO:: add sent_at too
                     $email->save();
                     echo sprintf("Send to %s<br />", $email->getReceipientEmail());
-		}
-
-
-
-  	}
-        }catch (Exception $e){
-
-                    echo $e->getLine();
-                    echo $e->getMessage();
                 }
-  	return sfView::NONE;
-  }
+            }
+        } catch (Exception $e) {
 
-  public function executeAssignICustomerNumber(sfWebRequest $request)
-  {
-       $c = new Criteria();
-       $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-       $c->addAnd(CustomerPeer::UNIQUEID, null, Criteria::ISNOTNULL);
-       $c->addAnd(CustomerPeer::I_CUSTOMER, null, Criteria::ISNULL);
-       //echo CustomerPeer::doCount($c);
-      // die;
-       $customers = CustomerPeer::doSelect($c);
-       foreach ($customers as $customer){
-           $iCustomer= Telienta::getCustomerInfo($customer->getUniqueid());
-           $customer->setICustomer($iCustomer);
-           $customer->save();
-       }
-  }
+            echo $e->getLine();
+            echo $e->getMessage();
+        }
+        return sfView::NONE;
+    }
 
-  public function executeCreateIAccounts(sfWebRequest $request)
-  {
-       $c = new Criteria();
-       $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
-       $c->addAnd(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
-       $customers = CustomerPeer::doSelect($c);
-       foreach ($customers as $customer){
-           $iAccountList= Telienta::getCustomerAccountList($customer->getICustomer());
+    public function executeAssignICustomerNumber(sfWebRequest $request) {
+        $c = new Criteria();
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $c->addAnd(CustomerPeer::UNIQUEID, null, Criteria::ISNOTNULL);
+        $c->addAnd(CustomerPeer::I_CUSTOMER, null, Criteria::ISNULL);
+        //echo CustomerPeer::doCount($c);
+        // die;
+        $customers = CustomerPeer::doSelect($c);
+        foreach ($customers as $customer) {
+            $iCustomer = Telienta::getCustomerInfo($customer->getUniqueid());
+            $customer->setICustomer($iCustomer);
+            $customer->save();
+        }
+    }
 
-           foreach($iAccountList->account_list as $iAccount){
-              $telintaAccount = new TelintaAccounts();
-              $telintaAccount->setAccountTitle($iAccount->id);
-              $telintaAccount->setIAccount($iAccount->i_account);
-              $telintaAccount->setICustomer($iAccount->i_customer);
-              $telintaAccount->setParentId($customer->getId());
-              $telintaAccount->setParentTable('customer');
-              $telintaAccount->save();
-           }
-       }
-  }
+    public function executeCreateIAccounts(sfWebRequest $request) {
+        $c = new Criteria();
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID, 3);
+        $c->addAnd(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
+        $customers = CustomerPeer::doSelect($c);
+        foreach ($customers as $customer) {
+            $iAccountList = Telienta::getCustomerAccountList($customer->getICustomer());
 
- public function executeCardNumber(sfWebRequest $request) {
+            foreach ($iAccountList->account_list as $iAccount) {
+                $telintaAccount = new TelintaAccounts();
+                $telintaAccount->setAccountTitle($iAccount->id);
+                $telintaAccount->setIAccount($iAccount->i_account);
+                $telintaAccount->setICustomer($iAccount->i_customer);
+                $telintaAccount->setParentId($customer->getId());
+                $telintaAccount->setParentTable('customer');
+                $telintaAccount->save();
+            }
+        }
+    }
+
+    public function executeCardNumber(sfWebRequest $request) {
 
 
         function random($len) {
@@ -3135,7 +2973,7 @@ $headers .= "From:" . $from;
                         mt_srand(time() % 2147 * 1000000 + (double) microtime() * 1000000);
                     $rand = 48 + mt_rand() % 64;
                 } else
-                    $rand=48 + ord($urandom[$i]) % 64;
+                    $rand = 48 + ord($urandom[$i]) % 64;
 
                 if ($rand > 57)
                     $rand+=7;
@@ -3222,7 +3060,6 @@ $headers .= "From:" . $from;
         return sfView::NONE;
     }
 
-
     private function hextostr($hex) {
         $str = '';
         for ($i = 0; $i < strlen($hex) - 1; $i+=2) {
@@ -3241,18 +3078,16 @@ $headers .= "From:" . $from;
         return $random;
     }
 
-    public function executeGenrateTestString(sfWebRequest $request){
+    public function executeGenrateTestString(sfWebRequest $request) {
 
-        if($request->isMethod('post')){
-            if($request->getParameter("hex")=="on"){
+        if ($request->isMethod('post')) {
+            if ($request->getParameter("hex") == "on") {
                 echo $this->hexToStr($request->getParameter("inputstr"));
-            }else{
+            } else {
                 echo $this->strToHex($request->getParameter("inputstr"));
             }
         }
-        
     }
-
 
     private function strToHex($string) {
         $hex = '';
@@ -3262,12 +3097,10 @@ $headers .= "From:" . $from;
         return $hex;
     }
 
-
-   public function executeCsvFiles(sfWebRequest $request)
-  {
+    public function executeCsvFiles(sfWebRequest $request) {
 
         $fromDate = date("Y-m-d 00:00:00", strtotime('-1 day'));
-       $toDate = date("Y-m-d 23:59:59", strtotime('-1 day'));
+        $toDate = date("Y-m-d 23:59:59", strtotime('-1 day'));
 //
 //          $fromDate = date("Y-m-d 00:00:00");
 //        $toDate = date("Y-m-d 23:59:59");
@@ -3287,28 +3120,28 @@ $headers .= "From:" . $from;
         fwrite($fh, $stringData);
 
         $companies = CompanyPeer::doSelect(new Criteria());
-        foreach($companies as $company){
-            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate,false,3,1);
-            if($tilentaCallHistryResult){
+        foreach ($companies as $company) {
+            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate, false, 3, 1);
+            if ($tilentaCallHistryResult) {
                 foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
                     $callerTyper = "";
-                     $typecall = substr($xdr->account_id, 0, 1);
-                                if ($typecall == 'a') {
-                                    $callerTyper =  "Int.";
-                                }
-                                if ($typecall == '4') {
-                                    $callerTyper =  "R";
-                                }
-                                if ($typecall == 'c') {
-                                      $cbtypecall = substr($xdr->account_id, 2);
-                                    if ($xdr->CLD ==$cbtypecall) {
-                                        $callerTyper =  "Cb M";
-                                    } else {
-                                        $callerTyper =  "Cb S";
-                                    }
-                                }
+                    $typecall = substr($xdr->account_id, 0, 1);
+                    if ($typecall == 'a') {
+                        $callerTyper = "Int.";
+                    }
+                    if ($typecall == '4') {
+                        $callerTyper = "R";
+                    }
+                    if ($typecall == 'c') {
+                        $cbtypecall = substr($xdr->account_id, 2);
+                        if ($xdr->CLD == $cbtypecall) {
+                            $callerTyper = "Cb M";
+                        } else {
+                            $callerTyper = "Cb S";
+                        }
+                    }
 
-                    $stringData = $company->getVatNo(). $comma .$xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time. $comma.$callerTyper;
+                    $stringData = $company->getVatNo() . $comma . $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time . $comma . $callerTyper;
                     $stringData.= "\n";
                     fwrite($fh, $stringData);
                 }
@@ -3323,7 +3156,7 @@ $headers .= "From:" . $from;
         $ftp_user_name = "zapna"; // Username
         $ftp_user_pass = "2s7G3Ms4";   // Password
         $conn_id = ftp_connect($ftp_server);        // set up basic connection
-       
+
         $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
         ftp_pasv($conn_id, true);
         $upload = ftp_put($conn_id, $destination_file, $myFile, FTP_BINARY);  // upload the file
@@ -3341,58 +3174,55 @@ $headers .= "From:" . $from;
 
 
         return sfView::NONE;
-   }
+    }
 
-
-
-     public function executeResendFailedCsvFiles(sfWebRequest $request)
-  {
+    public function executeResendFailedCsvFiles(sfWebRequest $request) {
 
         // Resend CDRs of Employees whos Data was not fetched.
 
-        $c= new Criteria();
-        $c->add(CompanyCdrFetchFailedLogPeer::STATUS,1);
+        $c = new Criteria();
+        $c->add(CompanyCdrFetchFailedLogPeer::STATUS, 1);
 
-        if(CompanyCdrFetchFailedLogPeer::doCount($c)>0){
+        if (CompanyCdrFetchFailedLogPeer::doCount($c) > 0) {
             $missingCompanies = CompanyCdrFetchFailedLogPeer::doSelect($c);
 
             $filename = "LandnCall_" . time() . ".csv";
-            
+
             $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
-            
+
             $fh = fopen($myFile, 'w') or die("can't open file");
             $comma = ",";
             $stringData = "company_vat,CLI,CLD,charged_amount,charged_quantity,country,subdivision,description,disconnect_cause,bill_status,unix_connect_time,disconnect_time,unix_disconnect_time,bill_time,Samtalstyp";
             $stringData.= "\n";
             fwrite($fh, $stringData);
             $calls = false;
-            foreach($missingCompanies as $missingCompany){
+            foreach ($missingCompanies as $missingCompany) {
                 $fromDate = $missingCompany->getFromDate();
-                $toDate =  $missingCompany->getToDate();
+                $toDate = $missingCompany->getToDate();
                 $company = CompanyPeer::retrieveByPK($missingCompany->getCompanyId());
-                $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate,true);
-                if($tilentaCallHistryResult){
+                $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $fromDate, $toDate, true);
+                if ($tilentaCallHistryResult) {
                     $missingCompany->setStatus(3);
                     $missingCompany->save();
                     foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
                         $callerTyper = "";
-                         $typecall = substr($xdr->account_id, 0, 1);
-                                    if ($typecall == 'a') {
-                                        $callerTyper =  "Int.";
-                                    }
-                                    if ($typecall == '4') {
-                                        $callerTyper =  "R";
-                                    }
-                                    if ($typecall == 'c') {
-                                          $cbtypecall = substr($xdr->account_id, 2);
-                                        if ($xdr->CLD ==$cbtypecall) {
-                                            $callerTyper =  "Cb M";
-                                        } else {
-                                            $callerTyper =  "Cb S";
-                                        }
-                                    }
+                        $typecall = substr($xdr->account_id, 0, 1);
+                        if ($typecall == 'a') {
+                            $callerTyper = "Int.";
+                        }
+                        if ($typecall == '4') {
+                            $callerTyper = "R";
+                        }
+                        if ($typecall == 'c') {
+                            $cbtypecall = substr($xdr->account_id, 2);
+                            if ($xdr->CLD == $cbtypecall) {
+                                $callerTyper = "Cb M";
+                            } else {
+                                $callerTyper = "Cb S";
+                            }
+                        }
 
-                        $stringData = $company->getVatNo(). $comma .$xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time. $comma.$typecall;
+                        $stringData = $company->getVatNo() . $comma . $xdr->CLI . $comma . $xdr->CLD . $comma . $xdr->charged_amount . $comma . $xdr->charged_quantity . $comma . $xdr->country . $comma . $xdr->subdivision . $comma . $xdr->description . $comma . $xdr->disconnect_cause . $comma . $xdr->bill_status . $comma . $xdr->unix_connect_time . $comma . $xdr->disconnect_time . $comma . $xdr->unix_disconnect_time . $comma . $xdr->bill_time . $comma . $typecall;
                         $stringData.= "\n";
                         fwrite($fh, $stringData);
                     }
@@ -3401,7 +3231,7 @@ $headers .= "From:" . $from;
             }
 
 
-            if($calls){
+            if ($calls) {
                 $cdrlog = new LandncallCdrLog();
                 $cdrlog->setName($filename);
                 $cdrlog->save();
@@ -3425,16 +3255,14 @@ $headers .= "From:" . $from;
                 }
                 $cdrlog->save();
             }
-        fclose($fh);
-
-
+            fclose($fh);
         }
 
         $cdrq = new Criteria();
-        $cdrq->add(LandncallCdrLogPeer::STATUS,1);
-        $cdrrecords= LandncallCdrLogPeer::doSelect($cdrq);
-        foreach($cdrrecords as $cdrrecord){
-            $filename =$cdrrecord->getName();
+        $cdrq->add(LandncallCdrLogPeer::STATUS, 1);
+        $cdrrecords = LandncallCdrLogPeer::doSelect($cdrq);
+        foreach ($cdrrecords as $cdrrecord) {
+            $filename = $cdrrecord->getName();
             $myFile = "/var/www/landncall/data/landncall_cdr/" . $filename;
             $destination_file = "/zapna/zapna/" . $filename;
             $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
@@ -3448,34 +3276,31 @@ $headers .= "From:" . $from;
                 emailLib::sendLandncallCdrErrorEmail($filename);
             } else {
                 $cdrrecord->setStatus(3);
-                  $cdrrecord->save();
+                $cdrrecord->save();
             }
-             fclose($fh);
-             sleep(1);
+            fclose($fh);
+            sleep(1);
         }
         return sfView::NONE;
-   }
+    }
 
-
-       public function executeGetBalanceFromTelienta(sfWebRequest $request){
+    public function executeGetBalanceFromTelienta(sfWebRequest $request) {
         $c = new Criteria();
         $c->add(CustomerPeer::I_CUSTOMER, null, Criteria::ISNOTNULL);
         $c->addAnd(CustomerPeer::CUSTOMER_STATUS_ID, 3);
         $customers = CustomerPeer::doSelect($c);
-        foreach($customers as $customer){
+        foreach ($customers as $customer) {
             Telienta::getBalance($customer);
         }
     }
 
+    public function executeGetSms(sfWebRequest $request) {
+        $smstext = "Du är registrerad framgångsrikt. ditt saldo är 99";
+        ROUTED_SMS::Send(46732801013, $smstext);
+        return sfView::NONE;
+    }
 
-
-       public function executeGetSms(sfWebRequest $request){
-       $smstext ="Du är registrerad framgångsrikt. ditt saldo är 99";
-       ROUTED_SMS::Send(46732801013, $smstext);
-         return sfView::NONE;
-}
-
-public function executeActivateAutoRefill(sfWebRequest $request) {
+    public function executeActivateAutoRefill(sfWebRequest $request) {
 
         changeLanguageCulture::languageCulture($request, $this);
 
@@ -3509,7 +3334,6 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
         $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__('Auto Refill is Activated.'));
         return $this->redirect('customer/dashboard');
     }
-
 
     public function executeCalbackrefill(sfWebRequest $request) {
         $order_id = $request->getParameter("orderid");
@@ -3580,7 +3404,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
         //die;
         $exest = $order->getExeStatus();
         if ($exest == 1) {
-
+            
         } else {
             //  Fonet::recharge($this->customer, $transaction->getAmount());
             $vat = 0;
@@ -3598,25 +3422,25 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
             }
 
             $unidc = $this->customer->getUniqueid();
-            $uidcount=0;
-              $uc = new Criteria;
-        $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $unidc);
-         $uc->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
-        $uidcount = UniqueIdsPeer::doCount($uc);
+            $uidcount = 0;
+            $uc = new Criteria;
+            $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $unidc);
+            $uc->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
+            $uidcount = UniqueIdsPeer::doCount($uc);
             echo $unidc;
             echo "<br/>";
 
-            if ($uidcount==1) {
+            if ($uidcount == 1) {
                 $cuserid = $this->customer->getId();
                 $amt = $OpeningBalance;
                 $amtt = CurrencyConverter::convertSekToUsd($amt);
                 $Test = ForumTel::rechargeForumtel($cuserid, $amtt);
 
                 $dibsf = new DibsCall();
-        $dibsf->setCallurl("refill  original amout SEK:".$amt."converted amout".$amtt."Fr response".$Test);
-        $dibsf->save();
+                $dibsf->setCallurl("refill  original amout SEK:" . $amt . "converted amout" . $amtt . "Fr response" . $Test);
+                $dibsf->save();
 
-                $amt=$amtt;
+                $amt = $amtt;
 
                 $email2 = new DibsCall();
                 $email2->setCallurl($amt . $cuserid);
@@ -3645,7 +3469,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                     $voipnumbers = $getvoipInfos->getNumber();
                     $voip_customer = $getvoipInfos->getCustomerId();
                 } else {
-
+                    
                 }
             }
             $MinuesOpeningBalance = $OpeningBalance * 3;
@@ -3672,19 +3496,19 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
             $unidid = $this->customer->getUniqueid();
             if ((int) $unidid > 200000) {
                 $message_body = $this->getPartial('customer/order_receipt_us', array(
-                            'customer' => $this->customer,
-                            'order' => $order,
-                            'transaction' => $transaction,
-                            'vat' => $vat,
-                            'wrap' => false
+                    'customer' => $this->customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $vat,
+                    'wrap' => false
                         ));
             } else {
                 $message_body = $this->getPartial('payments/order_receipt', array(
-                            'customer' => $this->customer,
-                            'order' => $order,
-                            'transaction' => $transaction,
-                            'vat' => $vat,
-                            'wrap' => false
+                    'customer' => $this->customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $vat,
+                    'wrap' => false
                         ));
             }
 
@@ -3702,7 +3526,9 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
         echo 'Yes';
         return sfView::NONE;
     }
- /*******************************************************Customer Registeration Dibs Call ***********************************************/
+
+    /*     * *****************************************************Customer Registeration Dibs Call ********************************************** */
+
     public function executeConfirmpayment(sfWebRequest $request) {
         changeLanguageCulture::languageCulture($request, $this);
         $urlval = $request->getParameter('transact');
@@ -3710,7 +3536,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
         $email2->setCallurl($urlval);
         $email2->save();
         $dibs = new DibsCall();
-        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket'));
+        $dibs->setCallurl("Ticket Number:" . $request->getParameter('ticket'));
         $dibs->save();
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         //print_r($_REQUEST);
@@ -3876,42 +3702,42 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
 
 
                 $uniqueId = $this->customer->getUniqueid();
-                echo $uniqueId."<br/>";
+                echo $uniqueId . "<br/>";
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
-                $uc->addAnd(UniqueIdsPeer::SIM_TYPE_ID,$customer_product->getProduct()->getSimTypeId());
+                $uc->addAnd(UniqueIdsPeer::SIM_TYPE_ID, $customer_product->getProduct()->getSimTypeId());
                 $selectedUniqueId = UniqueIdsPeer::doSelectOne($uc);
-                echo $selectedUniqueId->getStatus()."<br/>Baran";
+                echo $selectedUniqueId->getStatus() . "<br/>Baran";
 
-                if($selectedUniqueId->getStatus()==0){
+                if ($selectedUniqueId->getStatus() == 0) {
                     echo "inside";
                     $selectedUniqueId->setStatus(1);
                     $selectedUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
                     $selectedUniqueId->save();
-                    }else{
-                        $uc = new Criteria();
-                        $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 1);
-                        $uc->addAnd(UniqueIdsPeer::SIM_TYPE_ID,$customer_product->getProduct()->getSimTypeId());
-                        $uc->addAnd(UniqueIdsPeer::STATUS, 0);
-                        $availableUniqueCount = UniqueIdsPeer::doCount($uc);
-                        $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+                } else {
+                    $uc = new Criteria();
+                    $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 1);
+                    $uc->addAnd(UniqueIdsPeer::SIM_TYPE_ID, $customer_product->getProduct()->getSimTypeId());
+                    $uc->addAnd(UniqueIdsPeer::STATUS, 0);
+                    $availableUniqueCount = UniqueIdsPeer::doCount($uc);
+                    $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
 
-                        if($availableUniqueCount  == 0){
-                            // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
-                            emailLib::sendUniqueIdsShortage();
-                            $this->redirect($this->getTargetUrl() .'customer/shortUniqueIds');
-                            //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
-                        }
-                        $uniqueId = $availableUniqueId->getUniqueNumber();
-                        $this->customer->setUniqueid($uniqueId);
-                        $this->customer->save();
-                        $availableUniqueId->setStatus(1);
-                        $availableUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
-                        $availableUniqueId->save();
+                    if ($availableUniqueCount == 0) {
+                        // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
+                        emailLib::sendUniqueIdsShortage();
+                        $this->redirect($this->getTargetUrl() . 'customer/shortUniqueIds');
+                        //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+                    }
+                    $uniqueId = $availableUniqueId->getUniqueNumber();
+                    $this->customer->setUniqueid($uniqueId);
+                    $this->customer->save();
+                    $availableUniqueId->setStatus(1);
+                    $availableUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
+                    $availableUniqueId->save();
                 }
 
 
-             $callbacklog = new CallbackLog();
+                $callbacklog = new CallbackLog();
                 $callbacklog->setMobileNumber($TelintaMobile);
                 $callbacklog->setuniqueId($uniqueId);
                 $callbacklog->setCheckStatus(3);
@@ -3996,7 +3822,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
-                    Telienta::recharge($this->customers, $OpeningBalance,"Tipsa en van " . $invite->getInviteNumber());
+                    Telienta::recharge($this->customers, $OpeningBalance, "Tipsa en van " . $invite->getInviteNumber());
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
                     $getvoipInfo = new Criteria();
@@ -4005,9 +3831,8 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                     if (isset($getvoipInfos)) {
                         $voipnumbers = $getvoipInfos->getNumber();
                         $voip_customer = $getvoipInfos->getCustomerId();
-
                     } else {
-
+                        
                     }
 
 
@@ -4024,11 +3849,11 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 //send email
 
                 $message_body = $this->getPartial('payments/order_receipt', array(
-                            'customer' => $this->customer,
-                            'order' => $order,
-                            'transaction' => $transaction,
-                            'vat' => $product_price_vat,
-                            'wrap' => true
+                    'customer' => $this->customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $product_price_vat,
+                    'wrap' => true
                         ));
 
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
@@ -4063,17 +3888,15 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
             else {
                 $this->logMessage('Error in transaction.');
             } //end else
-          
         }
-        
     }
 
+    /*     * *****************************************************Customer Registeration US Dibs Call ********************************************** */
 
- /*******************************************************Customer Registeration US Dibs Call ***********************************************/
     public function executeConfirmpaymentus(sfWebRequest $request) {
         changeLanguageCulture::languageCulture($request, $this);
 
-        $urlvalrest="Confirm-payment-us-".var_export($_REQUEST,true);
+        $urlvalrest = "Confirm-payment-us-" . var_export($_REQUEST, true);
         $emaires = new DibsCall();
         $emaires->setCallurl($urlvalrest);
         $emaires->save();
@@ -4082,7 +3905,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
         $email2->setCallurl($urlval);
         $email2->save();
         $dibs = new DibsCall();
-        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket')."-ord-".$request->getParameter('orderid')."-amt-".$request->getParameter('amount'));
+        $dibs->setCallurl("Ticket Number:" . $request->getParameter('ticket') . "-ord-" . $request->getParameter('orderid') . "-amt-" . $request->getParameter('amount'));
         $dibs->save();
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         //print_r($_REQUEST);
@@ -4207,7 +4030,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 $order->setAgentCommissionPackageId($order->getCustomer()->getAgentCompany()->getAgentCommissionPackageId());
                 $transaction->setAgentCompanyId($order->getCustomer()->getReferrerId()); //completed
             }
-            
+
             $order->save();
             $transaction->save();
             if ($is_transaction_ok) {
@@ -4240,68 +4063,65 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                     $TelintaMobile = '46' . $this->customer->getMobileNumber();
                 }
 
-              $uniqueId = $this->customer->getUniqueid();
-                echo $uniqueId."<br/>";
+                $uniqueId = $this->customer->getUniqueid();
+                echo $uniqueId . "<br/>";
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
                 $selectedUniqueId = UniqueIdsPeer::doSelectOne($uc);
-                echo $selectedUniqueId->getStatus()."<br/>Baran";
+                echo $selectedUniqueId->getStatus() . "<br/>Baran";
 
-                if($selectedUniqueId->getStatus()==0){
+                if ($selectedUniqueId->getStatus() == 0) {
                     echo "inside";
                     $selectedUniqueId->setStatus(1);
                     $selectedUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
                     $selectedUniqueId->save();
-                    }else{
-                        $uc = new Criteria();
-                        $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
-                        $uc->addAnd(UniqueIdsPeer::STATUS, 0);
-                        $availableUniqueCount = UniqueIdsPeer::doCount($uc);
-                        $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+                } else {
+                    $uc = new Criteria();
+                    $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
+                    $uc->addAnd(UniqueIdsPeer::STATUS, 0);
+                    $availableUniqueCount = UniqueIdsPeer::doCount($uc);
+                    $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
 
-                        if($availableUniqueCount  == 0){
-                            // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
-                            emailLib::sendUniqueIdsShortage();
-                            $this->redirect($this->getTargetUrl() .'customer/shortUniqueIds');
-                            //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
-                        }
-                        $uniqueId = $availableUniqueId->getUniqueNumber();
-                        $this->customer->setUniqueid($uniqueId);
-                        $this->customer->save();
-                        $availableUniqueId->setStatus(1);
-                        $availableUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
-                        $availableUniqueId->save();
-
-
-
+                    if ($availableUniqueCount == 0) {
+                        // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
+                        emailLib::sendUniqueIdsShortage();
+                        $this->redirect($this->getTargetUrl() . 'customer/shortUniqueIds');
+                        //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+                    }
+                    $uniqueId = $availableUniqueId->getUniqueNumber();
+                    $this->customer->setUniqueid($uniqueId);
+                    $this->customer->save();
+                    $availableUniqueId->setStatus(1);
+                    $availableUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
+                    $availableUniqueId->save();
                 }
 
-               $uniqueId=$this->customer->getUniqueid();
-                 $callbacklog = new CallbackLog();
+                $uniqueId = $this->customer->getUniqueid();
+                $callbacklog = new CallbackLog();
                 $callbacklog->setMobileNumber($TelintaMobile);
                 $callbacklog->setuniqueId($uniqueId);
                 $callbacklog->setCheckStatus(3);
                 $callbacklog->save();
 
 
-                  $uc = new Criteria();
+                $uc = new Criteria();
                 $uc->add(UsNumberPeer::ACTIVE_STATUS, 1);
                 $selectusnumber = UsNumberPeer::doSelectOne($uc);
                 $selectusnumber->setActiveStatus(3);
                 $selectusnumber->setCustomerId($this->customer->getId());
                 $selectusnumber->save();
 
- $pakage=$order->getProduct()->getProductTypePackage();
-               $unid= $this->customer->getUniqueid();
+                $pakage = $order->getProduct()->getProductTypePackage();
+                $unid = $this->customer->getUniqueid();
 
 
 
- $customerID=$this->customer->getId();
-                $OpeningBalance=0;
-                Telienta::ResgiterCustomer($this->customer, $OpeningBalance,null,true);
-                $Tes=ForumTel::registerForumtel($customerID);
+                $customerID = $this->customer->getId();
+                $OpeningBalance = 0;
+                Telienta::ResgiterCustomer($this->customer, $OpeningBalance, null, true);
+                $Tes = ForumTel::registerForumtel($customerID);
                 ForumTel::getUsMobileNumber($customerID);
-     //////////////////////////rese number registration ///////////////////////////////
+                //////////////////////////rese number registration ///////////////////////////////
                 $rs = new Criteria();
                 $rs->add(SeVoipNumberPeer::CUSTOMER_ID, $customerID);
                 $rs->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 3);
@@ -4314,7 +4134,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                     //$c->setLimit(1);
                     $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
                     if (SeVoipNumberPeer::doCount($c) < 10) {
-                      //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                        //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                     if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
                         emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
@@ -4359,53 +4179,52 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                         $TelintaMobile = $MaxUniqueRec->getMobileNumber();
                     }
                     //------------------------------
-                    $TelintaMobile=$selectusnumber->getUsMobileNumber();
-                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
+                    $TelintaMobile = $selectusnumber->getUsMobileNumber();
+                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile, 11118);
 
 
-                 //   $OpeningBalance = '40';
-
+                    //   $OpeningBalance = '40';
                     //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
                     //This is for Recharge the Customer
-                  //  Telienta::charge($this->customer, $OpeningBalance);
+                    //  Telienta::charge($this->customer, $OpeningBalance);
                 }
 
 
 ///////////////////////////////////////////////////////end resenumber registration
-               echo "original amout".$amt=$order->getExtraRefill();
-                         echo "<hr/>converted amout". $amtt=CurrencyConverter::convertSekToUsd($amt);
+                echo "original amout" . $amt = $order->getExtraRefill();
+                echo "<hr/>converted amout" . $amtt = CurrencyConverter::convertSekToUsd($amt);
 
-                 echo "<hr/>ft response". $Test=ForumTel::rechargeForumtel($customerID,$amtt);
+                echo "<hr/>ft response" . $Test = ForumTel::rechargeForumtel($customerID, $amtt);
 
-                    $dibsf = new DibsCall();
-        $dibsf->setCallurl("original amout SEK:".$amt."converted amout".$amtt."Fr response".$Test);
-        $dibsf->save();
+                $dibsf = new DibsCall();
+                $dibsf->setCallurl("original amout SEK:" . $amt . "converted amout" . $amtt . "Fr response" . $Test);
+                $dibsf->save();
 
-                $amt=$amtt;
+                $amt = $amtt;
 
-                   $tc = new Criteria();
-        $tc->add(UsNumberPeer::CUSTOMER_ID, $customerID);
-        $usnumber = UsNumberPeer::doSelectOne($tc);
-               $usnumber=$usnumber->getUsMobileNumber();
+                $tc = new Criteria();
+                $tc->add(UsNumberPeer::CUSTOMER_ID, $customerID);
+                $usnumber = UsNumberPeer::doSelectOne($tc);
+                $usnumber = $usnumber->getUsMobileNumber();
 
-                        $sms_text ="Käre kund
-Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och du kan ringa från den när du har nått USA
+                $sms_text = "Käre kund
+Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras och du kan ringa från den när du har nått USA
 ";
-                       $data = array(
-                            'S' => 'H',
-                            'UN' => 'zapna1',
-                            'P' => 'Zapna2010',
-                            'DA' => $usnumber,
-                            'SA' => 'LandNCall',
-                            'M' => $sms_text,
-                            'ST' => '5'
-                        );
+                $data = array(
+                    'S' => 'H',
+                    'UN' => 'zapna1',
+                    'P' => 'Zapna2010',
+                    'DA' => $usnumber,
+                    'SA' => 'LandNCall',
+                    'M' => $sms_text,
+                    'ST' => '5'
+                );
 
 
-                        $queryString = http_build_query($data, '', '&');
-                        $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                        // echo $sms_text;
-                        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+                $queryString = http_build_query($data, '', '&');
+                $queryString = smsCharacter::smsCharacterReplacement($queryString);
+                // echo $sms_text;
+                $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
 
 
 
@@ -4468,8 +4287,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
-
-                  //  Telienta::recharge($this->customers, $OpeningBalance);
+                    //  Telienta::recharge($this->customers, $OpeningBalance);
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
 
@@ -4480,9 +4298,8 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                         $voipnumbers = $getvoipInfos->getNumber();
                         $voip_customer = $getvoipInfos->getCustomerId();
                     } else {
-
-
-                     }
+                        
+                    }
 
 
                     $transaction_i->save();
@@ -4495,11 +4312,11 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                 }
                 //send email
                 $message_body = $this->getPartial('payments/order_receipt_us', array(
-                            'customer' => $this->customer,
-                            'order' => $order,
-                            'transaction' => $transaction,
-                            'vat' => $product_price_vat,
-                            'wrap' => true
+                    'customer' => $this->customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $product_price_vat,
+                    'wrap' => true
                         ));
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
                 $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
@@ -4530,251 +4347,807 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
         }
         return sfView::NONE;
     }
-/***********************************Agent Account Refill Dibs Call*******************************************/
+
+    /*     * *********************************Agent Account Refill Dibs Call****************************************** */
+
+    public function executeAccountRefill(sfWebRequest $request) {
+
+        //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 01/24/11 - Ahtsham
+        changeLanguageCulture::languageCulture($request, $this);
 
 
-   public function executeAccountRefill(sfWebRequest $request){
-
-      //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 01/24/11 - Ahtsham
-     changeLanguageCulture::languageCulture($request,$this);
-
-
-                $ca = new Criteria();
-		$ca->add(AgentCompanyPeer::ID, $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
-                $agent = AgentCompanyPeer::doSelectOne($ca);
-		$this->forward404Unless($agent);
+        $ca = new Criteria();
+        $ca->add(AgentCompanyPeer::ID, $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
+        $agent = AgentCompanyPeer::doSelectOne($ca);
+        $this->forward404Unless($agent);
 
 
-                if(isset($_REQUEST['error'] )) {
+        if (isset($_REQUEST['error'])) {
 
 
-                    $agent_order_id = $request->getParameter('orderid');
+            $agent_order_id = $request->getParameter('orderid');
 
-                     $aoc = new Criteria();
-                     $aoc->add(AgentOrderPeer::AGENT_ORDER_ID, $agent_order_id);
-                     $agent_order = AgentOrderPeer::doSelectOne($aoc);
+            $aoc = new Criteria();
+            $aoc->add(AgentOrderPeer::AGENT_ORDER_ID, $agent_order_id);
+            $agent_order = AgentOrderPeer::doSelectOne($aoc);
 
-                     $this->getUser()->setFlash('message', 'Your Credit Card Information was not approved');
-                     $this->agent_order_id = $agent_order_id;
-                     $this->agent_order = $agent_order;
+            $this->getUser()->setFlash('message', 'Your Credit Card Information was not approved');
+            $this->agent_order_id = $agent_order_id;
+            $this->agent_order = $agent_order;
+        } else {
 
-                }else{
 
+            $c = new Criteria();
+            $agent_order = new AgentOrder();
+            $agent_order->setAgentCompanyId($agent->getId());
+            $agent_order->setOrderDescription(2); ///// By Credit Card for agent
+            $agent_order->setStatus('1');
+            $agent_order->save();
 
-                    $c = new Criteria();
-                    $agent_order = new AgentOrder();
-                    $agent_order->setAgentCompanyId($agent->getId());
-                    $agent_order->setOrderDescription(2);///// By Credit Card for agent
-                    $agent_order->setStatus('1');
-                    $agent_order->save();
+            $agent_order->setAgentOrderId('a0' . $agent_order->getId());
+            $agent_order->save();
 
-                    $agent_order->setAgentOrderId('a0'.$agent_order->getId());
-                    $agent_order->save();
+            $this->agent_order = $agent_order;
+        }return sfView::NONE;
+    }
 
-                    $this->agent_order = $agent_order;
+    public function executeSuspendForumtelCustomer(sfWebRequest $request) {
 
-            }return sfView::NONE;
-  }
-  
-  
-      public function executeSuspendForumtelCustomer(sfWebRequest $request){
-          
-         $customer_id = $request->getParameter("customer_id");
-         
-         $output =  ForumTel::suspendForumtel($customer_id);
-         echo $output;
-         return sfView::NONE;
-      }
-      public function executeCreateReseAccountTelinta(sfWebRequest $request){
-          $customer_id = $request->getParameter("customer_id");
-          $voipnumbers = $request->getParameter("voip");
-          $this->customer = CustomerPeer::retrieveByPK($customer_id);
-          if ($getFirstnumberofMobile == 0) {
-                    $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-                    $TelintaMobile = '46' . $TelintaMobile;
-                } else {
-                    $TelintaMobile = '46' . $this->customer->getMobileNumber();
-                }
-                $uniqueid=$this->customer->getUniqueid();
-                $stus=substr($uniqueid,0,2);
-                if($stus=='us'){
+        $customer_id = $request->getParameter("customer_id");
 
-                    $uc = new Criteria();
-                $uc->add(UsNumberPeer::ACTIVE_STATUS, 3);
-                  $uc->add(UsNumberPeer::CUSTOMER_ID, $this->customer->getId());
-                $selectusnumber = UsNumberPeer::doSelectOne($uc);
+        $output = ForumTel::suspendForumtel($customer_id);
+        echo $output;
+        return sfView::NONE;
+    }
 
-                   $TelintaMobile=$selectusnumber->getUsMobileNumber();
-                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
-                }else{
-                 
-          Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
-                }
-      }
-      
-          public function executeSaveCompanyCallHistory(sfWebRequest $request)
-    {
+    public function executeCreateReseAccountTelinta(sfWebRequest $request) {
+        $customer_id = $request->getParameter("customer_id");
+        $voipnumbers = $request->getParameter("voip");
+        $this->customer = CustomerPeer::retrieveByPK($customer_id);
+        if ($getFirstnumberofMobile == 0) {
+            $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
+            $TelintaMobile = '46' . $TelintaMobile;
+        } else {
+            $TelintaMobile = '46' . $this->customer->getMobileNumber();
+        }
+        $uniqueid = $this->customer->getUniqueid();
+        $stus = substr($uniqueid, 0, 2);
+        if ($stus == 'us') {
+
+            $uc = new Criteria();
+            $uc->add(UsNumberPeer::ACTIVE_STATUS, 3);
+            $uc->add(UsNumberPeer::CUSTOMER_ID, $this->customer->getId());
+            $selectusnumber = UsNumberPeer::doSelectOne($uc);
+
+            $TelintaMobile = $selectusnumber->getUsMobileNumber();
+            Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile, 11118);
+        } else {
+
+            Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
+        }
+    }
+
+    public function executeSaveCompanyCallHistory(sfWebRequest $request) {
         $c = new Criteria;
-        $c->add(CompanyPeer::STATUS_ID,1);  // active
+        $c->add(CompanyPeer::STATUS_ID, 1);  // active
         $companies = CompanyPeer::doSelect($c);
-        
+
         $bill_start_date = date('Y-m-1 00:00:00', strtotime("last month"));
         $start_date = date('Y-m-1 00:00:00');
-        $start_date = date('Y-m-d 21:00:00', strtotime("-1 day",strtotime($bill_start_date)));
+        echo $start_date = date('Y-m-d 21:59:59', strtotime("-1 day", strtotime($bill_start_date)));
         echo "<hr/>";
-       // echo $end_date = date('Y-m-t 21:59:59', strtotime("last month"));
+        // echo $end_date = date('Y-m-t 21:59:59', strtotime("last month"));
         echo $end_date = date('Y-m-t 21:59:59', strtotime("last month"));
         $bill_end_date = date('Y-m-t 23:59:59', strtotime("last month"));
         echo "<hr/>";
-        foreach($companies as $company){
-           
-           $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $start_date, $end_date);
+        foreach ($companies as $company) {
+
+            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $start_date, $end_date);
 //     var_dump($tilentaCallHistryResult);
 //     die;
-           if($tilentaCallHistryResult){
-            foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
-                
-                
-                $emCalls = new EmployeeCustomerCallhistory();
-                $emCalls->setAccountId($xdr->account_id);
-                $type = substr($xdr->account_id,0,1);
-                   if($type=='a'){
-                     $emCalls->setAccountType('a');  
-                   }elseif($type =='c'){
-                     $emCalls->setAccountType('cb');    
-                   }elseif(is_int($type)){
-                     $emCalls->setAccountType('r');     
-                   }
-                $emCalls->setBillStatus($xdr->bill_status);
-                $emCalls->setBillTime($xdr->bill_time);
-                $emCalls->setChargedAmount($xdr->charged_amount);
-                $emCalls->setChargedQuantity($xdr->charged_quantity);
-                $emCalls->setPhoneNumber($xdr->CLD);
-                $emCalls->setCli($xdr->CLI);
-                $emCalls->setConnectTime($xdr->connect_time);
-                $emCalls->setCountry($xdr->country);
-                $country = $xdr->country;
-                $cc = new Criteria();
-                $cc->add(CountryPeer::NAME,$country, Criteria::LIKE);
-                $ccount = CountryPeer::doCount($cc);
-                if($ccount > 0){
-                   $csel = CountryPeer::doSelectOne($cc); 
-                   $countryid = $csel->getId();
-                }else{
-                   $cin = new Country();
-                   $cin->setName($country);
-                   $cin->save();
-                   $countryid = $cin->getId();
-                }
-                $emCalls->setParentTable('employee');
-                $emCalls->setCountryId($countryid);
+            if ($tilentaCallHistryResult) {
+                foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+
+
+                    $emCalls = new EmployeeCustomerCallhistory();
+                    $emCalls->setAccountId($xdr->account_id);
+                    $type = substr($xdr->account_id, 0, 1);
+                    if ($type == 'a') {
+                        $emCalls->setAccountType('a');
+                    } elseif ($type == 'c') {
+                        $emCalls->setAccountType('cb');
+                    } elseif (is_int($type)) {
+                        $emCalls->setAccountType('r');
+                    }
+                    $emCalls->setBillStatus($xdr->bill_status);
+                    $emCalls->setBillTime($xdr->bill_time);
+                    $emCalls->setChargedAmount($xdr->charged_amount);
+                    $emCalls->setChargedQuantity($xdr->charged_quantity);
+                    $emCalls->setPhoneNumber($xdr->CLD);
+                    $emCalls->setCli($xdr->CLI);
+                    $emCalls->setConnectTime($xdr->connect_time);
+                    $emCalls->setCountry($xdr->country);
+                    $country = $xdr->country;
+                    $cc = new Criteria();
+                    $cc->add(CountryPeer::NAME, $country, Criteria::LIKE);
+                    $ccount = CountryPeer::doCount($cc);
+                    if ($ccount > 0) {
+                        $csel = CountryPeer::doSelectOne($cc);
+                        $countryid = $csel->getId();
+                    } else {
+                        $cin = new Country();
+                        $cin->setName($country);
+                        $cin->save();
+                        $countryid = $cin->getId();
+                    }
+                    $emCalls->setParentTable('employee');
+                    $emCalls->setCountryId($countryid);
                     $ce = new Criteria();
-                    $ce->add(TelintaAccountsPeer::ACCOUNT_TITLE,$xdr->account_id);
-                    $ce->addAnd(TelintaAccountsPeer::PARENT_TABLE,'employee');
-                    $ce->add(TelintaAccountsPeer::STATUS,3);
-                    if(TelintaAccountsPeer::doCount($ce)>0){
+                    $ce->add(TelintaAccountsPeer::ACCOUNT_TITLE, $xdr->account_id);
+                    #$ce->addAnd(TelintaAccountsPeer::PARENT_TABLE, 'employee');
+                    $ce->add(TelintaAccountsPeer::STATUS, 3);
+                    if (TelintaAccountsPeer::doCount($ce) > 0) {
                         $emp = TelintaAccountsPeer::doSelectOne($ce);
                         $emCalls->setParentId($emp->getParentId());
                     }
-                $emCalls->setCompanyId($company->getId());
-                $emCalls->setDescription($xdr->description);
-                $emCalls->setDisconnectCause($xdr->disconnect_cause);
-                $emCalls->setDisconnectTime($xdr->disconnect_time);
-               // $emCalls->setDurationMinutes($duration_minutes);
-                $emCalls->setICustomer($company->getICustomer());
-                $emCalls->setIXdr($xdr->i_xdr);
-                $emCalls->setStatus(3);
-                $emCalls->setSubdivision($xdr->subdivision);
-                $emCalls->setUnixConnectTime($xdr->unix_connect_time);
-                $emCalls->setUnixDisconnectTime($xdr->unix_disconnect_time);
-                $emCalls->setVatIncludedAmount($xdr->charged_amount + $xdr->charged_amount * sfConfig::get('app_vat_percentage'));
-                $emCalls->setChargedVatValue(sfConfig::get('app_vat_percentage'));
-                $emCalls->save();
-             }
-          }else{
-                $callsHistory = new CallHistoryCallsLog();
+                    $emCalls->setCompanyId($company->getId());
+                    $emCalls->setDescription($xdr->description);
+                    $emCalls->setDisconnectCause($xdr->disconnect_cause);
+                    $emCalls->setDisconnectTime($xdr->disconnect_time);
+                    // $emCalls->setDurationMinutes($duration_minutes);
+                    $emCalls->setICustomer($company->getICustomer());
+                    $emCalls->setIXdr($xdr->i_xdr);
+                    $emCalls->setStatus(3);
+                    $emCalls->setSubdivision($xdr->subdivision);
+                    $emCalls->setUnixConnectTime($xdr->unix_connect_time);
+                    $emCalls->setUnixDisconnectTime($xdr->unix_disconnect_time);
+                    $emCalls->setVatIncludedAmount($xdr->charged_amount + $xdr->charged_amount * sfConfig::get('app_vat_percentage'));
+                    $emCalls->setChargedVatValue(sfConfig::get('app_vat_percentage'));
+                    $emCalls->save();
+                }
+            } else {
+                $callsHistory = new CallhistoryCallsLog();
                 $callsHistory->setParent('company');
                 $callsHistory->setParentId($company->getId());
-                $callsHistory->setTodate($this->todate);
-                $callsHistory->setFromdate($this->fromdate);
+                $callsHistory->setTodate($start_date);
+                $callsHistory->setIService(3);
+                $callsHistory->setFromdate($end_date);
                 $callsHistory->save();
-          } 
-        } 
-                return sfView::NONE;
+            }
+        }
+        return sfView::NONE;
     }
-    
-    public function executeSaveCompanyCallHistoryNotFetch(sfWebRequest $request)
-    {
+
+    public function executeSaveCompanyCallHistoryNotFetch(sfWebRequest $request) {
         $c = new Criteria;
-        $c->add(CallHistoryCallsLogPeer::PARENT,'company');
-        $c->add(CallHistoryCallsLogPeer::STATUS,1);
-        $callLogs =CallHistoryCallsLogPeer::doSelect($c);
+        $c->add(CallhistoryCallsLogPeer::PARENT, 'company');
+        $c->add(CallhistoryCallsLogPeer::STATUS, 1);
+        $callLogs = CallhistoryCallsLogPeer::doSelect($c);
 
-        foreach($callLogs as $callLog){
+        foreach ($callLogs as $callLog) {
 
-            $this->fromdate = $callLog->getFromdate();
+            echo $this->fromdate = $callLog->getFromdate();
+            echo "<hr/>";
+            echo $this->todate = $callLog->getTodate();
+            echo "<hr/>";
 
-            $this->todate = $callLog->getTodate();
-            $company =  CompanyPeer::retrieveByPK($callLog->getCompanyId());
-            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $this->fromdate . ' 00:00:00', $this->todate . ' 23:59:59');
+
+            $company = CompanyPeer::retrieveByPK($callLog->getParentId());
+
+            $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $this->fromdate, $this->todate, false, $callLog->getIService());
 //     var_dump($tilentaCallHistryResult);
 //     die;
-           if($tilentaCallHistryResult){
-            foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
-                
-                
-                $emCalls = new EmployeeCustomerCallhistory();
-                $emCalls->setAccountId($xdr->account_id);
-                $emCalls->setBillStatus($xdr->bill_status);
-                $emCalls->setBillTime($xdr->bill_time);
-                $emCalls->setChargedAmount($xdr->charged_amount);
-                $emCalls->setChargedQuantity($xdr->charged_quantity);
-                $emCalls->setPhoneNumber($xdr->CLD);
-                $emCalls->setCli($xdr->CLI);
-                $emCalls->setConnectTime($xdr->connect_time);
-                $emCalls->setCountry($xdr->country);
-                $country = $xdr->country;
-                $cc = new Criteria();
-                $cc->add(CountryPeer::NAME,$country, Criteria::LIKE);
-                $ccount = CountryPeer::doCount($cc);
-                if($ccount > 0){
-                   $csel = CountryPeer::doSelectOne($cc); 
-                   $countryid = $csel->getId();
-                }else{
-                   $cin = new Country();
-                   $cin->setName($country);
-                   $cin->save();
-                   $countryid = $cin->getId();
-                }
-                $emCalls->setParentTable('employee');
-                $emCalls->setCountryId($countryid);
-                    $ce = new Criteria();
-                    $ce->add(TelintaAccountsPeer::ACCOUNT_TITLE,$xdr->account_id);
-                    $ce->addAnd(TelintaAccountsPeer::PARENT_TABLE,'employee');
-                    $ce->add(TelintaAccountsPeer::STATUS,3);
-                    if(TelintaAccountsPeer::doCount($ce)>0){
-                        $emp = TelintaAccountsPeer::doSelectOne($ce);
-                        $emCalls->setParentId($emp->getParentId());
+            if ($tilentaCallHistryResult) {
+                if ($callLog->getIService() == 3) {
+                    foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                        $emCalls = new EmployeeCustomerCallhistory();
+                        $emCalls->setAccountId($xdr->account_id);
+                        $emCalls->setBillStatus($xdr->bill_status);
+                        $emCalls->setBillTime($xdr->bill_time);
+                        $emCalls->setChargedAmount($xdr->charged_amount);
+                        $emCalls->setChargedQuantity($xdr->charged_quantity);
+                        $emCalls->setPhoneNumber($xdr->CLD);
+                        $emCalls->setCli($xdr->CLI);
+                        $emCalls->setConnectTime($xdr->connect_time);
+                        $emCalls->setCountry($xdr->country);
+                        $country = $xdr->country;
+                        $cc = new Criteria();
+                        $cc->add(CountryPeer::NAME, $country, Criteria::LIKE);
+                        $ccount = CountryPeer::doCount($cc);
+                        if ($ccount > 0) {
+                            $csel = CountryPeer::doSelectOne($cc);
+                            $countryid = $csel->getId();
+                        } else {
+                            $cin = new Country();
+                            $cin->setName($country);
+                            $cin->save();
+                            $countryid = $cin->getId();
+                        }
+                        $emCalls->setParentTable('employee');
+                        $emCalls->setCountryId($countryid);
+                        $ce = new Criteria();
+                        $ce->add(TelintaAccountsPeer::ACCOUNT_TITLE, $xdr->account_id);
+                        $ce->addAnd(TelintaAccountsPeer::PARENT_TABLE, 'employee');
+                        $ce->add(TelintaAccountsPeer::STATUS, 3);
+                        if (TelintaAccountsPeer::doCount($ce) > 0) {
+                            $emp = TelintaAccountsPeer::doSelectOne($ce);
+                            $emCalls->setParentId($emp->getParentId());
+                        }
+                        $emCalls->setCompanyId($callLog->getParentId());
+                        $emCalls->setDescription($xdr->description);
+                        $emCalls->setDisconnectCause($xdr->disconnect_cause);
+                        $emCalls->setDisconnectTime($xdr->disconnect_time);
+                        // $emCalls->setDurationMinutes($duration_minutes);
+                        $emCalls->setICustomer($company->getICustomer());
+                        $emCalls->setIXdr($xdr->i_xdr);
+                        $emCalls->setStatus(1);
+                        $emCalls->setSubdivision($xdr->subdivision);
+                        $emCalls->setUnixConnectTime($xdr->unix_connect_time);
+                        $emCalls->setUnixDisconnectTime($xdr->unix_disconnect_time);
+                        $emCalls->save();
                     }
-                $emCalls->setCompanyId($callLog->getParentId());
-                $emCalls->setDescription($xdr->description);
-                $emCalls->setDisconnectCause($xdr->disconnect_cause);
-                $emCalls->setDisconnectTime($xdr->disconnect_time);
-               // $emCalls->setDurationMinutes($duration_minutes);
-                $emCalls->setICustomer($company->getICustomer());
-                $emCalls->setIXdr($xdr->i_xdr);
-                $emCalls->setStatus(1);
-                $emCalls->setSubdivision($xdr->subdivision);
-                $emCalls->setUnixConnectTime($xdr->unix_connect_time);
-                $emCalls->setUnixDisconnectTime($xdr->unix_disconnect_time);
-                $emCalls->save();
-             }
-             
-             $callLog->setStatus(3);
-             $callLog->save();
-             
-          }
-        } 
-                return sfView::NONE;
+                } else {
+                    foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                        $other = new Odrs();
+                        $other->setParentTable('company');
+                        $other->setParentId($company->getId());
+                        $other->setBillStart($this->fromdate);
+                        $other->setBillEnd($this->todate);
+                        $other->setBillTime($xdr->bill_time);
+                        $other->setDescription($xdr->CLD);
+                        $other->setChargedAmount($xdr->charged_amount);
+                        $other->setCompanyId($company->getId());
+                        $other->setVatIncludedAmount($xdr->charged_amount + $xdr->charged_amount * sfConfig::get('app_vat_percentage'));
+                        $other->setConnectTime($xdr->connect_time);
+                        $other->setDisconnectTime($xdr->disconnect_time);
+                        $other->setChargedVatValue(sfConfig::get('app_vat_percentage'));
+                        $other->setIService($callLog->getIService());
+                        $other->save();
+                    }
+                }
+
+                $callLog->setStatus(3);
+                $callLog->save();
+            }
+        }
+
+        $c = new Criteria;
+        $c->add(CallhistoryCallsLogPeer::PARENT, 'employee');
+        $c->add(CallhistoryCallsLogPeer::STATUS, 1);
+        $callLogs = CallhistoryCallsLogPeer::doSelect($c);
+
+        foreach ($callLogs as $callLog) {
+
+            $this->fromdate = $callLog->getFromdate();
+            $this->todate = $callLog->getTodate();
+            $employee = EmployeePeer::retrieveByPK($callLog->getParentId());
+
+            $tilentaCallHistryResult = $tilentaSubscriptionResult = CompanyEmployeActivation::getSubscription($employee, $callLog->getIAccount(), $this->fromdate, $this->todate);
+            if ($tilentaCallHistryResult) {
+                foreach ($tilentaCallHistryResult->xdr_list as $odr) {
+                    $other = new Odrs();
+                    $other->setParentTable($callLog->getParent());
+                    $other->setParentId($callLog->getParentId());
+                    $other->setBillStart($this->fromdate);
+                    $other->setBillEnd($this->todate);
+                    $other->setBillTime($odr->bill_time);
+                    $other->setDescription($odr->CLD);
+                    $other->setChargedAmount($odr->charged_amount);
+                    #$other->setCompanyId($company->getId());
+                    $other->setVatIncludedAmount($odr->charged_amount + $odr->charged_amount * sfConfig::get('app_vat_percentage'));
+                    $other->setConnectTime($odr->connect_time);
+                    $other->setDisconnectTime($odr->disconnect_time);
+                    $other->setChargedVatValue(sfConfig::get('app_vat_percentage'));
+                    $other->setIService($callLog->getIService());
+                    $other->save();
+                }
+            }
+
+            $callLog->setStatus(3);
+            $callLog->save();
+        }
+
+
+
+
+        return sfView::NONE;
     }
+
+    public function executeCompanyBilling(sfWebRequest $request) {
+        $company_id = $request->getParameter('company_id');
+
+        $this->billing_start_date = date('Y-m-d 21:00:00', $request->getParameter('start_date'));
+        $this->billing_end_date = date('Y-m-d 21:59:59', $request->getParameter('end_date'));
+        $this->forward404Unless($company_id && $this->billing_start_date && $this->billing_end_date);
+
+        if (!($company = CompanyPeer::retrieveByPK($company_id))) {
+            $this->forward404();
+        }
+
+        $billings = array();
+        $ratings = array();
+        $bilcharge = 00.00;
+
+        $ec = new Criteria();
+        $ec->add(EmployeePeer::COMPANY_ID, $company_id);
+        $this->employees = EmployeePeer::doSelect($ec);
+
+        $billing_details = array();
+        $this->details = $billing_details;
+
+
+
+        $invoice_id = $company->getInvoiceMethodId();
+        $im = new Criteria();
+        $im->add(InvoiceMethodPeer::ID, $invoice_id);
+        $invoice = InvoiceMethodPeer::doSelectOne($im);
+        $this->invoice_cost = $invoice->getCost();
+
+        $new_invoice = new Invoice();
+        $new_invoice->setCompany($company);
+        $new_invoice->setBillingStartingDate($this->billing_start_date);
+        $new_invoice->setBillingEndingDate($this->billing_end_date);
+        $new_invoice->setStartTime($request->getParameter('start_date'));
+        $new_invoice->setEndTime($request->getParameter('end_date'));
+        $billing_due_days = $invoice->getBillingdays();
+        $due_date = date("Y-m-d H:i:s", time() + ((60 * 60) * 24) * $billing_due_days);
+
+        $new_invoice->setDueDate($due_date);
+        $new_invoice->setInvoiceStatusId(4); // inactive
+        $new_invoice->save();
+        $new_invoice->setInvoiceNumber(date('dmy') . $new_invoice->getId());
+
+        $new_invoice->save();
+        //   var_dump($new_invoice);
+        $this->invoice_meta = $new_invoice;
+        $this->company_meta = $company;
+
+        $this->setLayout(false);
+    }
+
+    public function executeOdrChargesMonthly(sfWebRequest $request) {
+
+        ////////////////////////////////////////////////////////////
+        
+        $bill_start_date = date('Y-m-1 00:00:00', strtotime("last month"));
+        echo $startdate = date('Y-m-d 21:59:59', strtotime("-1 day", strtotime($bill_start_date)));
+        echo "<hr/>";
+        // echo $end_date = date('Y-m-t 21:59:59', strtotime("last month"));
+        echo $enddate = date('Y-m-t 21:59:59', strtotime("last month"));
+        $bill_end_date = date('Y-m-t 23:59:59', strtotime("last month"));
+        
+        
+        $start_strtotime = strtotime($startdate);
+        $end_strototime = strtotime($enddate);
+
+        $co = new Criteria();
+        $companies = CompanyPeer::doSelect($co);
+        foreach ($companies as $company) {
+            ///////// Fetch Other Events /////////////
+            $otherEvents = CompanyEmployeActivation::callHistory($company, $startdate, $enddate, false, 1);
+            if ($otherEvents && count($otherEvents) > 0) {
+                foreach ($otherEvents->xdr_list as $odr) {
+                    $other = new Odrs();
+                    $other->setParentTable('company');
+                    $other->setParentId($company->getId());
+                    $other->setBillStart($bill_start_date);
+                    $other->setBillEnd($bill_end_date);
+                    $other->setBillTime($odr->bill_time);
+                    $other->setDescription($odr->CLD);
+                    $other->setChargedAmount($odr->charged_amount);
+                    $other->setCompanyId($company->getId());
+                    $other->setVatIncludedAmount($odr->charged_amount + $odr->charged_amount * sfConfig::get('app_vat_percentage'));
+                    $other->setConnectTime($odr->connect_time);
+                    $other->setDisconnectTime($odr->disconnect_time);
+                    $other->setChargedVatValue(sfConfig::get('app_vat_percentage'));
+                    $other->setIService(1);
+                    $other->save();
+                }
+            } else {
+                $otherEventLog = new CallhistoryCallsLog();
+                $otherEventLog->setParent('company');
+                $otherEventLog->setParentId($company->getId());
+                $otherEventLog->setTodate($startdate);
+                $otherEventLog->setFromdate($enddate);
+                $otherEventLog->setIService(1);
+                $otherEventLog->save();
+            }
+            ///////// Payments /////////////
+            $payments = CompanyEmployeActivation::callHistory($company, $startdate, $enddate, false, 2);
+            if ($payments && count($payments) > 0) {
+                foreach ($payments->xdr_list as $odrpay) {
+                    $chargedAmount = -$odrpay->charged_amount;
+                    $pay = new Odrs();
+                    $pay->setParentTable('company');
+                    $pay->setParentId($company->getId());
+                    $pay->setCompanyId($company->getId());
+                    $pay->setBillStart($bill_start_date);
+                    $pay->setBillEnd($bill_end_date);
+                    $pay->setBillTime($odrpay->bill_time);
+                    $pay->setDescription($odrpay->CLD);
+                    $pay->setConnectTime($odrpay->connect_time);
+                    $pay->setDisconnectTime($odrpay->disconnect_time);
+                    $pay->setChargedAmount($chargedAmount);
+                    $pay->setVatIncludedAmount($chargedAmount + $chargedAmount * sfConfig::get('app_vat_percentage'));
+                    $pay->setChargedVatValue(sfConfig::get('app_vat_percentage'));
+                    $pay->setIService(2);
+                    $pay->save();
+                }
+            } else {
+                $odrpayLog = new CallhistoryCallsLog();
+                $odrpayLog->setParent('company');
+                $odrpayLog->setParentId($company->getId());
+                $odrpayLog->setTodate($startdate);
+                $odrpayLog->setFromdate($enddate);
+                $odrpayLog->setIService(2);
+                $odrpayLog->save();
+            }
+        }
+
+        $em = new Criteria();
+        $em->addAnd(EmployeePeer::STATUS_ID, 3);
+        $employees = EmployeePeer::doSelect($em);
+        foreach ($employees as $employee) {
+
+            $prdPrice = 0;
+
+            $cta = new Criteria();
+            $cta->add(TelintaAccountsPeer::PARENT_TABLE, 'employee');
+            $cta->addAnd(TelintaAccountsPeer::PARENT_ID, $employee->getId());
+            $cta->addAnd(TelintaAccountsPeer::STATUS, 3);
+            $count_ta = TelintaAccountsPeer::doCount($cta);
+            if ($count_ta > 0) {
+                $telinta_accounts = TelintaAccountsPeer::doSelect($cta);
+                foreach ($telinta_accounts as $telinta_account) {
+                    $c2 = new Criteria();
+                    $c2->add(OdrsPeer::PARENT_TABLE, "employee");
+                    $c2->add(OdrsPeer::BILL_START, $bill_start_date);
+                    $c2->addAnd(OdrsPeer::BILL_END, $bill_end_date);
+                    $c2->addAnd(OdrsPeer::PARENT_ID, $employee->getId());
+                    $c2->addAnd(OdrsPeer::I_ACCOUNT, $telinta_account->getIAccount());
+                    if (OdrsPeer::doCount($c2) == 0) {
+
+                        $tilentaSubscriptionResult = CompanyEmployeActivation::getSubscription($employee, $telinta_account->getIAccount(), $startdate, $enddate);
+                        if ($tilentaSubscriptionResult) {
+                            foreach ($tilentaSubscriptionResult->xdr_list as $xdr) {
+                                $empSub = new Odrs();
+                                $empSub->setChargedAmount($xdr->charged_amount);
+                                $empSub->setIXdr($xdr->i_xdr);
+                                $empSub->setAccountId($xdr->account_id);
+                                $empSub->setConnectTime($xdr->connect_time);
+                                $empSub->setDisconnectTime($xdr->disconnect_time);
+                                $empSub->setBillTime($xdr->bill_time);
+                                $empSub->setDescription($xdr->CLD);
+                                $empSub->setBillStart($bill_start_date);
+                                $empSub->setBillEnd($bill_end_date);
+                                $empSub->setParentTable('employee');
+                                $empSub->setParentId($employee->getId());
+                                $empSub->setCompanyId($employee->getCompanyId());
+                                $empSub->setVatIncludedAmount($xdr->charged_amount + $xdr->charged_amount * sfConfig::get('app_vat_percentage'));
+                                $empSub->setChargedVatValue(sfConfig::get('app_vat_percentage'));
+                                $empSub->setIService(4);
+                                $empSub->save();
+                            }
+                        } else {
+                            $odrSubLog = new CallhistoryCallsLog();
+                            $odrSubLog->setParent('employee');
+                            $odrSubLog->setParentId($employee->getId());
+                            $odrSubLog->setIAccount($telinta_account->getIAccount());
+                            $odrSubLog->setTodate($startdate);
+                            $odrSubLog->setFromdate($enddate);
+                            $odrSubLog->setIService(4);
+                            $odrSubLog->save();
+                        }
+                        // 
+                    }
+                }
+            }
+        }
+        return sfView::NONE;
+    }
+
+    function executeGenerateInvoiceMonthly(sfWebRequest $request) {
+         $start_date = date('Y-m-1 00:00:00',strtotime('last month'));
+        // echo '<br />';23:59:59'
+          $enddate = date('Y-m-t 23:59:59',strtotime('last month'));        
+        //   $start_date = date('Y-m-1 00:00:00', strtotime("last month"));
+        //$start_date = date('Y-m-1 00:00:00');
+        // echo '<br />';23:59:59'
+        //$enddate = date('Y-m-t 23:59:59');
+        //  $enddate = date('Y-m-t 23:59:59');
+        $start_strtotime = strtotime($start_date);
+        $startdate = date('Y-m-d 00:00:00', $start_strtotime);
+        $end_strototime = strtotime($enddate);
+
+        echo "<br/>";
+        $start_strtotime = strtotime($startdate);
+        $end_strototime = strtotime($enddate);
+        echo $startdate;
+        echo ' - ';
+        echo $enddate;
+        echo '<br />';
+        $c = new Criteria();
+        $companies = CompanyPeer::doSelect($c);
+
+        foreach ($companies as $company) {
+            echo $company->getId() . "::::";
+            echo $created_date = $company->getCreatedAt();
+
+            echo "<br/>";
+
+            $cl = new Criteria();
+            $cl->addAnd(EmployeeCustomerCallhistoryPeer::CONNECT_TIME, $startdate, Criteria::GREATER_EQUAL);
+            $cl->addAnd(EmployeeCustomerCallhistoryPeer::DISCONNECT_TIME, $enddate, Criteria::LESS_EQUAL);
+            $cl->addJoin(EmployeeCustomerCallhistoryPeer::COMPANY_ID, OdrsPeer::COMPANY_ID, Criteria::LEFT_JOIN);
+            $cl->addAnd(EmployeeCustomerCallhistoryPeer::COMPANY_ID, $company->getId());
+            $calls = EmployeeCustomerCallhistoryPeer::doCount($cl);
+            echo "calls---" . $calls;
+            if ($calls > 0) {
+                echo "----companyid------" . $company->getId();
+                echo "<br/>";
+                echo $url1 = sfConfig::get('app_customer_url') . 'pScripts/invoiceBilling?company_id=' . $company->getId() . '&start_date=' . $start_strtotime . '&end_date=' . $end_strototime;
+                $invoice = file_get_contents($url1);
+            }echo "<br/>";
+            if ($calls == 0) {
+                $cl = new Criteria();
+                $cl->addAnd(OdrsPeer::BILL_START, $startdate, Criteria::GREATER_EQUAL);
+                $cl->addAnd(OdrsPeer::BILL_END, $enddate, Criteria::LESS_EQUAL);
+                $cl->addAnd(OdrsPeer::COMPANY_ID, $company->getId());
+                $calls = OdrsPeer::doCount($cl);
+                echo "ODRS---" . $calls;
+                if ($calls > 0) {
+                    echo "----companyid------" . $company->getId();
+                    echo "<br/>";
+                    echo $url1 = sfConfig::get('app_customer_url') . 'pScripts/invoiceBilling?company_id=' . $company->getId() . '&start_date=' . $start_strtotime . '&end_date=' . $end_strototime;
+                    $invoice = file_get_contents($url1);
+                }echo "<br/>";
+            }
+        }
+        return sfView::NONE;
+    }
+
+
+    function executeUpdateCompanyBilling(sfRequest $request) {
+
+        $invoiceId = $request->getParameter('invoiceid');
+        $invoice = InvoicePeer::retrieveByPK($invoiceId);
+        $company = $invoice->getCompany();
+
+        $this->billing_start_date = $invoice->getBillingStartingDate();
+        $this->billing_end_date = $invoice->getBillingEndingDate();
+
+        $billings = array();
+        $ratings = array();
+        $bilcharge = 00.00;
+
+        $ec = new Criteria();
+        $ec->add(EmployeePeer::COMPANY_ID, $company->getId());
+        $ec->add(EmployeePeer::STATUS_ID, 3);
+        $this->employees = EmployeePeer::doSelect($ec);
+
+        $billing_details = array();
+        $this->details = $billing_details;
+
+        $this->invoice_cost = $invoice->getInvoiceCost();
+        $this->invoice_meta = $invoice;
+        $this->company_meta = $company;
+
+        $this->setLayout(false);
+
+
+        ////////////////////////////////////////////////////////////////////
+    }
+
+    public function executeCompanyNetBalance(sfWebRequest $request) {
+
+        $start_date =  date('Y-m-1 00:00:00', strtotime("last month"));
+        $end_date = date('Y-m-t 23:59:59', strtotime("last month"));
+
+
+        $cco = new Criteria();
+        $companies = CompanyPeer::doSelect($cco);
+        $net_balance = 0.00;
+        foreach ($companies as $company) {
+            $ci = new Criteria();
+            $ci->add(InvoicePeer::COMPANY_ID, $company->getId());
+            $ci->add(InvoicePeer::BILLING_ENDING_DATE, $end_date, Criteria::LESS_EQUAL);
+            $ci->addSelectColumn('sum(' . InvoicePeer::TOTALPAYMENT . ') AS total_payment');
+            $sum = InvoicePeer::doSelectStmt($ci);
+            $resultset = $sum->fetch(PDO::FETCH_OBJ);
+            $total_payment = $resultset->total_payment;
+
+            $co = new Criteria();
+            $co->add(OdrsPeer::COMPANY_ID, $company->getId());
+            $co->addAnd(OdrsPeer::BILL_END, $end_date, Criteria::LESS_EQUAL);
+            $co->addAnd(OdrsPeer::I_SERVICE, 2);
+            $co->addSelectColumn('sum(' . OdrsPeer::VAT_INCLUDED_AMOUNT . ') AS total_charged_amount');
+            $sum_camount = OdrsPeer::doSelectStmt($co);
+            $rs = $sum_camount->fetch(PDO::FETCH_OBJ);
+            $total_charged_amount = $rs->total_charged_amount;
+
+            echo 'companyid-' . $company->getId() . ' - ' . $total_payment . ' - ' . $total_charged_amount;
+            echo '<br />';
+            echo $net_balance = $total_payment - $total_charged_amount;
+            $cnb = new CompanyNetBalance();
+            $cnb->setBillStart($start_date);
+            $cnb->setBillEnd($end_date);
+            $cnb->setCompanyId($company->getId());
+            $cnb->setNetBalance($net_balance);
+            $cnb->save();
+        }
+        return sfView::NONE;
+    }
+
+    public function executeInvoiceBilling(sfWebRequest $request) {
+        $company_id = $request->getParameter('company_id');
+
+        $this->billing_start_date = date('Y-m-d 00:00:00', $request->getParameter('start_date'));
+        $this->billing_end_date = date('Y-m-d 23:59:59', $request->getParameter('end_date'));
+        $this->forward404Unless($company_id && $this->billing_start_date && $this->billing_end_date);
+
+        if (!($company = CompanyPeer::retrieveByPK($company_id))) {
+            $this->forward404();
+        }
+
+        $billings = array();
+        $ratings = array();
+        $bilcharge = 00.00;
+
+        $cnb = new Criteria();
+        $cnb->add(CompanyNetBalancePeer::BILL_START, $this->billing_start_date);
+        $cnb->addAnd(CompanyNetBalancePeer::BILL_END, $this->billing_end_date);
+        $cnb->addAnd(CompanyNetBalancePeer::COMPANY_ID, $company_id);
+        if (CompanyNetBalancePeer::doCount($cnb) > 0) {
+            $netbalance = CompanyNetBalancePeer::doSelectOne($cnb);
+            $net = $netbalance->getNetBalance();
+            $this->netbalance = $net;
+        } else {
+            $this->netbalance = 0.00;
+        }
+
+        $ec = new Criteria();
+        $ec->add(EmployeePeer::COMPANY_ID, $company_id);
+        $this->employees = EmployeePeer::doSelect($ec);
+
+        $billing_details = array();
+        $this->details = $billing_details;
+
+        $invoice_id = $company->getInvoiceMethodId();
+        $im = new Criteria();
+        $im->add(InvoiceMethodPeer::ID, $invoice_id);
+        $invoice = InvoiceMethodPeer::doSelectOne($im);
+        $this->invoice_cost = $invoice->getCost();
+
+        $new_invoice = new Invoice();
+        $new_invoice->setCompany($company);
+        $new_invoice->setBillingStartingDate($this->billing_start_date);
+        $new_invoice->setBillingEndingDate($this->billing_end_date);
+        $new_invoice->setStartTime($request->getParameter('start_date'));
+        $new_invoice->setEndTime($request->getParameter('end_date'));
+        $billing_due_days = $invoice->getBillingdays();
+        $due_date = date("Y-m-d H:i:s", time() + ((60 * 60) * 24) * $billing_due_days);
+
+        $new_invoice->setDueDate($due_date);
+        $new_invoice->setInvoiceStatusId(4); // inactive
+        $new_invoice->save();
+        $new_invoice->setInvoiceNumber(date('dmy') . $new_invoice->getId());
+
+        $new_invoice->save();
+        //   var_dump($new_invoice);
+        $this->invoice_meta = $new_invoice;
+        $this->company_meta = $company;
+
+        $cother = new Criteria();
+        $cother->add(OdrsPeer::COMPANY_ID, $company_id);
+        $cother->addAnd(OdrsPeer::I_SERVICE, 1);
+        $cother->addAnd(OdrsPeer::BILL_START, $this->billing_start_date, Criteria::GREATER_EQUAL);
+        $cother->addAnd(OdrsPeer::BILL_END, $this->billing_end_date, Criteria::LESS_EQUAL);
+        $othercount = OdrsPeer::doCount($cother);
+        if ($othercount > 0) {
+            $this->otherevents = OdrsPeer::doSelect($cother);
+        }
+
+        $cpay = new Criteria();
+        $cpay->add(OdrsPeer::COMPANY_ID, $company_id);
+        $cpay->addAnd(OdrsPeer::I_SERVICE, 2);
+        //$cpay->setLimit(10);
+        $cpay->addAnd(OdrsPeer::BILL_START, $this->billing_start_date, Criteria::GREATER_EQUAL);
+        $cpay->addAnd(OdrsPeer::BILL_END, $this->billing_end_date, Criteria::LESS_EQUAL);
+        $cpay->addDescendingOrderByColumn(OdrsPeer::BILL_START);
+        $paycount = OdrsPeer::doCount($cpay);
+        if ($paycount > 0) {
+            $this->payments = OdrsPeer::doSelect($cpay);
+        }
+        ///// Select previous invoices
+        $cip = new Criteria();
+        $cip->add(InvoicePeer::BILLING_ENDING_DATE, $this->billing_end_date, Criteria::LESS_THAN);
+        $cip->addAnd(InvoicePeer::COMPANY_ID, $company_id);
+        $cip->setLimit(10);
+        $cip->addDescendingOrderByColumn(InvoicePeer::BILLING_STARTING_DATE);
+        $preInvoices = InvoicePeer::doSelect($cip);
+        $this->preInvoices = $preInvoices;
+        $this->setLayout(false);
+    }
+
+    public function executeUpdateInvoiceBilling(sfWebRequest $request) {
+        $invoiceId = $request->getParameter('invoiceid');
+        $invoice = InvoicePeer::retrieveByPK($invoiceId);
+        $company = $invoice->getCompany();
+
+        $this->billing_start_date = $invoice->getBillingStartingDate();
+        $this->billing_end_date = $invoice->getBillingEndingDate();
+
+        $billings = array();
+        $ratings = array();
+        $bilcharge = 00.00;
+
+        $cnb = new Criteria();
+        $cnb->add(CompanyNetBalancePeer::BILL_START, $this->billing_start_date);
+        $cnb->addAnd(CompanyNetBalancePeer::BILL_END, $this->billing_end_date);
+        $cnb->addAnd(CompanyNetBalancePeer::COMPANY_ID, $company->getId());
+        // $netbalance = CompanyNetBalancePeer::doSelectOne($cnb);
+        if (CompanyNetBalancePeer::doCount($cnb) > 0) {
+            $netbalance = CompanyNetBalancePeer::doSelectOne($cnb);
+            $net = $netbalance->getNetBalance();
+            $this->netbalance = $net;
+        } else {
+            $this->netbalance = 0.00;
+        }
+
+        $ec = new Criteria();
+        $ec->add(EmployeePeer::COMPANY_ID, $company->getId());
+        $ec->add(EmployeePeer::STATUS_ID, 3);
+        $this->employees = EmployeePeer::doSelect($ec);
+
+        $billing_details = array();
+        $this->details = $billing_details;
+
+        if ($invoice->getInvoiceCost() == 0) {
+            $inid = $company->getInvoiceMethodId();
+            $im = new Criteria();
+            $im->add(InvoiceMethodPeer::ID, $inid);
+            $in = InvoiceMethodPeer::doSelectOne($im);
+            $this->invoice_cost = $in->getCost();
+        } else {
+            $this->invoice_cost = $invoice->getInvoiceCost();
+        }
+
+        $this->invoice_meta = $invoice;
+        $this->company_meta = $company;
+
+        $cother = new Criteria();
+        $cother->add(OdrsPeer::COMPANY_ID, $company->getId());
+        $cother->addAnd(OdrsPeer::I_SERVICE, 1);
+        $cother->addAnd(OdrsPeer::BILL_START, $this->billing_start_date, Criteria::GREATER_EQUAL);
+        $cother->addAnd(OdrsPeer::BILL_END, $this->billing_end_date, Criteria::LESS_EQUAL);
+        $othercount = OdrsPeer::doCount($cother);
+        if ($othercount > 0) {
+            $this->otherevents = OdrsPeer::doSelect($cother);
+        }
+
+        $cpay = new Criteria();
+        $cpay->add(OdrsPeer::COMPANY_ID, $company->getId());
+        $cpay->addAnd(OdrsPeer::I_SERVICE, 2);
+        //$cpay->setLimit(10);
+        $cpay->addAnd(OdrsPeer::BILL_START, $this->billing_start_date, Criteria::GREATER_EQUAL);
+        $cpay->addAnd(OdrsPeer::BILL_END, $this->billing_end_date, Criteria::LESS_EQUAL);
+        $cpay->addDescendingOrderByColumn(OdrsPeer::BILL_TIME);
+        $paycount = OdrsPeer::doCount($cpay);
+        if ($paycount > 0) {
+            $this->payments = OdrsPeer::doSelect($cpay);
+        }
+
+        ///// Select previous invoices
+        $cip = new Criteria();
+        $cip->add(InvoicePeer::BILLING_ENDING_DATE, $this->billing_end_date, Criteria::LESS_THAN);
+        $cip->addAnd(InvoicePeer::COMPANY_ID, $company->getId());
+        $cip->setLimit(10);
+        $cip->addDescendingOrderByColumn(InvoicePeer::BILLING_STARTING_DATE);
+        if (InvoicePeer::doCount($cip) > 0) {
+            $preInvoices = InvoicePeer::doSelect($cip);
+            $this->preInvoices = $preInvoices;
+        }
+        $this->setLayout(false);
+    }
+
 }

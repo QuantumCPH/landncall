@@ -164,19 +164,38 @@ class employeeActions extends sfActions {
         $this->country = CountryPeer::doSelectOne($c1);
         $contrymobilenumber = $this->country->getCallingCode() . $mobileNo;
         $employeMobileNumber = $contrymobilenumber;
+        $employee->setCompanyId($request->getParameter('company_id'));
+        $employee->setFirstName($request->getParameter('first_name'));
+        $employee->setLastName($request->getParameter('last_name'));
+        $employee->setCountryCode($this->country->getCallingCode());
+        $employee->setCountryMobileNumber($contrymobilenumber);
+        $employee->setMobileNumber($request->getParameter('mobile_number'));
+        $employee->setEmail($request->getParameter('email'));
+        $employee->setProductId($request->getParameter('productid'));
+        $employee->setUniqueId($request->getParameter('uniqueid'));
+        $employee->setStatusId(1);
+        // $employee->setProductPrice($request->getParameter('price'));
+        $employee->save();
+        $c = new Criteria();
+        $c->add(UniqueIdsPeer::UNIQUE_NUMBER,$request->getParameter('uniqueid'));
+        $uniqueIdObj = UniqueIdsPeer::doSelectOne($c);
+        $uniqueIdObj->setAssignedAt(date('Y-m-d H:i:s'));
+        $uniqueIdObj->setStatus(1);
+        $uniqueIdObj->save();
 
-        if (!CompanyEmployeActivation::telintaRegisterEmployeeCB($employeMobileNumber, $this->companys)) {
+        if (!CompanyEmployeActivation::telintaRegisterEmployeeCB($employeMobileNumber, $this->companys,$employee)) {
             $this->getUser()->setFlash('messageError', 'Employee Call Through account is not registered');
             $this->redirect('employee/add');
             die;
         }
-        if (!CompanyEmployeActivation::telintaRegisterEmployeeCT($employeMobileNumber, $this->companys)) {
+        if (!CompanyEmployeActivation::telintaRegisterEmployeeCT($employeMobileNumber, $this->companys,$employee)) {
             $this->getUser()->setFlash('messageError', 'Employee Call Back account is not registered');
             $this->redirect('employee/add');
             die;
         }
 
-
+       $employee->setStatusId(3); //// completed status is 3 defined in backend/config/app.yml
+       $employee->save();
         $rtype = $request->getParameter('registration_type');
         if ($rtype == 1) {
             ////////////////////////////////////////////////
@@ -226,7 +245,7 @@ class employeeActions extends sfActions {
 
 
 
-                        $telintaResenummerAccount = CompanyEmployeActivation::createReseNumberAccount($voipnumbers, $this->companys, $TelintaMobile);
+                        $telintaResenummerAccount = CompanyEmployeActivation::createReseNumberAccount($voipnumbers, $this->companys, $TelintaMobile,$employee);
                         if ($telintaResenummerAccount) {
                             $OpeningBalance = 40;
                             $employee->setRegistrationType($request->getParameter('registration_type'));
@@ -259,23 +278,7 @@ class employeeActions extends sfActions {
             
         }
 
-        $employee->setCompanyId($request->getParameter('company_id'));
-        $employee->setFirstName($request->getParameter('first_name'));
-        $employee->setLastName($request->getParameter('last_name'));
-        $employee->setCountryCode($this->country->getCallingCode());
-        $employee->setCountryMobileNumber($contrymobilenumber);
-        $employee->setMobileNumber($request->getParameter('mobile_number'));
-        $employee->setEmail($request->getParameter('email'));
-        $employee->setProductId($request->getParameter('productid'));
-        $employee->setUniqueId($request->getParameter('uniqueid'));
-        // $employee->setProductPrice($request->getParameter('price'));
-        $employee->save();
-        $c = new Criteria();
-        $c->add(UniqueIdsPeer::UNIQUE_NUMBER,$request->getParameter('uniqueid'));
-        $uniqueIdObj = UniqueIdsPeer::doSelectOne($c);
-        $uniqueIdObj->setAssignedAt(date('Y-m-d H:i:s'));
-        $uniqueIdObj->setStatus(1);
-        $uniqueIdObj->save();
+        
 
 
 
@@ -594,6 +597,7 @@ class employeeActions extends sfActions {
         $c = new Criteria();
         $mobile_no = $_POST['mobile_no'];
         $c->add(EmployeePeer::MOBILE_NUMBER, $mobile_no);
+        $c->add(EmployeePeer::STATUS_ID, 3);
         if (EmployeePeer::doSelectOne($c)) {
 
             echo "no";

@@ -65,19 +65,19 @@ class CompanyEmployeActivation {
         return true;
     }
 
-    public static function telintaRegisterEmployeeCT($employeMobileNumber, Company $company) {
+    public static function telintaRegisterEmployeeCT($employeMobileNumber, Company $company,Employee $employee) {
 
-        return self::createAccount($company, $employeMobileNumber, 'a', self::$a_iProduct);
+        return self::createAccount($company, $employeMobileNumber, 'a', self::$a_iProduct,'N',$employee);
     }
 
-    public static function telintaRegisterEmployeeCB($employeMobileNumber, Company $company) {
+    public static function telintaRegisterEmployeeCB($employeMobileNumber, Company $company,Employee $employee) {
 
-        return self::createAccount($company, $employeMobileNumber, 'cb', self::$CBProduct);
+        return self::createAccount($company, $employeMobileNumber, 'cb', self::$CBProduct,'N',$employee);
     }
 
-    public static function createReseNumberAccount($VOIPNumber, Company $company, $currentActiveNumber) {
+    public static function createReseNumberAccount($VOIPNumber, Company $company, $currentActiveNumber,Employee $employee) {
 
-        if (self::createAccount($company, $VOIPNumber, '', self::$VoipProduct, 'Y')) {
+        if (self::createAccount($company, $VOIPNumber, '', self::$VoipProduct, 'Y',$employee)) {
 
             $accounts = false;
             $max_retries = 10;
@@ -280,7 +280,7 @@ class CompanyEmployeActivation {
             return -1 * $Balance;
     }
 
-    private static function createAccount(Company $company, $mobileNumber, $accountType, $iProduct, $followMeEnabled='N') {
+    private static function createAccount(Company $company, $mobileNumber, $accountType, $iProduct, $followMeEnabled='N',$employee=null) {
         $account = false;
         $max_retries = 10;
         $retry_count = 0;
@@ -324,8 +324,8 @@ class CompanyEmployeActivation {
 
         $telintaAccount = new TelintaAccounts();
         $telintaAccount->setAccountTitle($accountName);
-        $telintaAccount->setParentId($company->getId());
-        $telintaAccount->setParentTable("company");
+        $telintaAccount->setParentId($employee->getId());
+        $telintaAccount->setParentTable("employee");
         $telintaAccount->setICustomer($company->getICustomer());
         $telintaAccount->setIAccount($account->i_account);
         $telintaAccount->save();
@@ -465,6 +465,35 @@ class CompanyEmployeActivation {
             $random .= substr($data, (rand() % (strlen($data))), 1);
         }
         return $random;
+    }
+    public static function getSubscription(Employee $employee,$iAccount, $fromDate, $toDate) {
+        $xdrList = false;
+        $max_retries = 10;
+        $retry_count = 0;
+     //   var_dump($employee);
+
+       // var_dump($telinta_account);die;
+        $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Account');
+     //   var_dump($pb);
+        while (!$xdrList && $retry_count < $max_retries) {
+            try {
+                $xdrList = $pb->get_xdr_list(array('i_account' => $iAccount, 'from_date' => $fromDate, 'to_date' => $toDate,'i_service'=>4));
+            } catch (SoapFault $e) {
+                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
+                    emailLib::sendErrorInTelinta("Employee Subscription: " . $employee->getId() . " Error!", "We have faced accountID $iAccount an issue with Employee while Fetching Subscription  this is the error for employee with  Employee ID: " . $employee->getId() . " error is " . $e->faultstring . "  <br/> Please Investigate.");
+                    return false;
+                }
+            }
+            sleep(0.5);
+            $retry_count++;
+        }
+        if ($retry_count == $max_retries) {
+            emailLib::sendErrorInTelinta("Employee Subscription: " . $employee->getId() . " Error!", "We have faced an issue accountID $iAccount with Employee while Fetching Subscription on telinta. Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            return false;
+        }
+        //var_dump($xdrList);
+        return $xdrList;
+         
     }
 
 }

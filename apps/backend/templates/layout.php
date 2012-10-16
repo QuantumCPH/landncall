@@ -40,6 +40,9 @@
             <li>     
                 <?php echo link_to('Payment History', 'company/paymenthistory') ?>
             </li>
+               <li>     
+                <?php echo link_to('Invoices', 'company/invoices') ?>
+            </li>
             <li>    
                 <?php echo link_to('Refill', 'company/refill'); ?>
             </li>  
