@@ -482,7 +482,7 @@ class CompanyEmployeActivation {
      //   var_dump($employee);
 
        // var_dump($telinta_account);die;
-        $pb = new PortaBillingSoapClient(self::$telintaSOAPUrl, 'Admin', 'Account');
+        $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Account');
      //   var_dump($pb);
         while (!$xdrList && $retry_count < $max_retries) {
             try {
