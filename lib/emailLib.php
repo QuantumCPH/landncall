@@ -39,13 +39,18 @@ class emailLib {
 
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
-
-        //------------------Sent The Email To Customer
-        //----------------------------------------
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
+        
         //------------------Sent the Email To Agent
         if (trim($recepient_agent_email) != ''):
 
@@ -61,11 +66,11 @@ class emailLib {
         endif;
         //---------------------------------------
         //--------------Sent The Email To okhan
-        if (trim($sender_email) != ''):
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setEmailType('LandNCall AB refill via agent');
             $email3->setMessage($message_body);
@@ -73,11 +78,24 @@ class emailLib {
         endif;
         //-----------------------------------------
         //--------------Sent The Email To cdu
-        if (trim($sender_emailcdu) != ''):
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
+            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setEmailType('LandNCall AB refill via agent');
             $email4->setMessage($message_body);
@@ -106,30 +124,60 @@ class emailLib {
                 ));
 
         $subject = __('Payment Confirmation');
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
+                
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
+        
         //---------------------------------------
-        //--------------Sent The Email To Support
-
-        $email3 = new EmailQueue();
-        $email3->setSubject($subject);
-        $email3->setReceipientName($sender_name);
-        $email3->setReceipientEmail($sender_email);
-        $email3->setEmailType('Retail Refil');
-        $email3->setMessage($message_body);
-        $email3->save();
-
-        $email3 = new EmailQueue();
-        $email3->setSubject($subject);
-        $email3->setReceipientName($sender_namecdu);
-        $email3->setReceipientEmail($sender_emailcdu);
-        $email3->setEmailType('Retail Refil');
-        $email3->setMessage($message_body);
-        $email3->save();
-
-
+        //--------------Sent The Email To Support OK
+        if($recipient_email_ok!=""){
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
+            $email3->setEmailType('Retail Refil');
+            $email3->setMessage($message_body);
+            $email3->save();
+        }
+        //--------------Sent The Email To Jan larsson
+        if($recipient_email_jan!=""){
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setReceipientName($recipient_name_jan);
+            $email3->setReceipientEmail($recipient_email_jan);
+            $email3->setEmailType('Retail Refil');
+            $email3->setMessage($message_body);
+            $email3->save();
+        }
+        //--------------Sent The Email To Support RS
+        if($recipient_email_rs!=""){
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setEmailType('Retail Refil');
+            $email4->setMessage($message_body);
+            $email4->save();
+        }
+        //--------------Sent The Email To Support CDU
+        if($recipient_email_cdu!=""){
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setEmailType('Retail Refil');
+            $email4->setMessage($message_body);
+            $email4->save();
+        }
         //-----------------------------------------
    
     }
@@ -176,11 +224,19 @@ class emailLib {
         $customer_id = trim($customer->getId());
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
-
+               
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
+        
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
             $email = new EmailQueue();
@@ -210,11 +266,11 @@ class emailLib {
         endif;
         //---------------------------------------
         //--------------Sent The Email To okhan
-        if (trim($sender_email) != ''):
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
             $email3->setEmailType('LandNCall AB refill via agent');
@@ -223,11 +279,37 @@ class emailLib {
         endif;
         //-----------------------------------------
         //--------------Sent The Email To cdu
-        if (trim($sender_emailcdu) != ''):
+        if (trim($recipient_email_cdu) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To Jan Larsson
+        if (trim($recipient_email_jan) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB refill via agent');
@@ -261,29 +343,63 @@ class emailLib {
         $subject = __('Payment Confirmation');
 
 
-
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
         //---------------------------------------
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
         //--------------Sent The Email To Support
-
-        $email3 = new EmailQueue();
-        $email3->setSubject($subject);
-        $email3->setReceipientName($sender_name);
-        $email3->setReceipientEmail($sender_email);
-        $email3->setEmailType('Retail Activation');
-        $email3->setMessage($message_body);
-        $email3->save();
-
-        $email3 = new EmailQueue();
-        $email3->setSubject($subject);
-        $email3->setReceipientName($sender_namecdu);
-        $email3->setReceipientEmail($sender_emailcdu);
-        $email3->setEmailType('Retail Activation');
-        $email3->setMessage($message_body);
-        $email3->save();
+       
+        //--------------Sent The Email To okhan
+        if (trim($recipient_email_ok) != ''):
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
+            $email3->setEmailType('LandNCall AB - Retail Activation');
+            $email3->setMessage($message_body);
+            $email3->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setEmailType('LandNCall AB - Retail Activation');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To Jan Larsson
+        if (trim($recipient_email_jan) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setEmailType('LandNCall AB - Retail Activation');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setEmailType('LandNCall AB - Retail Activation');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
         //-----------------------------------------
     }
 
@@ -338,10 +454,18 @@ class emailLib {
         $customer_id = trim($customer->getId());
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
+       
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
 
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
@@ -372,11 +496,11 @@ class emailLib {
         endif;
         //---------------------------------------
         //--------------Sent The Email To Okhan
-        if (trim($sender_email) != ''):
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
             $email3->setEmailType('LandNCall AB Customer registration via agent');
@@ -384,12 +508,38 @@ class emailLib {
             $email3->save();
         endif;
         //-----------------------------------------
-        //--------------Sent The Email To CDU
-        if (trim($sender_emailcdu) != ''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via agent');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via agent');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via agent');
@@ -408,10 +558,7 @@ class emailLib {
         $customer_id = trim($customer->getId());
         $referrer_id = trim($customer->getReferrerId());
 
-        //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@LandNCall AB.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
-
+        
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
             $email = new EmailQueue();
@@ -460,10 +607,19 @@ class emailLib {
 
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email', 'jan.larsson@landncall.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
+        
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
             $email = new EmailQueue();
@@ -490,41 +646,58 @@ class emailLib {
             $email2->save();
         endif;
         //---------------------------------------
-        //--------------Sent The Email To okhan
-        if (trim($sender_email) != ''):
+        //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
-            $email3->setAgentId($referrer_id);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
+            $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB refill via agent');
+            $email3->setEmailType('LandNCall AB refill');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
         //-----------------------------------------
-        //--------------Sent The Email To CDU
-        if (trim($sender_emailcdu) != ''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
-            $email4->setAgentId($referrer_id);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setEmailType('LandNCall AB refill');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
         //-----------------------------------------
-          $email5 = new EmailQueue();
-            $email5->setSubject($subject);
-            $email5->setReceipientName($sender_namecdu);
-            $email5->setReceipientEmail('rs@zapna.com');
-            $email5->setAgentId($referrer_id);
-            $email5->setCutomerId($customer_id);
-            $email5->setEmailType(' Refill Email');
-            $email5->setMessage($message_body);
-            $email5->save();
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB refill');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB refill');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
     }
 
     public static function sendCustomerAutoRefillEmail(Customer $customer, $order, $transaction) {
@@ -569,18 +742,22 @@ class emailLib {
                     'agent_name' => $recepient_agent_name,
                     'wrap' => false,
                 ));
-
-
         }
 
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email', 'jan.larsson@landncall.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_emailrs = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
-        $sender_namers = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+                
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
         
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
@@ -608,43 +785,58 @@ class emailLib {
             $email2->save();
         endif;
         //---------------------------------------
-        //--------------Sent The Email To okhan
-        if (trim($sender_email) != ''):
+         //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
-            $email3->setAgentId($referrer_id);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
+            $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('Auto Refill');
+            $email3->setEmailType('LandNCall AB - Auto Refill');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
         //-----------------------------------------
-        //--------------Sent The Email To CDU
-        if (trim($sender_emailcdu) != ''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
-            $email4->setAgentId($referrer_id);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
             $email4->setEmailType('Auto Refill');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
-        if (trim($sender_emailrs) != ''):
-            $email5 = new EmailQueue();
-            $email5->setSubject($subject);
-            $email5->setReceipientName($sender_namers);
-            $email5->setReceipientEmail($sender_emailrs);
-            $email5->setAgentId($referrer_id);
-            $email5->setCutomerId($customer_id);
-            $email5->setEmailType('Auto Refill');
-            $email5->setMessage($message_body);
-            $email5->save();
-       endif;
-
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('Auto Refill');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('Auto Refill');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
 
     }
 
@@ -652,10 +844,17 @@ class emailLib {
 
 
         $subject = __('Payment Confirmation');
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB ');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB ');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
 
         $recepient_email = trim($customer->getEmail());
         $recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
@@ -677,39 +876,77 @@ class emailLib {
             $email->save();
         endif;
 
-        //send to okhan
-        if (trim($sender_email) != ''):
-            $email2 = new EmailQueue();
-            $email2->setSubject($subject);
-            $email2->setMessage($message_body);
-            $email2->setReceipientEmail($sender_email);
-            $email2->setReceipientName($sender_name);
-            $email2->setCutomerId($customer_id);
-            $email2->setAgentId($referrer_id);
-            $email2->setEmailType('LandNCall AB Customer Confirm Payment');
-            $email2->save();
-        endif;
-        //send to cdu
-        if (trim($sender_emailcdu) != ''):
+         //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setMessage($message_body);
-            $email3->setReceipientEmail($sender_emailcdu);
-            $email3->setReceipientName($sender_namecdu);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
+            $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setAgentId($referrer_id);
             $email3->setEmailType('LandNCall AB Customer Confirm Payment');
+            $email3->setMessage($message_body);
             $email3->save();
         endif;
+        //-----------------------------------------
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer Confirm Payment');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer Confirm Payment');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer Confirm Payment');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
     }
 
     public static function sendCustomerConfirmRegistrationEmail($inviteuserid) {
         $subject = 'Bonus Bekräftelse Smartsim';
 
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB support');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
+        
+        $recipient_name_landncall = sfConfig::get('app_recipient_name_landncall');
+        $recipient_email_landncall = sfConfig::get('app_recipient_email_landncall');
         $message_body = '
 Härmed bekräftas att du har fått provision insatt på ditt konto för att du har tipsat en vän om Smartsim från LandNCall.
 Gå in på ”Mina sidor” och gå till ”Övrig historik” under ”Samtalshistorik” så ser du vad du har tjänat.<br/>Med vänlig hälsning,
@@ -738,30 +975,71 @@ www.landncall.com';
             $email->save();
         endif;
 
-        //send to okhan
-        if ($sender_email != ''):
-            $email2 = new EmailQueue();
-            $email2->setSubject($subject);
-            $email2->setMessage($message_body);
-            $email2->setReceipientEmail($sender_email);
-            $email2->setReceipientName($sender_name);
-            $email2->setCutomerId($customer_id);
-            //$email2->setAgentId($referrer_id);
-            $email2->setEmailType('LandNCall AB Customer Confirm Bonus');
-            $email2->save();
-        endif;
-        //////////////////////////////////////////////////////////////////
-        if ($sender_emailcdu != ''):
+        //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setMessage($message_body);
-            $email3->setReceipientName($sender_namecdu);
-            $email3->setReceipientEmail($sender_emailcdu);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
+            $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            //$email3->setAgentId($referrer_id);
             $email3->setEmailType('LandNCall AB Customer Confirm Bonus');
+            $email3->setMessage($message_body);
             $email3->save();
         endif;
+        //-----------------------------------------
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+         //--------------Sent The Email To Landncall support
+        if (trim($recipient_email_landncall) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_landncall);
+            $email4->setReceipientEmail($recipient_email_landncall);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
     }
 
 //////////////////////////////////////////////////////////////
@@ -776,12 +1054,6 @@ www.landncall.com';
         $vat = .20 * $product_price;
         // echo $vat;
         echo '<br/>';
-
-//        //create transaction
-//        $transaction = new Transaction();
-//        $transaction->setOrderId($order->getId());
-//        $transaction->setCustomer($customer);
-//        $transaction->setAmount($form['extra_refill']);
 
         $tc = new Criteria();
         $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId());
@@ -818,11 +1090,17 @@ www.landncall.com';
         $customer_id = trim($customer->getId());
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB ');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB ');
-
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');  
         //------------------Sent The Email To Customer
         if ($recepient_email != '') {
             $email = new EmailQueue();
@@ -836,24 +1114,52 @@ www.landncall.com';
         }
         //----------------------------------------
         //------------------Sent the Email To Agent
-        //--------------Sent The Email To Support
-        if ($sender_email != ''):
+        //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
+            $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
             $email3->setEmailType('LandNCall AB Customer registration via link');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
         //-----------------------------------------
-        //--------------Sent The Email To Support
-        if ($sender_emailcdu != ''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via link');
             $email4->setMessage($message_body);
@@ -923,7 +1229,17 @@ www.landncall.com';
         $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
         $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
         $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
-
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
         //------------------Sent The Email To Customer
         //------------------Sent the Email To Agent
 
@@ -941,29 +1257,54 @@ www.landncall.com';
             $email2->save();
         endif;
         //---------------------------------------
-        //--------------Sent The Email To Okhan
-        if (trim($sender_email) != ''):
+         //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB Customer registration via agent SMS ');
+            $email3->setEmailType('LandNCall AB Customer registration via agent SMS');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
         //-----------------------------------------
-        //--------------Sent The Email To CDU
-        if (trim($sender_emailcdu) != ''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via agent SMS ');
-
+            $email4->setEmailType('LandNCall AB Customer registration via agent SMS');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via agent SMS');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via agent SMS');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1021,11 +1362,19 @@ www.landncall.com';
         $customer_id = trim($customer->getId());
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
-
+       
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
+        
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
             $email = new EmailQueue();
@@ -1054,12 +1403,12 @@ www.landncall.com';
             $email2->save();
         endif;
         //---------------------------------------
-        //--------------Sent The Email To Okhan
-        if (trim($sender_email) != ''):
+       //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
             $email3->setEmailType('LandNCall AB Customer registration via APP');
@@ -1067,12 +1416,38 @@ www.landncall.com';
             $email3->save();
         endif;
         //-----------------------------------------
-        //--------------Sent The Email To CDU
-        if (trim($sender_emailcdu) != ''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via APP');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via APP');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via APP');
@@ -1132,10 +1507,17 @@ Med vänlig hälsning<br/><br/>
 LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email', 'jan.larsson@landncall.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
             $email = new EmailQueue();
@@ -1162,12 +1544,12 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 //            $email2->save();
         endif;
         //---------------------------------------
-        //--------------Sent The Email To okhan
-        if (trim($sender_email) != ''):
+        //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($referrer_id);
             $email3->setCutomerId($customer_id);
             $email3->setEmailType('Transation for VoIP Purchase');
@@ -1175,14 +1557,40 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email3->save();
         endif;
         //-----------------------------------------
-        //--------------Sent The Email To CDU
-        if (trim($sender_emailcdu) != ''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($referrer_id);
             $email4->setCutomerId($customer_id);
+            $email4->setEmailType('Transation for VoIP Purchase');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setAgentId($referrer_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setEmailType('Transation for VoIP Purchase');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setAgentId($referrer_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setReceipientEmail($recipient_email_rs);
             $email4->setEmailType('Transation for VoIP Purchase');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1417,10 +1825,17 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         $customer_id = trim($customer->getId());
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB ');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB ');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
 
         //------------------Sent The Email To Customer
         if ($recepient_email != '') {
@@ -1444,25 +1859,49 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
                     'wrap' => true,
                 ));
         //------------------Sent the Email To Agent
-        //--------------Sent The Email To Support
-        if ($sender_email != ''):
+        //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setCutomerId($customer_id);
             $email3->setEmailType('LandNCall AB Customer registration via link');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
         //-----------------------------------------
-        //--------------Sent The Email To Support
-        if ($sender_emailcdu != ''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
             $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setCutomerId($customer_id);
+            $email4->setReceipientEmail($recipient_email_rs);
             $email4->setEmailType('LandNCall AB Customer registration via link');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1549,10 +1988,17 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
 
 
        //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
 
         //------------------Sent The Email To Customer
 
@@ -1566,32 +2012,56 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email2->setReceipientName($recepient_agent_name);
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($agent_company_id);
-             $email2->setEmailType('LandNCall Agent refill via admin');
+            $email2->setEmailType('LandNCall Agent refill via admin');
             $email2->setMessage($message_body);
 
             $email2->save();
          endif;
         //---------------------------------------
 
-       //--------------Sent The Email To okhan
-         if (trim($sender_email)!=''):
+        //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setEmailType('LandNCall Agent refill via admin');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
         //-----------------------------------------
-          //--------------Sent The Email To cdu
-         if (trim($sender_emailcdu)!=''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
+            $email4->setEmailType('LandNCall Agent refill via admin');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setEmailType('LandNCall Agent refill via admin');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setReceipientEmail($recipient_email_rs);
             $email4->setEmailType('LandNCall Agent refill via admin');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1734,11 +2204,17 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
         $customer_id        = trim($customer->getId());
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'support@zapna.no');
-        $sender_name = sfConfig::get('app_email_sender_name', 'Zapna');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'Zapna');
-        $rs_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_cdu = sfConfig::get('app_recipient_name_cdu');
+        $recipient_email_cdu = sfConfig::get('app_recipient_email_cdu');
+        
+        $recipient_name_ok = sfConfig::get('app_recipient_name_ok');
+        $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
+        
+        $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
 
         //------------------Sent The Email To Customer
         if(trim($recepient_email)!=''){
@@ -1770,12 +2246,12 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
          endif;
         //---------------------------------------
 
-       //--------------Sent The Email To okhan
-         if (trim($sender_email)!=''):
+      //--------------Sent The Email To Okhan
+        if (trim($recipient_email_ok) != ''):
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
+            $email3->setReceipientName($recipient_name_ok);
+            $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
             $email3->setEmailType('LandnCall  Refill/charge via admin');
@@ -1783,28 +2259,41 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email3->save();
         endif;
         //-----------------------------------------
-      //--------------Sent The Email To cdu
-         if (trim($sender_emailcdu)!=''):
+        //--------------Sent The Email To Jan larsson
+        if (trim($recipient_email_jan) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandnCall Refill/charge via admin');
+            $email4->setEmailType('LandnCall  Refill/charge via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
         //-----------------------------------------
-         //--------------Sent The Email To RS
-         if (trim($rs_email)!=''):
+        //--------------Sent The Email To cdu
+        if (trim($recipient_email_cdu) != ''):
             $email4 = new EmailQueue();
             $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($rs_email);
+            $email4->setReceipientName($recipient_name_cdu);
+            $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandnCall refill/charge via admin');
+            $email4->setEmailType('LandnCall  Refill/charge via admin');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
+            $email4->setEmailType('LandnCall  Refill/charge via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1823,34 +2312,36 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
         }
                
         //Support Information
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'Zapna');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'support@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'Zapna');
-        $rs_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
-        $rs_name = sfConfig::get('app_email_sender_name', 'Raheel Safdar');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+        
+        $recipient_name_support = sfConfig::get('app_recipient_name_support');
+        $recipient_email_support = sfConfig::get('app_recipient_email_support');
         
         
         ////// Email to Support
-//        if (trim($sender_emailcdu) != ''):
-//            $email = new EmailQueue();
-//            $email->setSubject($subject);
-//            $email->setMessage($message_body);
-//            $email->setReceipientEmail($sender_emailcdu);
-//            $email->setEmailType('LandnCall-'.$subject);
-//            $email->setReceipientName($sender_name);
-//            $email->save();
-//        endif;
-//        
-//        ///// Email to RS
-//        if (trim($rs_email) != ''):
-//            $email = new EmailQueue();
-//            $email->setSubject($subject);
-//            $email->setMessage($message_body);
-//            $email->setReceipientEmail($rs_email);
-//            $email->setEmailType('LandnCall-'.$subject);
-//            $email->setReceipientName($rs_name);
-//            $email->save();
-//        endif;
+        //--------------Sent The Email To RS
+        if (trim($recipient_email_rs) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_rs);
+            $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setEmailType('LandNCall AB SMS Registration Email');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+        //--------------Sent The Email To Support tech
+        if (trim($recipient_email_support) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_support);
+            $email4->setReceipientEmail($recipient_email_support);
+            $email4->setEmailType('LandNCall AB SMS Registration Email');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
     }
 
     public static function sendErrorInAutoReg($subject, $message) {

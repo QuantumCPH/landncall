@@ -448,10 +448,10 @@ class paymentsActions extends sfActions {
                 $customerPassword = $this->customer->getPlainText();
 
                 //Section For Telinta Add Cusomter
-
-                Telienta::ResgiterCustomer($this->customer, $OpeningBalance);
-                Telienta::createAAccount($TelintaMobile, $this->customer);
-                Telienta::createCBAccount($TelintaMobile, $this->customer);
+                $telintaObj = new Telienta();
+                $telintaObj->ResgiterCustomer($this->customer, $OpeningBalance);
+                $telintaObj->createAAccount($TelintaMobile, $this->customer);
+                $telintaObj->createCBAccount($TelintaMobile, $this->customer);
 
 
 
@@ -523,7 +523,8 @@ class paymentsActions extends sfActions {
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
-                    Telienta::recharge($this->customers, $OpeningBalance,"Tipsa en van " . $invite->getInviteNumber());
+                    $telintaObj = new Telienta();
+                    $telintaObj->recharge($this->customers, $OpeningBalance,"Tipsa en van " . $invite->getInviteNumber());
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
                     $getvoipInfo = new Criteria();
@@ -836,7 +837,8 @@ class paymentsActions extends sfActions {
 
  $customerID=$this->customer->getId();
                 $OpeningBalance=0;
-                Telienta::ResgiterCustomer($this->customer, $OpeningBalance,null,true);
+                $telintaObj = new Telienta();
+                $telintaObj->ResgiterCustomer($this->customer, $OpeningBalance,null,true);
                 $Tes=ForumTel::registerForumtel($customerID);
                 ForumTel::getUsMobileNumber($customerID);
      //////////////////////////rese number registration ///////////////////////////////
@@ -898,7 +900,8 @@ class paymentsActions extends sfActions {
                     }
                     //------------------------------
                     $TelintaMobile=$selectusnumber->getUsMobileNumber();
-                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
+                    $telintaObj = new Telienta();
+                    $telintaObj->createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
 
 
                  //   $OpeningBalance = '40';
