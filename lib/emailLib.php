@@ -39,11 +39,6 @@ class emailLib {
 
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
-
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
         
@@ -348,11 +343,6 @@ class emailLib {
         $subject = __('Payment Confirmation');
 
 
-
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'jan.larsson@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'LandNCall AB');
         //---------------------------------------
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
@@ -537,6 +527,8 @@ class emailLib {
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via agent');
             $email4->setMessage($message_body);
             $email4->save();
@@ -548,6 +540,8 @@ class emailLib {
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via agent');
             $email4->setMessage($message_body);
             $email4->save();
@@ -564,10 +558,7 @@ class emailLib {
         $customer_id = trim($customer->getId());
         $referrer_id = trim($customer->getReferrerId());
 
-        //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@LandNCall AB.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
-
+        
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
             $email = new EmailQueue();
@@ -687,6 +678,8 @@ class emailLib {
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB refill');
             $email4->setMessage($message_body);
             $email4->save();
@@ -698,6 +691,8 @@ class emailLib {
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB refill');
             $email4->setMessage($message_body);
             $email4->save();
@@ -747,19 +742,11 @@ class emailLib {
                     'agent_name' => $recepient_agent_name,
                     'wrap' => false,
                 ));
-
-
         }
 
 
         //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'okhan@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_emailcdu = sfConfig::get('app_email_sender_email', 'jan.larsson@landncall.com');
-        $sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        $sender_emailrs = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
-        $sender_namers = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        
+                
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
         
@@ -830,6 +817,8 @@ class emailLib {
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('Auto Refill');
             $email4->setMessage($message_body);
             $email4->save();
@@ -841,6 +830,8 @@ class emailLib {
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('Auto Refill');
             $email4->setMessage($message_body);
             $email4->save();
@@ -917,6 +908,8 @@ class emailLib {
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer Confirm Payment');
             $email4->setMessage($message_body);
             $email4->save();
@@ -928,6 +921,8 @@ class emailLib {
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer Confirm Payment');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1012,6 +1007,8 @@ www.landncall.com';
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1023,6 +1020,8 @@ www.landncall.com';
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1055,12 +1054,6 @@ www.landncall.com';
         $vat = .20 * $product_price;
         // echo $vat;
         echo '<br/>';
-
-//        //create transaction
-//        $transaction = new Transaction();
-//        $transaction->setOrderId($order->getId());
-//        $transaction->setCustomer($customer);
-//        $transaction->setAmount($form['extra_refill']);
 
         $tc = new Criteria();
         $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId());
@@ -1153,6 +1146,8 @@ www.landncall.com';
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via link');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1164,6 +1159,8 @@ www.landncall.com';
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via link');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1292,6 +1289,8 @@ www.landncall.com';
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via agent SMS');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1303,6 +1302,8 @@ www.landncall.com';
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via agent SMS');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1434,6 +1435,8 @@ www.landncall.com';
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setReceipientEmail($recipient_email_cdu);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via APP');
             $email4->setMessage($message_body);
             $email4->save();
@@ -1445,6 +1448,8 @@ www.landncall.com';
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setReceipientEmail($recipient_email_rs);
+            $email4->setAgentId($agent_company_id);
+            $email4->setCutomerId($customer_id);
             $email4->setEmailType('LandNCall AB Customer registration via APP');
             $email4->setMessage($message_body);
             $email4->save();
