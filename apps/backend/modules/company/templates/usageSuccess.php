@@ -21,8 +21,9 @@
                                     $cn = new Criteria();
                                     $cn->add(EmployeePeer::ID, $employeeid);
                                     $employees = EmployeePeer::doSelectOne($cn);
+                                    $account_title =  substr($account->getAccountTitle(),0,1);
                                     ?>
-                            <option value="<?PHP echo $account->getId(); ?>" <?PHP echo ($account->getId() == $iaccount) ? 'selected="selected"' : '' ?>><?php echo $employees->getFirstName() . " -- " . $employees->getMobileNumber(); ?></option>
+                            <option value="<?PHP echo $account->getId(); ?>" <?PHP echo ($account->getId() == $iaccount) ? 'selected="selected"' : '' ?>><?php echo $employees->getFirstName() . " -- "; ?><?PHP echo ($account_title == "c") ? $account->getAccountTitle() : $employees->getMobileNumber(); ?></option>
                                 <?php
                                 }
                             }
