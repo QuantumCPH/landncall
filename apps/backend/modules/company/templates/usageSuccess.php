@@ -79,12 +79,12 @@
                 <td><?php echo date("Y-m-d H:i:s", strtotime($xdr->connect_time)); ?></td>
                 <td><?php 
                        $account_type =  substr($xdr->account_id,0,1);
-                       if($account_type=="c"){
-                          echo substr($xdr->account_id,4); 
-                       }else{
-                          echo substr($xdr->account_id,3); 
-                       }
-                       //echo $xdr->account_id;
+//                       if($account_type=="c"){
+//                          echo substr($xdr->account_id,4); 
+//                       }else{
+//                          echo substr($xdr->account_id,3); 
+//                       }
+                       echo $xdr->account_id;
                  ?></td>
                 <td><?php echo $xdr->CLD; ?></td>
                 <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
