@@ -160,6 +160,7 @@
                 }
             } 
          }else{   
+        if(isset($ems)){     
              foreach ($ems as $emp) {         
             $tilentaSubResult = $ComtelintaObj->getSubscription($emp, $fromdate , $todate);
          //   var_dump($tilentaSubResult);
@@ -176,6 +177,7 @@
                 }
             } 
          }
+        }
        }
         ?>
                     
