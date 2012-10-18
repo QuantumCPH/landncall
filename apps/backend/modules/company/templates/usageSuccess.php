@@ -80,10 +80,11 @@
                 <td><?php 
                        $account_type =  substr($xdr->account_id,0,1);
                        if($account_type=="c"){
-                          echo substr($xdr->account_id,2); 
+                         // echo substr($xdr->account_id,2); 
                        }else{
-                          echo substr($xdr->account_id,1); 
+                        //  echo substr($xdr->account_id,1); 
                        }
+                       echo $xdr->account_id;
                  ?></td>
                 <td><?php echo $xdr->CLD; ?></td>
                 <td><?php  echo  date('i:s',$xdr->charged_quantity); ?></td>
