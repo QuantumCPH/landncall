@@ -146,7 +146,12 @@
 //          echo '<br />';
 //          echo    $todate;   
          if(isset($empl)){
-           $tilentaSubResult = $ComtelintaObj->getSubscription($empl, $fromdate, $todate);
+           $cta = new Criteria();
+           $cta->add(TelintaAccountsPeer::PARENT_TABLE, 'employee');
+           $cta->addAnd(TelintaAccountsPeer::PARENT_ID, $empl->getId());
+           $cta->addAnd(TelintaAccountsPeer::STATUS, 3);    
+           $telinta_accounts = TelintaAccountsPeer::doSelect($cta);  
+           $tilentaSubResult = $ComtelintaObj->getSubscription($empl,$telinta_account->getIAccount(), $fromdate, $todate);
           // var_dump($tilentaSubResult);
             if (count($tilentaSubResult) > 0) {
                 foreach ($tilentaSubResult->xdr_list as $xdr) {
@@ -161,8 +166,13 @@
             } 
          }else{   
         if(isset($ems)){     
-             foreach ($ems as $emp) {         
-            $tilentaSubResult = $ComtelintaObj->getSubscription($emp, $fromdate , $todate);
+             foreach ($ems as $emp) {   
+             $cta = new Criteria();
+             $cta->add(TelintaAccountsPeer::PARENT_TABLE, 'employee');
+             $cta->addAnd(TelintaAccountsPeer::PARENT_ID, $emp->getId());
+             $cta->addAnd(TelintaAccountsPeer::STATUS, 3);    
+             $telinta_accounts = TelintaAccountsPeer::doSelect($cta);
+             $tilentaSubResult = $ComtelintaObj->getSubscription($emp,$telinta_account->getIAccount(), $fromdate , $todate);
          //   var_dump($tilentaSubResult);
             if (count($tilentaSubResult) > 0) {
                 foreach ($tilentaSubResult->xdr_list as $xdr) {
