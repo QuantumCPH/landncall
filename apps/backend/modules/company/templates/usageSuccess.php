@@ -80,9 +80,9 @@
                 <td><?php 
                        $account_type =  substr($xdr->account_id,0,1);
                        if($account_type=="c"){
-                         // echo substr($xdr->account_id,2); 
+                          echo substr($xdr->account_id,4); 
                        }else{
-                        //  echo substr($xdr->account_id,1); 
+                          echo substr($xdr->account_id,3); 
                        }
                        echo $xdr->account_id;
                  ?></td>
