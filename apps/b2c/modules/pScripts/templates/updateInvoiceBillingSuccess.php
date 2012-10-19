@@ -66,18 +66,15 @@
 			<fieldset>
 			<table width="100%">
 				<tr>
-					<td> <?php echo image_tag(sfConfig::get('app_web_url').'images/veranet-log.jpg',array('width' => '300'));?></td>
+					<td> <?php echo image_tag(sfConfig::get('app_web_url').'images/logo.gif',array('width' => '300'));?></td>
 					<td>
-						<b>DRUSTVO ZA TELEKOMUNIKACIJE Telecom "VERAT" D.O.O.</b><br />
-						Bulevar Vojvode Misica 37<br />
-						11000 Beograd<br />
-						Republika Srbija
+						<b>Landncall AB</b><br />
+						Box 42017,<br />
+						SE-126 12 <br />
+						Stockholm
 					</td>
-					<td>
-						PIB: 100221009<br />
-						Maticini broj: 06901093<br />
-						Registarski broj: SR135301811<br />
-						Sifra delatnosti: 6110
+					<td valign="top">
+						Org.nr.: 556810-8921<br />
 					</td>
 				</tr>
 			</table>
@@ -173,7 +170,7 @@
 				foreach ($billings as $billing) {?>
 				<tr>
                     <td><?php echo $billing->getConnectTime();?></td>
-					<td><?php echo $billing->getCountry()->getName()//.'-'.$billing->getCountryId(); ?></td>
+                    <td><?php echo CountryPeer::retrieveByPK($billing->getCountryId())->getName()//.'-'.$billing->getCountryId(); ?></td>
 					<td><?php echo $billing->getPhoneNumber(); ?></td>
 						<td>
 							<?php
@@ -385,7 +382,7 @@
 				</tr>
 				<?php foreach($payments as $payment){?>
 				<tr>
-                   <td><?php echo $payment->getConnectTime();?></td>
+                                   <td><?php echo $payment->getConnectTime();?></td>
 				   <td><?php echo $payment->getDescription();?></td>
 				   <td align="right"><?php echo number_format($chargedAmount = $payment->getChargedAmount(),2);echo sfConfig::get('app_currency_code');
 				         $totalPayments += $chargedAmount;?>                   </td>
@@ -433,8 +430,8 @@
 				<tr>
 					<td>Tel: XXXXXXXXXXXXXXXX</td>
 					<td>Fax: XXXXXXXXXXXXXXX</td>
-					<td>Email: veranet@zerocall.com</td>
-					<td>Web: www.veranet.com</td>
+					<td>Email: support@landncall.com</td>
+					<td>Web: www.landncall.com</td>
 				</tr>
 			</table>
 			</fieldset>
