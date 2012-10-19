@@ -70,7 +70,9 @@
         $callRecords = 0;
 
         $amount_total = 0;
-
+//          echo    $fromdate;
+//          echo '<br />';
+//          echo    $todate;  
         foreach ($callHistory->xdr_list as $xdr) {
         ?>
 
@@ -220,7 +222,9 @@
        </tr>
         <?php
         $othertotal = 0;
-  
+//          echo    $fromdate;
+//          echo '<br />';
+//          echo    $todate;  
       //  foreach ($ems as $emp) {
          $otherEvents = $ComtelintaObj->callHistory($company, $fromdate, $todate, false, 1);   
         if(count($otherEvents)>0){

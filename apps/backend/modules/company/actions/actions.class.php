@@ -395,9 +395,15 @@ class companyActions extends sfActions {
             $this->todate = date("Y-m-t");
         }
         $this->iaccount = $request->getParameter('iaccount');
+        ////// -2 hours
+//        $fromdate = $this->fromdate . " 21:00:00";
+//        $fromdate = date('Y-m-d 21:00:00',  strtotime('-1 day',strtotime($fromdate)));
+//        $todate = $this->todate. " 21:59:59" ;
+        
         $fromdate = $this->fromdate . " 21:00:00";
         $fromdate = date('Y-m-d 21:00:00',  strtotime('-1 day',strtotime($fromdate)));
         $todate = $this->todate. " 21:59:59" ;
+
         if (isset($this->iaccount) && $this->iaccount != '') {
             $ce = new Criteria();
             $ce->add(TelintaAccountsPeer::ID, $this->iaccount);
