@@ -170,7 +170,7 @@
 				foreach ($billings as $billing) {?>
 				<tr>
                     <td><?php echo $billing->getConnectTime();?></td>
-                    <td><?php echo CountryPeer::retrieveByPK($billing->getCountryId())->getName()//.'-'.$billing->getCountryId(); ?></td>
+                    <td><?php echo ucwords(CountryPeer::retrieveByPK($billing->getCountryId())->getName())//.'-'.$billing->getCountryId(); ?></td>
 					<td><?php echo $billing->getPhoneNumber(); ?></td>
 						<td>
 							<?php
@@ -211,6 +211,7 @@
 	</table>
 	  </td>
 	</tr>
+        
 	<tr>
 		<td colspan="2">
 			<table width="100%" cellpadding="0" cellspacing="0" class="table">
