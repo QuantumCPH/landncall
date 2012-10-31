@@ -20,6 +20,7 @@ class employeeActions extends sfActions {
         if (isset($companyid) && $companyid != '') {
             $c->addAnd(EmployeePeer::COMPANY_ID, $companyid);
         }
+        $c->addAnd(EmployeePeer::STATUS_ID, 3);
         $this->employees = EmployeePeer::doSelect($c);
     }
 
