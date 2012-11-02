@@ -5244,6 +5244,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
         $cother->addAnd(OdrsPeer::BILL_START, $this->billing_start_date, Criteria::GREATER_EQUAL);
         $cother->addAnd(OdrsPeer::BILL_END, $this->billing_end_date, Criteria::LESS_EQUAL);
         $othercount = OdrsPeer::doCount($cother);
+        $this->otherCount = $othercount; 
         if ($othercount > 0) {
             $this->otherevents = OdrsPeer::doSelect($cother);
         }
@@ -5256,6 +5257,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
         $cpay->addAnd(OdrsPeer::BILL_END, $this->billing_end_date, Criteria::LESS_EQUAL);
         $cpay->addDescendingOrderByColumn(OdrsPeer::BILL_START);
         $paycount = OdrsPeer::doCount($cpay);
+        $this->payCount = $paycount;
         if ($paycount > 0) {
             $this->payments = OdrsPeer::doSelect($cpay);
         }
@@ -5265,8 +5267,14 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
         $cip->addAnd(InvoicePeer::COMPANY_ID, $company_id);
         $cip->setLimit(10);
         $cip->addDescendingOrderByColumn(InvoicePeer::BILLING_STARTING_DATE);
+        $invoiceCount = InvoicePeer::doCount($cip);
+        
+        $this->invoiceCount = $invoiceCount;
+        if($invoiceCount>0){
         $preInvoices = InvoicePeer::doSelect($cip);
         $this->preInvoices = $preInvoices;
+    }
+        
         $this->setLayout(false);
     }
 

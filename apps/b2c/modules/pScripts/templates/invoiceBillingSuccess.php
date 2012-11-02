@@ -124,6 +124,16 @@ $totalEventFee = 0.00;
             </tr>
             <tr>
                 <td colspan="2">
+                    <?php
+                     $bc = new Criteria();
+   
+                            $bc->addAnd(EmployeeCustomerCallhistoryPeer::COMPANY_ID, $company_meta->getId());
+                            $bc->addAnd(EmployeeCustomerCallhistoryPeer::CONNECT_TIME, " connect_time > '" . $billing_start_date . "' ", Criteria::CUSTOM);
+                            $bc->addAnd(EmployeeCustomerCallhistoryPeer::DISCONNECT_TIME, " disconnect_time < '" . $billing_end_date . "' ", Criteria::CUSTOM);
+                            if(EmployeeCustomerCallhistoryPeer::doCount($bc) > 0 ){
+                            
+                    
+                    ?>
                     <table width="100%" cellpadding="0" cellspacing="0" class="table">
                         <tr><td colspan="3" class="padbot"><h2>Voice Calls</h2></td></tr>
                         <tr height="40px" class="trbg" bgcolor="#CCCCCC" style="background:#CCCCCC">
@@ -212,6 +222,7 @@ $totalEventFee = 0.00;
                             </td>
                         </tr> 
                     </table>
+                    <?php } ?>
                 </td>
             </tr>
             <tr>
@@ -283,7 +294,7 @@ $totalEventFee = 0.00;
                  <?php }   ?>
                 </td>
             </tr>
-<?php if (isset($otherevents) && $otherevents != "") {
+<?php if ($otherCount>=0) {
     $invoiceFlag = true;
     ?>
                 <tr>
@@ -389,7 +400,7 @@ echo sfConfig::get('app_currency_code'); ?></td>
                 <td colspan="2" class="border borderleft borderright" style="background-color:#CCCCCC;">&nbsp;</td>
             </tr>
 <?php
-if (isset($payments) && $payments != "") {
+if ($payCount>0) {
     $vat_in = 0.00;
     $vatIncluded = 0.00;
     $vatinc = 0.00;
@@ -438,7 +449,7 @@ if (isset($payments) && $payments != "") {
                     </td>
                 </tr>
 <?php } ?>
-<?php if (isset($preInvoices) && $preInvoices != "") { ?>
+<?php if ($invoiceCount>0) { ?>
                 <tr>
                     <td colspan="2">
                         <table width="100%" cellpadding="0" cellspacing="0" class="table" style="padding-bottom:30px">
