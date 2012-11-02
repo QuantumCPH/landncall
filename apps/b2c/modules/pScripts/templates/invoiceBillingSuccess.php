@@ -68,7 +68,7 @@ $totalEventFee = 0.00;
                             <tr>
                                 <td> <?php echo image_tag(sfConfig::get('app_web_url') . 'images/logo.gif', array('width' => '300')); ?></td>
                                 <td>
-                                    <b>Landncall AB</b><br />
+                                    <b>LandNCall AB</b><br />
                                     Box 42017,<br />
                                     SE-126 12 <br />
                                     Stockholm
