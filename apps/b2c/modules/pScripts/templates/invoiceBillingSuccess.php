@@ -473,7 +473,7 @@ if ($payCount>0) {
                     <fieldset>
                         <table width="100%">
                             <tr>
-                                <td>Tel: XXXXXXXXXXXXXXXX</td>
+                                <td>Tel: 08-51 78 11 00</td>
                                 <td>Fax: XXXXXXXXXXXXXXX</td>
                                 <td>Email: support@landncall.com</td>
                                 <td>Web: www.landncall.com</td>
