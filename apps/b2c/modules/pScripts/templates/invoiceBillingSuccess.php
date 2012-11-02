@@ -294,7 +294,7 @@ $totalEventFee = 0.00;
                  <?php }   ?>
                 </td>
             </tr>
-<?php if ($otherCount>=0) {
+<?php if ($otherCount>0) {
     $invoiceFlag = true;
     ?>
                 <tr>
