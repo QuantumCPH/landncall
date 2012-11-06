@@ -184,7 +184,7 @@ $totalEventFee = 0.00;
                                             <td>
                 <?php
                 $calculated_cost = $billing->getChargedAmount();
-                $call_duration = EmployeeCustomerCallhistoryPeer::getTotalCallDuration($employee, $billing->getCountryId());
+                $call_duration = EmployeeCustomerCallhistoryPeer::getTotalCallDuration($employee, $billing);
                 ?>
                                                 <?php echo $call_duration ?>						</td>
                                             <td align="right" style="padding-right:10px">
