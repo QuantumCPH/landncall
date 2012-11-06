@@ -437,9 +437,12 @@ if ($payCount > 0) {
                                 $totalPayments += $chargedAmount;
                                         ?>                   </td>
                                     <td align="right"><?php
-                                echo number_format($payment->getChargedVatValue(), 2);
-                                $vat_in += $payment->getChargedVatValue(); ?>
-                                        %
+                                echo number_format($payment->getVatIncludedAmount()/(1+$payment->getChargedVatValue()), 2);
+                                $vat_in += $payment->getVatIncludedAmount()/(1+$payment->getChargedVatValue()); ?>
+                                         &nbsp;
+                                <?php
+                                echo sfConfig::get('app_currency_code');
+                                ?>
                                         <?php
                                 
                                 ?></td>
@@ -456,7 +459,7 @@ if ($payCount > 0) {
                                 <td align="right"><strong><?php echo number_format($totalPayments, 2); ?>
                                         &nbsp;<?php echo sfConfig::get('app_currency_code'); ?></strong></td>
                                 <td align="right"><strong><?php echo number_format($vat_in, 2); ?>
-                                        %</strong></td>
+                                        &nbsp;<?php echo sfConfig::get('app_currency_code'); ?></strong></td>
                                 <td align="right" style="padding-right:10px"><strong><?php echo number_format($vatinc, 2); ?>
                                         &nbsp; <?php echo sfConfig::get('app_currency_code'); ?></strong></td>
                             </tr>
