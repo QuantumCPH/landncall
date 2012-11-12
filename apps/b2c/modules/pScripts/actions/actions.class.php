@@ -5048,9 +5048,10 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
     }
 
     function executeGenerateInvoiceMonthly(sfWebRequest $request) {
-         $start_date = date('Y-m-1 00:00:00',strtotime('last month'));
-        // echo '<br />';23:59:59'
-          $enddate = date('Y-m-t 23:59:59',strtotime('last month'));        
+       //  $start_date = date('Y-m-1 00:00:00',strtotime('last month'));
+      // $enddate = date('Y-m-t 23:59:59',strtotime('last month'));   
+        $start_date = date('Y-m-1 00:00:00',strtotime('-2 months'));
+        $enddate = date('Y-m-t 23:59:59',strtotime('-2 months'));      
         //   $start_date = date('Y-m-1 00:00:00', strtotime("last month"));
         //$start_date = date('Y-m-1 00:00:00');
         // echo '<br />';23:59:59'
