@@ -560,10 +560,10 @@ jQuery(function()
             .messageboxerror{
                 position:absolute;
                 width:auto;
-                margin-left:30px;
+                margin-left:21px;
                 border:1px solid #CC0000;
                 background:#F7CBCA;
-                padding:3px;
+                padding:6px;
                 font-weight:bold;
                 color:#CC0000;
             }

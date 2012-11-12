@@ -375,6 +375,10 @@ class companyActions extends sfActions {
 
     public function executeView($request) {
         $this->company = CompanyPeer::retrieveByPK($request->getParameter('id'));
+        $ce = new Criteria();
+        $ce->add(EmployeePeer::COMPANY_ID, $this->company->getId());
+        $ce->addAnd(EmployeePeer::STATUS_ID, 3);
+        $this->employeeCount = EmployeePeer::doCount($ce);
         $ComtelintaObj = new CompanyEmployeActivation();
         $this->balance = $ComtelintaObj->getBalance($this->company);
     }

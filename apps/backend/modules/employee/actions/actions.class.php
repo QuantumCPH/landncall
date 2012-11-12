@@ -20,6 +20,7 @@ class employeeActions extends sfActions {
         if (isset($companyid) && $companyid != '') {
             $c->addAnd(EmployeePeer::COMPANY_ID, $companyid);
         }
+        $c->addAnd(EmployeePeer::STATUS_ID, 3);
         $this->employees = EmployeePeer::doSelect($c);
     }
 
@@ -34,7 +35,7 @@ class employeeActions extends sfActions {
         $this->companys = CompanyPeer::doSelect($c);
 
         $pr = new Criteria();
-        $pr->add(ProductPeer::ID, 14);
+        $pr->add(ProductPeer::IS_IN_B2B, 1);
         //$pr->add(ProductPeer::IS_IN_ZAPNA, 1);
         $this->products = ProductPeer::doSelect($pr);
     }
