@@ -375,7 +375,7 @@ class customerActions extends sfActions {
                 $invite->save();
             }
         }
-            
+               
 
         //set referrer id
         if ($this->getRequest()->getCookie('agent_id')) {
@@ -493,8 +493,8 @@ class customerActions extends sfActions {
             //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
             emailLib::sendErrorTelinta($this->customer, $message_body);
         }
-
-        $this->customer_balance = Telienta::getBalance($this->customer);
+        $telintaObj = new Telienta();
+        $this->customer_balance = $telintaObj->getBalance($this->customer);
     }
 
     //This Function add Again new Feature Landncall --
@@ -559,7 +559,8 @@ class customerActions extends sfActions {
         $emailId = $this->customer->getEmail();
         $uniqueId = $this->customer->getUniqueid();
         //This is for Retrieve balance From Telinta
-        $this->customer_balance = Telienta::getBalance($this->customer);
+        $telintaObj = new Telienta();
+        $this->customer_balance = $telintaObj->getBalance($this->customer);
 
 
         //$this->customer_balance = 100;
@@ -655,8 +656,8 @@ class customerActions extends sfActions {
                         $TelintaMobile = $MaxUniqueRec->getMobileNumber();
                     }
                     //------------------------------
-
-                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
+                    $telintaObj = new Telienta();
+                    $telintaObj->createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
 
 
                     $OpeningBalance = '40';
@@ -664,7 +665,7 @@ class customerActions extends sfActions {
                     //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
                     //This is for Recharge the Customer
 
-                    Telienta::charge($this->customer, $OpeningBalance,"Resenumber Payment");
+                    $telintaObj->charge($this->customer, $OpeningBalance,"Resenumber Payment");
 
                 }
 
@@ -790,7 +791,8 @@ class customerActions extends sfActions {
                     $res->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
                     $res->addAnd(TelintaAccountsPeer::STATUS, 3);
                     $telintaAccountres = TelintaAccountsPeer::doSelectOne($res);
-                    Telienta::terminateAccount($telintaAccountres);
+                    $telintaObj = new Telienta();
+                    $telintaObj->terminateAccount($telintaAccountres);
             //When a customer is DeActive a resenummer you need to update the follow me number here is the URL - Telinta
             /*$telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name=' . $voipnumbers . '&active=N&follow_me_number=' . $followMeNumber . '&type=account');
             $string = $telintaGetBalance;
@@ -1551,7 +1553,8 @@ class customerActions extends sfActions {
         $uniqueId = $this->customer->getUniqueid();
 
         //This is for Retrieve balance From Telinta
-        $this->balance = Telienta::getBalance($uniqueId);
+        $telintaObj = new Telienta();
+        $this->balance = $telintaObj->getBalance($uniqueId);
 
 
 
@@ -1611,7 +1614,8 @@ class customerActions extends sfActions {
 
                 $uniqueId = $this->customer->getUniqueid();
                 $OpeningBalance = $amt;
-                Telienta::charge($this->customer, $OpeningBalance,"SMS Charges");
+                $telintaObj = new Telienta();
+                $telintaObj->charge($this->customer, $OpeningBalance,"SMS Charges");
                 //$ReCharge = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=' . $uniqueId . '&amount=' . $OpeningBalance);
 
                 $data = array(
@@ -2035,7 +2039,8 @@ class customerActions extends sfActions {
             $OpeningBalance = $order->getExtraRefill();
             //This is for Recharge the Customer
             $MinuesOpeningBalance = $OpeningBalance * 3;
-            Telienta::recharge($this->customer, $OpeningBalance);
+            $telintaObj =  new Telienta();
+            $telintaObj->recharge($this->customer, $OpeningBalance);
             //This is for Recharge the Account
             $find = '';
             $string = $telintaAddAccountCB;
@@ -2196,7 +2201,8 @@ class customerActions extends sfActions {
                 //echo "<br/>";
                 //This is for Recharge the Customer
                 $MinuesOpeningBalance = $OpeningBalance * 3;
-                Telienta::recharge($this->customer, $OpeningBalance);
+                $telintaObj = new Telienta();
+                $telintaObj->recharge($this->customer, $OpeningBalance);
                 $email2 = new DibsCall();
                 $email2->setCallurl('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $unidc . '&amount=' . $OpeningBalance . '&type=customer');
                 $email2->save();

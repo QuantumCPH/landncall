@@ -22,7 +22,7 @@
             <?php 
             $error_mobile_number = false;
             if($form['mobile_number']->hasError())
-            	$error_mobile_number = true;
+            	$error_mobile_number = true;   
             ?>
             <li>
              <?php echo $form['mobile_number']->renderLabel() ?>

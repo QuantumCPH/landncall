@@ -40,6 +40,9 @@
             <li>     
                 <?php echo link_to('Payment History', 'company/paymenthistory') ?>
             </li>
+               <li>     
+                <?php echo link_to('Invoices', 'company/invoices') ?>
+            </li>
             <li>    
                 <?php echo link_to('Refill', 'company/refill'); ?>
             </li>  
@@ -557,10 +560,10 @@ jQuery(function()
             .messageboxerror{
                 position:absolute;
                 width:auto;
-                margin-left:30px;
+                margin-left:21px;
                 border:1px solid #CC0000;
                 background:#F7CBCA;
-                padding:3px;
+                padding:6px;
                 font-weight:bold;
                 color:#CC0000;
             }
