@@ -556,7 +556,7 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
                         $uniqueId = $this->customer->getUniqueid();
                       //This is for Recharge the Customer
                        $MinuesOpeningBalance = $OpeningBalance*3;
-                       Telienta::recharge($this->customer, $OpeningBalance);
+                       Telienta::recharge($this->customer, $OpeningBalance, "Refill");
                       //This is for Recharge the Account
                       //this condition for if follow me is Active
                         $getvoipInfo = new Criteria();
@@ -1717,7 +1717,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $cusCount = CustomerPeer::doCount($mnc);
             if ($cusCount < 1) {
                 $uc = new Criteria();
-                $uc->add(UniqueIdsPeer::UNIQUEID, $uniqueId);
+                $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
                 $uc->addAnd(UniqueIdsPeer::STATUS, 0);
                 $callbackq = UniqueIdsPeer::doCount($uc);
             if ($callbackq== 1) {
@@ -1797,10 +1797,11 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 die;
             }
 
-                
-                $smstext = SmsTextPeer::retrieveByPK(2);
+                $smstext = SmsTextPeer::retrieveByPK(1);
                 echo $smstext->getMessageText();
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
+                $message="Unique Id not found<br>".$smstext->getMessageText()."<br>".$urlval;
+                emailLib::sendErrorInAutoReg("HC Error:", $message);
                 die;
             }
             $customer = CustomerPeer::doSelectOne($mnc);
@@ -1813,6 +1814,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
                 echo $smstext->getMessageText();
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
+                $message="Unique Id not found<br>".$smstext->getMessageText()."<br>".$urlval;
+                emailLib::sendErrorInAutoReg("HC Error:", $message);
                 die;
             }
 
@@ -1827,20 +1830,18 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if (isset($getvoipInfos)) {
                 $voipnumbers = $getvoipInfos->getNumber();
                 $voipnumbers = substr($voipnumbers, 2);
+
+                $tc = new Criteria();
+                $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+                $tc->add(TelintaAccountsPeer::STATUS, 3);
+                if (TelintaAccountsPeer::doCount($tc) > 0) {
+                    $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
+                    Telienta::terminateAccount($telintaAccount);
+                }
+
+                Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
             }
-
-
-            $tc = new Criteria();
-            $tc->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-            $tc->add(TelintaAccountsPeer::STATUS, 3);
-            if (TelintaAccountsPeer::doCount($tc) > 0) {
-                $telintaAccount = TelintaAccountsPeer::doSelectOne($tc);
-                Telienta::terminateAccount($telintaAccount);
-            }
-
-            Telienta::createReseNumberAccount($voipnumbers, $customer, $number);
-
-            $smstext = SmsTextPeer::retrieveByPK(1);
+            $smstext = SmsTextPeer::retrieveByPK(2);
             ROUTED_SMS::Send($number, $smstext->getMessageText());
             die;
             return sfView::NONE;
@@ -1850,9 +1851,7 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $uniqueId = substr($textParamter, 3);
             echo "<br/>";
             echo $uniqueId."<hr/>";
-
-
-
+            
             $callbackq = new Criteria();
             $callbackq->add(CallbackLogPeer::UNIQUEID, $uniqueId);
             $callbackq = CallbackLogPeer::doCount($callbackq);
@@ -1860,6 +1859,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             if ($callbackq < 1) {
                 $smstext = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
+                $message="Unique Id not found<br>".$smstext->getMessageText()."<br>".$urlval;
+                emailLib::sendErrorInAutoReg("IC Error:", $message);
                 die;
             }
 
@@ -1869,8 +1870,10 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
             $cusCount = CustomerPeer::doCount($mnc);
 
             if ($cusCount < 1) {
-                $smstext = SmsTextPeer::retrieveByPK(2);
+                $smstext = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $smstext->getMessageText());
+                $message="Customer is not exist<br>".$smstext->getMessageText()."<br>".$urlval;
+                emailLib::sendErrorInAutoReg("IC Error:", $message);
                 die;
             }
             $customer = CustomerPeer::doSelectOne($mnc);
@@ -1915,6 +1918,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                 echo "Invalid Request Dialer Pin<br/>";
                 $sms = SmsTextPeer::retrieveByPK(7);
                 ROUTED_SMS::Send($number, $sms->getMessageText());
+                $message="Invalid Request Dialer Pin<br/>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                emailLib::sendErrorInAutoReg("Auto Registration Error:", $message);
                 die;
             }
             $mobileNumber = substr($number, 2, strlen($number) - 2);
@@ -1968,10 +1973,10 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     echo "Unique Id Not Found";
                     $sms = SmsTextPeer::retrieveByPK(13);
                     ROUTED_SMS::Send($number, $sms->getMessageText());
+                    $message="Unique Id Not Found<br>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                    emailLib::sendErrorInAutoReg("Auto Registration Error:", $message);
                     die;
                 }
-
-
 
                 $cc = new Criteria();
                 $cc->add(CustomerPeer::MOBILE_NUMBER, $mobileNumber);
@@ -2064,6 +2069,8 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                     $sms = SmsTextPeer::retrieveByPK(6);
                     $smsText = $sms->getMessageText();
                     ROUTED_SMS::Send($number, $smsText);
+                    $message="Unique Id Not Found<br>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                    emailLib::sendErrorInAutoReg("Auto Registration Error:", $message);
                     die;
                 }
 
@@ -2100,32 +2107,26 @@ public function executeSmsRegisterationwcb(sfWebrequest $request) {
                        $value=SmsLogPeer::doCount($c);
 
                       if($value>0){
-
-
                          $smsRow=SmsLogPeer::doSelectOne($c);
-                        $createdAtValue= $smsRow->getCreatedAt();
-                     echo   $date1 =$createdAtValue;
-                        $asd=0;
-$d1=$date1;
-$d2=date("Y-m-d h:m:s");
-$asd=((strtotime($d2)-strtotime($d1))/3600);
-    $asd=intval($asd);
+                         $createdAtValue= $smsRow->getCreatedAt();
+                         echo   $date1 =$createdAtValue;
+                         $asd=0;
+                            $d1=$date1;
+                            $d2=date("Y-m-d h:m:s");
+                            $asd=((strtotime($d2)-strtotime($d1))/3600);
+                            $asd=intval($asd);
 
 
-if($asd>3){
-    ROUTED_SMS::Send($number, $smsText,null,2);
-     
-              die;
-}
- 
+                            if($asd>3){
+                                ROUTED_SMS::Send($number, $smsText,null,2);
+                                die;
+                            }
+
                       }else{
-              
-  ROUTED_SMS::Send($number, $smsText,null,2);
-  die;
+                          ROUTED_SMS::Send($number, $smsText,null,2);
+                          die;
                       }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-                      
                       
                     } elseif ($command == "re") {
                         echo "Recharge Request<br/>";
@@ -2158,7 +2159,7 @@ if($asd>3){
                             $transaction->setCustomerId($order->getCustomerId());
                             $transaction->save();
 
-                            if (Telienta::recharge($customer, $scratchCard->getCardPrice())) {
+                            if (Telienta::recharge($customer, $scratchCard->getCardPrice(), "Refill")) {
                                 $scratchCard->setStatus(1);
                                 $scratchCard->setUsedAt(date("Y-m-d H:i:s"));
                                 $scratchCard->setCustomerId($customer->getId());
@@ -2180,11 +2181,15 @@ if($asd>3){
                                 echo "Unable to charge";
                                 $sms = SmsTextPeer::retrieveByPK(8);
                                 ROUTED_SMS::Send($number, $sms->getMessageText());
+                                $message="Unable to charge<br/>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                                emailLib::sendErrorInAutoReg("Auto Refill Error:", $message);
                             }
                         } else {
                             echo "CARD ALREADY USED<br/>";
                             $sms = SmsTextPeer::retrieveByPK(7);
                             ROUTED_SMS::Send($number, $sms->getMessageText());
+                            $message="CARD ALREADY USED<br/>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                            emailLib::sendErrorInAutoReg("Auto Refill Error:", $message);
                         }
                         die;
                     }
@@ -2192,6 +2197,8 @@ if($asd>3){
                     echo "Invalid Command 1";
                     $sms = SmsTextPeer::retrieveByPK(7);
                     ROUTED_SMS::Send($number, $sms->getMessageText());
+                    $message="Invalid Command 1<br/>".$sms->getMessageText()."<br>Mobile Number=".$number."<br>Text=".$text;
+                    emailLib::sendErrorInAutoReg("Auto Refill or Balance Check Error:", $message);
                     die;
                 }
             }
@@ -3507,7 +3514,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
     public function executeCalbackrefill(sfWebRequest $request) {
         $order_id = $request->getParameter("orderid");
         
-        $urlval = $order_id . " refill page-qqqqqqqqq" . $request->getParameter('transact');
+        $urlval = $order_id . "Refill page-landNcall B2C" . $request->getParameter('transact');
 
         $email2 = new DibsCall();
         $email2->setCallurl($urlval);
@@ -3630,9 +3637,9 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 //echo $OpeningBalance."Balance";
                 //echo "<br/>";
                 //This is for Recharge the Customer
+ 
                 $MinuesOpeningBalance = $OpeningBalance;
-                Telienta::recharge($this->customer, $OpeningBalance);
-              
+                Telienta::recharge($this->customer, $OpeningBalance, "Refill");
 
                 //This is for Recharge the Account
                 //this condition for if follow me is Active

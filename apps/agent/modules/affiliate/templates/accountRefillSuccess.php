@@ -171,7 +171,7 @@
 		<input type="hidden" name="account" value="YTIP" />
 		<input type="hidden" name="status" value="" />
                  <input type="hidden" name="lang" value="sv" />   
-              <input type="hidden" name="test" value="yes" />
+<!--              <input type="hidden" name="test" value="yes" />-->
 		<input type="hidden" name="cancelurl" value="<?php echo sfConfig::get('app_agent_url'); ?>affiliate/thankyou/?accept=cancel" />
 		<input type="hidden" name="callbackurl" value="<?php echo sfConfig::get('app_url'); ?>b2c.php/pScripts/accountRefill" />
 		<input type="hidden" name="accepturl" id="accepturl"  value="<?php echo sfConfig::get('app_agent_url'); ?>affiliate/thankyou?accept=yes&subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=50000">

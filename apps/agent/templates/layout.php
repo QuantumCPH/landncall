@@ -17,55 +17,7 @@
                 color:#F00000;
             }
         </style>
-       <script type="text/javascript">
-            <!--
-            // Copyright 2006-2007 javascript-array.com
 
-            var timeout	= 500;
-            var closetimer	= 0;
-            var ddmenuitem	= 0;
-
-            // open hidden layer
-            function mopen(id)
-            {
-                // cancel close timer
-                mcancelclosetime();
-
-                // close old layer
-                if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
-
-                // get new layer and show it
-                ddmenuitem = document.getElementById(id);
-                ddmenuitem.style.visibility = 'visible';
-
-            }
-            // close showed layer
-            function mclose()
-            {
-                if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
-            }
-
-            // go close timer
-            function mclosetime()
-            {
-                closetimer = window.setTimeout(mclose, timeout);
-            }
-
-            // cancel close timer
-            function mcancelclosetime()
-            {
-                if(closetimer)
-                {
-                    window.clearTimeout(closetimer);
-                    closetimer = null;
-                }
-            }
-
-            // close layer when click-out
-            document.onclick = mclose;
-            -->
-
-        </script>
     </head>
     <body>
         <div id="basic">
@@ -122,10 +74,9 @@
                     $modulName = $sf_context->getModuleName();
                     $actionName = $sf_context->getActionName();
                ?>
-            <div id="menu">
-                <ul id="sddm">
-
-                        <li>
+            <div class="menuarrange" id="sddm">
+                <ul class="menu">
+                    <li class="dropdown">
                             <?php
                             if ($actionName == 'report' && $modulName == "affiliate" && $sf_request->getParameter('show_summary') == 1) {
                                  echo link_to(__('Overview'), 'affiliate/report?show_summary=1', array('class' => 'current'));
@@ -134,30 +85,40 @@
                             }
                             ?>
                         </li>
-                        <li>
-                            <a onmouseover="mopen('m2')" onmouseout="mclosetime()" href="#" onclick="return false;"
+                        <li class="dropdown">
+                            <a href="#" onclick="return false;"
                             <?php echo $actionName == 'registerCustomer' || $actionName == 'setProductDetails' || $actionName == 'refill' ? 'class="current"' : ''; ?>><?php echo __('Services'); ?></a>
-                        <div id="m2" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                            <?php
+                          <ul class="submenu">
+                            <li> 
+                           <?php
                             if ($modulName == "affiliate" && $actionName == 'registerCustomer' || $actionName == 'setProductDetails') {
                                 echo link_to(__('Register a Customer'), '@customer_registration_step1', array('class' => 'subSelect'));
                             } else {
                                 echo link_to(__('Register a Customer'), '@customer_registration_step1');
                             }
+                           ?>
+                            </li>
+                            <li>
+                            <?php
                             if ($modulName == "affiliate" && $actionName == 'refill') {
                                 echo link_to(__('Refill'), 'affiliate/refill', array('class' => 'subSelect'));
                             } else {
                                  echo link_to(__('Refill'), 'affiliate/refill');
                             }
+                            ?>
+                            </li>
+                            <li>
+                            <?php 
                             if ($modulName == "affiliate" && $actionName == 'changenumberservice') {
                                 echo link_to(__('Change Number'), 'affiliate/changenumberservice', array('class' => 'subSelect'));
                             } else {
                                  echo link_to(__('Change Number'), 'affiliate/changenumberservice');
                             }
                              ?>
-                            </div>
+                            </li>
+                          </ul>
                         </li>
-                        <li>
+                        <li class="dropdown">
                             <?php
                             if ($modulName == "affiliate" && $actionName == 'receipts') {
                                 echo link_to(__('Receipts'), 'affiliate/receipts', array('class' => 'current'));
@@ -166,7 +127,7 @@
                             }    
                             ?>
                         </li>
-                        <li>
+                        <li class="dropdown">
                             <?php
                                 if ($modulName == "affiliate" && $actionName == 'report' && $sf_request->getParameter('show_details') == 1) {
                                     echo link_to(__('My Earnings'), 'affiliate/report?show_details=1', array('class' => 'current'));
@@ -175,7 +136,7 @@
                                 }
                             ?>
                         </li>
-                        <li>
+                        <li class="dropdown">
                             <?php
                                 if ($modulName == "agentcompany" && $actionName == 'view' || $actionName == 'accountRefill' || $actionName == 'agentOrder' || $actionName == 'paymentHistory') {
                                 echo link_to(__('My Company Info'), 'agentcompany/view', array('class' => 'current'));
@@ -183,7 +144,7 @@
                                 echo link_to(__('My Company Info'), 'agentcompany/view');
                             }
                             ?></li>
-                        <li>
+                        <li class="dropdown">
                             <?php
                                 if ($modulName == "affiliate" && $actionName == 'supportingHandset') {
                                 echo link_to(__('Supporting Handsets'), 'affiliate/supportingHandset', array('class' => 'current'));
@@ -192,29 +153,32 @@
                             }
                              ?>
                         </li>
-                        <li>
-                             <a onmouseover="mopen('m3')" onmouseout="mclosetime()" href="#" onclick="return false;"
+                        <li class="dropdown">
+                             <a href="#" onclick="return false;"
                             <?php echo $actionName == 'userguide'? 'class="current"' : ''; ?>><?php echo __('User Guide'); ?></a>
-                            <div id="m3" onmouseover="mcancelclosetime()" onmouseout="mclosetime()">
-                            <?php
-                            if ($modulName == "affiliate" && $actionName == 'userguide') {
-                                echo link_to(__('Smarter Sim User Guide'), 'affiliate/userguide', array('class' => 'current'));
-                            } else {
-                                echo link_to(__('Smarter Sim User Guide'), 'affiliate/userguide');
-                            }?>
-                                <a href="/uploads/documents/<?php echo $guide->getFilename();?>" target="_blank"><?php echo $guide->getTitle();?></a>
-                            </div>
+                            <ul class="submenu">
+                            <li>
+                                <?php
+                                if ($modulName == "affiliate" && $actionName == 'userguide') {
+                                    echo link_to(__('Smarter Sim User Guide'), 'affiliate/userguide', array('class' => 'current'));
+                                } else {
+                                    echo link_to(__('Smarter Sim User Guide'), 'affiliate/userguide');
+                                }?>
+                            </li>
+                            <li>
+                              <a href="/uploads/documents/<?php echo $guide->getFilename();?>" target="_blank"><?php echo $guide->getTitle();?></a>
+                            </li>
+                            </ul>
                         </li>
-                        <li><?php
+                        <li class="dropdown"><?php
                             if ($modulName == "affiliate" && $actionName == 'faq') {
                                 echo link_to(__('FAQ'), 'affiliate/faq', array('class' => 'current'));
                             } else {
                                 echo link_to(__('FAQ'), 'affiliate/faq');
                             }
                             ?>
-                          
                         </li>
-                        <li class="last"><?php echo link_to(__('Logout'), 'agentUser/logout');?></li>
+                        <li class="dropdown last"><?php echo link_to(__('Logout'), 'agentUser/logout');?></li>
                     </ul>
                 <div class="clr"></div>
             </div>
@@ -256,5 +220,95 @@
             </div>
             <div class="clear"></div>
         </div>
+        <script type='text/javascript'>//<![CDATA[
+jQuery(window).load(function(){
+jQuery(function()
+{
+    var $dropdowns = jQuery('li.dropdown'); // Specifying the element is faster for older browsers
+
+    /**
+     * Mouse events
+     *
+     * @description Mimic hoverIntent plugin by waiting for the mouse to 'settle' within the target before triggering
+     */
+    $dropdowns
+        .on('mouseover', function() // Mouseenter (used with .hover()) does not trigger when user enters from outside document window
+        {
+            var $this = jQuery(this);
+
+            if ($this.prop('hoverTimeout'))
+            {
+                $this.prop('hoverTimeout', clearTimeout($this.prop('hoverTimeout')));
+            }
+
+            $this.prop('hoverIntent', setTimeout(function()
+            {
+                $this.addClass('hover');
+            }, 250));
+        })
+        .on('mouseleave', function()
+        {
+            var $this = jQuery(this);
+
+            if ($this.prop('hoverIntent'))
+            {
+                $this.prop('hoverIntent', clearTimeout($this.prop('hoverIntent')));
+            }
+
+            $this.prop('hoverTimeout', setTimeout(function()
+            {
+                $this.removeClass('hover');
+            }, 250));
+        });
+
+    /**
+     * Touch events
+     *
+     * @description Support click to open if we're dealing with a touchscreen
+     */
+    if ('ontouchstart' in document.documentElement)
+    {
+        $dropdowns.each(function()
+        {
+            var $this = $(this);
+
+            this.addEventListener('touchstart', function(e)
+            {
+                if (e.touches.length === 1)
+                {
+                    // Prevent touch events within dropdown bubbling down to document
+                    e.stopPropagation();
+
+                    // Toggle hover
+                    if (!$this.hasClass('hover'))
+                    {
+                        // Prevent link on first touch
+                        if (e.target === this || e.target.parentNode === this)
+                        {
+                            e.preventDefault();
+                        }
+
+                        // Hide other open dropdowns
+                        $dropdowns.removeClass('hover');
+                        $this.addClass('hover');
+
+                        // Hide dropdown on touch outside
+                        document.addEventListener('touchstart', closeDropdown = function(e)
+                        {
+                            e.stopPropagation();
+
+                            $this.removeClass('hover');
+                            document.removeEventListener('touchstart', closeDropdown);
+                        });
+                    }
+                }
+            }, false);
+        });
+    }
+
+});
+});//]]>
+
+</script>
     </body>
 </html>

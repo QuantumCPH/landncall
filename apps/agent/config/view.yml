@@ -3,7 +3,7 @@ default:
     content-type: text/html
 
   metas:
-    #title:        symfony project
+    title:        LandNCall - Agent Portal
     #description:  symfony project
     #keywords:     symfony, project
     #language:     en
@@ -11,7 +11,7 @@ default:
 
   stylesheets:    [main.css, style.css, 960.css]
 
-  javascripts:    [jquery-1.4.2.min.js, /sf/prototype/js/prototype.js, jquery.formatCurrency-1.3.0.min.js, i18n/jquery.formatCurrency.all.js ,jquery.validate.js]
+  javascripts:    [jquery-1.7.1.js, /sf/prototype/js/prototype.js, jquery.formatCurrency-1.3.0.min.js, i18n/jquery.formatCurrency.all.js ,jquery.validate.js]
 
   has_layout:     on
   layout:         layout

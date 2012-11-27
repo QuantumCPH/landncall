@@ -7,54 +7,7 @@
         <?php //use_javascript('jquery-ui-1.8.16.custom.min.js', '', array('absolute'=>true)) ?>
         <?php //use_stylesheet('ui-lightness/jquery-ui-1.8.16.custom.css', 'last', array('absolute'=>true)) ?>
         <link rel="shortcut icon" href="/favicon.ico" />
-        <script type="text/javascript">
-            <!--
-            // Copyright 2006-2007 javascript-array.com
-
-            var timeout	= 500;
-            var closetimer	= 0;
-            var ddmenuitem	= 0;
-
-            // open hidden layer
-            function mopen(id)
-            {
-                // cancel close timer
-                mcancelclosetime();
-
-                // close old layer
-                if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
-
-                // get new layer and show it
-                ddmenuitem = document.getElementById(id);
-                ddmenuitem.style.visibility = 'visible';
-
-            }
-            // close showed layer
-            function mclose()
-            {
-                if(ddmenuitem) ddmenuitem.style.visibility = 'hidden';
-            }
-
-            // go close timer
-            function mclosetime()
-            {
-                closetimer = window.setTimeout(mclose, timeout);
-            }
-
-            // cancel close timer
-            function mcancelclosetime()
-            {
-                if(closetimer)
-                {
-                    window.clearTimeout(closetimer);
-                    closetimer = null;
-                }
-            }
-
-            // close layer when click-out
-            document.onclick = mclose;
-            -->
-        </script>
+       
     </head>
     <body>
         <div id="wrapper">
@@ -73,277 +26,242 @@
                         <div id="slogan">
                             <h1><?php echo __('Admin Portal'); ?></h1>
                         </div>
-                        <div class="topNav" align="center">
-                            <ul id="sddm">
-                                <li><a href="#"
-                                       onmouseover="mopen('m2')"
-                                       onmouseout="mclosetime()">B2B</a>
-                                    <div id="m2"
-                                         onmouseover="mcancelclosetime()"
-                                         onmouseout="mclosetime()">
+  <div class="menuarrange" id="sddm">           
+  <ul class="menu">
+      <li class="dropdown">
+          <a href="#">B2B</a>
+           <ul class="submenu">
+            <li> 
+                <?php echo link_to('Companies list', 'company/index') ?>
+            </li>
+            <li>    
+                <?php echo link_to('Employee lists', 'employee/index') ?>
+            </li>
+            <li>     
+                <?php echo link_to('Payment History', 'company/paymenthistory') ?>
+            </li>
+            <li>    
+                <?php echo link_to('Refill', 'company/refill'); ?>
+            </li>  
+                <?php //echo link_to('support activity', 'support_activity/index'); ?>
+                <?php //echo link_to('usage', 'cdr/index'); ?>
+                <?php //echo link_to('invoices', 'invoice/index'); ?>
+                <?php //echo link_to('Product orders', 'product_order/index')  ?>
+           </ul>
+        </li>
+        <li class="dropdown">
+           <a href="#">B2C</a>
+             <ul class="submenu">
+              <li> 
+                 <?php
+                  echo link_to('All Registered Customer', 'customer/allRegisteredCustomer');
+                 ?>
+              </li>
+              <li>
+                 <?php
+                   echo link_to('Registered Customer(Web)', 'customer/registeredByWeb');
+                  ?>
+              </li>
+              <li>
+                 <?php 
+                 echo link_to('Registered Customer(Agent)', 'customer/registeredByAgent');
+                 ?>
+              </li>
+              <li>
+                 <?php
+                 echo link_to('Registered Customer(Agent Link)', 'customer/registeredByAgentLink');
+                 ?>
+              </li>
+              <li>
+                 <?php
+                 echo link_to('Partial Registeration(Web)', 'customer/partialRegisteredByWeb');
+                 ?>
+              </li>
+              <li>
+                 <?php
+                 echo link_to('Partial Registeration(Agent)', 'customer/partialRegisteredByAgent');
+                 ?>
+              </li>
+              <li>
+                 <?php
+                 echo link_to('Partial Registeration(Agent Link)', 'customer/partialRegisteredByAgentLink');
+                 ?>
+              </li>
+              <li>
+                 <?php
+                 echo link_to('Charge Customer', 'customer/selectChargeCustomer');
+                 ?>
+              </li>
+              <li>
+                 <?php
+                 echo link_to('Refill Customers', 'customer/selectRefillCustomer');
+                 ?>
+              </li>
+              <li>
+                 <?php
+                 echo link_to('Payment History', 'customer/completePaymenthistory');
+                 ?>
+              </li>    
+            </ul>
+         </li>
+         <li class="dropdown">
+           <a href="#">Agents</a>
+             <ul class="submenu">
+                 <li>  
+                   <?php echo link_to('company list', 'agent_company/index') ?>
+                 </li>
+                 <li>
+                  <?php echo link_to('user lists', 'agent_user/index') ?>
+                 </li>
+                 <li>    
+                <?php //echo link_to('commission', 'agent_commission/index') ?>
+                <?php echo link_to('Agent Per Product', 'agent_commission/selectCompany') ?>
+                </li>
+                 <li>     
+                <?php //echo link_to('bank info', 'agent_bank/index') ?>
+                <?php echo link_to('agent commission package', 'agent_commission_package/index') ?>
+                </li>
+                 <li>      
+                <?php echo link_to(__('Refil Agent Company'), 'agent_company/selectCompany'); ?>
+                     </li>
+                 <li>
+                <?php echo link_to(__('Charge Agent Company'), 'agent_company/chargeCompany'); ?>
+                </li>
+                 <li>     
+                  <?php echo link_to(__('Payment History'), 'agent_company/agentCompanyPayment'); ?>
+                </li>
+              </ul>
+     </li>
+             <li class="dropdown">
+             <a href="#" >Updates</a>
+             <ul class="submenu">
+                 <li>  
+                 <?php echo link_to('List All Updates', 'agent_company/newsList') ?>
+                 </li>
+                 <li>
+                 <?php echo link_to('New Update', 'agent_company/newsUpdate') ?>
+                 </li>
+                 <li>
+                 <?php echo link_to('FAQ', 'faqs/index') ?>
+                 </li> 
+                 <li>
+                 <?php echo link_to('User Guide', 'userguide/index') ?>
+                </li> 
+             </ul>
+            </li>
 
-                            <?php echo link_to('Companies list', 'company/index') ?>
-                            <?php echo link_to('Employee lists', 'employee/index') ?>
-                            <?php echo link_to('Payment History', 'company/paymenthistory') ?>
-                            <?php echo link_to('Refill', 'company/refill'); ?>
-                            <?php //echo link_to('support activity', 'support_activity/index'); ?>
-                            <?php //echo link_to('usage', 'cdr/index'); ?>
-                            <?php //echo link_to('invoices', 'invoice/index'); ?>
-<?php //echo link_to('Product orders', 'product_order/index')  ?>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="#"
-                           onmouseover="mopen('m5')"
-                           onmouseout="mclosetime()">B2C</a>
-                        <div id="m5"
-                             onmouseover="mcancelclosetime()"
-                             onmouseout="mclosetime()">
-                                 <?php
-                                 echo link_to('All Registered Customer', 'customer/allRegisteredCustomer');
-                                 echo link_to('Registered Customer(Web)', 'customer/registeredByWeb');
-                                 echo link_to('Registered Customer(Agent)', 'customer/registeredByAgent');
-                                 echo link_to('Registered Customer(Agent Link)', 'customer/registeredByAgentLink');
-                                 echo link_to('Partial Registeration(Web)', 'customer/partialRegisteredByWeb');
-                                 echo link_to('Partial Registeration(Agent)', 'customer/partialRegisteredByAgent');
-                                 echo link_to('Partial Registeration(Agent Link)', 'customer/partialRegisteredByAgentLink');
-                                 echo link_to('Charge Customer', 'customer/selectChargeCustomer');
-                                 echo link_to('Refill Customers', 'customer/selectRefillCustomer');
-                                 echo link_to('Payment History', 'customer/completePaymenthistory');
-                                 ?>
-                        </div>
-                    </li>
+        <!--   <li class="dropdown">
+                 <a href="#">SMS</a><?php echo link_to('Send Bulk SMS', 'sms/sendSms') ?>
+               </li> -->
+           <li class="dropdown">
+             <a href="#">Reports</a>
+               <ul class="submenu">
+                   <li>   
+                     <?php echo link_to('Low Credit Alert Report ', 'invoice/selectIntervalAlert'); ?>
+                   </li>    
+               </ul>
+           </li>
 
-                    <li>
-                        <a href="#"
-                           onmouseover="mopen('m3')"
-                           onmouseout="mclosetime()">Agents</a>
-                        <div id="m3"
-                             onmouseover="mcancelclosetime()"
-                             onmouseout="mclosetime()">
-
-                            <?php echo link_to('company list', 'agent_company/index') ?>
-                            <?php echo link_to('user lists', 'agent_user/index') ?>
-                            <?php //echo link_to('commission', 'agent_commission/index') ?>
-                            <?php echo link_to('Agent Per Product', 'agent_commission/selectCompany') ?>
-                            <?php //echo link_to('bank info', 'agent_bank/index') ?>
-                            <?php echo link_to('agent commission package', 'agent_commission_package/index') ?>
-                            <?php echo link_to(__('Refil Agent Company'), 'agent_company/selectCompany'); ?>
-                            <?php echo link_to(__('Charge Agent Company'), 'agent_company/chargeCompany'); ?>
-<?php echo link_to(__('Payment History'), 'agent_company/agentCompanyPayment'); ?>
-                             </div>
-                         </li>
-                         <li>
-                             <a href="#"
-                                onmouseover="mopen('m7')"
-                                onmouseout="mclosetime()">Updates</a>
-                             <div id="m7"
-                                  onmouseover="mcancelclosetime()"
-                                  onmouseout="mclosetime()">
-                                 <?php echo link_to('List All Updates', 'agent_company/newsList') ?>
-                                 <?php echo link_to('New Update', 'agent_company/newsUpdate') ?>
-                                 <?php echo link_to('FAQ', 'faqs/index') ?>
-<?php echo link_to('User Guide', 'userguide/index') ?>
-
-                        </div>
-                    </li>
-
-                    <!--   <li>
-                             <a href="#"
-                             onmouseover="mopen('m8')"
-                             onmouseout="mclosetime()">SMS</a>
-                             <div id="m8"
-                                 onmouseover="mcancelclosetime()"
-                                 onmouseout="mclosetime()">
-<?php echo link_to('Send Bulk SMS', 'sms/sendSms') ?>
-
-
-
-                                          </div>
-                                      </li> -->
-                                 <li>
-                                     <a href="#"
-                                        onmouseover="mopen('m9')"
-                                        onmouseout="mclosetime()">Reports</a>
-                                     <div id="m9"
-                                          onmouseover="mcancelclosetime()"
-                                          onmouseout="mclosetime()">
-<?php echo link_to('Low Credit Alert Report ', 'invoice/selectIntervalAlert'); ?>
-
-
-                        </div>
-                    </li>
-
-                    <!--         <li>
-				<a href="#"
-                                   onmouseover="mopen('m6')"
-                                   onmouseout="mclosetime()">Fonet</a>
-                                   <div id="m6"
-                                       onmouseover="mcancelclosetime()"
-                                       onmouseout="mclosetime()">
-                                -       <?php echo link_to('Get Info', 'fonetAmin/info'); ?>
-                    <?php echo link_to('Recharge', 'fonetAmin/recharge'); ?>
-                    <?php echo link_to('Activate', 'fonetAmin/activate'); ?>
-<?php echo link_to('DeActivate', 'fonetAmin/delete'); ?>
-                                                </div>
-
-
-                                            </li>-->
-
-                                 <li style="display:none"><a href="#"
-                                                             onmouseover="mopen('m2')"
-                                                             onmouseout="mclosetime()">Company</a>
-                                     <div id="m2"
-                                          onmouseover="mcancelclosetime()"
-                                          onmouseout="mclosetime()">
-
-                            <?php echo link_to('companies list', 'company/index') ?>
-                            <?php echo link_to('employee lists', 'employee/index') ?>
-                            <?php echo link_to('sale activity', 'sale_activity/index'); ?>
-                            <?php echo link_to('support activity', 'support_activity/index'); ?>
-                            <?php echo link_to('usage', 'cdr/index'); ?>
-                            <?php echo link_to('invoices', 'invoice/index'); ?>
-<?php echo link_to('product orders', 'product_order/index') ?>
-                             </div>
-                         </li>
-
-                         <li>
-                             <a href="#"
-                                onmouseover="mopen('m4')"
-                                onmouseout="mclosetime()">Admin Users</a>
-                             <div id="m4"
-                                  onmouseover="mcancelclosetime()"
-                                  onmouseout="mclosetime()">
-                                 <?php echo link_to('user', 'user/index'); ?>
-                                 <?php //echo link_to('role', 'role/index'); ?>
-                                 <?php //echo link_to('permission', 'permission/index'); ?>
-<?php //echo link_to('role permission', 'role_permission/index');  ?>
-                        </div>
-                    </li>
-
-                    <li>
-                        <a href="#"
-                           onmouseover="mopen('m6')"
-                           onmouseout="mclosetime()">Download</a>
-                        <div id="m6"
-                             onmouseover="mcancelclosetime()"
-                             onmouseout="mclosetime()">
-<?php echo link_to('Downlaod User Guide', 'client_documents/index') ?>
-
-                        </div>
-
-
-                    </li>
-
-
-
-                    <li><a href="#"
-                           onmouseover="mopen('m1')"
-                           onmouseout="mclosetime()">Settings</a>
-                        <div id="m1"
-                             onmouseover="mcancelclosetime()"
-                             onmouseout="mclosetime()">
-
-                            <?php
-                                 // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
-                            ?>
-                                 <!--
-                                     <a href="javascript:;"><b>Zapna Setting</b></a>
-                            <?php echo link_to('Customer types', 'customer_type/index') ?>
-                            <?php echo link_to('Invoice methods', 'invoice_method/index') ?>
-                            <?php echo link_to('Company size', 'company_size/index') ?>
-                            <?php echo link_to('Company type', 'company_type/index') ?>
-<?php echo link_to('Packages', 'package/index') ?>
-
-                                 -->
-                            <?php // As per Omair Instruction - 08/17/2011
-                                 //echo link_to('sale activity status', 'sale_activity_status/index') ?>
-                            <?php // As per Omair Instruction - 08/17/2011
-                                 //echo link_to('support activity status', 'support_activity_status/index') ?>
-                            <?php //echo link_to('sale actions', 'sale_action/index') ?>
-<?php //echo link_to('support issues', 'support_issue/index')  ?>
-
-                            <?php
-                                 // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
-                                 //echo link_to('<b>Zerocall Setting</b>', '')
-                            ?>
-                                 <!--                        <a href="javascript:;"><b>LandnCall Setting</b></a>-->
-                            <?php //echo link_to('Mobile Models', 'device/index'); ?>
-                            <?php //echo link_to('Mobile Brands', 'manufacturer/index'); ?>
-                            <?php //echo link_to('Mobile Operator', 'telecom_operator/index') ?>
-                            <?php //echo link_to('Postal charges', 'postal_charges/index') ?>
-                            <?php
-                                 // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
-                                 // echo link_to('<b></b>', '') ?>
-                                 <!--                        <a href="javascript:;"><b>Agent Setting</b></a>-->
-                            <?php //echo link_to('Agent commission Invoices Note', 'invoice_note/index') ?>
-                            <?php //echo link_to('apartment form', 'apartment_form/index') ?>
-                            <?php //echo link_to('commission period', 'commission_period/index') ?>
-<?php //echo link_to('revenue interval', 'revenue_interval/index')  ?>
-<?php //echo link_to('destination rates', 'destination_rate/index')  ?>
-
-
-                            <?php
-                                 // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
-                                 //echo link_to('<b>General Setting</b>', '') ?>
-                                 <a href="javascript:;"><b>General Setting</b></a>
-                            <?php echo link_to('products', 'product/index') ?>
-                            <?php echo link_to('Country List', 'enable_country/index') ?>
-                            <?php echo link_to('Cities', 'city/index') ?>
-                            <?php echo link_to('SMS TEXT', 'sms_text/index') ?>
-                            <?php echo link_to('Low Credit Alert', 'usage_alert/index') ?>
-                            <?php echo link_to('Low Credit Alert Sender', 'usage_alert_sender/index') ?>
-                            <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
-                            <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
-<?php echo link_to('Transaction Description', 'transactionDescription/index');
-                                 echo link_to('Edit B2B Credit Limit', 'company/indexAll'); ?>
-
-                            <?php //echo link_to('Upload Client Document', 'client_documents/index') ?>
-                                 <!--                        <a href="/client_documents/index">Upload Client Document</a>-->
-<?php //echo link_to('global setting', 'global_setting/index')  ?>
-                            <?php //echo link_to('employee products', 'employee_product/index') ?>
-
-<?php //echo link_to('Customer Commission', 'customer_commision/index')  ?>
-
-
-                                 <!--
-                            <?php echo link_to('status', 'status/index'); ?>
-                            <?php echo link_to('customer types', 'customer_type/index') ?>
-                            <?php echo link_to('invoice methods', 'invoice_method/index') ?>
-                            <?php echo link_to('sale activity status', 'sale_activity_status/index') ?>
-                            <?php echo link_to('support activity status', 'support_activity_status/index') ?>
-                            <?php echo link_to('sale actions', 'sale_action/index') ?>
-                            <?php echo link_to('support issues', 'support_issue/index') ?>
-                            <?php echo link_to('company size', 'company_size/index') ?>
-                            <?php echo link_to('company type', 'company_type/index') ?>
-                            <?php echo link_to('device', 'device/index'); ?>
-                            <?php echo link_to('manufacturer', 'manufacturer/index'); ?>
-                            <?php echo link_to('apartment form', 'apartment_form/index') ?>
-                            <?php echo link_to('commission period', 'commission_period/index') ?>
-                            <?php echo link_to('revenue interval', 'revenue_interval/index') ?>
-                            <?php echo link_to('destination rates', 'destination_rate/index') ?>
-                            <?php echo link_to('packages', 'package/index') ?>
-                            <?php echo link_to('products', 'product/index') ?>
-<?php echo link_to('Usage Alert', 'usage_alert/index') ?>
-                            <?php echo link_to('Usage Alert Sender', 'usage_alert_sender/index') ?>
-
-                            <?php echo link_to('global setting', 'global_setting/index') ?>
-                            <?php echo link_to('employee products', 'employee_product/index') ?>
-                            <?php echo link_to('Language Type', 'enable_country/index') ?>
-                            <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
-                            <?php echo link_to('Customer Commission', 'customer_commision/index') ?>
-                            <?php echo link_to('Cities', 'city/index') ?>
-<?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
-     		    <a href="http://landncall.zerocall.com/backend_dev.php/client_documents">Upload Client Document</a>
-                                 -->
-                             </div>
-                         </li>
-
-
-                         <li class="last">
-<?php echo link_to('Logout', 'user/logout'); ?>
-                             </li>
-                         </ul>
+                    <!-- <li class="dropdown">
+			<a href="#">Fonet</a>
+                                   <ul class="submenu">
+                                    <li>
+                                          <?php echo link_to('Get Info', 'fonetAmin/info'); ?>
+                                    </li>
+                                    <li>
+                                       <?php echo link_to('Recharge', 'fonetAmin/recharge'); ?>
+                                    </li>
+                                    <li>
+                                      <?php echo link_to('Activate', 'fonetAmin/activate'); ?>
+                                    </li>
+                                    <li>
+                                      <?php echo link_to('DeActivate', 'fonetAmin/delete'); ?>
+                                   </li> 
+                                   </ul>
+                   </li>-->
+           <li class="dropdown" style="display:none">
+               <a href="#">Company</a>
+               <ul class="submenu">
+                   <li>
+                <?php echo link_to('companies list', 'company/index') ?>
+                   </li>
+                   <li>
+                <?php echo link_to('employee lists', 'employee/index') ?>
+                   </li>
+                   <li>
+                <?php echo link_to('sale activity', 'sale_activity/index'); ?>
+                   </li>
+                   <li>    
+                <?php echo link_to('support activity', 'support_activity/index'); ?>
+                   </li>
+                   <li>    
+                <?php echo link_to('usage', 'cdr/index'); ?>
+                   </li>
+                   <li>    
+                <?php echo link_to('invoices', 'invoice/index'); ?>
+                   </li>
+                   <li>    
+                <?php echo link_to('product orders', 'product_order/index') ?>
+                   </li>
+                </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" >Admin Users</a>
+              <ul class="submenu">
+                 <li><?php echo link_to('user', 'user/index'); ?></li>
+                 <!--<li><?php //echo link_to('role', 'role/index'); ?></li>
+                 <li><?php //echo link_to('permission', 'permission/index'); ?></li>
+                 <li><?php //echo link_to('role permission', 'role_permission/index');  ?></li>-->
+               </ul>
+            </li>
+           <li class="dropdown">
+              <a href="#">Download</a>
+                <ul class="submenu">
+                 <li><?php echo link_to('Downlaod User Guide', 'client_documents/index') ?> </li>
+                </ul> 
+           </li>
+           <li class="dropdown"><a href="#">Settings</a>
+               <ul class="submenu">  
+                      <li>
+                        <?php
+                             // As per Omair Instruction - He need these changes - AHTSHAM - 08/17/2011
+                             //echo link_to('<b>General Setting</b>', '') ?>
+                             <a href="javascript:;"><b>General Setting</b></a>
+                        <?php echo link_to('products', 'product/index') ?>
+                      </li> 
+                      <li>  
+                        <?php echo link_to('Country List', 'enable_country/index') ?>
+                      </li>
+                      <li>     
+                        <?php echo link_to('Cities', 'city/index') ?>
+                      </li>
+                      <li>    
+                        <?php echo link_to('SMS TEXT', 'sms_text/index') ?>
+                      </li>
+                      <li>    
+                        <?php echo link_to('Low Credit Alert', 'usage_alert/index') ?>
+                      </li>
+                      <li>    
+                        <?php echo link_to('Low Credit Alert Sender', 'usage_alert_sender/index') ?>
+                      </li>
+                      <li>    
+                        <?php echo link_to('Telecom Operator', 'telecom_operator/index') ?>
+                     </li>
+                      <li>     
+                        <?php echo link_to('DeActivat eCustomer', 'customer/deActivateCustomer') ?>
+                     </li>
+                      <li>     
+                        <?php echo link_to('Transaction Description', 'transactionDescription/index');?>
+                     </li>
+                      <li>     
+                         <?php  echo link_to('Edit B2B Credit Limit', 'company/indexAll'); ?>
+                      </li>
+               </ul>
+           </li>
+          <li class="dropdown last">
+                 <?php echo link_to('Logout', 'user/logout'); ?>
+           </li>
+          </ul>
                      </div><div style="clear:both"></div><br/>
 <?php endif; ?>
                  
@@ -351,12 +269,99 @@
 <?php echo $sf_content ?>
                          </div> <!--  end wrapper -->
 
+ <script type="text/javascript">
+    //<![CDATA[
+jQuery(window).load(function(){
+jQuery(function()
+{
+    var $dropdowns = jQuery('li.dropdown'); // Specifying the element is faster for older browsers
 
+    /**
+     * Mouse events
+     *
+     * @description Mimic hoverIntent plugin by waiting for the mouse to 'settle' within the target before triggering
+     */
+    $dropdowns
+        .on('mouseover', function() // Mouseenter (used with .hover()) does not trigger when user enters from outside document window
+        {
+            var $this = jQuery(this);
+
+            if ($this.prop('hoverTimeout'))
+            {
+                $this.prop('hoverTimeout', clearTimeout($this.prop('hoverTimeout')));
+            }
+
+            $this.prop('hoverIntent', setTimeout(function()
+            {
+                $this.addClass('hover');
+            }, 250));
+        })
+        .on('mouseleave', function()
+        {
+            var $this = jQuery(this);
+
+            if ($this.prop('hoverIntent'))
+            {
+                $this.prop('hoverIntent', clearTimeout($this.prop('hoverIntent')));
+            }
+
+            $this.prop('hoverTimeout', setTimeout(function()
+            {
+                $this.removeClass('hover');
+            }, 250));
+        });
+
+    /**
+     * Touch events
+     *
+     * @description Support click to open if we're dealing with a touchscreen
+     */
+    if ('ontouchstart' in document.documentElement)
+    {
+        $dropdowns.each(function()
+        {
+            var $this = $(this);
+
+            this.addEventListener('touchstart', function(e)
+            {
+                if (e.touches.length === 1)
+                {
+                    // Prevent touch events within dropdown bubbling down to document
+                    e.stopPropagation();
+
+                    // Toggle hover
+                    if (!$this.hasClass('hover'))
+                    {
+                        // Prevent link on first touch
+                        if (e.target === this || e.target.parentNode === this)
+                        {
+                            e.preventDefault();
+                        }
+
+                        // Hide other open dropdowns
+                        $dropdowns.removeClass('hover');
+                        $this.addClass('hover');
+
+                        // Hide dropdown on touch outside
+                        document.addEventListener('touchstart', closeDropdown = function(e)
+                        {
+                            e.stopPropagation();
+
+                            $this.removeClass('hover');
+                            document.removeEventListener('touchstart', closeDropdown);
+                        });
+                    }
+                }
+            }, false);
+        });
+    }
+
+});
+});//]]>
+    </script>
                          <script type="text/javascript">
                              jQuery(function(){
-
-                                 jQuery('#sf_admin_form').validate({
-                                 });
+                                
                                  jQuery('#sf_admin_edit_form').validate({
 
                                      rules: {
@@ -387,7 +392,8 @@
                                  var poide= poid.charAt(4);
                                  if(poidlenght>4){
                                      var fulvalue=poida+poidb+poidc+" "+poidd+poide;
-                                 }else{
+                                 }
+                                 else{
                                      //var fulvalue=poida+poidb+poidc;
                                  }
                                  jQuery("#company_post_code").val(fulvalue);

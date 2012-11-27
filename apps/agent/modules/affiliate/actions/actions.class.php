@@ -604,7 +604,7 @@ public function executeRefill(sfWebRequest $request)
                                         }
                                         else
                                         {
-                                            Telienta::recharge($customer, $OpeningBalance);      
+                                            Telienta::recharge($customer, $OpeningBalance, "Refill");
                                         }
                         
 					//set status

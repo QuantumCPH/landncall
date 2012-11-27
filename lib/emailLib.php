@@ -1217,153 +1217,150 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
     public static function sendErrorTelinta(Customer $customer, $message) {
 
         $subject = 'Error In Telinta';
-        //$this->renderPartial('affiliate/order_receipt', array(
+
         sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
-        $message_body = "<table width='600px'><tr style='border:0px solid #fff'><td colspan='4' align='right' style='text-align:right; border:0px solid #fff'></tr></table><table cellspacing='0' width='600px'><tr><td>
-             " . $message . " <br/><br/>
-Med vänlig hälsning<br/><br/>
-LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
+        $message_body = "<table cellspacing='0' width='600px'>
+                         <tr><td>" . $message . " <br/><br/>Med vänlig hälsning<br/><br/>
+                         LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
-        //Support Information
-        $sender_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        //$sender_emailcdu = sfConfig::get('app_email_sender_email', 'zerocallengineering@googlegroups.com');
-        //$sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
 
+        $recipient_name_support = sfConfig::get('app_recipient_name_support');
+        $recipient_email_support = sfConfig::get('app_recipient_email_support');
 
-        //--------------Sent The Email To okhan
-        if (trim($sender_email) != ''):
-            $email3 = new EmailQueue();
-            $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
-            $email3->setAgentId($referrer_id);
-            $email3->setCutomerId($customer_id);
-            $email3->setEmailType('Error In Telinta');
-            $email3->setMessage($message_body);
-            $email3->save();
+        //**********************Sent The Email To RS****************************
+        if ($recipient_email_rs != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_rs);
+            $email->setReceipientEmail($recipient_email_rs);
+            $email->setEmailType('Error In Telinta');
+            $email->setMessage($message_body);
+            $email->save();
         endif;
-        //-----------------------------------------
-        //--------------Sent The Email To CDU
-       
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName("Baran Khan");
-            $email4->setReceipientEmail("bk@zapna.com");
-            $email4->setAgentId($referrer_id);
-            $email4->setCutomerId($customer_id);
-            $email4->setEmailType('Error In Telinta');
-            $email4->setMessage($message_body);
-            $email4->save();
-        
-        //-----------------------------------------
+        //**********************************************************************
+
+        //*******************Sent The Email To Support**************************
+         if ($recipient_email_support != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_support);
+            $email->setReceipientEmail($recipient_email_support);
+            $email->setEmailType('Error In Telinta');
+            $email->setMessage($message_body);
+            $email->save();
+         endif;
+        //**********************************************************************
     }
 
     public static function sendUniqueIdsShortage() {
 
         $subject = 'Unique Ids finished.';
-        $message_body = "<table width='600px'><tr style='border:0px solid #fff'><td colspan='4' align='right' style='text-align:right; border:0px solid #fff'></tr></table><table cellspacing='0' width='600px'><tr><td>
-             " . $message . " <br/><br/>
-Uniuqe Ids finsihed.<br/><br/>
-LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
+        $message_body = "<table cellspacing='0' width='600px'><tr><td>
+        Uniuqe Ids finsihed.<br/><br/>
+        LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
-        //Support Informationt
-        $sender_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        //$sender_emailcdu = sfConfig::get('app_email_sender_email', 'zerocallengineering@googlegroups.com');
-        //$sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
 
+        $recipient_name_support = sfConfig::get('app_recipient_name_support');
+        $recipient_email_support = sfConfig::get('app_recipient_email_support');
 
-        //--------------Sent The Email To okhan
-        if (trim($sender_email) != ''):
-            $email3 = new EmailQueue();
-            $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
-            $email3->setAgentId($referrer_id);
-            $email3->setCutomerId($customer_id);
-            $email3->setEmailType('Unique Ids Finished');
-            $email3->setMessage($message_body);
-            $email3->save();
+        //**********************Sent The Email To RS****************************
+        if ($recipient_email_rs != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_rs);
+            $email->setReceipientEmail($recipient_email_rs);
+            $email->setEmailType('Unique Ids Finished');
+            $email->setMessage($message_body);
+            $email->save();
         endif;
-        //-----------------------------------------
-        //--------------Sent The Email To CDU
-        /*if (trim($sender_emailcdu) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
-            $email4->setAgentId($referrer_id);
-            $email4->setCutomerId($customer_id);
-            $email4->setEmailType('Unique Ids Finished');
-            $email4->setMessage($message_body);
-            $email4->save();
-        endif;*/
-        //-----------------------------------------
+        //**********************************************************************
+
+        //*******************Sent The Email To Support**************************
+         if ($recipient_email_support != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_support);
+            $email->setReceipientEmail($recipient_email_support);
+            $email->setEmailType('Unique Ids Finished');
+            $email->setMessage($message_body);
+            $email->save();
+         endif;
+        //**********************************************************************
     }
 
     public static function sendUniqueIdsIssueAgent($uniqueid, Customer $customer) {
 
         $subject = 'Unique Ids finished.';
-        $message_body = "<table width='600px'><tr style='border:0px solid #fff'><td colspan='4' align='right' style='text-align:right; border:0px solid #fff'></tr></table><table cellspacing='0' width='600px'><tr><td>
-             " . $message . " <br/><br/>
-Uniuqe Id " . $uniqueid . " has issue while assigning on " . $customer->getMobileNumber() . "<br/><br/>
-LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
+        $message_body = "<table cellspacing='0' width='600px'><tr><td>
+            Uniuqe Id " . $uniqueid . " has issue while assigning on " . $customer->getMobileNumber() . "<br/><br/>
+            LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
-        //Support Informationt
-        $sender_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB');
-        //$sender_emailcdu = sfConfig::get('app_email_sender_email', 'zerocallengineering@googlegroups.com');
-        //$sender_namecdu = sfConfig::get('app_email_sender_name', 'LandNCall AB');
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
 
+        $recipient_name_support = sfConfig::get('app_recipient_name_support');
+        $recipient_email_support = sfConfig::get('app_recipient_email_support');
 
-        //--------------Sent The Email To okhan
-        if (trim($sender_email) != ''):
-            $email3 = new EmailQueue();
-            $email3->setSubject($subject);
-            $email3->setReceipientName($sender_name);
-            $email3->setReceipientEmail($sender_email);
-            $email3->setAgentId($referrer_id);
-            $email3->setCutomerId($customer_id);
-            $email3->setEmailType('Unique Ids Finished');
-            $email3->setMessage($message_body);
-            $email3->save();
+        //**********************Sent The Email To RS****************************
+        if ($recipient_email_rs != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_rs);
+            $email->setReceipientEmail($recipient_email_rs);
+            $email->setEmailType('Unique Ids Finished');
+            $email->setMessage($message_body);
+            $email->save();
         endif;
-        //-----------------------------------------
-        //--------------Sent The Email To CDU
-        /*if (trim($sender_emailcdu) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
-            $email4->setAgentId($referrer_id);
-            $email4->setCutomerId($customer_id);
-            $email4->setEmailType('Unique Ids Finished');
-            $email4->setMessage($message_body);
-            $email4->save();
-        endif;*/
-        //-----------------------------------------
+        //**********************************************************************
+
+        //*******************Sent The Email To Support**************************
+         if ($recipient_email_support != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_support);
+            $email->setReceipientEmail($recipient_email_support);
+            $email->setEmailType('Unique Ids Finished');
+            $email->setMessage($message_body);
+            $email->save();
+         endif;
+        //**********************************************************************
     }
 
     public static function sendErrorInTelinta($subject, $message) {
 
-        //To RS.
-        $email = new EmailQueue();
-        $email->setSubject($subject);
-        $email->setReceipientName("Raheel Safdar");
-        $email->setReceipientEmail("rs@zapna.com");
-        $email->setEmailType('Telinta Error');
-        $email->setMessage($message);
-        $email->save();
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
 
-        //To Support @ Zerocall
-        $email = new EmailQueue();
-        $email->setSubject($subject);
-        $email->setReceipientName("Baran Khan");
-        $email->setReceipientEmail("bk@zapna.com");
-        $email->setEmailType('Telinta Error');
-        $email->setMessage($message);
-        $email->save();
+        $recipient_name_support = sfConfig::get('app_recipient_name_support');
+        $recipient_email_support = sfConfig::get('app_recipient_email_support');
+
+        //**********************Sent The Email To RS****************************
+        if ($recipient_email_rs != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_rs);
+            $email->setReceipientEmail($recipient_email_rs);
+            $email->setEmailType('Telinta Error');
+            $email->setMessage($message);
+            $email->save();
+        endif;
+        //**********************************************************************
+
+        //*******************Sent The Email To Support**************************
+         if ($recipient_email_support != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_support);
+            $email->setReceipientEmail($recipient_email_support);
+            $email->setEmailType('Telinta Error');
+            $email->setMessage($message);
+            $email->save();
+         endif;
+        //**********************************************************************
     }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -1476,17 +1473,39 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 ///////////////////////////////////////////////////////////////////
 
     public static function sendLandncallCdrErrorEmail($filename) {
-    $sender_namecdu='rs@zapna.com';
-        $sender_emailcdu='landncall@zapna.com';
+
         $subject='Landncall CDr File Upload Issue';
         $message_body='Landncall CDr File Upload Issue File Name is ='.$filename;
-        $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($sender_emailcdu);
-            $email4->setEmailType('LandNCall CDR Files Error email');
-            $email4->setMessage($message_body);
-            $email4->save();
+
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+
+        $recipient_name_support = sfConfig::get('app_recipient_name_support');
+        $recipient_email_support = sfConfig::get('app_recipient_email_support');
+
+        //**********************Sent The Email To RS****************************
+        if ($recipient_email_rs != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_rs);
+            $email->setReceipientEmail($recipient_email_rs);
+            $email->setEmailType('LandNCall CDR Files Error email');
+            $email->setMessage($message_body);
+            $email->save();
+        endif;
+        //**********************************************************************
+
+        //*******************Sent The Email To Support**************************
+         if ($recipient_email_support != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_support);
+            $email->setReceipientEmail($recipient_email_support);
+            $email->setEmailType('LandNCall CDR Files Error email');
+            $email->setMessage($message_body);
+            $email->save();
+         endif;
+        //**********************************************************************
     }
 
 public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
@@ -1582,46 +1601,71 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
  public static function smsNotSentEmail($employeList)
     {
 
-$subject="SMS Not Working";
-$sender_namecdu="LandNCall";
-$message_body= "Please investigate  <br/>".$employeList;
-$rs_email='rs@zapna.com';
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($sender_namecdu);
-            $email4->setReceipientEmail($rs_email);
-             $email4->setEmailType('SMS not sent issue');
-            $email4->setMessage($message_body);
-            $email4->save();
-            $rs_email='khan.muhammad@zerocall.com';
-               $email = new EmailQueue();
+        $subject="SMS Not Working";
+        $message_body= "Please investigate  <br/>".$employeList;
+
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+
+        $recipient_name_support = sfConfig::get('app_recipient_name_support');
+        $recipient_email_support = sfConfig::get('app_recipient_email_support');
+
+        //**********************Sent The Email To RS****************************
+        if ($recipient_email_rs != ''):
+            $email = new EmailQueue();
             $email->setSubject($subject);
-            $email->setReceipientName($sender_namecdu);
-            $email->setReceipientEmail($rs_email);
-             $email->setEmailType('SMS not sent issue');
+            $email->setReceipientName($recipient_name_rs);
+            $email->setReceipientEmail($recipient_email_rs);
+            $email->setEmailType('SMS not sent issue');
             $email->setMessage($message_body);
             $email->save();
+        endif;
+        //**********************************************************************
+
+        //*******************Sent The Email To Support**************************
+         if ($recipient_email_support != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_support);
+            $email->setReceipientEmail($recipient_email_support);
+            $email->setEmailType('SMS not sent issue');
+            $email->setMessage($message_body);
+            $email->save();
+         endif;
+        //**********************************************************************
 
     }
     public static function sendErrorInForumTel($subject, $message) {
 
-        //To RS.
-        $email = new EmailQueue();
-        $email->setSubject($subject);
-        $email->setReceipientName("Raheel Safdar");
-        $email->setReceipientEmail("rs@zapna.com");
-        $email->setEmailType('ForumTel Response Error');
-        $email->setMessage($message);
-        $email->save();
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
 
-        //To Support @ LandNCall
-        $email = new EmailQueue();
-        $email->setSubject($subject);
-        $email->setReceipientName("Rubab");
-        $email->setReceipientEmail("rr@zerocall.com");
-        $email->setEmailType('ForumTel Response Error');
-        $email->setMessage($message);
-        $email->save();
+        $recipient_name_support = sfConfig::get('app_recipient_name_support');
+        $recipient_email_support = sfConfig::get('app_recipient_email_support');
+
+        //**********************Sent The Email To RS****************************
+        if ($recipient_email_rs != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_rs);
+            $email->setReceipientEmail($recipient_email_rs);
+            $email->setEmailType('ForumTel Response Error');
+            $email->setMessage($message);
+            $email->save();
+        endif;
+        //**********************************************************************
+
+        //*******************Sent The Email To Support**************************
+         if ($recipient_email_support != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_support);
+            $email->setReceipientEmail($recipient_email_support);
+            $email->setEmailType('ForumTel Response Error');
+            $email->setMessage($message);
+            $email->save();
+         endif;
+        //**********************************************************************
     }
 
     public static function sendAdminRefillEmail(Customer $customer,$order)
@@ -1765,6 +1809,82 @@ $rs_email='rs@zapna.com';
             $email4->save();
         endif;
         //-----------------------------------------
+    }
+    
+    public static function sendSMSRegistrationErrorEmail($customer_mobile,$subject, $message_body) {
+
+        if($subject=="") $subject = 'Error Email';
+        $recepient_name = '';
+        $recepient_email = '';
+        //// Customer
+        $mobileNumber = substr($customer_mobile, 2, strlen($customer_mobile) - 2);
+        if ($mobileNumber[0] != "0") {
+           $mobileNumber = "0" . $mobileNumber;
+        }
+               
+        //Support Information
+        $sender_namecdu = sfConfig::get('app_email_sender_name_cdu', 'Zapna');
+        $sender_emailcdu = sfConfig::get('app_email_sender_email_cdu', 'support@zapna.com');
+        $sender_name = sfConfig::get('app_email_sender_name', 'Zapna');
+        $rs_email = sfConfig::get('app_email_sender_email', 'rs@zapna.com');
+        $rs_name = sfConfig::get('app_email_sender_name', 'Raheel Safdar');
+        
+        
+        ////// Email to Support
+//        if (trim($sender_emailcdu) != ''):
+//            $email = new EmailQueue();
+//            $email->setSubject($subject);
+//            $email->setMessage($message_body);
+//            $email->setReceipientEmail($sender_emailcdu);
+//            $email->setEmailType('LandnCall-'.$subject);
+//            $email->setReceipientName($sender_name);
+//            $email->save();
+//        endif;
+//        
+//        ///// Email to RS
+//        if (trim($rs_email) != ''):
+//            $email = new EmailQueue();
+//            $email->setSubject($subject);
+//            $email->setMessage($message_body);
+//            $email->setReceipientEmail($rs_email);
+//            $email->setEmailType('LandnCall-'.$subject);
+//            $email->setReceipientName($rs_name);
+//            $email->save();
+//        endif;
+    }
+
+    public static function sendErrorInAutoReg($subject, $message) {
+
+        $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
+        $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
+
+        $recipient_name_support = sfConfig::get('app_recipient_name_support');
+        $recipient_email_support = sfConfig::get('app_recipient_email_support');
+
+        //**********************Sent The Email To RS****************************
+        if ($recipient_email_rs != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_rs);
+            $email->setReceipientEmail($recipient_email_rs);
+            $email->setEmailType('Auto Registration Error');
+            $email->setMessage($message);
+            $email->save();
+        endif;
+        //**********************************************************************
+
+        //*******************Sent The Email To Support**************************
+         if ($recipient_email_support != ''):
+            $email = new EmailQueue();
+            $email->setSubject($subject);
+            $email->setReceipientName($recipient_name_support);
+            $email->setReceipientEmail($recipient_email_support);
+            $email->setEmailType('Auto Registration Error');
+            $email->setMessage($message);
+            $email->save();
+         endif;
+        //**********************************************************************
+
     }
 }
 
