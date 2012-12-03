@@ -2628,7 +2628,7 @@ return sfView::NONE;
                             
                         } while (!$customer_balance && $retries <= $maxRetries);
 
-                    if($retries==$maxRetries){
+                    if($retries==++$maxRetries){
                         continue;
                     }
 //                   echo "$uniqueId--Telinta balance----".$customer_balance;
@@ -2916,7 +2916,7 @@ return sfView::NONE;
                 echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
             } while (!$customer_balance && $retries <= $maxRetries);
 
-            if($retries==$maxRetries){
+            if($retries==++$maxRetries){
                 continue;
             }
 

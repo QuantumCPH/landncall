@@ -134,7 +134,13 @@ class ROUTED_SMS {
                 $smsLog->setSmsType($smsType);
                 $smsLog->setMobileNumber($mobileNumber);
                 $smsLog->save();
+                return false;
+            }else{
+                return true;
             }
+            
+        }else{
+            return true;
         }
     }
 
