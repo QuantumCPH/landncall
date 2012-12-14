@@ -23,40 +23,7 @@ class pScriptsActions extends sfActions
   *
   * @param sfRequest $request A request object
   */
-  public function executeClearTestData(sfWebRequest $request)
-  {
-
-
-      //clear fonet balance of test fonet accounts
-      foreach (FonetCustomerPeer::doSelect(new Criteria()) as $fonet_customer) {
-            foreach ($fonet_customer->getCustomers() as $customer)
-            {
-              if (Fonet::unregister($customer, false))
-                      echo sprintf("%s is unregistered<br />", $customer->getMobileNumber());
-              if ($current_balance = Fonet::getBalance($customer, false))
-                      echo sprintf("Current balance of custoemr is %s<br />", $current_balance);
-
-              if (Fonet::recharge($customer, -$current_balance, false))
-                      echo sprintf("current balance is made 0<br />");
-            }
-      }
-      $con = Propel::getConnection();
-
-      $con->exec('DELETE FROM transaction');
-      $con->exec('DELETE FROM customer_order');
-      $con->exec('DELETE FROM customer_product');
-      $con->exec('DELETE FROM customer');
-      $con->exec('TRUNCATE zerocall_cdr');
-      $con->exec('TRUNCATE cloud9_data');
-
-      $con->exec("UPDATE fonet_customer SET activated_on = NULL");
-
-
-      echo "all data is flushed... customers, trnsactions, orders deleted. fonet customer id disconnected... their balances made to 0 on fonet";
-
-    return sfView::NONE;
-  }
-
+ 
   public function executeBannerTest(){
 
   }
@@ -279,37 +246,6 @@ class pScriptsActions extends sfActions
   					));
 
 
-
-	/*
-  	require_once(sfConfig::get('sf_lib_dir').'/swift/lib/swift_init.php');
-
-	$connection = Swift_SmtpTransport::newInstance()
-				->setHost(sfConfig::get('app_email_smtp_host'))
-				->setPort(sfConfig::get('app_email_smtp_port'))
-				->setUsername(sfConfig::get('app_email_smtp_username'))
-				->setPassword(sfConfig::get('app_email_smtp_password'));
-
-	$mailer = new Swift_Mailer($connection);
-
-	$message_1 = Swift_Message::newInstance($subject)
-	         ->setFrom(array($sender_email => $sender_name))
-	         ->setTo(array($recepient_email => $recepient_name))
-	         ->setBody($message_body, 'text/html')
-	         ;
-
-	$message_2 = Swift_Message::newInstance($subject)
-	         ->setFrom(array($sender_email => $sender_name))
-	         ->setTo(array($sender_email => $sender_name))
-	         ->setBody($message_body, 'text/html')
-	         ;
-
-            if (!($mailer->send($message_1) && $mailer->send($message_2)))
-                $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__(
-                            "Email confirmation is not sent" ));
-            */
-
-            //This Seciton For Make The Log History When Complete registration complete - Agent
-            //echo sfConfig::get('sf_data_dir');
             $invite_data_file = sfConfig::get('sf_data_dir').'/invite.txt';
             $invite2 = "Customer Refill Account \n";
             $invite2 .= "Recepient Email: ".$recepient_email.' \r\n';
@@ -1250,34 +1186,7 @@ $fonetId = $request->getParameter('fonetId');
 
   }
   
-  public function executeUsageAlerttest(sfWebRequest $request)
-  {
-            $delievry="";
-            $number = "923214745120";
-            $sms_text = "Its Test Message";
-            $data = array(
-              'S' => 'H',
-              'UN'=>'zapna1',
-              'P'=>'Zapna2010',
-              'DA'=>$number,
-              'SA' => 'LandNcall',
-              'M'=>$sms_text,
-              'ST'=>'5'
-            );
-            $queryString = http_build_query($data,'', '&');
-            //   die;
-            sleep(0.5);
-
-            $queryString=smsCharacter::smsCharacterReplacement($queryString);
-
-            $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-            $this->res_cbf = 'Response from CBF is: ';
-            $this->res_cbf .= $res;
-            //echo $res;
-            $delievry .= 'Destination: '.$number.', Status: '.$res.'<br/>';
-            
-            $this->delievry = $delievry;
-  }
+  
   public function executeBalanceEmail(sfWebRequest $request)
   {
       
@@ -1378,70 +1287,6 @@ $fonetId = $request->getParameter('fonetId');
       return sfView::NONE;
 
   }
-
-   public function executeWebSms(sfWebRequest $request)
-	{
-            require_once(sfConfig::get('sf_lib_dir').'\SendSMS.php');
-            require_once(sfConfig::get('sf_lib_dir').'\IncomingFormat.php');
-            require_once(sfConfig::get('sf_lib_dir').'\ClientPolled.php');
-
-
-            //$sms_username = "zapna01";
-            //$sms_password = "Zapna2010";
-
-            
-
-
-            $replies = send_sms_full("923454375829","CBF", "Test SMS: Taisys Test SMS form test.Zerocall.com"); //or die ("Error: " .$errstr. " \n");
-
-            //$replies = send_sms("44123456789,44987654321,44214365870","SMS_Service", "This is a message from me.") or die ("Error: " . $errstr . "\n");
-
-            echo "<br /> Response from Taisys <br />";
-            echo $replies;
-            echo $errstr;
-            echo "<br />";
-
-            file_get_contents("http://sms1.cardboardfish.com:9001/HTTPSMS?S=H&UN=zapna1&P=Zapna2010&DA=923454375829&ST=5&SA=Zerocall&M=Test+SMS%3A+Taisys+Test+SMS+form+test.Zerocall.com");
-
-            return sfView::NONE;
-        }
-
-        public function executeTaisys(sfWebrequest $request){
-
-            $taisys = new Taisys();
-
-            $taisys->setServ($request->getParameter('serv'));
-            $taisys->setImsi($request->getParameter('imsi'));
-            $taisys->setDn($request->getParameter('dest'));
-            $taisys->setSmscontent($request->getParameter('content'));
-            $taisys->setChecksum($request->getParameter('mac'));
-            $taisys->setChecksumVerification(true);
-
-            $taisys->save();
-
-			$data = array(
-              'S' => 'H',
-              'UN'=>'zapna1',
-              'P'=>'Zapna2010',
-              'DA'=>$taisys->getDn(),
-              'SA' => 'Zerocall',
-              'M'=>$taisys->getSmscontent(),
-              'ST'=>'5'
-	);
-
-
-		$queryString = http_build_query($data,'', '&');
- $queryString=smsCharacter::smsCharacterReplacement($queryString);
-		$res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?'.$queryString);
-                $this->res_cbf = 'Response from CBF is: ';
-                $this->res_cbf .= $res;
-
-            echo $this->res_cbf;
-            return sfView::NONE;
-
-
-        }
-
 
 
 public function executeSmsCode(sfWebRequest $request){
@@ -2295,31 +2140,18 @@ die;
             }
 
             if (!$cus) {
-               
-
+ 
                // $sms_text = "Hej,\n Ditt telefonnummer är inte registrerat hos LandNCall.Vänligen registrera telefonen eller kontakta support på support@landncall.com \n MVH \n LandNCall";
                 $sm = new Criteria();
                 $sm->add(SmsTextPeer::ID, 4);
                     $smstext = SmsTextPeer::doSelectOne($sm);
                     $sms_text = $smstext->getMessageText();
-                $data = array(
-                    'S' => 'H',
-                    'UN' => 'zapna1',
-                    'P' => 'Zapna2010',
-                    'DA' => $number,
-                    'SA' => 'LandNcall',
-                    'M' => $sms_text,
-                    'ST' => '5'
-                );
-
-                $queryString = http_build_query($data, '', '&');
-                $queryString = smsCharacter::smsCharacterReplacement($queryString);
+             
+             $senderName='LandNcall';
                 echo  "Error,Cannot make callback!";
-                $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+            $res =  ROUTED_SMS::Send($number, $sms_text, $senderName);
                die;
             }
-            
-
  
  return sfView::NONE;
 
@@ -4392,31 +4224,11 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                         $sms_text ="Käre kund
 Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och du kan ringa från den när du har nått USA
 ";
-                       $data = array(
-                            'S' => 'H',
-                            'UN' => 'zapna1',
-                            'P' => 'Zapna2010',
-                            'DA' => $usnumber,
-                            'SA' => 'LandNCall',
-                            'M' => $sms_text,
-                            'ST' => '5'
-                        );
+                        
 
-
-                        $queryString = http_build_query($data, '', '&');
-                        $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                        // echo $sms_text;
-                        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
-
-
-
-
-
-
-
-
-
-
+                       $senderName="LandNCall";
+                $res =  ROUTED_SMS::Send($usnumber, $sms_text, $senderName);
+                            
                 //if the customer is invited, Give the invited customer a bonus of 10dkk
                 $invite_c = new Criteria();
                 $invite_c->add(InvitePeer::INVITE_NUMBER, $this->customer->getMobileNumber());

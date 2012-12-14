@@ -929,31 +929,10 @@ class paymentsActions extends sfActions {
                         $sms_text ="Käre kund
 Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och du kan ringa från den när du har nått USA
 ";
-                       $data = array(
-                            'S' => 'H',
-                            'UN' => 'zapna1',
-                            'P' => 'Zapna2010',
-                            'DA' => $usnumber,
-                            'SA' => 'LandNCall',
-                            'M' => $sms_text,
-                            'ST' => '5'
-                        );
-
-
-                        $queryString = http_build_query($data, '', '&');
-                        $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                        // echo $sms_text;
-                        $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
-
-
-
- 
-
-
-
-
-
-
+                  
+                        $senderName="LandNCall";
+    $res = ROUTED_SMS::Send($usnumber, $sms_text, $senderName);
+      
                 //if the customer is invited, Give the invited customer a bonus of 10dkk
                 $invite_c = new Criteria();
                 $invite_c->add(InvitePeer::INVITE_NUMBER, $this->customer->getMobileNumber());

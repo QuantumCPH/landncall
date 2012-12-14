@@ -1594,8 +1594,6 @@ class customerActions extends sfActions {
                 $cbf->setMessage($sms_text);
                 $cbf->setCountryId($country->getId());
                 $cbf->setMobileNumber($this->customer->getMobileNumber());
-
-
                 $cbf->save();
 
                 //recharge fonet
@@ -1614,20 +1612,9 @@ class customerActions extends sfActions {
                 Telienta::charge($this->customer, $OpeningBalance,"SMS Charges");
                 //$ReCharge = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=' . $uniqueId . '&amount=' . $OpeningBalance);
 
-                $data = array(
-                    'S' => 'H',
-                    'UN' => 'zapna1',
-                    'P' => 'Zapna2010',
-                    'DA' => $destination,
-                    'SA' => $this->customer->getMobileNumber(),
-                    'M' => $sms_text,
-                    'ST' => '5'
-                );
-
-
-                $queryString = http_build_query($data, '', '&');
-                $queryString = smsCharacter::smsCharacterReplacement($queryString);
-                $res = @file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
+              
+             
+                $res =  ROUTED_SMS::Send($destination, $sms_text, $this->customer->getMobileNumber());
                 $this->res_cbf = 'Response from CBF is: ';
                 $this->res_cbf .= $res;
 
