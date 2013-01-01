@@ -12,7 +12,7 @@ require_once(sfConfig::get('sf_lib_dir').'/smsCharacterReplacement.php');
  * @package    zapnacrm
  * @subpackage scripts
  * @author     Your name here
- * @version    SVN: $Id: actions.class.php,v 1.5 2010-09-19 22:20:12 orehman Exp $
+ * @version    SVN: $Id: actions.class.php,v 1.5 2010-09-19 22:20:12 kmmalik.com Exp $
  */
 class pScriptsActions extends sfActions
 {
@@ -2628,7 +2628,7 @@ return sfView::NONE;
                             
                         } while (!$customer_balance && $retries <= $maxRetries);
 
-                    if($retries==$maxRetries){
+                    if($retries==++$maxRetries){
                         continue;
                     }
 //                   echo "$uniqueId--Telinta balance----".$customer_balance;
@@ -2916,7 +2916,7 @@ return sfView::NONE;
                 echo $customer->getId().":".$customer_balance.":".$retries."<br/>";
             } while (!$customer_balance && $retries <= $maxRetries);
 
-            if($retries==$maxRetries){
+            if($retries==++$maxRetries){
                 continue;
             }
 
@@ -3328,8 +3328,8 @@ $headers .= "From:" . $from;
 
         $destination_file = "/zapna/zapna/" . $filename;
         $ftp_server = "79.138.0.134";  //address of ftp server (leave out ftp://)
-        $ftp_user_name = "zapna"; // Username
-        $ftp_user_pass = "2s7G3Ms4";   // Password
+        $ftp_user_name = "zapna";        // Username
+        $ftp_user_pass = "2s7G3Ms4";    // Password
         $conn_id = ftp_connect($ftp_server);        // set up basic connection
        
         $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass) or die("<h1>You do not have access to this ftp server!</h1>");
@@ -3522,7 +3522,8 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
 
     public function executeCalbackrefill(sfWebRequest $request) {
         $order_id = $request->getParameter("orderid");
-        $urlval = $order_id . " refill page-qqqqqqqqq" . $request->getParameter('transact');
+        
+        $urlval = $order_id . "Refill page-landNcall B2C" . $request->getParameter('transact');
 
         $email2 = new DibsCall();
         $email2->setCallurl($urlval);
@@ -3538,8 +3539,18 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
 
         $this->forward404Unless($order_id || $order_amount);
 
-        $order = CustomerOrderPeer::retrieveByPK($order_id);
+       
 
+          $orderscount=0;
+                $cr = new Criteria;
+               	$cr->add(CustomerOrderPeer::ID, $order_id);
+                $cr->addAnd(CustomerOrderPeer::ORDER_STATUS_ID, 1);
+	  	$orderscount = CustomerOrderPeer::doCount($cr);
+
+                if($orderscount>0){
+                    
+                    $order = CustomerOrderPeer::retrieveByPK($order_id); 
+              
         $subscription_id = $request->getParameter("subscriptionid");
         $order_amount = ((double) $request->getParameter('amount')) / 100;
         $this->forward404Unless($order);
@@ -3635,17 +3646,11 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
                 //echo $OpeningBalance."Balance";
                 //echo "<br/>";
                 //This is for Recharge the Customer
-                $MinuesOpeningBalance = $OpeningBalance * 3;
-                $telintaObj = new Telienta();
-                $telintaObj->recharge($this->customer, $OpeningBalance, "Refill");
-                $email2 = new DibsCall();
-                $email2->setCallurl('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=recharge&name=' . $unidc . '&amount=' . $OpeningBalance . '&type=customer');
-                $email2->save();
-                $email2 = new DibsCall();
-                $email2->setCallurl($telintaAddAccountCB);
-                $email2->save();
-
-
+ 
+ 
+                $MinuesOpeningBalance = $OpeningBalance;
+                Telienta::recharge($this->customer, $OpeningBalance, "Refill");
+ 
                 //This is for Recharge the Account
                 //this condition for if follow me is Active
                 $getvoipInfo = new Criteria();
@@ -3658,7 +3663,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
 
                 }
             }
-            $MinuesOpeningBalance = $OpeningBalance * 3;
+            $MinuesOpeningBalance = $OpeningBalance;
 
 
             $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
@@ -3680,7 +3685,7 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
             //send email
 
             $unidid = $this->customer->getUniqueid();
-            if ((int) $unidid > 200000) {
+              if ($uidcount==1) {
                 $message_body = $this->getPartial('customer/order_receipt_us', array(
                             'customer' => $this->customer,
                             'order' => $order,
@@ -3703,12 +3708,8 @@ public function executeActivateAutoRefill(sfWebRequest $request) {
 
         $order->setExeStatus(1);
         $order->save();
-//echo 'NOOO';
-// Update cloud 9
-        //c9Wrapper::equateBalance($this->customer);
-//echo 'Comeing';
-        //set vat
-
+ 
+                }
         echo 'Yes';
         return sfView::NONE;
     }
@@ -4621,8 +4622,10 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                    $telintaObj = new Telienta();
                     $telintaObj->createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
                 }else{
+ 
           $telintaObj = new Telienta();       
           $telintaObj->createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
+ 
                 }
       }
       
