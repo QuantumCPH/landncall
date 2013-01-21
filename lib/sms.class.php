@@ -25,12 +25,12 @@ class CARBORDFISH_SMS {
      * @param $Sender will be the sender name of the SMS;
      */
 
-    public static function Send($mobileNumber, $smsText, $senderName=null, $smsType=null) {
+    public static function Send($mobileNumber, $smsText, $senderName = null, $smsType = null) {
         $message = "";
         if ($senderName == null)
             $senderName = self::$SA;
-  if ($smsType == null)
-                    $smsType =1;
+        if ($smsType == null)
+            $smsType = 1;
         $data = array(
             'S' => self::$S,
             'UN' => self::$UN,
@@ -45,7 +45,7 @@ class CARBORDFISH_SMS {
         $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
         sleep(0.15);
         if (!$res) {
-            $message.="SMS not sent via CardboradFish to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText ;
+            $message.="SMS not sent via CardboradFish to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText;
             emailLib::smsNotSentEmail($message);
             return false;
         }
@@ -70,6 +70,7 @@ class SMSNU {
 
     private static $main = '13rkha84';
     private static $id = 'LandNCall';
+
     /*
      * Description of Send
      *
@@ -78,7 +79,7 @@ class SMSNU {
      * @param $Sender will be the sender name of the SMS;
      */
 
-    public static function Send($mobileNumber, $smsText, $senderName=null, $smsType=null) {
+    public static function Send($mobileNumber, $smsText, $senderName = null, $smsType = null) {
         if ($senderName == null)
             $senderName = self::$id;
         $data = array(
@@ -88,9 +89,9 @@ class SMSNU {
             'msgtxt' => $smsText
         );
 
-         if ($smsType == null)
-                    $smsType =1;
-         
+        if ($smsType == null)
+            $smsType = 1;
+
         $message = "";
         $queryString = http_build_query($data, '', '&');
         // $queryString = smsCharacter::smsCharacterReplacement($queryString);
@@ -117,30 +118,81 @@ class SMSNU {
 
 }
 
+class ROUTE_API {
+
+    //put your code here
+
+    private static $username = 'zapna1';
+    private static $password = 'lghanymb';
+    private static $source = 'Zapna2010';
+    private static $dlr = 1;
+    private static $type = 0;
+
+    public static function Send($mobileNumber, $smsText, $senderName = null, $smsType = null) {
+        $message = "";
+        if ($senderName == null)
+            $senderName = self::$source;
+        if ($smsType == null)
+            $smsType = 1;
+        $data = array(
+            'username' => self::$username,
+            'password' => self::$password,
+            'dlr' => self::$dlr,
+            'destination' => $mobileNumber,
+            'source' => $senderName,
+            'message' => $smsText,
+            'type' => self::$type
+        );
+        $queryString = http_build_query($data, '', '&');
+        $queryString = smsCharacter::smsCharacterReplacement($queryString);
+        $res = file_get_contents('http://smpp5.routesms.com:8080/bulksms/sendsms?' . $queryString);
+        sleep(0.15);
+
+        if (substr($res, 0, 4) == 1701) {
+
+            $smsLog = new SmsLog();
+            $smsLog->setMessage($smsText);
+            $smsLog->setStatus($res);
+            $smsLog->setSmsType($smsType);
+            $smsLog->setSenderName($senderName);
+            $smsLog->setMobileNumber($mobileNumber);
+            $smsLog->save();
+
+            return true;
+        } else {
+            $message.="SMS not sent via Route SMSAPI to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText;
+            emailLib::smsNotSentEmail($message);
+            return false;
+        }
+    }
+
+}
+
 class ROUTED_SMS {
 
-    public static function Send($mobileNumber, $smsText, $senderName=null,$smsType=null) {
-        if (!CARBORDFISH_SMS::Send($mobileNumber, $smsText, $senderName,$smsType)) {
-            if (!SMSNU::Send($mobileNumber, $smsText, $senderName,$smsType)) {
-                if ($senderName == null)
-                    $senderName = "LandNCall";
-                 if ($smsType == null)
-                    $smsType =1;
- 
-                $smsLog = new SmsLog();
-                $smsLog->setMessage($smsText);
-                $smsLog->setStatus("Unable to send from both");
-                $smsLog->setSenderName($senderName);
-                $smsLog->setSmsType($smsType);
-                $smsLog->setMobileNumber($mobileNumber);
-                $smsLog->save();
-                return false;
-            }else{
+    public static function Send($mobileNumber, $smsText, $senderName = null, $smsType = null) {
+        if (!ROUTE_API::Send($mobileNumber, $smsText, $senderName, $smsType)) {
+            if (!CARBORDFISH_SMS::Send($mobileNumber, $smsText, $senderName, $smsType)) {
+                if (!SMSNU::Send($mobileNumber, $smsText, $senderName, $smsType)) {
+                    if ($senderName == null)
+                        $senderName = "LandNCall";
+                    if ($smsType == null)
+                        $smsType = 1;
+
+                    $smsLog = new SmsLog();
+                    $smsLog->setMessage($smsText);
+                    $smsLog->setStatus("Unable to send from both");
+                    $smsLog->setSenderName($senderName);
+                    $smsLog->setSmsType($smsType);
+                    $smsLog->setMobileNumber($mobileNumber);
+                    $smsLog->save();
+                    return false;
+                }else {
+                    return true;
+                }
+            } else {
                 return true;
             }
-            
-        }else{
-            return true;
         }
     }
 

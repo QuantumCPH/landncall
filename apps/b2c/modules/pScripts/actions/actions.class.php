@@ -451,9 +451,6 @@ public function executeUnregisterFonetCustomer(sfWebRequest $request) {
                     $transaction->setCustomer($customer);
                     $transaction->setAmount($customer->getAutoRefillAmount());
                     $transaction->setDescription('Auto refill');
-
-
-
                     //associate transaction with customer order
                     $customer_order->addTransaction($transaction);
 
@@ -558,7 +555,7 @@ public function executeTest(sfWebrequest $request){
   $form->set_user_agent("Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)");
                     $form->set_referrer("http://landncall.zerocall.com");
                     $post_data = array(
-                        'Account' =>'cb4529900000',
+                        'Account' =>'cb923006826451',
                         'Password' =>'asdf1asd',
                         'Action' =>'Connect Us Now!',
                         'First_Phone_Number' =>'923006826451',
@@ -567,7 +564,7 @@ public function executeTest(sfWebrequest $request){
                     );
  
 
-                  $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
+                 echo  $html_data = $form->send_post_data("https://mybilling.zerocall.com:8900/cgi/web/receive.pl", $post_data);
 
 
 
