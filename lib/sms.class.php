@@ -146,7 +146,7 @@ class ROUTE_API {
         $queryString = http_build_query($data, '', '&');
         $queryString = smsCharacter::smsCharacterReplacement($queryString);
         $res = file_get_contents('http://smpp5.routesms.com:8080/bulksms/sendsms?' . $queryString);
-        sleep(0.15);
+        sleep(0.25);
 
         if (substr($res, 0, 4) == 1701) {
 
