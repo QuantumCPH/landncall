@@ -144,7 +144,7 @@ class ROUTE_API {
             'type' => self::$type
         );
         $queryString = http_build_query($data, '', '&');
-        $queryString = smsCharacter::smsCharacterReplacement($queryString);
+      //  $queryString = smsCharacter::smsCharacterReplacement($queryString);
         $res = file_get_contents('http://smpp5.routesms.com:8080/bulksms/sendsms?' . $queryString);
         sleep(0.25);
 
@@ -160,7 +160,7 @@ class ROUTE_API {
 
             return true;
         } else {
-            $message.="SMS not sent via Route SMSAPI to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText;
+            $message.="SMS not sent via Route SMSAPI to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText . "<br/>  Response from API =" .$res;
             emailLib::smsNotSentEmail($message);
             return false;
         }
