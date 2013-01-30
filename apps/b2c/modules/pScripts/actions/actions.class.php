@@ -4460,7 +4460,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                 $cuCalls->setPhoneNumber($xdr->CLD);
                 $cuCalls->setCli($xdr->CLI);
                 $cuCalls->setConnectTime($xdr->connect_time);
-                
+                $cuCalls->setCountry($xdr->country);
                 $country = $xdr->country;
                 $cc = new Criteria();
                 $cc->add(CountryPeer::NAME,$country, Criteria::LIKE);
