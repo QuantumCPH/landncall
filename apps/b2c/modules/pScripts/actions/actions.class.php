@@ -4427,7 +4427,7 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
         $c->add(CustomerPeer::CUSTOMER_STATUS_ID,3);  // active
         $customers = CustomerPeer::doSelect($c);
         
-        $start_date = date('Y-m-d 00:00:00', strtotime("-3 month"));
+        $start_date = date('Y-m-d 00:00:00', strtotime("-6 month"));
          "<hr/>";
        // echo $end_date = date('Y-m-t 23:59:59', strtotime("last month"));
         $end_date = date('Y-m-t 23:59:59');
