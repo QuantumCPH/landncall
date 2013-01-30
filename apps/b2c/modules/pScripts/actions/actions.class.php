@@ -4420,4 +4420,98 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
           Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile);
                 }
       }
+      
+      public function executeSaveCustomerCallHistory(sfWebRequest $request)
+    {
+        $c = new Criteria;
+        $c->add(CustomerPeer::CUSTOMER_STATUS_ID,3);  // active
+        $customers = CustomerPeer::doSelect($c);
+        
+        $start_date = date('Y-m-d 00:00:00', strtotime("-3 month"));
+         "<hr/>";
+       // echo $end_date = date('Y-m-t 23:59:59', strtotime("last month"));
+        $end_date = date('Y-m-t 23:59:59');
+        
+         "<hr/>";
+        foreach($customers as $customer){
+           
+          // $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $start_date, $end_date);
+           $tilentaCallHistryResult =  Telienta::callHistory($customer, $start_date, $end_date);
+//     var_dump($tilentaCallHistryResult);
+//     die;
+           if($tilentaCallHistryResult){
+            foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
+                
+                
+                $cuCalls = new EmployeeCustomerCallhistory();
+                $cuCalls->setAccountId($xdr->account_id);
+                $type = substr($xdr->account_id,0,1);
+                   if($type=='a'){
+                     $cuCalls->setAccountType('a');  
+                   }elseif($type =='c'){
+                     $cuCalls->setAccountType('cb');    
+                   }elseif(is_int($type)){
+                     $cuCalls->setAccountType('r');     
+                   }
+                $cuCalls->setBillStatus($xdr->bill_status);
+                $cuCalls->setBillTime($xdr->bill_time);
+                $cuCalls->setChargedAmount($xdr->charged_amount);
+                $cuCalls->setChargedQuantity($xdr->charged_quantity);
+                $cuCalls->setPhoneNumber($xdr->CLD);
+                $cuCalls->setCli($xdr->CLI);
+                $cuCalls->setConnectTime($xdr->connect_time);
+                
+                $country = $xdr->country;
+                $cc = new Criteria();
+                $cc->add(CountryPeer::NAME,$country, Criteria::LIKE);
+                $ccount = CountryPeer::doCount($cc);
+                if($ccount > 0){
+                   $csel = CountryPeer::doSelectOne($cc); 
+                   $countryid = $csel->getId();
+                }else{
+                   $cin = new Country();
+                   $cin->setName($country);
+                   $cin->save();
+                   $countryid = $cin->getId();
+                }
+                $cuCalls->setParentTable('customer');
+                $cuCalls->setCountryId($countryid);
+                $cuCalls->setParentId($customer->getId());
+//                    $ce = new Criteria();
+//                    $ce->add(TelintaAccountsPeer::ACCOUNT_TITLE,$xdr->account_id);
+//                    $ce->addAnd(TelintaAccountsPeer::PARENT_TABLE,'customer');
+//                    $ce->add(TelintaAccountsPeer::STATUS,3);
+//                    if(TelintaAccountsPeer::doCount($ce)>0){
+//                        $cust = TelintaAccountsPeer::doSelectOne($ce);
+//                        $cuCalls->setParentId($cust->getParentId());
+//                    }
+                
+                $cuCalls->setDescription($xdr->description);
+                $cuCalls->setDisconnectCause($xdr->disconnect_cause);
+                $cuCalls->setDisconnectTime($xdr->disconnect_time);
+               // $emCalls->setDurationMinutes($duration_minutes);
+                $cuCalls->setICustomer($customer->getICustomer());
+                $cuCalls->setIXdr($xdr->i_xdr);
+                $cuCalls->setStatus(3);
+                $cuCalls->setSubdivision($xdr->subdivision);
+                $cuCalls->setUnixConnectTime($xdr->unix_connect_time);
+                $cuCalls->setUnixDisconnectTime($xdr->unix_disconnect_time);
+                $cuCalls->setVatIncludedAmount($xdr->charged_amount + $xdr->charged_amount * sfConfig::get('app_vat_percentage'));
+                $cuCalls->setChargedVatValue(sfConfig::get('app_vat_percentage'));
+                $cuCalls->save();
+             }
+          }else{
+                $callsHistory = new CallHistoryCallsLog();
+                $callsHistory->setParent('customer');
+                $callsHistory->setParentId($customer->getId());
+                $callsHistory->setTodate($start_date);
+                $callsHistory->setFromdate($end_date);
+                $callsHistory->setIService(3);
+                $callsHistory->save();
+          } 
+        } 
+                return sfView::NONE;
+    }
+    
+      
 }
