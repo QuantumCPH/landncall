@@ -208,6 +208,16 @@ propel:
     created: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     check_status: { type: TINYINT, size: '4', required: true, defaultValue: '1' }
     imei: { type: VARCHAR, size: '255', required: false }
+  callhistory_calls_log:
+    _attributes: { phpName: CallhistoryCallsLog }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    parent: { type: VARCHAR, size: '100', required: false }
+    parent_id: { type: INTEGER, size: '11', required: false }
+    todate: { type: TIMESTAMP, required: false }
+    fromdate: { type: TIMESTAMP, required: false }
+    status: { type: INTEGER, size: '11', required: false, defaultValue: '1' }
+    i_service: { type: INTEGER, size: '11', required: false }
+    i_account: { type: VARCHAR, size: '50', required: false }
   card_numbers:
     _attributes: { phpName: CardNumbers }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -344,6 +354,13 @@ propel:
     from_date: { type: TIMESTAMP, required: true }
     status: { type: INTEGER, size: '11', required: true, defaultValue: '1' }
     created_at: { type: TIMESTAMP, required: true }
+  company_net_balance:
+    _attributes: { phpName: CompanyNetBalance }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    bill_start: { type: TIMESTAMP, required: false }
+    bill_end: { type: TIMESTAMP, required: false }
+    net_balance: { type: DOUBLE, required: false }
+    company_id: { type: INTEGER, size: '11', required: false }
   company_size:
     _attributes: { phpName: CompanySize }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -518,7 +535,38 @@ propel:
     country_code: { type: VARCHAR, size: '50', required: false }
     country_mobile_number: { type: VARCHAR, size: '250', required: false }
     unique_id: { type: VARCHAR, size: '50', required: false }
+    status_id: { type: INTEGER, size: '11', required: false, defaultValue: '3' }
     _indexes: { employee_FI_1: [company_id] }
+  employee_customer_callhistory:
+    _attributes: { phpName: EmployeeCustomerCallhistory }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    parent_table: { type: VARCHAR, size: '100', required: false }
+    parent_id: { type: INTEGER, size: '11', required: false }
+    company_id: { type: INTEGER, size: '11', required: false }
+    i_customer: { type: INTEGER, size: '11', required: false }
+    i_xdr: { type: BIGINT, size: '20', required: false }
+    account_id: { type: VARCHAR, size: '250', required: false }
+    account_type: { type: VARCHAR, size: '10', required: false }
+    cli: { type: VARCHAR, size: '250', required: false }
+    phone_number: { type: VARCHAR, size: '100', required: false }
+    country_id: { type: INTEGER, size: '11', required: false, foreignTable: country, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
+    country: { type: VARCHAR, size: '255', required: false }
+    charged_quantity: { type: DOUBLE, required: false }
+    description: { type: VARCHAR, size: '250', required: false }
+    charged_amount: { type: DOUBLE, required: false }
+    vat_included_amount: { type: DOUBLE, required: false }
+    charged_vat_value: { type: DOUBLE, required: false }
+    subdivision: { type: VARCHAR, size: '250', required: false }
+    disconnect_cause: { type: VARCHAR, size: '250', required: false }
+    bill_status: { type: VARCHAR, size: '20', required: false }
+    connect_time: { type: TIMESTAMP, required: false }
+    unix_connect_time: { type: TIMESTAMP, required: false }
+    disconnect_time: { type: TIMESTAMP, required: false }
+    unix_disconnect_time: { type: TIMESTAMP, required: false }
+    bill_time: { type: TIMESTAMP, required: false }
+    status: { type: INTEGER, size: '11', required: false }
+    created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
+    _indexes: { FK_employee_customer_callhistoryccc: [country_id] }
   employee_product:
     _attributes: { phpName: EmployeeProduct }
     id: { type: INTEGER, size: '11', primaryKey: true, required: true }
@@ -682,6 +730,26 @@ propel:
     heading: { type: VARCHAR, size: '50', required: false }
     starting_date: { type: DATE, required: false }
     expire_date: { type: DATE, required: false }
+  odrs:
+    _attributes: { phpName: Odrs }
+    id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
+    i_xdr: { type: BIGINT, size: '20', required: false }
+    parent_table: { type: VARCHAR, size: '100', required: false }
+    parent_id: { type: INTEGER, size: '11', required: false }
+    account_id: { type: VARCHAR, size: '200', required: false }
+    cli: { type: VARCHAR, size: '200', required: false }
+    description: { type: VARCHAR, size: '200', required: false }
+    bill_start: { type: TIMESTAMP, required: false }
+    bill_end: { type: TIMESTAMP, required: false }
+    charged_amount: { type: DOUBLE, required: false }
+    company_id: { type: INTEGER, size: '11', required: false }
+    connect_time: { type: TIMESTAMP, required: false }
+    disconnect_time: { type: TIMESTAMP, required: false }
+    bill_time: { type: TIMESTAMP, required: false }
+    i_service: { type: INTEGER, size: '11', required: false }
+    vat_included_amount: { type: DOUBLE, required: false }
+    charged_vat_value: { type: DOUBLE, required: false }
+    i_account: { type: VARCHAR, size: '50', required: false }
   order_status:
     _attributes: { phpName: OrderStatus }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -705,6 +773,21 @@ propel:
     activaton_cost: { type: FLOAT, required: false }
     created_at: { type: TIMESTAMP, required: true, defaultExpr: CURRENT_TIMESTAMP }
     updated_at: { type: TIMESTAMP, required: false }
+  'pay as you card':
+    _attributes: { phpName: 'Pay as you card' }
+    A: { type: VARCHAR, size: '19', required: false }
+    B: { type: VARCHAR, size: '19', required: false }
+    C: { type: VARCHAR, size: '21', required: false }
+    D: { type: VARCHAR, size: '21', required: false }
+    E: { type: VARCHAR, size: '19', required: false }
+    F: { type: VARCHAR, size: '17', required: false }
+    G: { type: VARCHAR, size: '19', required: false }
+    H: { type: VARCHAR, size: '12', required: false }
+    I: { type: VARCHAR, size: '4', required: false }
+    J: { type: VARCHAR, size: '8', required: false }
+    K: { type: VARCHAR, size: '4', required: false }
+    L: { type: VARCHAR, size: '8', required: false }
+    M: { type: VARCHAR, size: '10', required: false }
   permission:
     _attributes: { phpName: Permission }
     id: { type: INTEGER, size: '11', primaryKey: true, autoIncrement: true, required: true }
@@ -993,7 +1076,7 @@ propel:
     assigned_at: { type: TIMESTAMP, required: true }
     registration_type_id: { type: INTEGER, size: '11', required: true }
     status: { type: boolean, required: true, defaultValue: '0' }
-    sim_type_id: { type: INTEGER, size: '11', required: true, foreignTable: sim_types, foreignReference: id, onDelete: RESTRICT, onUpdate: RESTRICT }
+    sim_type_id: { type: INTEGER, size: '11', required: true }
     _indexes: { new_fk_constraint: [sim_type_id] }
   us_number:
     _attributes: { phpName: UsNumber }

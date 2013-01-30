@@ -4430,20 +4430,18 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
         $c->add(CustomerPeer::CUSTOMER_STATUS_ID,3);  // active
         $customers = CustomerPeer::doSelect($c);
         
-        $bill_start_date = date('Y-m-1 00:00:00', strtotime("-3 month"));
-     //   $start_date = date('Y-m-1 00:00:00');
-        $start_date = date('Y-m-d 21:00:00', strtotime("-1 day",strtotime($bill_start_date)));
+        $start_date = date('Y-m-d 00:00:00', strtotime("-3 month"));
          "<hr/>";
-       // echo $end_date = date('Y-m-t 21:59:59', strtotime("last month"));
-        $end_date = date('Y-m-t 21:59:59');
-        $bill_end_date = date('Y-m-t 23:59:59');
+       // echo $end_date = date('Y-m-t 23:59:59', strtotime("last month"));
+        $end_date = date('Y-m-t 23:59:59');
+        
          "<hr/>";
         foreach($customers as $customer){
            
           // $tilentaCallHistryResult = CompanyEmployeActivation::callHistory($company, $start_date, $end_date);
            $tilentaCallHistryResult =  Telienta::callHistory($customer, $start_date, $end_date);
-     var_dump($tilentaCallHistryResult);
-     die;
+//     var_dump($tilentaCallHistryResult);
+//     die;
            if($tilentaCallHistryResult){
             foreach ($tilentaCallHistryResult->xdr_list as $xdr) {
                 
