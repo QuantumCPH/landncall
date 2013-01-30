@@ -144,7 +144,7 @@ class ROUTE_API {
             'type' => self::$type
         );
         $queryString = http_build_query($data, '', '&');
-      //  $queryString = smsCharacter::smsCharacterReplacement($queryString);
+        $queryString = smsCharacter::smsCharacterReplacementReverse($queryString);
         $res = file_get_contents('http://smpp5.routesms.com:8080/bulksms/sendsms?' . $queryString);
       //  sleep(0.25);
 

@@ -2938,7 +2938,6 @@ $headers .= "From:" . $from;
        $customers = CustomerPeer::doSelect($c);
        foreach ($customers as $customer){
            $iAccountList= Telienta::getCustomerAccountList($customer->getICustomer());
-
            foreach($iAccountList->account_list as $iAccount){
               $telintaAccount = new TelintaAccounts();
               $telintaAccount->setAccountTitle($iAccount->id);
@@ -2993,14 +2992,14 @@ $headers .= "From:" . $from;
 
             $randLength = strlen($val);
 
-            if ($randLength > 9) {
-                $resultvalue = (int) $randLength - 9;
+            if ($randLength > 11) {
+                $resultvalue = (int) $randLength -11;
 
                 $rtvalue = mt_rand(1, $resultvalue);
 
-                $resultvalue = substr($val, $rtvalue, 9);
+                $resultvalue = substr($val, $rtvalue, 11);
 
-                $cardnumber = "00880" . $resultvalue;
+                $cardnumber =$resultvalue;
             }
 
             $CRcardcount = 0;
@@ -3015,14 +3014,15 @@ $headers .= "From:" . $from;
                 $cardTotalcount = 0;
                 $ct = new Criteria();
                 $cardTotalcount = CardNumbersPeer::doCount($ct);
-                if ($cardTotalcount < 10000) {
+                if ($cardTotalcount < 200) {
                     $cardcount = 0;
 
                     $c = new Criteria();
                     $c->add(CardNumbersPeer::CARD_PRICE, 50);
                     $cardcount = CardNumbersPeer::doCount($c);
-                    if ($cardcount < 5000) {
-
+                    if ($cardcount < 100) {
+                        
+                       $cardnumber="2149" . $cardnumber;
                         $price = 50;
                         $cr = new CardNumbers();
                         $cr->setCardNumber($cardnumber);
@@ -3030,8 +3030,9 @@ $headers .= "From:" . $from;
                         $cr->setCardSerial($serial);
                         $cr->save();
                         $serial++;
+              
                     } else {
-
+             $cardnumber="1149" . $cardnumber;
                         $price = 100;
                         $crp = new CardNumbers();
                         $crp->setCardNumber($cardnumber);
