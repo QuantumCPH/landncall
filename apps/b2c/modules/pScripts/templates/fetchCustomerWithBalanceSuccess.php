@@ -4,22 +4,20 @@
  * and open the template in the editor.
  */
 ?>
-<table>
+<table >
     <?php
     $i = 0;
     foreach ($customers as $customer) {
         ?>
-        <tr>
-            <td><?= $customer->getFirstName(); ?></td>
+        <tr >
+            <td ><?= $customer->getFirstName(); ?></td>
             <td><?= $customer->getLastName(); ?></td>
             <td><?= $customer->getMobileNumber(); ?></td>
             <td><?= Telienta::getBalance($customer); ?></td>
         </tr>
 
         <?php
-        $i++;
-        if ($i == 5)
-            break;
+         
     }
     ?>
 </table>
