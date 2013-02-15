@@ -35,7 +35,7 @@
         </tr>
 
         <?php
-         break;
+         
     }
     ?>
 </table>
