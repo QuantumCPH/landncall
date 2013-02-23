@@ -4167,41 +4167,48 @@ Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras o
 
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 01/24/11 - Ahtsham
         changeLanguageCulture::languageCulture($request, $this);
+        $urlval = $request->getURI();
+        $email2 = new DibsCall();
+        $email2->setCallurl("Agent Refill" . $urlval);
+        $email2->save();
+
+        $callbackparameters = $request->getParameter("p");
+        $params = explode("-", $callbackparameters);
+
+        $lang = $params[0];
+        $order_id = $params[1];
+        $amount = $params[2];
+
+        $c = new Criteria();
+        $c->add(AgentOrderPeer::AGENT_ORDER_ID, $order_id);
+        $c->add(AgentOrderPeer::STATUS, 1);
 
 
-        $ca = new Criteria();
-        $ca->add(AgentCompanyPeer::ID, $agent_company_id = $this->getUser()->getAttribute('agent_company_id', '', 'usersession'));
-        $agent = AgentCompanyPeer::doSelectOne($ca);
-        $this->forward404Unless($agent);
+        if (AgentOrderPeer::doCount($c)) {
+            $agent_order = AgentOrderPeer::doSelectOne($c);
 
-
-        if (isset($_REQUEST['error'])) {
-
-
-            $agent_order_id = $request->getParameter('orderid');
-
-            $aoc = new Criteria();
-            $aoc->add(AgentOrderPeer::AGENT_ORDER_ID, $agent_order_id);
-            $agent_order = AgentOrderPeer::doSelectOne($aoc);
-
-            $this->getUser()->setFlash('message', 'Your Credit Card Information was not approved');
-            $this->agent_order_id = $agent_order_id;
-            $this->agent_order = $agent_order;
-        } else {
-
-
-            $c = new Criteria();
-            $agent_order = new AgentOrder();
-            $agent_order->setAgentCompanyId($agent->getId());
+            $agent_order->setAmount($amount);
             $agent_order->setOrderDescription(2); ///// By Credit Card for agent
-            $agent_order->setStatus('1');
+            $agent_order->setStatus(3);
             $agent_order->save();
 
-            $agent_order->setAgentOrderId('a0' . $agent_order->getId());
-            $agent_order->save();
+            $agent = AgentCompanyPeer::retrieveByPK($agent_order->getAgentCompanyId());
+            $agent->setBalance($agent->getBalance() + ($amount));
+            $agent->save();
+            $this->agent = $agent;
 
-            $this->agent_order = $agent_order;
-        }return sfView::NONE;
+
+            $remainingbalance = $agent->getBalance();
+            $aph = new AgentPaymentHistory();
+            $aph->setAgentId($agent_order->getAgentCompanyId());
+            $aph->setExpeneseType(9);
+            $aph->setOrderDescription(2);
+            $aph->setAmount($amount);
+            $aph->setRemainingBalance($remainingbalance);
+            $aph->save();
+            emailLib::sendAgentRefilEmail($this->agent, $agent_order);
+        }
+        return sfView::NONE;
     }
 
     public function executeSuspendForumtelCustomer(sfWebRequest $request) {
