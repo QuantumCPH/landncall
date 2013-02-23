@@ -2497,7 +2497,8 @@ class customerActions extends sfActions {
 
         $this->form = new PaymentForm();
 
-
+        $this->target = $this->getTargetUrl();
+                
         $product_id = $request->getParameter('pid');
         $customer_id = $request->getParameter('cid');
 
@@ -2507,7 +2508,7 @@ class customerActions extends sfActions {
         if ($product_id == '' || $customer_id == '') {
             $this->forward404('Product id not found in session');
         }
-
+        $this->customer = CustomerPeer::retrieveByPK($customer_id);
         $order = new CustomerOrder();
         $transaction = new Transaction();
 

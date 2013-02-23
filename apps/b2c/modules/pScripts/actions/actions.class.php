@@ -3740,29 +3740,36 @@ class pScriptsActions extends sfActions {
         $dibs = new DibsCall();
         $dibs->setCallurl("Ticket Number:" . $request->getParameter('ticket') . "-ord-" . $request->getParameter('orderid') . "-amt-" . $request->getParameter('amount'));
         $dibs->save();
-        //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
+        
+        $callbackparameters = $request->getParameter("p");
+        $params = explode("-", $callbackparameters);
+
+        $lang = $params[0];
+        $order_id = $params[1];
+        $order_amount = $params[2];
+
+//call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         //print_r($_REQUEST);
         // Store data in the user session
         //$this->getUser()->setAttribute('activelanguage', $getCultue);
         ////load the thankSuccess template
 
-        if ($request->getParameter('transact') != '') {
+
 
             $this->logMessage(print_r($_GET, true));
 
             $is_transaction_ok = false;
             $subscription_id = '';
-            $order_id = "";
-            $order_amount = "";
+           
             //get the order_id from the session
             //change the status of that order to complete,
             //change the customer status to compete too
-            $order_id = $request->getParameter('orderid');
+           
             $ticket_id = $request->getParameter('ticket');
             // echo $order_id.'<br />';
             $subscription_id = $request->getParameter('subscriptionid');
             $this->logMessage('sub id: ' . $subscription_id);
-            $order_amount = $request->getParameter('amount') / 100;
+          
 
             $this->forward404Unless($order_id || $order_amount);
 
@@ -4157,7 +4164,7 @@ Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras o
                 $this->logMessage('Error in transaction.');
             }
             //   //end else
-        }
+        
         return sfView::NONE;
     }
 

@@ -1086,4 +1086,50 @@ Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras o
         //exit();
     }
 
+    public function executeTransactionus(sfWebRequest $request) {
+        $order_id = $request->getParameter('item_number');
+        $item_amount = $request->getParameter('amount');
+
+
+        $lang = $this->getUser()->getCulture();
+
+
+        $return_url = $request->getParameter('accepturl');
+        $cancel_url = $request->getParameter('cancelurl');
+
+        $callbackparameters = $lang . '-' . $order_id . '-' . $item_amount;
+        $notify_url = $this->getTargetUrl() . 'pScripts/confirmpaymentus?p=' . $callbackparameters;
+
+        $email2 = new DibsCall();
+        $email2->setCallurl($notify_url);
+
+        $email2->save();
+
+
+        $querystring = '';
+
+        $order = CustomerOrderPeer::retrieveByPK($order_id);
+        $item_name = $order->getProduct()->getName();
+
+        //loop for posted values and append to querystring
+        foreach ($_POST as $key => $value) {
+            $value = urlencode(stripslashes($value));
+            $querystring .= "$key=$value&";
+        }
+
+        $querystring .= "item_name=" . urlencode($item_name) . "&";
+        $querystring .= "return=" . urldecode($return_url) . "&";
+        $querystring .= "cancel_return=" . urldecode($cancel_url) . "&";
+        $querystring .= "notify_url=" . urldecode($notify_url);
+
+        //$environment = "sandbox";
+        if ($order_id && $item_amount) {
+            Payment::SendPayment($querystring);
+        } else {
+            echo 'error';
+        }
+        return sfView::NONE;
+        //exit();
+    }
+
 }
