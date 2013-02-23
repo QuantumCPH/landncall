@@ -2,7 +2,7 @@
 #all:
 
 all:
- main_url: http://landncall.zerocall.com/b2c.php/
+ main_url: http://localhost/landncall/web/b2c.php/
  epay:
    merchant_number: 5116449
    currency: 208

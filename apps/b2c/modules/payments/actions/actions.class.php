@@ -4,8 +4,8 @@ require_once(sfConfig::get('sf_lib_dir') . '/changeLanguageCulture.php');
 require_once(sfConfig::get('sf_lib_dir') . '/emailLib.php');
 require_once(sfConfig::get('sf_lib_dir') . '/commissionLib.php');
 require_once(sfConfig::get('sf_lib_dir') . '/smsCharacterReplacement.php');
-require_once(sfConfig::get('sf_lib_dir').'/ForumTel.php');
-require_once(sfConfig::get('sf_lib_dir').'/CurrencyConverter.class.php');
+require_once(sfConfig::get('sf_lib_dir') . '/ForumTel.php');
+require_once(sfConfig::get('sf_lib_dir') . '/CurrencyConverter.class.php');
 
 /**
  * payments actions.
@@ -25,6 +25,7 @@ class paymentsActions extends sfActions {
     private function getTargetUrl() {
         return sfConfig::get('app_main_url');
     }
+
     public function executeIndex(sfWebRequest $request) {
         $this->forward('default', 'module');
     }
@@ -63,8 +64,7 @@ class paymentsActions extends sfActions {
 
         $order->setOrderStatusId(4); //cancelled
 
-        $this->getUser()->setFlash('error_message',
-                $error_text
+        $this->getUser()->setFlash('error_message', $error_text
         );
 
         $this->order = $order;
@@ -121,6 +121,7 @@ class paymentsActions extends sfActions {
         // Store data in the user session
         //$this->getUser()->setAttribute('activelanguage', $getCultue);
 
+        $this->target = $this->getTargetUrl();
         $this->form = new PaymentForm();
 
 
@@ -161,7 +162,7 @@ class paymentsActions extends sfActions {
 
         $this->order = $order;
         $this->forward404Unless($this->order);
-
+        $this->customer = CustomerPeer::retrieveByPK($customer_id);
         $this->order_id = $order->getId();
         $this->amount = $transaction->getAmount();
     }
@@ -239,7 +240,7 @@ class paymentsActions extends sfActions {
         $email2->setCallurl($urlval);
         $email2->save();
         $dibs = new DibsCall();
-        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket'));
+        $dibs->setCallurl("Ticket Number:" . $request->getParameter('ticket'));
         $dibs->save();
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         //print_r($_REQUEST);
@@ -405,40 +406,40 @@ class paymentsActions extends sfActions {
 
 
                 $uniqueId = $this->customer->getUniqueid();
-                echo $uniqueId."<br/>";
+                echo $uniqueId . "<br/>";
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
                 $selectedUniqueId = UniqueIdsPeer::doSelectOne($uc);
-                echo $selectedUniqueId->getStatus()."<br/>Baran";
+                echo $selectedUniqueId->getStatus() . "<br/>Baran";
 
-                if($selectedUniqueId->getStatus()==0){
+                if ($selectedUniqueId->getStatus() == 0) {
                     echo "inside";
                     $selectedUniqueId->setStatus(1);
                     $selectedUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
                     $selectedUniqueId->save();
-                    }else{
-                        $uc = new Criteria();
-                        $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 1);
-                        $uc->addAnd(UniqueIdsPeer::STATUS, 0);
-                        $availableUniqueCount = UniqueIdsPeer::doCount($uc);
-                        $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+                } else {
+                    $uc = new Criteria();
+                    $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 1);
+                    $uc->addAnd(UniqueIdsPeer::STATUS, 0);
+                    $availableUniqueCount = UniqueIdsPeer::doCount($uc);
+                    $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
 
-                        if($availableUniqueCount  == 0){
-                            // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
-                            emailLib::sendUniqueIdsShortage();
-                            $this->redirect($this->getTargetUrl() .'customer/shortUniqueIds');
-                            //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
-                        }
-                        $uniqueId = $availableUniqueId->getUniqueNumber();
-                        $this->customer->setUniqueid($uniqueId);
-                        $this->customer->save();
-                        $availableUniqueId->setStatus(1);
-                        $availableUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
-                        $availableUniqueId->save();
+                    if ($availableUniqueCount == 0) {
+                        // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
+                        emailLib::sendUniqueIdsShortage();
+                        $this->redirect($this->getTargetUrl() . 'customer/shortUniqueIds');
+                        //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+                    }
+                    $uniqueId = $availableUniqueId->getUniqueNumber();
+                    $this->customer->setUniqueid($uniqueId);
+                    $this->customer->save();
+                    $availableUniqueId->setStatus(1);
+                    $availableUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
+                    $availableUniqueId->save();
                 }
 
 
-             $callbacklog = new CallbackLog();
+                $callbacklog = new CallbackLog();
                 $callbacklog->setMobileNumber($TelintaMobile);
                 $callbacklog->setuniqueId($uniqueId);
                 $callbacklog->setCheckStatus(3);
@@ -523,7 +524,7 @@ class paymentsActions extends sfActions {
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
-                    Telienta::recharge($this->customers, $OpeningBalance,"Tipsa en van " . $invite->getInviteNumber());
+                    Telienta::recharge($this->customers, $OpeningBalance, "Tipsa en van " . $invite->getInviteNumber());
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
                     $getvoipInfo = new Criteria();
@@ -532,12 +533,11 @@ class paymentsActions extends sfActions {
                     if (isset($getvoipInfos)) {
                         $voipnumbers = $getvoipInfos->getNumber();
                         $voip_customer = $getvoipInfos->getCustomerId();
-                       
                     } else {
                         
                     }
 
-            
+
                     //save transaction & Invite
                     $transaction_i->save();
                     $invite->save();
@@ -551,11 +551,11 @@ class paymentsActions extends sfActions {
                 //send email
 
                 $message_body = $this->getPartial('payments/order_receipt', array(
-                            'customer' => $this->customer,
-                            'order' => $order,
-                            'transaction' => $transaction,
-                            'vat' => $product_price_vat,
-                            'wrap' => true
+                    'customer' => $this->customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $product_price_vat,
+                    'wrap' => true
                         ));
 
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
@@ -602,12 +602,10 @@ class paymentsActions extends sfActions {
         $email2->save();
     }
 
-
-
     public function executeConfirmpaymentus(sfWebRequest $request) {
         changeLanguageCulture::languageCulture($request, $this);
 
-        $urlvalrest="Confirm-payment-us-".var_export($_REQUEST,true);
+        $urlvalrest = "Confirm-payment-us-" . var_export($_REQUEST, true);
         $emaires = new DibsCall();
         $emaires->setCallurl($urlvalrest);
         $emaires->save();
@@ -616,7 +614,7 @@ class paymentsActions extends sfActions {
         $email2->setCallurl($urlval);
         $email2->save();
         $dibs = new DibsCall();
-        $dibs->setCallurl("Ticket Number:".$request->getParameter('ticket')."-ord-".$request->getParameter('orderid')."-amt-".$request->getParameter('amount'));
+        $dibs->setCallurl("Ticket Number:" . $request->getParameter('ticket') . "-ord-" . $request->getParameter('orderid') . "-amt-" . $request->getParameter('amount'));
         $dibs->save();
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         //print_r($_REQUEST);
@@ -778,68 +776,65 @@ class paymentsActions extends sfActions {
                     $TelintaMobile = '46' . $this->customer->getMobileNumber();
                 }
 
-              $uniqueId = $this->customer->getUniqueid();
-                echo $uniqueId."<br/>";
+                $uniqueId = $this->customer->getUniqueid();
+                echo $uniqueId . "<br/>";
                 $uc = new Criteria();
                 $uc->add(UniqueIdsPeer::UNIQUE_NUMBER, $uniqueId);
                 $selectedUniqueId = UniqueIdsPeer::doSelectOne($uc);
-                echo $selectedUniqueId->getStatus()."<br/>Baran";
+                echo $selectedUniqueId->getStatus() . "<br/>Baran";
 
-                if($selectedUniqueId->getStatus()==0){
+                if ($selectedUniqueId->getStatus() == 0) {
                     echo "inside";
                     $selectedUniqueId->setStatus(1);
                     $selectedUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
                     $selectedUniqueId->save();
-                    }else{
-                        $uc = new Criteria();
-                        $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
-                        $uc->addAnd(UniqueIdsPeer::STATUS, 0);
-                        $availableUniqueCount = UniqueIdsPeer::doCount($uc);
-                        $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
+                } else {
+                    $uc = new Criteria();
+                    $uc->add(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
+                    $uc->addAnd(UniqueIdsPeer::STATUS, 0);
+                    $availableUniqueCount = UniqueIdsPeer::doCount($uc);
+                    $availableUniqueId = UniqueIdsPeer::doSelectOne($uc);
 
-                        if($availableUniqueCount  == 0){
-                            // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
-                            emailLib::sendUniqueIdsShortage();
-                            $this->redirect($this->getTargetUrl() .'customer/shortUniqueIds');
-                            //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
-                        }
-                        $uniqueId = $availableUniqueId->getUniqueNumber();
-                        $this->customer->setUniqueid($uniqueId);
-                        $this->customer->save();
-                        $availableUniqueId->setStatus(1);
-                        $availableUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
-                        $availableUniqueId->save();
-
-
-
+                    if ($availableUniqueCount == 0) {
+                        // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
+                        emailLib::sendUniqueIdsShortage();
+                        $this->redirect($this->getTargetUrl() . 'customer/shortUniqueIds');
+                        //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+                    }
+                    $uniqueId = $availableUniqueId->getUniqueNumber();
+                    $this->customer->setUniqueid($uniqueId);
+                    $this->customer->save();
+                    $availableUniqueId->setStatus(1);
+                    $availableUniqueId->setAssignedAt(date('Y-m-d H:i:s'));
+                    $availableUniqueId->save();
                 }
 
-               $uniqueId=$this->customer->getUniqueid();
-                 $callbacklog = new CallbackLog();
+                $uniqueId = $this->customer->getUniqueid();
+                $callbacklog = new CallbackLog();
                 $callbacklog->setMobileNumber($TelintaMobile);
                 $callbacklog->setuniqueId($uniqueId);
                 $callbacklog->setCheckStatus(3);
                 $callbacklog->save();
 
 
-                  $uc = new Criteria();
+                $uc = new Criteria();
                 $uc->add(UsNumberPeer::ACTIVE_STATUS, 1);
                 $selectusnumber = UsNumberPeer::doSelectOne($uc);
                 $selectusnumber->setActiveStatus(3);
                 $selectusnumber->setCustomerId($this->customer->getId());
                 $selectusnumber->save();
 
- $pakage=$order->getProduct()->getProductTypePackage();
-               $unid= $this->customer->getUniqueid();
+                $pakage = $order->getProduct()->getProductTypePackage();
+                $unid = $this->customer->getUniqueid();
 
 
 
- $customerID=$this->customer->getId();
-                $OpeningBalance=0;
-                Telienta::ResgiterCustomer($this->customer, $OpeningBalance,null,true);
-                $Tes=ForumTel::registerForumtel($customerID);
+                $customerID = $this->customer->getId();
+                $OpeningBalance = 0;
+                Telienta::ResgiterCustomer($this->customer, $OpeningBalance, null, true);
+                $Tes = ForumTel::registerForumtel($customerID);
                 ForumTel::getUsMobileNumber($customerID);
-     //////////////////////////rese number registration ///////////////////////////////
+                //////////////////////////rese number registration ///////////////////////////////
                 $rs = new Criteria();
                 $rs->add(SeVoipNumberPeer::CUSTOMER_ID, $customerID);
                 $rs->addAnd(SeVoipNumberPeer::IS_ASSIGNED, 3);
@@ -852,7 +847,7 @@ class paymentsActions extends sfActions {
                     //$c->setLimit(1);
                     $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
                     if (SeVoipNumberPeer::doCount($c) < 10) {
-                      //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                        //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                     if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
                         emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
@@ -875,7 +870,7 @@ class paymentsActions extends sfActions {
                     $voipnumbers = $getvoipInfos->getNumber();
                     $voipnumbers = substr($voipnumbers, 2);
                     $voip_customer = $getvoipInfos->getCustomerId();
-                    
+
                     $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
                     if ($getFirstnumberofMobile == 0) {
                         $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
@@ -897,42 +892,41 @@ class paymentsActions extends sfActions {
                         $TelintaMobile = $MaxUniqueRec->getMobileNumber();
                     }
                     //------------------------------
-                    $TelintaMobile=$selectusnumber->getUsMobileNumber();
-                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile,11118);
+                    $TelintaMobile = $selectusnumber->getUsMobileNumber();
+                    Telienta::createReseNumberAccount($voipnumbers, $this->customer, $TelintaMobile, 11118);
 
 
-                 //   $OpeningBalance = '40';
-
+                    //   $OpeningBalance = '40';
                     //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
                     //This is for Recharge the Customer
-                  //  Telienta::charge($this->customer, $OpeningBalance);
+                    //  Telienta::charge($this->customer, $OpeningBalance);
                 }
 
 
 ///////////////////////////////////////////////////////end resenumber registration
-               echo "original amout".$amt=$order->getExtraRefill();
-                         echo "<hr/>converted amout". $amtt=CurrencyConverter::convertSekToUsd($amt);
-                        
-                 echo "<hr/>ft response". $Test=ForumTel::rechargeForumtel($customerID,$amtt);
+                echo "original amout" . $amt = $order->getExtraRefill();
+                echo "<hr/>converted amout" . $amtt = CurrencyConverter::convertSekToUsd($amt);
 
-                    $dibsf = new DibsCall();
-        $dibsf->setCallurl("original amout SEK:".$amt."converted amout".$amtt."Fr response".$Test);
-        $dibsf->save();
+                echo "<hr/>ft response" . $Test = ForumTel::rechargeForumtel($customerID, $amtt);
 
-                $amt=$amtt;
-        
-                   $tc = new Criteria();
-        $tc->add(UsNumberPeer::CUSTOMER_ID, $customerID);
-        $usnumber = UsNumberPeer::doSelectOne($tc);
-               $usnumber=$usnumber->getUsMobileNumber();
+                $dibsf = new DibsCall();
+                $dibsf->setCallurl("original amout SEK:" . $amt . "converted amout" . $amtt . "Fr response" . $Test);
+                $dibsf->save();
 
-                        $sms_text ="Käre kund
-Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och du kan ringa från den när du har nått USA
+                $amt = $amtt;
+
+                $tc = new Criteria();
+                $tc->add(UsNumberPeer::CUSTOMER_ID, $customerID);
+                $usnumber = UsNumberPeer::doSelectOne($tc);
+                $usnumber = $usnumber->getUsMobileNumber();
+
+                $sms_text = "Käre kund
+Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras och du kan ringa från den när du har nått USA
 ";
-                  
-                        $senderName="LandNCall";
-    $res = ROUTED_SMS::Send($usnumber, $sms_text, $senderName);
-      
+
+                $senderName = "LandNCall";
+                $res = ROUTED_SMS::Send($usnumber, $sms_text, $senderName);
+
                 //if the customer is invited, Give the invited customer a bonus of 10dkk
                 $invite_c = new Criteria();
                 $invite_c->add(InvitePeer::INVITE_NUMBER, $this->customer->getMobileNumber());
@@ -981,12 +975,11 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                     } else {
                         $TelintaMobile = '46' . $this->customers->getMobileNumber();
                     }
-                    
+
                     $uniqueId = $this->customers->getUniqueid();
                     $OpeningBalance = $comsion;
                     //This is for Recharge the Customer
-
-                  //  Telienta::recharge($this->customers, $OpeningBalance);
+                    //  Telienta::recharge($this->customers, $OpeningBalance);
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
 
@@ -997,11 +990,10 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                         $voipnumbers = $getvoipInfos->getNumber();
                         $voip_customer = $getvoipInfos->getCustomerId();
                     } else {
+                        
+                    }
 
 
-                     }
-
-                    
                     $transaction_i->save();
                     $invite->save();
 
@@ -1012,11 +1004,11 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
                 }
                 //send email
                 $message_body = $this->getPartial('payments/order_receipt_us', array(
-                            'customer' => $this->customer,
-                            'order' => $order,
-                            'transaction' => $transaction,
-                            'vat' => $product_price_vat,
-                            'wrap' => true
+                    'customer' => $this->customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $product_price_vat,
+                    'wrap' => true
                         ));
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
                 $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
@@ -1046,6 +1038,52 @@ Ditt USA mobil nummer är följande: (".$usnumber."), numret är aktiveras och d
             //   //end else
         }
         return sfView::NONE;
+    }
+
+    public function executeTransaction(sfWebRequest $request) {
+        $order_id = $request->getParameter('item_number');
+        $item_amount = $request->getParameter('amount');
+
+
+        $lang = $this->getUser()->getCulture();
+
+
+        $return_url = $request->getParameter('accepturl');
+        $cancel_url = $request->getParameter('cancelurl');
+
+        $callbackparameters = $lang . '-' . $order_id . '-' . $item_amount;
+        $notify_url = $this->getTargetUrl() . 'pScripts/confirmpayment?p=' . $callbackparameters;
+
+        $email2 = new DibsCall();
+        $email2->setCallurl($notify_url);
+
+        $email2->save();
+
+
+        $querystring = '';
+
+        $order = CustomerOrderPeer::retrieveByPK($order_id);
+        $item_name = $order->getProduct()->getName();
+
+        //loop for posted values and append to querystring
+        foreach ($_POST as $key => $value) {
+            $value = urlencode(stripslashes($value));
+            $querystring .= "$key=$value&";
+        }
+
+        $querystring .= "item_name=" . urlencode($item_name) . "&";
+        $querystring .= "return=" . urldecode($return_url) . "&";
+        $querystring .= "cancel_return=" . urldecode($cancel_url) . "&";
+        $querystring .= "notify_url=" . urldecode($notify_url);
+
+        //$environment = "sandbox";
+        if ($order_id && $item_amount) {
+            Payment::SendPayment($querystring);
+        } else {
+            echo 'error';
+        }
+        return sfView::NONE;
+        //exit();
     }
 
 }
