@@ -17,19 +17,18 @@ require_once(sfConfig::get('sf_lib_dir') . '/ForumTel.php');
 class customerActions extends sfActions {
 
     //private $targetURL = "http://localhost/landncall/web/b2c_dev.php/";
-
-   // private $targetURL = "http://stagelc.zerocall.com/b2c.php/";
-   // private $targetPScriptURL = "http://landncall.zerocall.com/b2c.php/pScripts/";
+    // private $targetURL = "http://stagelc.zerocall.com/b2c.php/";
+    // private $targetPScriptURL = "http://landncall.zerocall.com/b2c.php/pScripts/";
     private function getTargetUrl() {
         return sfConfig::get('app_main_url');
     }
+
     public function executeTest(sfWebRequest $request) {
 
         var_dump($_REQUEST);
 
         die;
-  return sfView::NONE;
-
+        return sfView::NONE;
     }
 
     protected function processForm(sfWebRequest $request, sfForm $form, $id) {
@@ -201,7 +200,7 @@ class customerActions extends sfActions {
             //$this->getUser()->setAttribute('customer_id', $customer->getId(), 'usersignup');
             //$this->getUser()->setAttribute('product_id', $product, 'usersignup');
 
-            $this->redirect($this->getTargetUrl() .'customer/signupStep2?cid=' . $customer->getId() . '&pid=' . $product);
+            $this->redirect($this->getTargetUrl() . 'customer/signupStep2?cid=' . $customer->getId() . '&pid=' . $product);
             //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/signupStep2?cid=' . $customer->getId() . '&pid=' . $product);
             //$this->redirect(sfConfig::get('app_epay_relay_script_url').$this->getController()->genUrl('@signup_step2?customer_id='.$customer->getId().'&product_id='.$product, true));
         }
@@ -331,13 +330,13 @@ class customerActions extends sfActions {
         if ($request->getParameter('ref')) {
             //setcookie("user", "XXXXXXX", time()+3600);
 
-            $this->getResponse()->setCookie('agent_id', $request->getParameter('ref'),time()+36000);
+            $this->getResponse()->setCookie('agent_id', $request->getParameter('ref'), time() + 36000);
             //$this->getResponse()->setCookie('reffer_id', $request->getParameter('ref'),360000);
             $this->redirect("http://www.smartsim.se");
         }
 
-       
-        
+
+
 
 
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
@@ -375,7 +374,7 @@ class customerActions extends sfActions {
                 $invite->save();
             }
         }
-            
+
 
         //set referrer id
         if ($this->getRequest()->getCookie('agent_id')) {
@@ -383,7 +382,7 @@ class customerActions extends sfActions {
             $c = new Criteria();
             $c->add(AgentCompanyPeer::ID, $referrer_id);
 
-            if (AgentCompanyPeer::doCount($c)==1){
+            if (AgentCompanyPeer::doCount($c) == 1) {
                 $this->form->setDefault('referrer_id', $referrer_id);
             }
         }
@@ -473,7 +472,7 @@ class customerActions extends sfActions {
         $num_tries = 3;
 
         for ($i = 0; ($i < 3) && $this->customer_balance == -1; $i++) {
-            $this->customer_balance = (double) Fonet::getBalance($this->customer);
+            // $this->customer_balance = (double) Fonet::getBalance($this->customer);
         }
 
         //echo  $TelintaMobile = '46'.$this->customer->getMobileNumber();
@@ -610,7 +609,7 @@ class customerActions extends sfActions {
                     //$c->setLimit(1);
                     $c->add(SeVoipNumberPeer::IS_ASSIGNED, 0);
                     if (SeVoipNumberPeer::doCount($c) < 10) {
-                       // emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
+                        // emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                     if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
                         emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
@@ -664,8 +663,7 @@ class customerActions extends sfActions {
                     //type=<account_customer>&action=manual_charge&name=<name>&amount=<amount>
                     //This is for Recharge the Customer
 
-                    Telienta::charge($this->customer, $OpeningBalance,"Resenumber Payment");
-
+                    Telienta::charge($this->customer, $OpeningBalance, "Resenumber Payment");
                 }
 
 //exit;
@@ -693,11 +691,11 @@ class customerActions extends sfActions {
 
                 //send email
                 $message_body = $this->getPartial('payments/order_receipt', array(
-                            'customer' => $this->customer,
-                            'order' => $order,
-                            'transaction' => $transaction,
-                            'vat' => $vat,
-                            'wrap' => false
+                    'customer' => $this->customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $vat,
+                    'wrap' => false
                         ));
 
                 //This Seciton For Make The Log History When Complete registration complete - Agent
@@ -716,7 +714,7 @@ class customerActions extends sfActions {
 
                 //------------------------------
                 //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/voippurchased');
-                $this->redirect($this->getTargetUrl() .'customer/voippurchased');
+                $this->redirect($this->getTargetUrl() . 'customer/voippurchased');
             }
         }
     }
@@ -761,57 +759,57 @@ class customerActions extends sfActions {
         if (isset($getvoipInfos)) {
             $voipnumbers = $getvoipInfos->getNumber();
             $voipnumbers = substr($voipnumbers, 2);
-           $voip_customer = $getvoipInfos->getCustomerId();
-           /* $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
-            if ($getFirstnumberofMobile == 0) {
-                $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
-                $TelintaMobile = '46' . $TelintaMobile;
-            } else {
-                $TelintaMobile = '46' . $this->customer->getMobileNumber();
-            }
-        }
-*/
-        //$removecustomer = '';
-        //get an UnSurbise VoIP 
-       // $c = new Criteria();
-       // $c->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
-       // if ($voip_customer1 = SeVoipNumberPeer::doSelectOne($c)) {
+            $voip_customer = $getvoipInfos->getCustomerId();
+            /* $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
+              if ($getFirstnumberofMobile == 0) {
+              $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
+              $TelintaMobile = '46' . $TelintaMobile;
+              } else {
+              $TelintaMobile = '46' . $this->customer->getMobileNumber();
+              }
+              }
+             */
+            //$removecustomer = '';
+            //get an UnSurbise VoIP 
+            // $c = new Criteria();
+            // $c->add(SeVoipNumberPeer::CUSTOMER_ID, $customerids);
+            // if ($voip_customer1 = SeVoipNumberPeer::doSelectOne($c)) {
             $getvoipInfos->setIsAssigned(3);
             $getvoipInfos->save();
             //$uniqueId = $this->customer->getUniqueid();
 //exit;
-            /*$tc = new Criteria();
-            $tc->add(CallbackLogPeer::UNIQUEID, $uniqueId);
-            $tc->addDescendingOrderByColumn(CallbackLogPeer::CREATED);
-            $MaxUniqueRec = CallbackLogPeer::doSelectOne($tc);
-            $followMeNumber = $MaxUniqueRec->getMobileNumber();
-*/
-             $res = new Criteria();
-                    $res->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
-                    $res->addAnd(TelintaAccountsPeer::STATUS, 3);
-                    $telintaAccountres = TelintaAccountsPeer::doSelectOne($res);
-                    Telienta::terminateAccount($telintaAccountres);
+            /* $tc = new Criteria();
+              $tc->add(CallbackLogPeer::UNIQUEID, $uniqueId);
+              $tc->addDescendingOrderByColumn(CallbackLogPeer::CREATED);
+              $MaxUniqueRec = CallbackLogPeer::doSelectOne($tc);
+              $followMeNumber = $MaxUniqueRec->getMobileNumber();
+             */
+            $res = new Criteria();
+            $res->add(TelintaAccountsPeer::ACCOUNT_TITLE, $voipnumbers);
+            $res->addAnd(TelintaAccountsPeer::STATUS, 3);
+            $telintaAccountres = TelintaAccountsPeer::doSelectOne($res);
+            Telienta::terminateAccount($telintaAccountres);
             //When a customer is DeActive a resenummer you need to update the follow me number here is the URL - Telinta
-            /*$telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name=' . $voipnumbers . '&active=N&follow_me_number=' . $followMeNumber . '&type=account');
-            $string = $telintaGetBalance;
-            $find = 'ERROR';
-            if (strpos($string, $find)) {
-                $message_body = "Error ON DeActive a resenummer within environment <br> VOIP Number :$voipnumbers <br / >Follow Me Number: $followMeNumber";
-                //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                emailLib::sendErrorTelinta($this->customer, $message_body);
-            } else {
-                
-            }
-            $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=' . $voipnumbers . '&type=account');
-            $string = $telintaGetBalance;
-            $find = 'ERROR';
-            if (strpos($string, $find)) {
-                $message_body = "Error ON DeActive a resenummer within environment <br> VOIP Number :$voipnumbers <br / >Follow Me Number: $followMeNumber";
-                //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
-                emailLib::sendErrorTelinta($this->customer, $message_body);
-            } else {
+            /* $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=update&name=' . $voipnumbers . '&active=N&follow_me_number=' . $followMeNumber . '&type=account');
+              $string = $telintaGetBalance;
+              $find = 'ERROR';
+              if (strpos($string, $find)) {
+              $message_body = "Error ON DeActive a resenummer within environment <br> VOIP Number :$voipnumbers <br / >Follow Me Number: $followMeNumber";
+              //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
+              emailLib::sendErrorTelinta($this->customer, $message_body);
+              } else {
 
-            }*/
+              }
+              $telintaGetBalance = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?action=delete&name=' . $voipnumbers . '&type=account');
+              $string = $telintaGetBalance;
+              $find = 'ERROR';
+              if (strpos($string, $find)) {
+              $message_body = "Error ON DeActive a resenummer within environment <br> VOIP Number :$voipnumbers <br / >Follow Me Number: $followMeNumber";
+              //Send Email to User/Agent/Support --- when Customer Refilll --- 01/15/11
+              emailLib::sendErrorTelinta($this->customer, $message_body);
+              } else {
+
+              } */
         }
     }
 
@@ -855,6 +853,8 @@ class customerActions extends sfActions {
 
         //save
         $transaction->save();
+
+        $this->target = $this->getTargetUrl();
     }
 
     public function executeRefillAccept(sfWebRequest $request) {
@@ -881,8 +881,7 @@ class customerActions extends sfActions {
 
         $order->setOrderStatusId(sfConfig::get('app_status_cancelled')); //cancelled
 
-        $this->getUser()->setFlash('error_message',
-                $error_text
+        $this->getUser()->setFlash('error_message', $error_text
         );
 
         $this->order = $order;
@@ -1029,12 +1028,12 @@ class customerActions extends sfActions {
         $c->add(TransactionPeer::CUSTOMER_ID, $this->customer->getId());
         //$c->add(TransactionPeer::DESCRIPTION, 'LandNCall AB Refill');
         //$c->addOR(TransactionPeer::DESCRIPTION, 'Registrering inkl. taletid');
-       // $c->addOR(TransactionPeer::DESCRIPTION, 'Auto Refill');
+        // $c->addOR(TransactionPeer::DESCRIPTION, 'Auto Refill');
         //$c->addOR(TransactionPeer::DESCRIPTION,'Resenummer bekräftelse');
         //$c->addOR(TransactionPeer::DESCRIPTION, '%' . $searchingCr . '%', Criteria::LIKE);
         //$c->add(TransactionPeer::TRANSACTION_STATUS_ID, sfConfig::get('app_status_completed', -1)
         //);
-        $c->add(TransactionPeer::TRANSACTION_STATUS_ID,3);
+        $c->add(TransactionPeer::TRANSACTION_STATUS_ID, 3);
         // Here we can simple check the transaction stats and we can meet our requirements but here use the description value equel which is i dnt
         // Good approch but me not edit this i just pass one more "Resenummer bekräftelse" - ahtsham
         /*
@@ -1116,45 +1115,45 @@ class customerActions extends sfActions {
 
         //unset($this->form['password_confirm']);
         /////////////////////////////////////
-       unset($this->form['first_name']);
-                    unset($this->form['last_name']);
-                    unset($this->form['country_id']);
-                    unset($this->form['city']);
-                    unset($this->form['po_box_number']);
-                    unset($this->form['mobile_number']);
-                    unset($this->form['device_id']);
-                    unset($this->form['email']);
-                    unset($this->form['is_newsletter_subscriber']);
-                    unset($this->form['created_at']);
-                    unset($this->form['updated_at']);
-                    unset($this->form['customer_status_id']);
-                    unset($this->form['address']);
-                    unset($this->form['fonet_customer_id']);
-                    unset($this->form['referrer_id']);
-                    unset($this->form['telecom_operator_id']);
-                    unset($this->form['date_of_birth']);
-                    unset($this->form['other']);
-                    unset($this->form['subscription_type']);
-                    unset($this->form['auto_refill_amount']);
-                    unset($this->form['subscription_id']);
-                    unset($this->form['last_auto_refill']);
-                    unset($this->form['auto_refill_min_balance']);
-                    unset($this->form['c9_customer_number']);
-                    unset($this->form['registration_type_id']);
-                    unset($this->form['imsi']);
-                    unset($this->form['uniqueid']);
-                    unset($this->form['plain_text']);
-                    unset($this->form['ticketval']);
-                    unset($this->form['to_date']);
-                    unset($this->form['from_date']);
-                    unset($this->form['terms_conditions']);
-                    unset($this->form['manufacturer']);
-                    unset($this->form['product']);
-                    unset($this->form['i_customer']);
-                    unset($this->form['usage_alert_sms']);
-                    unset($this->form['usage_alert_email']);
+        unset($this->form['first_name']);
+        unset($this->form['last_name']);
+        unset($this->form['country_id']);
+        unset($this->form['city']);
+        unset($this->form['po_box_number']);
+        unset($this->form['mobile_number']);
+        unset($this->form['device_id']);
+        unset($this->form['email']);
+        unset($this->form['is_newsletter_subscriber']);
+        unset($this->form['created_at']);
+        unset($this->form['updated_at']);
+        unset($this->form['customer_status_id']);
+        unset($this->form['address']);
+        unset($this->form['fonet_customer_id']);
+        unset($this->form['referrer_id']);
+        unset($this->form['telecom_operator_id']);
+        unset($this->form['date_of_birth']);
+        unset($this->form['other']);
+        unset($this->form['subscription_type']);
+        unset($this->form['auto_refill_amount']);
+        unset($this->form['subscription_id']);
+        unset($this->form['last_auto_refill']);
+        unset($this->form['auto_refill_min_balance']);
+        unset($this->form['c9_customer_number']);
+        unset($this->form['registration_type_id']);
+        unset($this->form['imsi']);
+        unset($this->form['uniqueid']);
+        unset($this->form['plain_text']);
+        unset($this->form['ticketval']);
+        unset($this->form['to_date']);
+        unset($this->form['from_date']);
+        unset($this->form['terms_conditions']);
+        unset($this->form['manufacturer']);
+        unset($this->form['product']);
+        unset($this->form['i_customer']);
+        unset($this->form['usage_alert_sms']);
+        unset($this->form['usage_alert_email']);
 
-   
+
 
         /////////////////////////////////////////
         $this->oldpasswordError = '';
@@ -1215,8 +1214,8 @@ class customerActions extends sfActions {
         unset($this->form['password_confirm']);
         /////////////////////////////////////
         unset($this->form['created_at']);
-          unset($this->form['date_of_birth']);
-            unset($this->form['telecom_operator_id']);
+        unset($this->form['date_of_birth']);
+        unset($this->form['telecom_operator_id']);
         unset($this->form['fonet_customer_id']);
         unset($this->form['referrer_id']);
         unset($this->form['registration_type_id']);
@@ -1291,7 +1290,7 @@ class customerActions extends sfActions {
     public function executeLogin(sfWebRequest $request) {
         //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
         changeLanguageCulture::languageCulture($request, $this);
-         $this->target = $this->getTargetUrl();
+        $this->target = $this->getTargetUrl();
         //-----------------------
 
         if ($request->isMethod('post') &&
@@ -1325,7 +1324,7 @@ class customerActions extends sfActions {
                 if ($request->isXmlHttpRequest())
                     $this->renderText('ok');
                 else {
-                    $this->redirect($this->target.'customer/dashboard');
+                    $this->redirect($this->target . 'customer/dashboard');
                 }
             } else {
                 //
@@ -1609,12 +1608,12 @@ class customerActions extends sfActions {
 
                 $uniqueId = $this->customer->getUniqueid();
                 $OpeningBalance = $amt;
-                Telienta::charge($this->customer, $OpeningBalance,"SMS Charges");
+                Telienta::charge($this->customer, $OpeningBalance, "SMS Charges");
                 //$ReCharge = file_get_contents('https://mybilling.telinta.com/htdocs/zapna/zapna.pl?type=customer&action=manual_charge&name=' . $uniqueId . '&amount=' . $OpeningBalance);
 
-              
-             
-                $res =  ROUTED_SMS::Send($destination, $sms_text, $this->customer->getMobileNumber());
+
+
+                $res = ROUTED_SMS::Send($destination, $sms_text, $this->customer->getMobileNumber());
                 $this->res_cbf = 'Response from CBF is: ';
                 $this->res_cbf .= $res;
 
@@ -1719,7 +1718,7 @@ class customerActions extends sfActions {
             $subject = $this->getContext()->getI18N()->__("LandNCall AB inbjudan");
             $name = $this->customer->getFirstName() . ' ' . $this->customer->getLastName();
             $message_body = 'Hej ' . $recepient_name . ',<br /> ' . $this->getContext()->getI18N()->__("This invitation is sent to you with the refrence of") . ' ' . $name . ', ' . $this->getContext()->getI18N()->__("en användare av Smartsim från Landncall.");
-            $message_body_end = 'Vänligen klicka på acceptera för att börja spara pengar direkt med Smartsim du ocksåg' . '<a  href="'.$this->getTargetUrl() .'customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a><br/> Läs mer på <a href="www.landncall.com">www.landncall.com</a>';
+            $message_body_end = 'Vänligen klicka på acceptera för att börja spara pengar direkt med Smartsim du ocksåg' . '<a  href="' . $this->getTargetUrl() . 'customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a><br/> Läs mer på <a href="www.landncall.com">www.landncall.com</a>';
             //send email
             if ($recepient_name != ''):
                 $email = new EmailQueue();
@@ -2154,26 +2153,26 @@ class customerActions extends sfActions {
             }
 
             $unidc = $this->customer->getUniqueid();
-            $uidcount=0;
-              $uc = new Criteria;
-        $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $unidc);
-         $uc->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
-        $uidcount = UniqueIdsPeer::doCount($uc);
+            $uidcount = 0;
+            $uc = new Criteria;
+            $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $unidc);
+            $uc->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
+            $uidcount = UniqueIdsPeer::doCount($uc);
             echo $unidc;
             echo "<br/>";
 
-            if ($uidcount==1) {
+            if ($uidcount == 1) {
                 $cuserid = $this->customer->getId();
                 $amt = $OpeningBalance;
                 $amtt = CurrencyConverter::convertSekToUsd($amt);
                 $Test = ForumTel::rechargeForumtel($cuserid, $amtt);
 
                 $dibsf = new DibsCall();
-        $dibsf->setCallurl("refill  original amout SEK:".$amt."converted amout".$amtt."Fr response".$Test);
-        $dibsf->save();
+                $dibsf->setCallurl("refill  original amout SEK:" . $amt . "converted amout" . $amtt . "Fr response" . $Test);
+                $dibsf->save();
 
-                $amt=$amtt;
-                
+                $amt = $amtt;
+
                 $email2 = new DibsCall();
                 $email2->setCallurl($amt . $cuserid);
 
@@ -2228,19 +2227,19 @@ class customerActions extends sfActions {
             $unidid = $this->customer->getUniqueid();
             if ((int) $unidid > 200000) {
                 $message_body = $this->getPartial('customer/order_receipt_us', array(
-                            'customer' => $this->customer,
-                            'order' => $order,
-                            'transaction' => $transaction,
-                            'vat' => $vat,
-                            'wrap' => false
+                    'customer' => $this->customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $vat,
+                    'wrap' => false
                         ));
             } else {
                 $message_body = $this->getPartial('payments/order_receipt', array(
-                            'customer' => $this->customer,
-                            'order' => $order,
-                            'transaction' => $transaction,
-                            'vat' => $vat,
-                            'wrap' => false
+                    'customer' => $this->customer,
+                    'order' => $order,
+                    'transaction' => $transaction,
+                    'vat' => $vat,
+                    'wrap' => false
                         ));
             }
 
@@ -2275,7 +2274,7 @@ class customerActions extends sfActions {
         $customer->setAutoRefillAmount(NULL);
         $customer->save();
         $this->getUser()->setFlash('message', $this->getContext()->getI18N()->__('Auto Refill is deactivated.'));
-        return $this->redirect($this->getTargetUrl() .'customer/dashboard');
+        return $this->redirect($this->getTargetUrl() . 'customer/dashboard');
         // return sfView::NONE;
     }
 
@@ -2440,8 +2439,8 @@ class customerActions extends sfActions {
             if ($availableUniqueCount == 0) {
                 // Unique Ids are not avaialable. Then Redirect to the sorry page and send email to the support.
                 emailLib::sendUniqueIdsShortage();
-               $this->redirect($this->getTargetUrl() .'customer/shortUniqueIds');
-                 //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
+                $this->redirect($this->getTargetUrl() . 'customer/shortUniqueIds');
+                //$this->redirect('http://landncall.zerocall.com/b2c.php/customer/shortUniqueIds');
             }
             $uniqueId = $availableUniqueId->getUniqueNumber();
 
@@ -2483,7 +2482,7 @@ class customerActions extends sfActions {
             //$this->getUser()->setAttribute('product_id', $product, 'usersignup');
 
 
-            $this->redirect($this->getTargetUrl().'customer/signupusstep2?cid=' . $customer->getId() . '&pid=' . $product);
+            $this->redirect($this->getTargetUrl() . 'customer/signupusstep2?cid=' . $customer->getId() . '&pid=' . $product);
             //$this->redirect(sfConfig::get('app_epay_relay_script_url').$this->getController()->genUrl('@signup_step2?customer_id='.$customer->getId().'&product_id='.$product, true));
         }
     }
@@ -2539,6 +2538,52 @@ class customerActions extends sfActions {
 
         $this->order_id = $order->getId();
         $this->amount = $transaction->getAmount();
+    }
+
+    public function executeRefilTransaction(sfWebRequest $request) {
+        //pScripts/calbackrefill
+        $order_id = $request->getParameter('item_number');
+        $item_amount = $request->getParameter('extra_refill');
+
+
+        $lang = $this->getUser()->getCulture();
+
+
+        $return_url = $request->getParameter('accepturl').$item_amount;
+        $cancel_url = $request->getParameter('cancelurl').$item_amount;
+
+        $callbackparameters = $lang . '-' . $order_id . '-' . $item_amount;
+        $notify_url = $this->getTargetUrl() . 'pScripts/calbackrefill?p=' . $callbackparameters;
+
+        $email2 = new DibsCall();
+        $email2->setCallurl($notify_url);
+
+        $email2->save();
+
+
+        $querystring = '';
+
+        $order = CustomerOrderPeer::retrieveByPK($order_id);
+        $item_name = $order->getProduct()->getName();
+
+        //loop for posted values and append to querystring
+        foreach ($_POST as $key => $value) {
+            $value = urlencode(stripslashes($value));
+            $querystring .= "$key=$value&";
+        }
+
+        $querystring .= "item_name=" . urlencode($item_name) . "&";
+        $querystring .= "return=" . urldecode($return_url) . "&";
+        $querystring .= "cancel_return=" . urldecode($cancel_url) . "&";
+        $querystring .= "notify_url=" . urldecode($notify_url);
+
+        //$environment = "sandbox";
+        if ($order_id && $item_amount) {
+            Payment::SendPayment($querystring);
+        } else {
+            echo 'error';
+        }
+        return sfView::NONE;
     }
 
 }
