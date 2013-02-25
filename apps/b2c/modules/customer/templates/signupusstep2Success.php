@@ -263,8 +263,8 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 <input type="hidden" value="<?php echo $customer->getLastName(); ?>" name="lastName">
                 <input type="hidden" value="<?php echo $customer->getEmail(); ?>" name="payer_email">
                 <input type="hidden" value="<?php echo $order_id; ?>" name="item_number">
-                <input type="hidden" name="cancelurl" value="<?php echo $relay_script_url . url_for('@epay_reject_url', true) ?>?accept=cancel&subscriptionid=&orderid=<?php echo $order->getId(); ?>&amount=" />
-                <input type="hidden" name="accepturl" id="idaccepturl"  value="<?php echo $relay_script_url . url_for('@epay_accept_url', true); ?>?accept=yes&subscriptionid=&orderid=<?php echo $order_id; ?>&amount=" />
+                <input type="hidden" name="cancel_return" value="<?php echo $relay_script_url . url_for('@epay_reject_url', true) ?>?accept=cancel&subscriptionid=&orderid=<?php echo $order->getId(); ?>" />
+                <input type="hidden" name="return" id="idaccepturl"  value="<?php echo $relay_script_url . url_for('@epay_accept_url', true); ?>?accept=yes&subscriptionid=&orderid=<?php echo $order_id; ?>" />
 
                 <br/>
                 <br/>

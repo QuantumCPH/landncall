@@ -1118,8 +1118,8 @@ Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras o
         }
 
         $querystring .= "item_name=" . urlencode($item_name) . "&";
-        $querystring .= "return=" . urldecode($return_url) . "&";
-        $querystring .= "cancel_return=" . urldecode($cancel_url) . "&";
+//        $querystring .= "return=" . urldecode($return_url) . "&";
+//        $querystring .= "cancel_return=" . urldecode($cancel_url) . "&";
         $querystring .= "notify_url=" . urldecode($notify_url);
 
         //$environment = "sandbox";
