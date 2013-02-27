@@ -98,5 +98,23 @@ class Customer extends BaseCustomer
             if($balance)
                return $balance;
         }
-	    
+	
+        public function getCalls(){
+            $c = new Criteria();
+            $c->add(EmployeeCustomerCallhistoryPeer::PARENT_ID,$this->getId());
+            $c->add(EmployeeCustomerCallhistoryPeer::PARENT_TABLE,'customer');
+            $calls = EmployeeCustomerCallhistoryPeer::doCount($c);
+            $call = ($calls > 0?"Yes":"No");
+            return $call;
+        } 
+        
+        public function getLastCall(){
+            $c = new Criteria();
+            $c->add(EmployeeCustomerCallhistoryPeer::PARENT_ID,$this->getId());
+            $c->add(EmployeeCustomerCallhistoryPeer::PARENT_TABLE,'customer');
+            $c->addDescendingOrderByColumn(EmployeeCustomerCallhistoryPeer::CONNECT_TIME);            
+            $callrec = EmployeeCustomerCallhistoryPeer::doSelectOne($c);  
+            
+            return $callrec;
+        }
 }
