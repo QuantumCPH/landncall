@@ -3722,6 +3722,7 @@ class pScriptsActions extends sfActions {
         else {
             $this->logMessage('Error in transaction.');
         } //end else
+        return sfView::NONE;
     }
 
     /*     * *****************************************************Customer Registeration US Dibs Call ********************************************** */

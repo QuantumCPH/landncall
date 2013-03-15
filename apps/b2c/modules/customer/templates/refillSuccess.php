@@ -45,7 +45,7 @@ $('#refill').submit(function() {
 
 <br/>
 <br/>
-<form action="<?php echo $target ?>customer/refilTransaction"  method="post" id="refill" >
+<form action="<?php echo $target ?>customer/refilTransaction"  method="post" id="refill" target="_parent" >
     <div style="width:500px;">
         <div  style="width:340px;float:left;">    <ul>
                 <!-- customer product -->
