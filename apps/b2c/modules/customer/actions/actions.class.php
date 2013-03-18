@@ -2550,8 +2550,8 @@ class customerActions extends sfActions {
         $lang = $this->getUser()->getCulture();
 
 
-        $return_url = $request->getParameter('accepturl').$item_amount;
-        $cancel_url = $request->getParameter('cancelurl').$item_amount;
+        $return_url = $request->getParameter('accepturl');
+        $cancel_url = $request->getParameter('cancelurl');
 
         $callbackparameters = $lang . '-' . $order_id . '-' . $item_amount;
         $notify_url = $this->getTargetUrl() . 'pScripts/calbackrefill?p=' . $callbackparameters;
