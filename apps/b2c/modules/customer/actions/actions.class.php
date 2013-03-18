@@ -1292,52 +1292,57 @@ class customerActions extends sfActions {
         changeLanguageCulture::languageCulture($request, $this);
         $this->target = $this->getTargetUrl();
         //-----------------------
+        $this->customer = CustomerPeer::retrieveByPK($this->getUser()->getAttribute('customer_id', '', 'usersession'));
+        if ($this->customer) {
+            
+            $this->redirect($this->getTargetUrl() . 'customer/dashboard');
+        } else {
+            if ($request->isMethod('post') &&
+                    $request->getParameter('mobile_number') != '' &&
+                    $request->getParameter('password') != '') {
+                $paswordval = $request->getParameter('password');
+                $mobile_number = $request->getParameter('mobile_number');
+                $password = sha1($request->getParameter('password'));
 
-        if ($request->isMethod('post') &&
-                $request->getParameter('mobile_number') != '' &&
-                $request->getParameter('password') != '') {
-            $paswordval = $request->getParameter('password');
-            $mobile_number = $request->getParameter('mobile_number');
-            $password = sha1($request->getParameter('password'));
+                $c = new Criteria();
+                $c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
+                $c->add(CustomerPeer::PASSWORD, $password);
+                $c->add(CustomerPeer::CUSTOMER_STATUS_ID, sfConfig::get('app_status_completed'));
 
-            $c = new Criteria();
-            $c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
-            $c->add(CustomerPeer::PASSWORD, $password);
-            $c->add(CustomerPeer::CUSTOMER_STATUS_ID, sfConfig::get('app_status_completed'));
-
-            $customer = CustomerPeer::doSelectOne($c);
-
-
-            if ($customer) {
-
-                header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
-                $this->getUser()->setAttribute('customer_id', $customer->getId(), 'usersession');
-                $this->getUser()->setAuthenticated(true);
+                $customer = CustomerPeer::doSelectOne($c);
 
 
+                if ($customer) {
+
+                    header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
+                    $this->getUser()->setAttribute('customer_id', $customer->getId(), 'usersession');
+                    $this->getUser()->setAuthenticated(true);
 
 
-                $customer->setPlainText($paswordval);
-                $customer->save();
 
-                //$this->redirect('@customer_dashboard');
-                if ($request->isXmlHttpRequest())
-                    $this->renderText('ok');
-                else {
-                    $this->redirect($this->target . 'customer/dashboard');
+
+                    $customer->setPlainText($paswordval);
+                    $customer->save();
+
+                    //$this->redirect('@customer_dashboard');
+                    if ($request->isXmlHttpRequest())
+                        $this->renderText('ok');
+                    else {
+                        $this->redirect($this->target . 'customer/dashboard');
+                    }
+                } else {
+                    //
+                    if ($request->isXmlHttpRequest())
+                        $this->renderText('invalid');
+                    else {
+                        $this->getUser()->setFlash('error_message', $this->getContext()->getI18N()->__('Invaild mobile number or password.'));
+                    }
                 }
             } else {
-                //
-                if ($request->isXmlHttpRequest())
-                    $this->renderText('invalid');
-                else {
-                    $this->getUser()->setFlash('error_message', $this->getContext()->getI18N()->__('Invaild mobile number or password.'));
+                if ($request->isXmlHttpRequest()) {
+                    $this->renderPartial('login');
+                    return sfView::NONE;
                 }
-            }
-        } else {
-            if ($request->isXmlHttpRequest()) {
-                $this->renderPartial('login');
-                return sfView::NONE;
             }
         }
     }
@@ -2498,7 +2503,7 @@ class customerActions extends sfActions {
         $this->form = new PaymentForm();
 
         $this->target = $this->getTargetUrl();
-                
+
         $product_id = $request->getParameter('pid');
         $customer_id = $request->getParameter('cid');
 
