@@ -192,7 +192,8 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 
                             echo $product_price;
                             ?>" />
-                        <input type="hidden" id="extra_refill" value="<?php $extra_refill = $order->getExtraRefill();
+                        <input type="hidden" id="extra_refill" value="<?php
+                               $extra_refill = $order->getExtraRefill();
                                echo $extra_refill;
                             ?>" />
 
@@ -230,10 +231,11 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                     </li>
                     <li>
                         <label><?php echo __('VAT') ?> (25%)<br />
-                               <?php echo __('Total amount') ?></label>
-                        <input type="hidden" id="vat" value="<?php $vat = .25 * ($product_price);
-                               echo $vat;
-                               ?>" />
+                        <?php echo __('Total amount') ?></label>
+                        <input type="hidden" id="vat" value="<?php
+                        $vat = .25 * ($product_price);
+                        echo $vat;
+                        ?>" />
                         <label class="fr ac" >
                             <span id="vat_span">
                             <?php echo format_number($vat) ?>
@@ -263,9 +265,8 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 <input type="hidden" value="<?php echo $customer->getLastName(); ?>" name="lastName">
                 <input type="hidden" value="<?php echo $customer->getEmail(); ?>" name="payer_email">
                 <input type="hidden" value="<?php echo $order_id; ?>" name="item_number">
-                <input type="hidden" name="cancel_return" value="<?php echo $relay_script_url . url_for('@epay_reject_url', true) ?>?accept=cancel&subscriptionid=&orderid=<?php echo $order->getId(); ?>" />
-                <input type="hidden" name="return" id="idaccepturl"  value="<?php echo $relay_script_url . url_for('@epay_accept_url', true); ?>?accept=yes&subscriptionid=&orderid=<?php echo $order_id; ?>" />
-
+                <input type="hidden" name="cancel_return" value="http://www.smartsim.se/mina-sidor" />
+                <input type="hidden" name="return" id="idaccepturl"  value="http://www.smartsim.se/mina-sidor" />
                 <br/>
                 <br/>
                 <input type="submit"  class="butonsigninsmall"  name="paybutan"  style="cursor: pointer;margin-left: 185px;" value="<?php echo __('Pay') ?>">
@@ -325,7 +326,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 </span>
             </div>
         </div>
-<?php //include_partial('signup/steps_indicator', array('active_step'=>2))   ?>
+<?php //include_partial('signup/steps_indicator', array('active_step'=>2))    ?>
     </div>
 </form>
 

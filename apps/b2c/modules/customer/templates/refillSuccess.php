@@ -90,8 +90,8 @@ $('#refill').submit(function() {
             <input type="hidden" value="<?php echo $customer->getLastName(); ?>" name="lastName">
             <input type="hidden" value="<?php echo $customer->getEmail(); ?>" name="payer_email">
             <input type="hidden" value="<?php echo $randomOrderId; ?>" name="item_number">
-            <input type="hidden" name="cancelurl" value="<?php echo sfConfig::get('app_epay_relay_script_url') . url_for('@epay_refill_reject', true) ?>?accept=cancel&subscriptionid=&orderid=<?php echo $order->getId(); ?>&amount=" />
-            <input type="hidden" name="accepturl" id="idaccepturl" value="<?php echo sfConfig::get('app_epay_relay_script_url') . url_for('@epay_refill_accept', true) ?>?accept=yes&subscriptionid=&orderid=<?php echo $order->getId(); ?>&amount=" />
+            <input type="hidden" name="cancelurl" value="http://www.smartsim.se/mina-sidor" />
+            <input type="hidden" name="accepturl" id="idaccepturl" value="http://www.smartsim.se/mina-sidor" />
             </div>
         <div style="width:140px;float:left;padding-top:30px;">   
 
