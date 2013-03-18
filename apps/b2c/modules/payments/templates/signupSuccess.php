@@ -282,7 +282,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 <input type="hidden" value="<?php echo $customer->getEmail(); ?>" name="payer_email">
                 <input type="hidden" value="<?php echo $order_id;?>" name="item_number">
                 
-		<input type="hidden" name="cancelurl" value="http://www.smartsim.se/mina-sidor" />
+		<input type="hidden" name="cancelurl" value="http://www.smartsim.se" />
                 <input type="hidden" name="callbackurl" id="idcallbackurl" value="<?php echo $relay_script_url.url_for('@dibs_accept_url', true);  ?>?accept=yes&subscriptionid=&orderid=<?php echo $order_id; ?>&amount=<?php echo $total; ?>" />
 		<input type="hidden" name="accepturl" id="idaccepturl"  value="http://www.smartsim.se/mina-sidor" />
 	<br/>

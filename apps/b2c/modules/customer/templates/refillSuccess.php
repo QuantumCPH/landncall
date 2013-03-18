@@ -80,7 +80,6 @@ $('#refill').submit(function() {
             </ul>
 
             <!-- hidden fields -->
-            <input type="hidden" value="" id="total" name="amount">
             <input type="hidden" value="_xclick" name="cmd"> 
             <input type="hidden" value="1" name="no_note">
             <input type="hidden" value="SE" name="lc">
