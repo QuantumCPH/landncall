@@ -2,17 +2,17 @@
 
     function checkForm()
     {
-            
+
         var objForm = document.getElementById("refill");
         var valid = true;
 
         var amounts = document.getElementById("amount").value;
         // alert(amounts);
         var orderids = document.getElementById("orderid").value;
-        var accepturlstr = "<?php echo sfConfig::get('app_agent_url'); ?>affiliate/thankyou?accept=yes&subscriptionid=&orderid="+orderids+"&amount="+amounts;
+        var accepturlstr = "<?php echo sfConfig::get('app_agent_url'); ?>affiliate/thankyou?accept=yes&subscriptionid=&orderid=" + orderids + "&amount=" + amounts;
         document.getElementById("accepturl").value = accepturlstr;
-                
-        if(isNaN(objForm.amount.value) || objForm.amount.value < <?php echo 0//$amount  ?>)
+
+        if (isNaN(objForm.amount.value) || objForm.amount.value < <?php echo 0//$amount   ?>)
         {
             alert("<?php echo __('amount error') ?>!");
             objForm.amount.focus();
@@ -20,7 +20,7 @@
             valid = false;
         }
 
-        if(objForm.cardno.value.length < 16)
+        if (objForm.cardno.value.length < 16)
         {
             $('#cardno_error').show();
 
@@ -32,7 +32,7 @@
             $('#cardno_error').hide();
         }
 
-        if(isNaN(objForm.cvc.value) || objForm.cvc.value.length < 3 || objForm.cardno.cvc.length > 3)
+        if (isNaN(objForm.cvc.value) || objForm.cvc.value.length < 3 || objForm.cardno.cvc.length > 3)
         {
             $('#cvc_error').show();
 
@@ -49,17 +49,17 @@
 
     function toggleAutoRefill()
     {
-        document.getElementById('user_attr_2').disabled = ! document.getElementById('user_attr_1').checked;
-        document.getElementById('user_attr_3').disabled = ! document.getElementById('user_attr_1').checked;
+        document.getElementById('user_attr_2').disabled = !document.getElementById('user_attr_1').checked;
+        document.getElementById('user_attr_3').disabled = !document.getElementById('user_attr_1').checked;
 
     }
 
-    $('#user_attr_3').blur(function(){
-        if ( this.value<0 || this.value>400 || isNaN(this.value) )
+    $('#user_attr_3').blur(function() {
+        if (this.value < 0 || this.value > 400 || isNaN(this.value))
             this.value = 0;
     });
 
-    $(document).ready(function(){
+    $(document).ready(function() {
         $('#cardno_error, #cvc_error').hide();
 
         toggleAutoRefill();
@@ -169,8 +169,22 @@
                     <input type="hidden" value="SEK" name="currency_code">
                     <input type="hidden" value="PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest" name="bn">
                     <input type="hidden" value="<?php echo $agent->getName() ?>" name="firstName">
-                    <input type="hidden" value="<?php //echo $customer->getLastName();  ?>" name="lastName">
+                    <input type="hidden" value="<?php //echo $customer->getLastName();   ?>" name="lastName">
                     <input type="hidden" value="<?php echo $agent->getEmail(); ?>" name="payer_email">
+
+                    <input type="hidden" name="first_name" value="<?php echo $agent->getName() ?>"  />
+                    <input type="hidden" name="last_name" value="<?php echo $agent->getName() ?>"  />
+                    <input type="hidden" name="email" value="<?php echo $agent->getEmail(); ?>"  />
+                    <input type="hidden" name="city" value="<?php echo $agent->getCity(); ?>"  />
+                    <input type="hidden" name="zip" value="<?php echo $agent->getPostCode() ?>"  />
+                    <input type="hidden" name="address1" value="<?php echo $agent->getAddress(); ?>"  />
+
+
+
+
+
+
+
                     <input type="hidden" value="<?php echo $agent_order->getAgentOrderId(); ?>" name="item_number">
                     <input type="hidden" name="cancelurl" value="<?php echo sfConfig::get('app_agent_url'); ?>affiliate/thankyou/?accept=cancel" />
                     <input type="hidden" name="accepturl" id="accepturl"  value="<?php echo sfConfig::get('app_agent_url'); ?>affiliate/thankyou?subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=">
