@@ -168,9 +168,7 @@
                     <input type="hidden" value="SE" name="lc">
                     <input type="hidden" value="SEK" name="currency_code">
                     <input type="hidden" value="PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest" name="bn">
-                    <input type="hidden" value="<?php echo $agent->getName() ?>" name="firstName">
-                    <input type="hidden" value="<?php //echo $customer->getLastName();   ?>" name="lastName">
-                    <input type="hidden" value="<?php echo $agent->getEmail(); ?>" name="payer_email">
+
 
                     <input type="hidden" name="first_name" value="<?php echo $agent->getName() ?>"  />
                     <input type="hidden" name="last_name" value="<?php echo $agent->getName() ?>"  />
