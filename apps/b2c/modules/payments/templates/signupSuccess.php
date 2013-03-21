@@ -277,12 +277,12 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 <input type="hidden" value="SE" name="lc">
                 <input type="hidden" value="SEK" name="currency_code">
                 <input type="hidden" value="PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest" name="bn">
-                <input type="hidden" name="first_name" value="<?php echo $customer->getCustomerFirstName(); ?>"  />
-                <input type="hidden" name="last_name" value="<?php echo $customer->getCustomerLastName(); ?>"  />
-                <input type="hidden" name="email" value="<?php echo $customer->getCustomerEmail(); ?>"  />
-                <input type="hidden" name="city" value="<?php echo $customer->getCustomerCity(); ?>"  />
-                <input type="hidden" name="zip" value="<?php echo $customer->getCustomerPoBoxNumber(); ?>"  />
-                <input type="hidden" name="address1" value="<?php echo $customer->getCustomerAddress(); ?>"  />
+                <input type="hidden" name="first_name" value="<?php echo $customer->getFirstName(); ?>"  />
+                <input type="hidden" name="last_name" value="<?php echo $customer->getLastName(); ?>"  />
+                <input type="hidden" name="email" value="<?php echo $customer->getEmail(); ?>"  />
+                <input type="hidden" name="city" value="<?php echo $customer->getCity(); ?>"  />
+                <input type="hidden" name="zip" value="<?php echo $customer->getPoBoxNumber(); ?>"  />
+                <input type="hidden" name="address1" value="<?php echo $customer->getAddress(); ?>"  />
   
                 <input type="hidden" value="<?php echo $order_id;?>" name="item_number">
                 
