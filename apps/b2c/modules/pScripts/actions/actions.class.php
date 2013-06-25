@@ -812,9 +812,9 @@ class pScriptsActions extends sfActions {
         echo '<br/>';
         echo sfConfig::get('app_email_smtp_password');
         echo '<br/>';
-        echo sfConfig::get('app_email_sender_email', 'support@landncall.com');
+        echo sfConfig::get('app_email_sender_email', 'support@smartsim.se');
         echo '<br/>';
-        echo sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        echo sfConfig::get('app_email_sender_name', 'SmartSim support');
 
 
         $connection = Swift_SmtpTransport::newInstance()
@@ -826,8 +826,8 @@ class pScriptsActions extends sfActions {
 
 
 
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
         echo '<br/>';
         echo $sender_email;
@@ -1035,7 +1035,7 @@ class pScriptsActions extends sfActions {
                     'username' => $username,
                     'password' => $password,
                     'mobile' => $mobileNo,
-                    'message' => "You balance is below 25 SEK, Please refill your account. LandNCall AB - Support "
+                    'message' => "You balance is below 25 SEK, Please refill your account. SmartSim - Support "
                 );
                 $queryString = http_build_query($data, '', '&');
                 $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
@@ -1046,7 +1046,7 @@ class pScriptsActions extends sfActions {
                     'username' => $username,
                     'password' => $password,
                     'mobile' => $mobileNo,
-                    'message' => "You balance is below 10 SEK, Please refill your account. LandNCall AB - Support"
+                    'message' => "You balance is below 10 SEK, Please refill your account. SmartSim - Support"
                 );
                 $queryString = http_build_query($data, '', '&');
                 $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
@@ -1058,7 +1058,7 @@ class pScriptsActions extends sfActions {
                     'username' => $username,
                     'password' => $password,
                     'mobile' => $mobileNo,
-                    'message' => "You balance is 0 SEK, Please refill your account. LandNCall AB - Support "
+                    'message' => "You balance is 0 SEK, Please refill your account. SmartSim - Support "
                 );
                 $queryString = http_build_query($data, '', '&');
                 $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
@@ -1153,7 +1153,7 @@ class pScriptsActions extends sfActions {
             else if ($balance <= 0.00) {
                 $email_msg .= "\r\n balance < 10 && balance > 0";
                 $subject = 'Test Email: Balance Email ';
-                $message_body = "Test Email:  Your balance is 0 SEK, please refill otherwise your account will be closed. \r\n - LandNCall AB Support \r\n Company Contact Info";
+                $message_body = "Test Email:  Your balance is 0 SEK, please refill otherwise your account will be closed. \r\n - SmartSim Support \r\n Company Contact Info";
 
                 //This Seciton For Make The Log History When Complete registration complete - Agent
                 //echo sfConfig::get('sf_data_dir');
