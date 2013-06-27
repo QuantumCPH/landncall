@@ -613,7 +613,7 @@ class customerActions extends sfActions {
                         // emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                     if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
-                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
+                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the smartsim are finished. This error is faced by customer id: " . $customerids);
                         return false;
                     }
                 }
@@ -678,8 +678,8 @@ class customerActions extends sfActions {
                 $this->customer = $customer;
                 $vat = 0;
                 $subject = $this->getContext()->getI18N()->__('Transation for VoIP Purchase');
-                $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -1299,52 +1299,57 @@ class customerActions extends sfActions {
         changeLanguageCulture::languageCulture($request, $this);
         $this->target = $this->getTargetUrl();
         //-----------------------
+        $this->customer = CustomerPeer::retrieveByPK($this->getUser()->getAttribute('customer_id', '', 'usersession'));
+        if ($this->customer) {
+            
+            $this->redirect($this->getTargetUrl() . 'customer/dashboard');
+        } else {
+            if ($request->isMethod('post') &&
+                    $request->getParameter('mobile_number') != '' &&
+                    $request->getParameter('password') != '') {
+                $paswordval = $request->getParameter('password');
+                $mobile_number = $request->getParameter('mobile_number');
+                $password = sha1($request->getParameter('password'));
 
-        if ($request->isMethod('post') &&
-                $request->getParameter('mobile_number') != '' &&
-                $request->getParameter('password') != '') {
-            $paswordval = $request->getParameter('password');
-            $mobile_number = $request->getParameter('mobile_number');
-            $password = sha1($request->getParameter('password'));
+                $c = new Criteria();
+                $c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
+                $c->add(CustomerPeer::PASSWORD, $password);
+                $c->add(CustomerPeer::CUSTOMER_STATUS_ID, sfConfig::get('app_status_completed'));
 
-            $c = new Criteria();
-            $c->add(CustomerPeer::MOBILE_NUMBER, $mobile_number);
-            $c->add(CustomerPeer::PASSWORD, $password);
-            $c->add(CustomerPeer::CUSTOMER_STATUS_ID, sfConfig::get('app_status_completed'));
-
-            $customer = CustomerPeer::doSelectOne($c);
-
-
-            if ($customer) {
-
-                header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
-                $this->getUser()->setAttribute('customer_id', $customer->getId(), 'usersession');
-                $this->getUser()->setAuthenticated(true);
+                $customer = CustomerPeer::doSelectOne($c);
 
 
+                if ($customer) {
+
+                    header('P3P:CP="IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT"');
+                    $this->getUser()->setAttribute('customer_id', $customer->getId(), 'usersession');
+                    $this->getUser()->setAuthenticated(true);
 
 
-                $customer->setPlainText($paswordval);
-                $customer->save();
 
-                //$this->redirect('@customer_dashboard');
-                if ($request->isXmlHttpRequest())
-                    $this->renderText('ok');
-                else {
-                    $this->redirect($this->target . 'customer/dashboard');
+
+                    $customer->setPlainText($paswordval);
+                    $customer->save();
+
+                    //$this->redirect('@customer_dashboard');
+                    if ($request->isXmlHttpRequest())
+                        $this->renderText('ok');
+                    else {
+                        $this->redirect($this->target . 'customer/dashboard');
+                    }
+                } else {
+                    //
+                    if ($request->isXmlHttpRequest())
+                        $this->renderText('invalid');
+                    else {
+                        $this->getUser()->setFlash('error_message', $this->getContext()->getI18N()->__('Invaild mobile number or password.'));
+                    }
                 }
             } else {
-                //
-                if ($request->isXmlHttpRequest())
-                    $this->renderText('invalid');
-                else {
-                    $this->getUser()->setFlash('error_message', $this->getContext()->getI18N()->__('Invaild mobile number or password.'));
+                if ($request->isXmlHttpRequest()) {
+                    $this->renderPartial('login');
+                    return sfView::NONE;
                 }
-            }
-        } else {
-            if ($request->isXmlHttpRequest()) {
-                $this->renderPartial('login');
-                return sfView::NONE;
             }
         }
     }
@@ -1382,7 +1387,7 @@ class customerActions extends sfActions {
             $customer->setPassword($new_password);
             $message_body = $this->getContext()->getI18N()->__('Hi') . ' ' . $customer->getFirstName() . '!';
             $message_body .= '<br /><br />';
-            $message_body .= $this->getContext()->getI18N()->__('Your password has been changed. Please use the following information to login to your LandNCall AB account.');
+            $message_body .= $this->getContext()->getI18N()->__('Your password has been changed. Please use the following information to login to your SmartSim account.');
             $message_body .= '<br /><br />';
             $message_body .= sprintf('Mobilnummer: %s', $customer->getMobileNumber());
             $message_body .= '<br />';
@@ -1395,8 +1400,8 @@ class customerActions extends sfActions {
 
 
             $subject = $this->getContext()->getI18N()->__('Password Request');
-            $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-            $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+            $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+            $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
             $message = $message_body;
 
@@ -1726,10 +1731,10 @@ class customerActions extends sfActions {
             $invite->save();
 
             //set email attributes
-            $subject = $this->getContext()->getI18N()->__("LandNCall AB inbjudan");
+            $subject = $this->getContext()->getI18N()->__("SmartSim inbjudan");
             $name = $this->customer->getFirstName() . ' ' . $this->customer->getLastName();
-            $message_body = 'Hej ' . $recepient_name . ',<br /> ' . $this->getContext()->getI18N()->__("This invitation is sent to you with the refrence of") . ' ' . $name . ', ' . $this->getContext()->getI18N()->__("en användare av Smartsim från Landncall.");
-            $message_body_end = 'Vänligen klicka på acceptera för att börja spara pengar direkt med Smartsim du ocksåg' . '<a  href="' . $this->getTargetUrl() . 'customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a><br/> Läs mer på <a href="www.landncall.com">www.landncall.com</a>';
+            $message_body = 'Hej ' . $recepient_name . ',<br /> ' . $this->getContext()->getI18N()->__("This invitation is sent to you with the refrence of") . ' ' . $name . ', ' . $this->getContext()->getI18N()->__("en användare av Smartsim från SmartSim.");
+            $message_body_end = 'Vänligen klicka på acceptera för att börja spara pengar direkt med Smartsim du ocksåg' . '<a  href="' . $this->getTargetUrl() . 'customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a><br/> Läs mer på <a href="www.smartsim.se">www.smartsim.se</a>';
             //send email
             if ($recepient_name != ''):
                 $email = new EmailQueue();
@@ -2220,8 +2225,8 @@ class customerActions extends sfActions {
 
 
             $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-            $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-            $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+            $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+            $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
             $recepient_email = trim($this->customer->getEmail());
             $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -2511,7 +2516,7 @@ class customerActions extends sfActions {
         $this->form = new PaymentForm();
 
         $this->target = $this->getTargetUrl();
-                
+
         $product_id = $request->getParameter('pid');
         $customer_id = $request->getParameter('cid');
 
@@ -2563,8 +2568,8 @@ class customerActions extends sfActions {
         $lang = $this->getUser()->getCulture();
 
 
-        $return_url = $request->getParameter('accepturl').$item_amount;
-        $cancel_url = $request->getParameter('cancelurl').$item_amount;
+        $return_url = $request->getParameter('accepturl');
+        $cancel_url = $request->getParameter('cancelurl');
 
         $callbackparameters = $lang . '-' . $order_id . '-' . $item_amount;
         $notify_url = $this->getTargetUrl() . 'pScripts/calbackrefill?p=' . $callbackparameters;
@@ -2585,7 +2590,7 @@ class customerActions extends sfActions {
             $value = urlencode(stripslashes($value));
             $querystring .= "$key=$value&";
         }
-
+        $querystring .= "amount=" . urlencode($item_amount) . "&";
         $querystring .= "item_name=" . urlencode($item_name) . "&";
         $querystring .= "return=" . urldecode($return_url) . "&";
         $querystring .= "cancel_return=" . urldecode($cancel_url) . "&";

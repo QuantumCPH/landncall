@@ -338,8 +338,8 @@ public function executePrintReceipt(sfWebRequest $request)
 				  					));
 				  	
 				    $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-					$sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-					$sender_name = sfConfig::get('app_email_sender_name', 'zerocall support');
+					$sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+					$sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 				
 					$recepient_email = trim($customer->getEmail());
 					$recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());

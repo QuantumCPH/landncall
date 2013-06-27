@@ -315,8 +315,8 @@
         <target/>
       </trans-unit>
       <trans-unit id="118">
-        <source>Thank you for ordering &lt;b&gt;%1%&lt;/b&gt; and becoming LandNCall AB Customer. We welcome you to a new and huge mobile world.</source>
-        <target>Dziękujemy za zamówienie LandNCall AB Global i stanie się klientem LandNCall AB. Wstępujesz do nowego, ogromnego świata telefonii komórkowej.</target>
+        <source>Thank you for ordering &lt;b&gt;%1%&lt;/b&gt; and becoming SmartSim Customer. We welcome you to a new and huge mobile world.</source>
+        <target>Dziękujemy za zamówienie SmartSim Global i stanie się klientem SmartSim. Wstępujesz do nowego, ogromnego świata telefonii komórkowej.</target>
       </trans-unit>
       <trans-unit id="119">
         <source>With &lt;b&gt;%1%&lt;/b&gt;, you can easily call your friends and family for free.</source>
@@ -344,7 +344,7 @@
       </trans-unit>
       <trans-unit id="125">
         <source>&#13;
-		  						You mobile number is already registered with LandNCall AB.&#13;
+		  						You mobile number is already registered with SmartSim.&#13;
 		  					</source>
         <target/>
       </trans-unit>
@@ -354,7 +354,7 @@
       </trans-unit>
       <trans-unit id="127">
         <source>&#13;
-			  			You have been registered to LandNCall AB.</source>
+			  			You have been registered to SmartSim.</source>
         <target/>
       </trans-unit>
       <trans-unit id="128">
@@ -363,7 +363,7 @@
       </trans-unit>
       <trans-unit id="129">
         <source>&#13;
-		  						Your mobile number is not registered with LandNCall AB.&#13;
+		  						Your mobile number is not registered with SmartSim.&#13;
 		  					</source>
         <target/>
       </trans-unit>
@@ -589,8 +589,8 @@
         <target>Jak to działa?</target>
       </trans-unit>
 	  <trans-unit id="185" translate="yes" reformat="yes" xml:space="default">
-        <source>Tell your friends about zer0call and earn 10dkk as soon as your friends have made their first payment with zer0call! Spread the word about zer0call and let your friends know about LandNCall AB services.</source>
-        <target>Powiedz znajomym o zer0call i zarobić 10dkk tak szybko, jak Twoi znajomi się ich pierwsza płatność z zer0call! Rozpowszechniać informacje o zer0call i twoi przyjaciele wiedzieli o LandNCall AB usług.</target>
+        <source>Tell your friends about zer0call and earn 10dkk as soon as your friends have made their first payment with zer0call! Spread the word about zer0call and let your friends know about SmartSim services.</source>
+        <target>Powiedz znajomym o zer0call i zarobić 10dkk tak szybko, jak Twoi znajomi się ich pierwsza płatność z zer0call! Rozpowszechniać informacje o zer0call i twoi przyjaciele wiedzieli o SmartSim usług.</target>
       </trans-unit>
 	   <trans-unit id="186" translate="yes" reformat="yes" xml:space="default">
         <source>Tell your friends about zer0call &amp; earn extra balance!</source>
@@ -681,8 +681,8 @@
         <target>Zobacz historię połączeń</target>
       </trans-unit>
 	  <trans-unit id="205" translate="yes" reformat="yes" xml:space="default">
-        <source>Your password has been changed. Please use the following information to login to your LandNCall AB account.</source>
-        <target>Twoje hasło zostało zmienione. Proszę skorzystać z poniższych informacji do logowania na konto LandNCall AB.</target>
+        <source>Your password has been changed. Please use the following information to login to your SmartSim account.</source>
+        <target>Twoje hasło zostało zmienione. Proszę skorzystać z poniższych informacji do logowania na konto SmartSim.</target>
       </trans-unit>
         <trans-unit id="206" translate="yes" reformat="yes" xml:space="default">
         <source>eur</source>

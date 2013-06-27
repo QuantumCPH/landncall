@@ -2,8 +2,9 @@
 
 class emailLib {
 
-//rs@zapna.com to jan.larsson@landncall.com
-//asd@landncall.com to okhan@zapna.com
+//rs@zapna.com    to    jan.larsson@SmartSim.com 
+//asd@SmartSim.com  to    okhan@zapna.com
+
     public static function sendAgentRefilEmail(AgentCompany $agent, $agent_order) {
         $vat = 0;
 
@@ -59,7 +60,7 @@ class emailLib {
             $email2->setReceipientName($recepient_agent_name);
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($agent_company_id);
-            $email2->setEmailType('LandNCall AB refill via agent');
+            $email2->setEmailType('SmartSim refill via agent');
             $email2->setMessage($message_body);
 
             $email2->save();
@@ -72,7 +73,7 @@ class emailLib {
             $email3->setReceipientName($recipient_name_ok);
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
-            $email3->setEmailType('LandNCall AB refill via agent');
+            $email3->setEmailType('SmartSim refill via agent');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -84,7 +85,7 @@ class emailLib {
             $email4->setReceipientName($recipient_name_jan);
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
-            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setEmailType('SmartSim refill via agent');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -97,11 +98,25 @@ class emailLib {
             $email4->setReceipientName($recipient_name_rs);
             $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
-            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setEmailType('SmartSim refill via agent');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
         //-----------------------------------------
+
+        //--------------Sent The Email To Jan
+        if (trim($recipient_email_jan) != ''):
+            $email4 = new EmailQueue();
+            $email4->setSubject($subject);
+            $email4->setReceipientName($recipient_name_jan);
+            $email4->setReceipientEmail($recipient_email_jan);
+            $email4->setAgentId($agent_company_id);
+            $email4->setEmailType('SmartSim refill via agent');
+            $email4->setMessage($message_body);
+            $email4->save();
+        endif;
+        //-----------------------------------------
+
     }
 
     public static function sendRetailRefillEmail(Customer $customer, $order) {
@@ -245,7 +260,7 @@ class emailLib {
             $email->setReceipientEmail($recepient_email);
             $email->setAgentId($agent_company_id);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandNCall AB refill via agent');
+            $email->setEmailType('SmartSim refill via agent');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -259,7 +274,7 @@ class emailLib {
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($agent_company_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandNCall AB refill via agent');
+            $email2->setEmailType('SmartSim refill via agent');
             $email2->setMessage($message_body);
 
             $email2->save();
@@ -273,7 +288,7 @@ class emailLib {
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB refill via agent');
+            $email3->setEmailType('SmartSim refill via agent');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -286,7 +301,7 @@ class emailLib {
             $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setEmailType('SmartSim refill via agent');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -299,7 +314,7 @@ class emailLib {
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setEmailType('SmartSim refill via agent');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -312,7 +327,7 @@ class emailLib {
             $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB refill via agent');
+            $email4->setEmailType('SmartSim refill via agent');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -475,7 +490,7 @@ class emailLib {
             $email->setReceipientEmail($recepient_email);
             $email->setAgentId($agent_company_id);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandNCall AB Customer registration via agent');
+            $email->setEmailType('SmartSim Customer registration via agent');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -489,7 +504,7 @@ class emailLib {
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($agent_company_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandNCall AB Customer registration via agent');
+            $email2->setEmailType('SmartSim Customer registration via agent');
             $email2->setMessage($message_body);
 
             $email2->save();
@@ -503,7 +518,7 @@ class emailLib {
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB Customer registration via agent');
+            $email3->setEmailType('SmartSim Customer registration via agent');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -516,7 +531,7 @@ class emailLib {
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via agent');
+            $email4->setEmailType('SmartSim Customer registration via agent');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -529,7 +544,7 @@ class emailLib {
             $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via agent');
+            $email4->setEmailType('SmartSim Customer registration via agent');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -542,7 +557,7 @@ class emailLib {
             $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via agent');
+            $email4->setEmailType('SmartSim Customer registration via agent');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -558,7 +573,10 @@ class emailLib {
         $customer_id = trim($customer->getId());
         $referrer_id = trim($customer->getReferrerId());
 
-        
+        //Support Information
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
+
         //------------------Sent The Email To Customer
         if (trim($recepient_email) != '') {
             $email = new EmailQueue();
@@ -567,7 +585,7 @@ class emailLib {
             $email->setReceipientEmail($recepient_email);
             $email->setCutomerId($customer_id);
             $email->setAgentId($referrer_id);
-            $email->setEmailType('LandNCall AB Forget Password');
+            $email->setEmailType('SmartSim Forget Password');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -628,7 +646,7 @@ class emailLib {
             $email->setReceipientEmail($recepient_email);
             $email->setAgentId($referrer_id);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandNCall AB refill');
+            $email->setEmailType('SmartSim refill');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -641,7 +659,7 @@ class emailLib {
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($referrer_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandNCall AB refill');
+            $email2->setEmailType('SmartSim refill');
             $email2->setMessage($message_body);
             $email2->save();
         endif;
@@ -654,7 +672,9 @@ class emailLib {
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB refill');
+
+            $email3->setEmailType('SmartSim refill via agent');
+
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -667,7 +687,9 @@ class emailLib {
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB refill');
+
+            $email4->setEmailType('SmartSim refill via agent');
+
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -680,7 +702,7 @@ class emailLib {
             $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB refill');
+            $email4->setEmailType('SmartSim refill');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -871,21 +893,35 @@ class emailLib {
             $email->setReceipientName($recepient_name);
             $email->setCutomerId($customer_id);
             $email->setAgentId($referrer_id);
-            $email->setEmailType('LandNCall AB Customer Confirm Payment');
+            $email->setEmailType('SmartSim Customer Confirm Payment');
 
             $email->save();
         endif;
 
          //--------------Sent The Email To Okhan
         if (trim($recipient_email_ok) != ''):
+            $email2 = new EmailQueue();
+            $email2->setSubject($subject);
+            $email2->setMessage($message_body);
+            $email2->setReceipientEmail($recipient_email_ok);
+            $email2->setReceipientName($recipient_name_ok);
+            $email2->setCutomerId($customer_id);
+            $email2->setAgentId($referrer_id);
+            $email2->setEmailType('SmartSim Customer Confirm Payment');
+            $email2->save();
+        endif;
+        //send to jan
+        if (trim($recipient_email_jan) != ''):
+
             $email3 = new EmailQueue();
             $email3->setSubject($subject);
-            $email3->setReceipientName($recipient_name_ok);
-            $email3->setReceipientEmail($recipient_email_ok);
+            $email3->setReceipientName($recipient_name_jan);
+            $email3->setReceipientEmail($recipient_email_jan);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB Customer Confirm Payment');
-            $email3->setMessage($message_body);
+            $email3->setAgentId($referrer_id);
+            $email3->setEmailType('SmartSim Customer Confirm Payment');
+
             $email3->save();
         endif;
         //-----------------------------------------
@@ -904,28 +940,29 @@ class emailLib {
         //-----------------------------------------
         //--------------Sent The Email To cdu
         if (trim($recipient_email_cdu) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($recipient_name_cdu);
-            $email4->setReceipientEmail($recipient_email_cdu);
-            $email4->setAgentId($agent_company_id);
-            $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer Confirm Payment');
-            $email4->setMessage($message_body);
-            $email4->save();
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setMessage($message_body);
+            $email3->setReceipientEmail($recipient_email_cdu);
+            $email3->setReceipientName($recipient_name_cdu);
+            $email3->setCutomerId($customer_id);
+            $email3->setAgentId($referrer_id);
+            $email3->setEmailType('SmartSim Customer Confirm Payment');
+            $email3->save();
         endif;
         //-----------------------------------------
         //--------------Sent The Email To RS
         if (trim($recipient_email_rs) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($recipient_name_rs);
-            $email4->setReceipientEmail($recipient_email_rs);
-            $email4->setAgentId($agent_company_id);
-            $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer Confirm Payment');
-            $email4->setMessage($message_body);
-            $email4->save();
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setMessage($message_body);
+            $email3->setReceipientEmail($recipient_email_rs);
+            $email3->setReceipientName($recipient_name_rs);
+            $email3->setCutomerId($customer_id);
+            $email3->setAgentId($referrer_id);
+            $email3->setEmailType('SmartSim Customer Confirm Payment');
+            $email3->save();
+
         endif;
         //-----------------------------------------
     }
@@ -948,11 +985,11 @@ class emailLib {
         $recipient_name_landncall = sfConfig::get('app_recipient_name_landncall');
         $recipient_email_landncall = sfConfig::get('app_recipient_email_landncall');
         $message_body = '
-Härmed bekräftas att du har fått provision insatt på ditt konto för att du har tipsat en vän om Smartsim från LandNCall.
+Härmed bekräftas att du har fått provision insatt på ditt konto för att du har tipsat en vän om Smartsim från.
 Gå in på ”Mina sidor” och gå till ”Övrig historik” under ”Samtalshistorik” så ser du vad du har tjänat.<br/>Med vänlig hälsning,
 <br/>
-LandNCall<br/>
-www.landncall.com';
+SmartSim<br/>
+www.smartsim.se';
 
         $c = new Criteria();
         $c->add(CustomerPeer::ID, $inviteuserid);
@@ -960,7 +997,9 @@ www.landncall.com';
         $recepient_email = trim($customer->getEmail());
         $recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
         $customer_id = trim($customer->getId());
-        //$referrer_id = trim($customer->getReferrerId());
+
+        //$referrer_id        = trim($customer->getReferrerId());
+
         //send to user
         if ($recepient_email != ''):
             $email = new EmailQueue();
@@ -970,9 +1009,36 @@ www.landncall.com';
             $email->setReceipientName($recepient_name);
             $email->setCutomerId($customer_id);
             //$email->setAgentId($referrer_id);
-            $email->setEmailType('LandNCall AB Customer Confirm Bonus');
+
+            $email->setEmailType('SmartSim Customer Confirm Bonus');
 
             $email->save();
+        endif;
+
+        //send to okhan
+        if ($recipient_email_landncall != ''):
+            $email2 = new EmailQueue();
+            $email2->setSubject($subject);
+            $email2->setMessage($message_body);
+            $email2->setReceipientEmail($recipient_email_landncall);
+            $email2->setReceipientName($sender_name);
+            $email2->setCutomerId($customer_id);
+            //$email2->setAgentId($referrer_id);
+            $email2->setEmailType('SmartSim Customer Confirm Bonus');
+            $email2->save();
+        endif;
+        //////////////////////////////////////////////////////////////////
+        if ($recipient_email_jan != ''):
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setMessage($message_body);
+            $email3->setReceipientName($recipient_name_jan);
+            $email3->setReceipientEmail($recipient_email_jan);
+            $email3->setCutomerId($customer_id);
+            //$email3->setAgentId($referrer_id);
+            $email3->setEmailType('SmartSim Customer Confirm Bonus');
+            $email3->save();
+
         endif;
 
         //--------------Sent The Email To Okhan
@@ -983,61 +1049,33 @@ www.landncall.com';
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB Customer Confirm Bonus');
-            $email3->setMessage($message_body);
+            //$email3->setAgentId($referrer_id);
+            $email3->setEmailType('SmartSim Customer Confirm Bonus');
             $email3->save();
         endif;
-        //-----------------------------------------
-        //--------------Sent The Email To Jan larsson
-        if (trim($recipient_email_jan) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($recipient_name_jan);
-            $email4->setReceipientEmail($recipient_email_jan);
-            $email4->setAgentId($agent_company_id);
-            $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
-            $email4->setMessage($message_body);
-            $email4->save();
+        
+        if ($recipient_email_cdu != ''):
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setMessage($message_body);
+            $email3->setReceipientName($recipient_name_cdu);
+            $email3->setReceipientEmail($recipient_email_cdu);
+            $email3->setCutomerId($customer_id);
+            //$email3->setAgentId($referrer_id);
+            $email3->setEmailType('SmartSim Customer Confirm Bonus');
+            $email3->save();
         endif;
-        //-----------------------------------------
-        //--------------Sent The Email To cdu
-        if (trim($recipient_email_cdu) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($recipient_name_cdu);
-            $email4->setReceipientEmail($recipient_email_cdu);
-            $email4->setAgentId($agent_company_id);
-            $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
-            $email4->setMessage($message_body);
-            $email4->save();
-        endif;
-        //-----------------------------------------
-        //--------------Sent The Email To RS
-        if (trim($recipient_email_rs) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($recipient_name_rs);
-            $email4->setReceipientEmail($recipient_email_rs);
-            $email4->setAgentId($agent_company_id);
-            $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
-            $email4->setMessage($message_body);
-            $email4->save();
-        endif;
-        //-----------------------------------------
-         //--------------Sent The Email To Landncall support
-        if (trim($recipient_email_landncall) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($recipient_name_landncall);
-            $email4->setReceipientEmail($recipient_email_landncall);
-            $email4->setAgentId($agent_company_id);
-            $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer Confirm Bonus');
-            $email4->setMessage($message_body);
-            $email4->save();
+        
+        if ($recipient_email_rs != ''):
+            $email3 = new EmailQueue();
+            $email3->setSubject($subject);
+            $email3->setMessage($message_body);
+            $email3->setReceipientName($recipient_name_rs);
+            $email3->setReceipientEmail($recipient_email_rs);
+            $email3->setCutomerId($customer_id);
+            //$email3->setAgentId($referrer_id);
+            $email3->setEmailType('SmartSim Customer Confirm Bonus');
+            $email3->save();
         endif;
         //-----------------------------------------
     }
@@ -1108,7 +1146,7 @@ www.landncall.com';
             $email->setReceipientName($recepient_name);
             $email->setReceipientEmail($recepient_email);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandNCall AB Customer registration via link');
+            $email->setEmailType('SmartSim Customer registration via link');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -1122,7 +1160,7 @@ www.landncall.com';
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB Customer registration via link');
+            $email3->setEmailType('SmartSim Customer registration via link');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -1135,7 +1173,7 @@ www.landncall.com';
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setEmailType('SmartSim Customer registration via link');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1148,7 +1186,7 @@ www.landncall.com';
             $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setEmailType('SmartSim Customer registration via link');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1161,7 +1199,7 @@ www.landncall.com';
             $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setEmailType('SmartSim Customer registration via link');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1251,7 +1289,7 @@ www.landncall.com';
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($agent_company_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandNCall AB Customer registration via agent SMS ');
+            $email2->setEmailType('SmartSim Customer registration via agent SMS ');
             $email2->setMessage($message_body);
 
             $email2->save();
@@ -1265,7 +1303,7 @@ www.landncall.com';
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB Customer registration via agent SMS');
+            $email3->setEmailType('SmartSim Customer registration via agent SMS ');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -1278,7 +1316,7 @@ www.landncall.com';
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via agent SMS');
+            $email4->setEmailType('SmartSim Customer registration via agent SMS ');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1291,7 +1329,7 @@ www.landncall.com';
             $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via agent SMS');
+            $email4->setEmailType('SmartSim Customer registration via agent SMS ');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1304,7 +1342,7 @@ www.landncall.com';
             $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via agent SMS');
+            $email4->setEmailType('SmartSim Customer registration via agent SMS ');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1383,7 +1421,7 @@ www.landncall.com';
             $email->setReceipientEmail($recepient_email);
             $email->setAgentId($agent_company_id);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandNCall AB Customer registration via APP');
+            $email->setEmailType('SmartSim Customer registration via APP');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -1397,7 +1435,7 @@ www.landncall.com';
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($agent_company_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandNCall AB Customer registration via APP');
+            $email2->setEmailType('SmartSim Customer registration via APP');
             $email2->setMessage($message_body);
 
             $email2->save();
@@ -1411,7 +1449,7 @@ www.landncall.com';
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB Customer registration via APP');
+            $email3->setEmailType('SmartSim Customer registration via APP');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -1424,7 +1462,7 @@ www.landncall.com';
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via APP');
+            $email4->setEmailType('SmartSim Customer registration via APP');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1437,7 +1475,7 @@ www.landncall.com';
             $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via APP');
+            $email4->setEmailType('SmartSim Customer registration via APP');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1450,7 +1488,7 @@ www.landncall.com';
             $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via APP');
+            $email4->setEmailType('SmartSim Customer registration via APP');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1461,7 +1499,7 @@ www.landncall.com';
 
         //set vat
         $vat = 0;
-        $subject = 'Bekräftelse - nytt resenummer frän LandNCall';
+        $subject = 'Bekräftelse - nytt resenummer frän SmartSim';
         $recepient_email = trim($customer->getEmail());
         $recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
         $customer_id = trim($customer->getId());
@@ -1504,7 +1542,7 @@ www.landncall.com';
         $message_body = "<table width='600px'><tr style='border:0px solid #fff'><td colspan='4' align='right' style='text-align:right; border:0px solid #fff'>" . image_tag('http://landncall.zerocall.com/images/logo.gif') . "</tr></table><table cellspacing='0' width='600px'><tr><td>Grattis till ditt nya resenummer. Detta nummer är alltid kopplat till den telefon där du har Smartsim aktiverat. Med resenumret blir du nådd utomlands då du har ett lokalt SIM-kort. Se prislistan för hur mycket det kostar att ta emot samtal.
 Ditt resenummer är $voipnumbers.<br/><br/>
 Med vänlig hälsning<br/><br/>
-LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
+SmartSim<br/><a href='http://www.smartsim.se'>www.smartsim.se</a></td></tr></table>";
 
         //Support Information
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
@@ -1616,7 +1654,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email->setReceipientEmail($recepient_email);
             $email->setCutomerId($customer_id);
             $email->setAgentId($referrer_id);
-            $email->setEmailType('LandnCall Customer Balance');
+            $email->setEmailType('SmartSim Customer Balance');
             $email->setReceipientName($recepient_name);
             $email->save();
         endif;
@@ -1628,8 +1666,8 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 
         sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
         $message_body = "<table cellspacing='0' width='600px'>
-<tr><td>" . $message . " <br/><br/>Med vänlig hälsning<br/><br/>
-LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
+                         <tr><td>" . $message . " <br/><br/>Med vänlig hälsning<br/><br/>
+                         SmartSim<br/><a href='http://www.smartsim.se'>www.smartsim.se</a></td></tr></table>";
 
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
@@ -1666,9 +1704,8 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 
         $subject = 'Unique Ids finished.';
         $message_body = "<table cellspacing='0' width='600px'><tr><td>
-Uniuqe Ids finsihed.<br/><br/>
-LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
-
+        Uniuqe Ids finsihed.<br/><br/>
+        SmartSim<br/><a href='http://www.smartsim.se'>www.smartsim.se</a></td></tr></table>";
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
 
@@ -1704,8 +1741,8 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 
         $subject = 'Unique Ids finished.';
         $message_body = "<table cellspacing='0' width='600px'><tr><td>
-Uniuqe Id " . $uniqueid . " has issue while assigning on " . $customer->getMobileNumber() . "<br/><br/>
-LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
+            Uniuqe Id " . $uniqueid . " has issue while assigning on " . $customer->getMobileNumber() . "<br/><br/>
+            SmartSim<br/><a href='http://www.smartsim.se'>www.smartsim.se</a></td></tr></table>";
 
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
@@ -1844,7 +1881,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email->setReceipientName($recepient_name);
             $email->setReceipientEmail($recepient_email);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandNCall AB Customer registration via link');
+            $email->setEmailType('SmartSim Customer registration via link');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -1866,7 +1903,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email3->setReceipientName($recipient_name_ok);
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandNCall AB Customer registration via link');
+            $email3->setEmailType('SmartSim Customer registration via link');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -1878,7 +1915,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email4->setReceipientName($recipient_name_jan);
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setEmailType('SmartSim Customer registration via link');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1890,7 +1927,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setEmailType('SmartSim Customer registration via link');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1901,8 +1938,8 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setCutomerId($customer_id);
-            $email4->setReceipientEmail($recipient_email_rs);
-            $email4->setEmailType('LandNCall AB Customer registration via link');
+            $email4->setEmailType('SmartSim Customer registration via link');
+
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -1913,8 +1950,8 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 
     public static function sendLandncallCdrErrorEmail($filename) {
 
-        $subject='Landncall CDr File Upload Issue';
-        $message_body='Landncall CDr File Upload Issue File Name is ='.$filename;
+        $subject='SmartSim CDr File Upload Issue';
+        $message_body='SmartSim CDr File Upload Issue File Name is ='.$filename;
 
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
@@ -1928,7 +1965,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email->setSubject($subject);
             $email->setReceipientName($recipient_name_rs);
             $email->setReceipientEmail($recipient_email_rs);
-            $email->setEmailType('LandNCall CDR Files Error email');
+            $email->setEmailType('SmartSim CDR Files Error email');
             $email->setMessage($message_body);
             $email->save();
         endif;
@@ -1940,7 +1977,7 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
             $email->setSubject($subject);
             $email->setReceipientName($recipient_name_support);
             $email->setReceipientEmail($recipient_email_support);
-            $email->setEmailType('LandNCall CDR Files Error email');
+            $email->setEmailType('SmartSim CDR Files Error email');
             $email->setMessage($message_body);
             $email->save();
          endif;
@@ -2012,7 +2049,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email2->setReceipientName($recepient_agent_name);
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($agent_company_id);
-            $email2->setEmailType('LandNCall Agent refill via admin');
+             $email2->setEmailType('SmartSim Agent refill via admin');
             $email2->setMessage($message_body);
 
             $email2->save();
@@ -2026,7 +2063,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email3->setReceipientName($recipient_name_ok);
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
-            $email3->setEmailType('LandNCall Agent refill via admin');
+            $email3->setEmailType('SmartSim Agent refill via admin');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -2038,7 +2075,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email4->setReceipientName($recipient_name_jan);
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
-            $email4->setEmailType('LandNCall Agent refill via admin');
+            $email4->setEmailType('SmartSim Agent refill via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -2049,8 +2086,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_cdu);
             $email4->setAgentId($agent_company_id);
-            $email4->setReceipientEmail($recipient_email_cdu);
-            $email4->setEmailType('LandNCall Agent refill via admin');
+            $email4->setEmailType('SmartSim Agent refill via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -2061,8 +2097,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email4->setSubject($subject);
             $email4->setReceipientName($recipient_name_rs);
             $email4->setAgentId($agent_company_id);
-            $email4->setReceipientEmail($recipient_email_rs);
-            $email4->setEmailType('LandNCall Agent refill via admin');
+            $email4->setEmailType('SmartSim Agent refill via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -2224,7 +2259,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email->setReceipientEmail($recepient_email);
             $email->setAgentId($agent_company_id);
             $email->setCutomerId($customer_id);
-            $email->setEmailType('LandnCall refill/charge via admin');
+            $email->setEmailType('SmartSim refill/charge via admin');
             $email->setMessage($message_body);
             $email->save();
         }
@@ -2239,7 +2274,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($agent_company_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandnCall Refill/charge via admin');
+            $email2->setEmailType('SmartSim  Refill/charge via admin');
             $email2->setMessage($message_body);
 
             $email2->save();
@@ -2254,7 +2289,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandnCall Refill/charge via admin');
+            $email3->setEmailType('SmartSim  Refill/charge via admin');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -2267,7 +2302,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandnCall Refill/charge via admin');
+            $email4->setEmailType('SmartSim Refill/charge via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -2280,7 +2315,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandnCall Refill/charge via admin');
+            $email4->setEmailType('SmartSim refill/charge via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -2293,7 +2328,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandnCall Refill/charge via admin');
+            $email4->setEmailType('SmartSim refill/charge via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -2320,28 +2355,27 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
         
         
         ////// Email to Support
-        //--------------Sent The Email To RS
-        if (trim($recipient_email_rs) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($recipient_name_rs);
-            $email4->setReceipientEmail($recipient_email_rs);
-            $email4->setEmailType('LandNCall AB SMS Registration Email');
-            $email4->setMessage($message_body);
-            $email4->save();
-        endif;
-        //-----------------------------------------
-        //--------------Sent The Email To Support tech
-        if (trim($recipient_email_support) != ''):
-            $email4 = new EmailQueue();
-            $email4->setSubject($subject);
-            $email4->setReceipientName($recipient_name_support);
-            $email4->setReceipientEmail($recipient_email_support);
-            $email4->setEmailType('LandNCall AB SMS Registration Email');
-            $email4->setMessage($message_body);
-            $email4->save();
-        endif;
-        //-----------------------------------------
+//        if (trim($recipient_email_support) != ''):
+//            $email = new EmailQueue();
+//            $email->setSubject($subject);
+//            $email->setMessage($message_body);
+//            $email->setReceipientEmail($recipient_email_support);
+//            $email->setEmailType('SmartSim-'.$subject);
+//            $email->setReceipientName($recipient_name_support);
+//            $email->save();
+//        endif;
+//        
+//        ///// Email to RS
+//        if (trim($recipient_email_rs) != ''):
+//            $email = new EmailQueue();
+//            $email->setSubject($subject);
+//            $email->setMessage($message_body);
+//            $email->setReceipientEmail($recipient_email_rs);
+//            $email->setEmailType('SmartSim-'.$subject);
+//            $email->setReceipientName($recipient_name_rs);
+//            $email->save();
+//        endif;
+
     }
 
     public static function sendErrorInAutoReg($subject, $message) {

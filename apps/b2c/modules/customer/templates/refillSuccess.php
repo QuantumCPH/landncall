@@ -15,29 +15,29 @@ $randomOrderId = $order->getId();
 <script type="text/javascript">
 
     /*
-
-        $(document).ready(function(){
-		
-                $('#frmarchitrade').submit(function() {
-                        user_attr_2 = jQuery("#user_attr_2 option:selected").val();
-                        user_attr_3 = jQuery("#user_attr_3 option:selected").val();
-                jQuery('#idcallbackURLauto').val(jQuery('#idcallbackURLauto').val()+"&user_attr_2="+user_attr_2+"&user_attr_3="+user_attr_3);
-  return true;
-});
-
-
-$('#refill').submit(function() {
-                        extra_refill = jQuery("#extra_refill option:selected").val();
-                        extra_refill = parseInt(extra_refill)*100;
-                        jQuery('#idcallbackurl').val(jQuery('#callbackurlfixed').val()+extra_refill);
-                        jQuery('#total').val(extra_refill);
-  return true;
-});
-
-	
-        });
-
-
+     
+     $(document).ready(function(){
+     
+     $('#frmarchitrade').submit(function() {
+     user_attr_2 = jQuery("#user_attr_2 option:selected").val();
+     user_attr_3 = jQuery("#user_attr_3 option:selected").val();
+     jQuery('#idcallbackURLauto').val(jQuery('#idcallbackURLauto').val()+"&user_attr_2="+user_attr_2+"&user_attr_3="+user_attr_3);
+     return true;
+     });
+     
+     
+     $('#refill').submit(function() {
+     extra_refill = jQuery("#extra_refill option:selected").val();
+     extra_refill = parseInt(extra_refill)*100;
+     jQuery('#idcallbackurl').val(jQuery('#callbackurlfixed').val()+extra_refill);
+     jQuery('#total').val(extra_refill);
+     return true;
+     });
+     
+     
+     });
+     
+     
      */
 
 </script>
@@ -45,7 +45,7 @@ $('#refill').submit(function() {
 
 <br/>
 <br/>
-<form action="<?php echo $target ?>customer/refilTransaction"  method="post" id="refill" >
+<form action="<?php echo $target ?>customer/refilTransaction"  method="post" id="refill" target="_parent" >
     <div style="width:500px;">
         <div  style="width:340px;float:left;">    <ul>
                 <!-- customer product -->
@@ -80,19 +80,22 @@ $('#refill').submit(function() {
             </ul>
 
             <!-- hidden fields -->
-            <input type="hidden" value="" id="total" name="amount">
             <input type="hidden" value="_xclick" name="cmd"> 
             <input type="hidden" value="1" name="no_note">
             <input type="hidden" value="SE" name="lc">
             <input type="hidden" value="SEK" name="currency_code">
             <input type="hidden" value="PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest" name="bn">
-            <input type="hidden" value="<?php echo $customer->getFirstName(); ?>" name="firstName">
-            <input type="hidden" value="<?php echo $customer->getLastName(); ?>" name="lastName">
-            <input type="hidden" value="<?php echo $customer->getEmail(); ?>" name="payer_email">
+            <input type="hidden" name="first_name" value="<?php echo $customer->getFirstName(); ?>"  />
+            <input type="hidden" name="last_name" value="<?php echo $customer->getLastName(); ?>"  />
+            <input type="hidden" name="email" value="<?php echo $customer->getEmail(); ?>"  />
+            <input type="hidden" name="city" value="<?php echo $customer->getCity(); ?>"  />
+            <input type="hidden" name="zip" value="<?php echo $customer->getPoBoxNumber(); ?>"  />
+            <input type="hidden" name="address1" value="<?php echo $customer->getAddress(); ?>"  />
+
             <input type="hidden" value="<?php echo $randomOrderId; ?>" name="item_number">
-            <input type="hidden" name="cancelurl" value="<?php echo sfConfig::get('app_epay_relay_script_url') . url_for('@epay_refill_reject', true) ?>?accept=cancel&subscriptionid=&orderid=<?php echo $order->getId(); ?>&amount=" />
-            <input type="hidden" name="accepturl" id="idaccepturl" value="<?php echo sfConfig::get('app_epay_relay_script_url') . url_for('@epay_refill_accept', true) ?>?accept=yes&subscriptionid=&orderid=<?php echo $order->getId(); ?>&amount=" />
-            </div>
+            <input type="hidden" name="cancelurl" value="http://www.smartsim.se/mina-sidor" />
+            <input type="hidden" name="accepturl" id="idaccepturl" value="http://www.smartsim.se/mina-sidor" />
+        </div>
         <div style="width:140px;float:left;padding-top:30px;">   
 
             <input type="submit" class="butonsigninsmall" name="button" style="cursor: pointer;float: right; margin-left: 134px; margin-top: -10px;"  value="<?php echo __('Fyll på') ?>" >			

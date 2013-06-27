@@ -213,7 +213,7 @@ class employeeActions extends sfActions {
                 }
 
                 if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
-                    emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by Employee id: " . $request->getParameter('id'));
+                    emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the smarsim are finished. This error is faced by Employee id: " . $request->getParameter('id'));
                     $msg = "Resenummer is not activate";
                     //return false;
                 } else {
@@ -341,7 +341,7 @@ class employeeActions extends sfActions {
                     //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                 }
                 if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
-                    emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by Employee id: " . $request->getParameter('id'));
+                    emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the smartsim are finished. This error is faced by Employee id: " . $request->getParameter('id'));
                     $msg = "Resenummer is not activate";
                 } else {
                     $voip_customer->setUpdatedAt(date('Y-m-d H:i:s'));

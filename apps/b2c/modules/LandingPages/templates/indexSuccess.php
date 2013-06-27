@@ -12,7 +12,7 @@
         <li>There will be Agents ID inserted in the link (at the end of URL i.e. ?ref=3)</li><br/><br/>
         <li>Hence when you signup, the referred ID (agent's id will be saved along with customer</li><br/><br/>
         <li>This will enable us to provide commission to the agent.</li><br/><br/>
-        <li>Currently there is a link for Agent # 3, i.e. LandNCall AB</li><br/><br/>
+        <li>Currently there is a link for Agent # 3, i.e. SmartSim</li><br/><br/>
 </ul>
 <br/>
 <h4>  Agent banner with embedded link: </h4>

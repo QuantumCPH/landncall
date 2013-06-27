@@ -149,7 +149,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 	
 </script>
 <!---->
-<form action="<?php echo $target; ?>payments/transactionus"   method="post" id="payment" onsubmit="return checkForm()">
+<form action="<?php echo $target; ?>payments/transactionus"   method="post" id="payment" onsubmit="return checkForm()" target="_parent">
     <div class="left-col">
         <div class="split-form-sign-up">
             <div class="step-details"> <strong><?php echo __('Become a Customer') ?> <span class="inactive">- <?php echo __('Step 1') ?>: <?php echo __('Registrera') ?> </span><span class="active">- <?php echo __('Step 2') ?>: <?php echo __('Payment') ?></span></strong> </div>
@@ -192,7 +192,8 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 
                             echo $product_price;
                             ?>" />
-                        <input type="hidden" id="extra_refill" value="<?php $extra_refill = $order->getExtraRefill();
+                        <input type="hidden" id="extra_refill" value="<?php
+                               $extra_refill = $order->getExtraRefill();
                                echo $extra_refill;
                             ?>" />
 
@@ -230,10 +231,11 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                     </li>
                     <li>
                         <label><?php echo __('VAT') ?> (25%)<br />
-                               <?php echo __('Total amount') ?></label>
-                        <input type="hidden" id="vat" value="<?php $vat = .25 * ($product_price);
-                               echo $vat;
-                               ?>" />
+                        <?php echo __('Total amount') ?></label>
+                        <input type="hidden" id="vat" value="<?php
+                        $vat = .25 * ($product_price);
+                        echo $vat;
+                        ?>" />
                         <label class="fr ac" >
                             <span id="vat_span">
                             <?php echo format_number($vat) ?>
@@ -259,13 +261,16 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 <input type="hidden" value="SE" name="lc">
                 <input type="hidden" value="SEK" name="currency_code">
                 <input type="hidden" value="PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest" name="bn">
-                <input type="hidden" value="<?php echo $customer->getFirstName(); ?>" name="firstName">
-                <input type="hidden" value="<?php echo $customer->getLastName(); ?>" name="lastName">
-                <input type="hidden" value="<?php echo $customer->getEmail(); ?>" name="payer_email">
+                <input type="hidden" name="first_name" value="<?php echo $customer->getFirstName(); ?>"  />
+                <input type="hidden" name="last_name" value="<?php echo $customer->getLastName(); ?>"  />
+                <input type="hidden" name="email" value="<?php echo $customer->getEmail(); ?>"  />
+                <input type="hidden" name="city" value="<?php echo $customer->getCity(); ?>"  />
+                <input type="hidden" name="zip" value="<?php echo $customer->getPoBoxNumber(); ?>"  />
+                <input type="hidden" name="address1" value="<?php echo $customer->getAddress(); ?>"  />
+  
                 <input type="hidden" value="<?php echo $order_id; ?>" name="item_number">
-                <input type="hidden" name="cancel_return" value="<?php echo $relay_script_url . url_for('@epay_reject_url', true) ?>?accept=cancel&subscriptionid=&orderid=<?php echo $order->getId(); ?>" />
-                <input type="hidden" name="return" id="idaccepturl"  value="<?php echo $relay_script_url . url_for('@epay_accept_url', true); ?>?accept=yes&subscriptionid=&orderid=<?php echo $order_id; ?>" />
-
+                <input type="hidden" name="cancel_return" value="http://www.smartsim.se" />
+                <input type="hidden" name="return" id="idaccepturl"  value="http://www.smartsim.se/mina-sidor" />
                 <br/>
                 <br/>
                 <input type="submit"  class="butonsigninsmall"  name="paybutan"  style="cursor: pointer;margin-left: 185px;" value="<?php echo __('Pay') ?>">
@@ -307,7 +312,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 
                     <li id="" style="border-style:solid;border-width:3px;width: 295px; padding-left: 10px;">
                         <br /><b>Vad är automatisk påfyllnad?</b><br />
-                        LandNCall rekommenderar att aktivera denna tjänst <br />
+                        SmartSim rekommenderar att aktivera denna tjänst <br />
                         så slipper du fylla på manuellt då saldot börjar ta slut.<br />
                         100 eller 200 kronor dras när saldot på kontot når<br /> 
                         25 eller 50 kronor. Påfyllningsbeloppet adderas till<br />
@@ -325,7 +330,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 </span>
             </div>
         </div>
-<?php //include_partial('signup/steps_indicator', array('active_step'=>2))   ?>
+<?php //include_partial('signup/steps_indicator', array('active_step'=>2))    ?>
     </div>
 </form>
 

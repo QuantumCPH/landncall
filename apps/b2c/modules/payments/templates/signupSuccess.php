@@ -150,7 +150,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 	
 </script>
 
-<form action="<?php echo $target; ?>payments/transaction"   method="post" id="payment" onsubmit="return checkForm()">
+<form action="<?php echo $target; ?>payments/transaction"   method="post" id="payment" onsubmit="return checkForm()" target="_parent">
   <div class="left-col">
     <div class="split-form-sign-up">
       <div class="step-details"> <strong><?php echo __('Become a Customer') ?> <span class="inactive">- <?php echo __('Step 1') ?>: <?php echo __('Registrera') ?> </span><span class="active">- <?php echo __('Step 2') ?>: <?php echo __('Payment') ?></span></strong> </div>
@@ -277,14 +277,18 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                 <input type="hidden" value="SE" name="lc">
                 <input type="hidden" value="SEK" name="currency_code">
                 <input type="hidden" value="PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest" name="bn">
-                <input type="hidden" value="<?php echo $customer->getFirstName(); ?>" name="firstName">
-                <input type="hidden" value="<?php echo $customer->getLastName(); ?>" name="lastName">
-                <input type="hidden" value="<?php echo $customer->getEmail(); ?>" name="payer_email">
+                <input type="hidden" name="first_name" value="<?php echo $customer->getFirstName(); ?>"  />
+                <input type="hidden" name="last_name" value="<?php echo $customer->getLastName(); ?>"  />
+                <input type="hidden" name="email" value="<?php echo $customer->getEmail(); ?>"  />
+                <input type="hidden" name="city" value="<?php echo $customer->getCity(); ?>"  />
+                <input type="hidden" name="zip" value="<?php echo $customer->getPoBoxNumber(); ?>"  />
+                <input type="hidden" name="address1" value="<?php echo $customer->getAddress(); ?>"  />
+  
                 <input type="hidden" value="<?php echo $order_id;?>" name="item_number">
                 
-		<input type="hidden" name="cancelurl" value="<?php echo $relay_script_url.url_for('@epay_reject_url', true)  ?>?accept=cancel&subscriptionid=&orderid=<?php echo $order->getId(); ?>&amount=<?php echo $order->getExtraRefill(); ?>" />
+		<input type="hidden" name="cancelurl" value="http://www.smartsim.se" />
                 <input type="hidden" name="callbackurl" id="idcallbackurl" value="<?php echo $relay_script_url.url_for('@dibs_accept_url', true);  ?>?accept=yes&subscriptionid=&orderid=<?php echo $order_id; ?>&amount=<?php echo $total; ?>" />
-		<input type="hidden" name="accepturl" id="idaccepturl"  value="<?php echo $relay_script_url.url_for('@epay_accept_url',true);?>" />
+		<input type="hidden" name="accepturl" id="idaccepturl"  value="http://www.smartsim.se/mina-sidor" />
 	<br/>
         <br/>
       <input type="submit"  class="butonsigninsmall"  name="paybutan"  style="cursor: pointer;margin-left: 185px;" value="<?php echo __('Pay') ?>">
@@ -323,7 +327,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
             </li>
             <li id="" style="border-style:solid;border-width:3px;width: 295px; padding-left: 10px;">
                 <br /><b>Vad är automatisk påfyllnad?</b><br />
-                LandNCall rekommenderar att aktivera denna tjänst <br />
+                SmartSim rekommenderar att aktivera denna tjänst <br />
                 så slipper du fylla på manuellt då saldot börjar ta slut.<br />
                 100 eller 200 kronor dras när saldot på kontot når<br /> 
                 25 eller 50 kronor. Påfyllningsbeloppet adderas till<br />

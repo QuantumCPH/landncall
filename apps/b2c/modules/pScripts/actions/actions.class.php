@@ -200,8 +200,8 @@ class pScriptsActions extends sfActions {
         //set vat
         $vat = 0;
         $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
         $recepient_email = trim($this->customer->getEmail());
         $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -490,8 +490,8 @@ class pScriptsActions extends sfActions {
                                 ));
 
                         $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-                        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                         $recepient_email = trim($this->customer->getEmail());
                         $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -815,9 +815,9 @@ class pScriptsActions extends sfActions {
         echo '<br/>';
         echo sfConfig::get('app_email_smtp_password');
         echo '<br/>';
-        echo sfConfig::get('app_email_sender_email', 'support@landncall.com');
+        echo sfConfig::get('app_email_sender_email', 'support@smartsim.se');
         echo '<br/>';
-        echo sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        echo sfConfig::get('app_email_sender_name', 'SmartSim support');
 
 
         $connection = Swift_SmtpTransport::newInstance()
@@ -829,8 +829,8 @@ class pScriptsActions extends sfActions {
 
 
 
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
         echo '<br/>';
         echo $sender_email;
@@ -1038,7 +1038,7 @@ class pScriptsActions extends sfActions {
                     'username' => $username,
                     'password' => $password,
                     'mobile' => $mobileNo,
-                    'message' => "You balance is below 25 SEK, Please refill your account. LandNCall AB - Support "
+                    'message' => "You balance is below 25 SEK, Please refill your account. SmartSim - Support "
                 );
                 $queryString = http_build_query($data, '', '&');
                 $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
@@ -1049,7 +1049,7 @@ class pScriptsActions extends sfActions {
                     'username' => $username,
                     'password' => $password,
                     'mobile' => $mobileNo,
-                    'message' => "You balance is below 10 SEK, Please refill your account. LandNCall AB - Support"
+                    'message' => "You balance is below 10 SEK, Please refill your account. SmartSim - Support"
                 );
                 $queryString = http_build_query($data, '', '&');
                 $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
@@ -1061,7 +1061,7 @@ class pScriptsActions extends sfActions {
                     'username' => $username,
                     'password' => $password,
                     'mobile' => $mobileNo,
-                    'message' => "You balance is 0 SEK, Please refill your account. LandNCall AB - Support "
+                    'message' => "You balance is 0 SEK, Please refill your account. SmartSim - Support "
                 );
                 $queryString = http_build_query($data, '', '&');
                 $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
@@ -1156,7 +1156,7 @@ class pScriptsActions extends sfActions {
             else if ($balance <= 0.00) {
                 $email_msg .= "\r\n balance < 10 && balance > 0";
                 $subject = 'Test Email: Balance Email ';
-                $message_body = "Test Email:  Your balance is 0 SEK, please refill otherwise your account will be closed. \r\n - LandNCall AB Support \r\n Company Contact Info";
+                $message_body = "Test Email:  Your balance is 0 SEK, please refill otherwise your account will be closed. \r\n - SmartSim Support \r\n Company Contact Info";
 
                 //This Seciton For Make The Log History When Complete registration complete - Agent
                 //echo sfConfig::get('sf_data_dir');
@@ -2019,7 +2019,7 @@ class pScriptsActions extends sfActions {
             $smstext = SmsTextPeer::doSelectOne($sm);
             $sms_text = $smstext->getMessageText();
 
-            $senderName = 'LandNcall';
+            $senderName = 'SmartSim';
             echo "Error,Cannot make callback!";
             $res = ROUTED_SMS::Send($number, $sms_text, $senderName);
             die;
@@ -2717,8 +2717,8 @@ class pScriptsActions extends sfActions {
 
     public function executeSendEmailstt(sfWebRequest $request) {
 
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
         echo '<br/>';
         echo $sender_email;
@@ -3208,6 +3208,200 @@ class pScriptsActions extends sfActions {
         return $this->redirect('customer/dashboard');
     }
 
+    public function executeCalbackrefill(sfWebRequest $request) {
+        $callbackparameters = $request->getParameter("p");
+        $params = explode("-", $callbackparameters);
+
+        $lang = $params[0];
+        $order_id = $params[1];
+        $order_amount = $params[2];
+        $urlval = $order_id . "Refill page-landNcall B2C" . $request->getParameter('transact');
+
+        $email2 = new DibsCall();
+        $email2->setCallurl($urlval);
+
+        $email2->save();
+
+
+        //call Culture Method For Get Current Set Culture - Against Feature# 6.1 --- 02/28/11
+        changeLanguageCulture::languageCulture($request, $this);
+        //-----------------------
+
+
+
+        $this->forward404Unless($order_id || $order_amount);
+
+
+
+        $orderscount = 0;
+        $cr = new Criteria;
+        $cr->add(CustomerOrderPeer::ID, $order_id);
+        $cr->addAnd(CustomerOrderPeer::ORDER_STATUS_ID, 1);
+        $orderscount = CustomerOrderPeer::doCount($cr);
+
+        if ($orderscount > 0) {
+
+            $order = CustomerOrderPeer::retrieveByPK($order_id);
+
+            $subscription_id = $request->getParameter("subscriptionid");
+            $this->forward404Unless($order);
+            $c = new Criteria;
+            $c->add(TransactionPeer::ORDER_ID, $order_id);
+            $transaction = TransactionPeer::doSelectOne($c);
+            //echo var_dump($transaction);
+            $order->setOrderStatusId(sfConfig::get('app_status_completed', 3)); //completed
+            //$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 3)); //completed
+            $transaction->setTransactionStatusId(sfConfig::get('app_status_completed', 3)); //completed
+            if ($transaction->getAmount() > $order_amount) {
+                //error
+                $order->setOrderStatusId(sfConfig::get('app_status_error', 5)); //error in amount
+                $transaction->setTransactionStatusId(sfConfig::get('app_status_error', 5)); //error in amount
+                //$order->getCustomer()->setCustomerStatusId(sfConfig::get('app_status_completed', 5)); //error in amount
+            } else if ($transaction->getAmount() < $order_amount) {
+                //$extra_refill_amount = $order_amount;
+                $order->setExtraRefill($order_amount);
+                $transaction->setAmount($order_amount);
+            }
+            //set active agent_package in case customer was registerred by an affiliate
+            if ($order->getCustomer()->getAgentCompany()) {
+                $order->setAgentCommissionPackageId($order->getCustomer()->getAgentCompany()->getAgentCommissionPackageId());
+            }
+            $ticket_id = $request->getParameter('transact');
+            //set subscription id in case 'use current c.c for future auto refills' is set to 1
+            //set auto_refill amount
+
+
+
+            $order->save();
+            $transaction->save();
+
+            $this->customer = $order->getCustomer();
+            $c = new Criteria;
+            $c->add(CustomerPeer::ID, $order->getCustomerId());
+            $customer = CustomerPeer::doSelectOne($c);
+            echo "ag" . $agentid = $customer->getReferrerId();
+            echo "prid" . $productid = $order->getProductId();
+            echo "trid" . $transactionid = $transaction->getId();
+            if (isset($agentid) && $agentid != "") {
+                echo "getagentid";
+                commissionLib::refilCustomer($agentid, $productid, $transactionid);
+            }
+
+            //TODO ask if recharge to be done is same as the transaction amount
+            //die;
+            $exest = $order->getExeStatus();
+            if ($exest == 1) {
+                
+            } else {
+                //  Fonet::recharge($this->customer, $transaction->getAmount());
+                $vat = 0;
+
+                $TelintaMobile = '46' . $this->customer->getMobileNumber();
+                $emailId = $this->customer->getEmail();
+                $OpeningBalance = $transaction->getAmount();
+                $customerPassword = $this->customer->getPlainText();
+                $getFirstnumberofMobile = substr($this->customer->getMobileNumber(), 0, 1);     // bcdef
+                if ($getFirstnumberofMobile == 0) {
+                    $TelintaMobile = substr($this->customer->getMobileNumber(), 1);
+                    $TelintaMobile = '46' . $TelintaMobile;
+                } else {
+                    $TelintaMobile = '46' . $this->customer->getMobileNumber();
+                }
+
+                $unidc = $this->customer->getUniqueid();
+                $uidcount = 0;
+                $uc = new Criteria;
+                $uc->addAnd(UniqueIdsPeer::UNIQUE_NUMBER, $unidc);
+                $uc->addAnd(UniqueIdsPeer::REGISTRATION_TYPE_ID, 3);
+                $uidcount = UniqueIdsPeer::doCount($uc);
+                echo $unidc;
+                echo "<br/>";
+
+                if ($uidcount == 1) {
+                    $cuserid = $this->customer->getId();
+                    $amt = $OpeningBalance;
+                    $amtt = CurrencyConverter::convertSekToUsd($amt);
+                    $Test = ForumTel::rechargeForumtel($cuserid, $amtt);
+
+                    $dibsf = new DibsCall();
+                    $dibsf->setCallurl("refill  original amout SEK:" . $amt . "converted amout" . $amtt . "Fr response" . $Test);
+                    $dibsf->save();
+
+                    $amt = $amtt;
+
+                    $email2 = new DibsCall();
+                    $email2->setCallurl($amt . $cuserid);
+
+                    $email2->save();
+                } else {
+                    //echo $OpeningBalance."Balance";
+                    //echo "<br/>";
+                    //This is for Recharge the Customer
+
+                    $MinuesOpeningBalance = $OpeningBalance;
+                    Telienta::recharge($this->customer, $OpeningBalance, "Refill");
+
+                    //This is for Recharge the Account
+                    //this condition for if follow me is Active
+                    $getvoipInfo = new Criteria();
+                    $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $this->customer->getMobileNumber());
+                    $getvoipInfos = SeVoipNumberPeer::doSelectOne($getvoipInfo); //->getId();
+                    if (isset($getvoipInfos)) {
+                        $voipnumbers = $getvoipInfos->getNumber();
+                        $voip_customer = $getvoipInfos->getCustomerId();
+                    } else {
+                        
+                    }
+                }
+                $MinuesOpeningBalance = $OpeningBalance;
+
+
+                $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
+                $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
+
+                $recepient_email = trim($this->customer->getEmail());
+                $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
+                $referrer_id = trim($this->customer->getReferrerId());
+
+                if ($referrer_id):
+                    $c = new Criteria();
+                    $c->add(AgentCompanyPeer::ID, $referrer_id);
+
+                    $recepient_agent_email = AgentCompanyPeer::doSelectOne($c)->getEmail();
+                    $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
+                endif;
+
+                //send email
+
+                $unidid = $this->customer->getUniqueid();
+                if ($uidcount == 1) {
+                    $message_body = $this->getPartial('customer/order_receipt_us', array(
+                        'customer' => $this->customer,
+                        'order' => $order,
+                        'transaction' => $transaction,
+                        'vat' => $vat,
+                        'wrap' => false
+                            ));
+                } else {
+                    $message_body = $this->getPartial('payments/order_receipt', array(
+                        'customer' => $this->customer,
+                        'order' => $order,
+                        'transaction' => $transaction,
+                        'vat' => $vat,
+                        'wrap' => false
+                            ));
+                }
+
+                emailLib::sendCustomerRefillEmail($this->customer, $order, $transaction);
+            }
+
+            $order->setExeStatus(1);
+            $order->save();
+        }
+        echo 'Yes';
+        return sfView::NONE;
+    }
 
     /*     * *****************************************************Customer Registeration Dibs Call ********************************************** */
 
@@ -3538,9 +3732,9 @@ class pScriptsActions extends sfActions {
                             'wrap' => true
                         ));
 
-                $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-                $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+            $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
+            $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+            $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -3570,6 +3764,7 @@ class pScriptsActions extends sfActions {
         else {
             $this->logMessage('Error in transaction.');
         } //end else
+        return sfView::NONE;
     }
 
     /*     * *****************************************************Customer Registeration US Dibs Call ********************************************** */
@@ -3828,7 +4023,7 @@ class pScriptsActions extends sfActions {
                         //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                     if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
-                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
+                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the SmartSim are finished. This error is faced by customer id: " . $customerids);
                         return false;
                     }
                 }
@@ -3906,7 +4101,7 @@ Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras o
 ";
 
 
-                $senderName = "LandNCall";
+                $senderName = "SmartSim";
                 $res = ROUTED_SMS::Send($usnumber, $sms_text, $senderName);
 
                 //if the customer is invited, Give the invited customer a bonus of 10dkk
@@ -3993,8 +4188,8 @@ Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras o
                     'wrap' => true
                         ));
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-                $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());

@@ -308,7 +308,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
             </li>
             <li id="" style="border-style:solid;border-width:3px;width: 295px; padding-left: 10px;">
                 <br /><b>Vad är automatisk påfyllnad?</b><br />
-                LandNCall rekommenderar att aktivera denna tjänst <br />
+                SmartSim rekommenderar att aktivera denna tjänst <br />
                 så slipper du fylla på manuellt då saldot börjar ta slut.<br />
                 100 eller 200 kronor dras när saldot på kontot når<br /> 
                 25 eller 50 kronor. Påfyllningsbeloppet adderas till<br />

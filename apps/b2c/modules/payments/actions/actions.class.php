@@ -562,8 +562,8 @@ class paymentsActions extends sfActions {
                         ));
 
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-                $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -856,7 +856,7 @@ class paymentsActions extends sfActions {
                         //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                     if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
-                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
+                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the smartsim are finished. This error is faced by customer id: " . $customerids);
                         return false;
                     }
                 }
@@ -934,7 +934,7 @@ class paymentsActions extends sfActions {
 Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras och du kan ringa från den när du har nått USA
 ";
 
-                $senderName = "LandNCall";
+                $senderName = "SmartSim";
                 $res = ROUTED_SMS::Send($usnumber, $sms_text, $senderName);
 
                 //if the customer is invited, Give the invited customer a bonus of 10dkk
@@ -1021,8 +1021,8 @@ Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras o
                     'wrap' => true
                         ));
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-                $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
