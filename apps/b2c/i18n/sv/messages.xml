@@ -106,7 +106,7 @@
             </trans-unit>
             <trans-unit id="53" translate="yes" reformat="yes" xml:space="default">
                 <source>Thank you for purchasing zer0call %1% package, you will receive package in few days. For any questions please feel free to contact us at</source>
-                <target>Tack och välkommen som kund hos LandNCall. Du kommer strax att få en e-post bekräftelse och ett kvitto. Din beställning kommer att skickas inom någon dag. Om du har några frågor ar du valkommen att kontakta oss p&acirc;</target>
+                <target>Tack och välkommen som kund hos SmartSim. Du kommer strax att få en e-post bekräftelse och ett kvitto. Din beställning kommer att skickas inom någon dag. Om du har några frågor ar du valkommen att kontakta oss p&acirc;</target>
             </trans-unit>
       
             <trans-unit id="55" translate="yes" reformat="yes" xml:space="default">
@@ -135,7 +135,7 @@
             </trans-unit>
             <trans-unit id="66" translate="yes" reformat="yes" xml:space="default">
                 <source>Your password has been changed. Please use the following information to login to your zer0call account.</source>
-                <target>Ditt l&ouml;senord har andrats. Anvand f&ouml;ljande information f&ouml;r att logga in p&acirc; ditt konto LandNCall AB.</target>
+                <target>Ditt l&ouml;senord har andrats. Anvand f&ouml;ljande information f&ouml;r att logga in p&acirc; ditt konto SmartSim.</target>
             </trans-unit>
             <trans-unit id="67" translate="yes" reformat="yes" xml:space="default">
                 <source>Password Request</source>
@@ -323,7 +323,7 @@
             </trans-unit>
 
             <trans-unit id="120" translate="yes" reformat="yes" xml:space="default">
-                <source>Thank you for ordering &lt;b&gt;%1%&lt;/b&gt; and becoming LandNCall AB Customer. We welcome you to a new and huge mobile world.</source>
+                <source>Thank you for ordering &lt;b&gt;%1%&lt;/b&gt; and becoming SmartSim Customer. We welcome you to a new and huge mobile world.</source>
                 <target>Tack för din beställning av produkt. Vi välkomnar dig till en rörlig och krympande värld.</target>
             </trans-unit>
 
@@ -387,16 +387,16 @@
             </trans-unit>
       
             <trans-unit id="159" translate="yes" reformat="yes" xml:space="default">
-                <source>You mobile number is already registered with LandNCall AB.</source>
-                <target>Ditt mobilnummer ar redan registrerad med LandNCall AB.</target>
+                <source>You mobile number is already registered with SmartSim.</source>
+                <target>Ditt mobilnummer ar redan registrerad med SmartSim.</target>
             </trans-unit>
             <trans-unit id="160" translate="yes" reformat="yes" xml:space="default">
-                <source>You have been registered to LandNCall AB.</source>
-                <target>Du har varit registrerad LandNCall AB.</target>
+                <source>You have been registered to SmartSim.</source>
+                <target>Du har varit registrerad SmartSim.</target>
             </trans-unit>
             <trans-unit id="161" translate="yes" reformat="yes" xml:space="default">
-                <source>Your mobile number is not registered with LandNCall AB.	</source>
-                <target>Ditt mobilnummer ar inte registrerad hos LandNCall AB.</target>
+                <source>Your mobile number is not registered with SmartSim.	</source>
+                <target>Ditt mobilnummer ar inte registrerad hos SmartSim.</target>
             </trans-unit>
             <trans-unit id="162" translate="yes" reformat="yes" xml:space="default">
                 <source>You account has been topped up.</source>
@@ -520,16 +520,16 @@
                 <target>Samtalspott</target>
             </trans-unit>
             <trans-unit id="1025" translate="yes" reformat="yes" xml:space="default">
-                <source> You mobile number is already registered with LandNCall AB.</source>
-                <target>Du mobilnummer ar redan registrerad med LandNCall AB.</target>
+                <source> You mobile number is already registered with SmartSim.</source>
+                <target>Du mobilnummer ar redan registrerad med SmartSim.</target>
             </trans-unit>
             <trans-unit id="1026" translate="yes" reformat="yes" xml:space="default">
-                <source>You have been registered to LandNCall AB.</source>
-                <target>Du har varit registrerad LandNCall AB.</target>
+                <source>You have been registered to SmartSim.</source>
+                <target>Du har varit registrerad SmartSim.</target>
             </trans-unit>
             <trans-unit id="1027" translate="yes" reformat="yes" xml:space="default">
-                <source>Your mobile number is not registered with LandNCall AB.</source>
-                <target>Ditt mobilnummer ar inte registrerad hos LandNCall AB.</target>
+                <source>Your mobile number is not registered with SmartSim.</source>
+                <target>Ditt mobilnummer ar inte registrerad hos SmartSim.</target>
             </trans-unit>
             <trans-unit id="1028" translate="yes" reformat="yes" xml:space="default">
                 <source>You account has been topped up.</source>
@@ -615,7 +615,7 @@
             </trans-unit>
             <trans-unit id="1047" translate="yes" reformat="yes" xml:space="default">
                 <source>See Zero Call Out Call History</source>
-                <target>Se LandNCall AB Samtalshistorik</target>
+                <target>Se SmartSim Samtalshistorik</target>
             </trans-unit>
             <trans-unit id="1048" translate="yes" reformat="yes" xml:space="default">
                 <source>Invitation has been sent successfully</source>
@@ -655,7 +655,7 @@
             </trans-unit>
             <trans-unit id="1058" translate="yes" reformat="yes" xml:space="default">
                 <source>Hi, I am using zer0call for very cheap international calls &amp; SMS (over 180 countries included). Please accept my invitation and join zer0call</source>
-                <target>Hej, jag använder Smartsim från LandNCall för att ringa billigt till utlandet och för att kapa priserna när jag är utomlands. Börja spara pengar med Smartsim du också! Vanligen acceptera min inbjudan</target>
+                <target>Hej, jag använder Smartsim från SmartSim för att ringa billigt till utlandet och för att kapa priserna när jag är utomlands. Börja spara pengar med Smartsim du också! Vanligen acceptera min inbjudan</target>
             </trans-unit>
             <trans-unit id="1059" translate="yes" reformat="yes" xml:space="default">
                 <source>Send Email to join Zero call</source>
@@ -678,8 +678,8 @@
                 <target>Hur fungerar det?</target>
             </trans-unit>
             <trans-unit id="1064" translate="yes" reformat="yes" xml:space="default">
-                <source>Tell your friends about zer0call and earn 10dkk as soon as your friends have made their first payment with zer0call! Spread the word about zer0call and let your friends know about LandNCall AB services.</source>
-                <target>Rekommendera oss och tjäna 20 kronor, när din vän har registrerat sig hos LandNCall! Sprid ordet om Smartsim och LandNCall och låt dina vänner spara pengar samtidigt som du får något för din insats.</target>
+                <source>Tell your friends about zer0call and earn 10dkk as soon as your friends have made their first payment with zer0call! Spread the word about zer0call and let your friends know about SmartSim services.</source>
+                <target>Rekommendera oss och tjäna 20 kronor, när din vän har registrerat sig hos SmartSim! Sprid ordet om Smartsim och SmartSim och låt dina vänner spara pengar samtidigt som du får något för din insats.</target>
             </trans-unit>
             <trans-unit id="1065" translate="yes" reformat="yes" xml:space="default">
                 <source>Tell your friends about zer0call &amp; earn extra balance!</source>
@@ -742,8 +742,8 @@
                 <target>Se samtalshistorik</target>
             </trans-unit>
             <trans-unit id="1079" translate="yes" reformat="yes" xml:space="default">
-                <source>Your password has been changed. Please use the following information to login to your LandNCall AB account.</source>
-                <target>Ditt lösenord har ändrats. Använd följande information för att logga in på ditt LandNCall AB konto.</target>
+                <source>Your password has been changed. Please use the following information to login to your SmartSim account.</source>
+                <target>Ditt lösenord har ändrats. Använd följande information för att logga in på ditt SmartSim konto.</target>
             </trans-unit>
             <trans-unit id="10780" translate="yes" reformat="yes" xml:space="default">
                 <source>eur</source>
@@ -774,8 +774,8 @@
                 <target>Välj belopp att fylla på med</target>
             </trans-unit>
             <trans-unit id="10787" translate="yes" reformat="yes" xml:space="default">
-                <source>Thank you for making a purchase at Landncall. You will receive a confirmation email along with invoice in few moments.</source>
-                <target>Tack och välkommen som kund hos LandNCall. Du kommer strax att få en e-post bekräftelse och ett kvitto.</target>
+                <source>Thank you for making a purchase at SmartSim. You will receive a confirmation email along with invoice in few moments.</source>
+                <target>Tack och välkommen som kund hos SmartSim. Du kommer strax att få en e-post bekräftelse och ett kvitto.</target>
             </trans-unit>
             <trans-unit id="10788" translate="yes" reformat="yes" xml:space="default">
                 <source>Your package will be shipped to you in few days.</source>
@@ -786,8 +786,8 @@
                 <target>Om du har frågor är du välkommen att kontakta vår kundservice på.</target>
             </trans-unit>
             <trans-unit id="10790" translate="yes" reformat="yes" xml:space="default">
-                <source>a user of Landncall, Please click the following link to accept the invitation</source>
-                <target>En användare av Landncall, vänligen klicka på följande länk för att acceptera inbjudan</target>
+                <source>a user of SmartSim, Please click the following link to accept the invitation</source>
+                <target>En användare av SmartSim, vänligen klicka på följande länk för att acceptera inbjudan</target>
             </trans-unit>
             <trans-unit id="10791" translate="yes" reformat="yes" xml:space="default">
                 <source>No customer is registered with this email.</source>
@@ -926,8 +926,8 @@
                 <target>Jag godkänner villkoren.</target>
             </trans-unit>
             <trans-unit id="10824" translate="yes" reformat="yes" xml:space="default">
-                <source>Thank you for making a purchase at VoIP. You will receive a confirmation email along with invoice in few moments.For any questions please feel free to contact us at support@landncall.com.</source>
-                <target>Tack för din Aktivering av Resenummer. Du kommer att få ett bekräftelsebrev inom kort.Om du har frågor är du välkommen att kontakta vår kundservice på support@landncall.com.</target>
+                <source>Thank you for making a purchase at VoIP. You will receive a confirmation email along with invoice in few moments.For any questions please feel free to contact us at support@smartsim.se.</source>
+                <target>Tack för din Aktivering av Resenummer. Du kommer att få ett bekräftelsebrev inom kort.Om du har frågor är du välkommen att kontakta vår kundservice på support@smartsim.se.</target>
             </trans-unit>
             <trans-unit id="10825" translate="yes" reformat="yes" xml:space="default">
                 <source>Thank For Using our services. VoIP unsubscribed successfully. For any questions please feel free to contact us at support@landncall.com.</source>

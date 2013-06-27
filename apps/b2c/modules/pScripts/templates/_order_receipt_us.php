@@ -61,7 +61,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
 	<?php echo __('Tveka inte att ta kontakt med oss om det är något du undrar över.') ?>
 	</p>
         <p>
-            <a href="mailto:Support@landncall.com">Support@landncall.com</a>
+            <a href="mailto:Support@smartsim.se">Support@smartsim.se</a>
 	</p>
         <p>
 	<?php echo __('Med vänlig hälsning') ?>
@@ -192,7 +192,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
   </tr>
   <tr class="footer">
     <td class="payer_summary" colspan="4" style="font-weight:normal; white-space: nowrap;"> 
-    Landncall AB&nbsp;&nbsp;&nbsp;&nbsp;Box 42017, SE-126 12 Stockholm&nbsp;&nbsp;&nbsp; Org.nr.556810-8921 </td>    
+        SmartSim&nbsp;&nbsp;&nbsp;&nbsp;Smedeholm 13 B&nbsp;&nbsp;&nbsp; 2730 København &nbsp;Denmark</td>    
   </tr>
 </table>
         

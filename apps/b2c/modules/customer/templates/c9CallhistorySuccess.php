@@ -11,7 +11,7 @@
 	<center>
 
 		<form action="/index.php/customer/callhistory" method="post">
-			<INPUT TYPE="submit" VALUE="Se LandNCall AB Out Opkaldsoversigt">
+			<INPUT TYPE="submit" VALUE="Se SmartSim Out Opkaldsoversigt">
 		</form>
 	</center>
 </span>

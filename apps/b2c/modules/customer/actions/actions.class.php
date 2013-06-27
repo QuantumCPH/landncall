@@ -612,7 +612,7 @@ class customerActions extends sfActions {
                         // emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                     if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
-                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
+                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the smartsim are finished. This error is faced by customer id: " . $customerids);
                         return false;
                     }
                 }
@@ -674,8 +674,8 @@ class customerActions extends sfActions {
                 $this->customer = $customer;
                 $vat = 0;
                 $subject = $this->getContext()->getI18N()->__('Transation for VoIP Purchase');
-                $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -1380,7 +1380,7 @@ class customerActions extends sfActions {
             $customer->setPassword($new_password);
             $message_body = $this->getContext()->getI18N()->__('Hi') . ' ' . $customer->getFirstName() . '!';
             $message_body .= '<br /><br />';
-            $message_body .= $this->getContext()->getI18N()->__('Your password has been changed. Please use the following information to login to your LandNCall AB account.');
+            $message_body .= $this->getContext()->getI18N()->__('Your password has been changed. Please use the following information to login to your SmartSim account.');
             $message_body .= '<br /><br />';
             $message_body .= sprintf('Mobilnummer: %s', $customer->getMobileNumber());
             $message_body .= '<br />';
@@ -1393,8 +1393,8 @@ class customerActions extends sfActions {
 
 
             $subject = $this->getContext()->getI18N()->__('Password Request');
-            $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-            $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+            $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+            $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
             $message = $message_body;
 
@@ -1720,10 +1720,10 @@ class customerActions extends sfActions {
             $invite->save();
 
             //set email attributes
-            $subject = $this->getContext()->getI18N()->__("LandNCall AB inbjudan");
+            $subject = $this->getContext()->getI18N()->__("SmartSim inbjudan");
             $name = $this->customer->getFirstName() . ' ' . $this->customer->getLastName();
-            $message_body = 'Hej ' . $recepient_name . ',<br /> ' . $this->getContext()->getI18N()->__("This invitation is sent to you with the refrence of") . ' ' . $name . ', ' . $this->getContext()->getI18N()->__("en användare av Smartsim från Landncall.");
-            $message_body_end = 'Vänligen klicka på acceptera för att börja spara pengar direkt med Smartsim du ocksåg' . '<a  href="' . $this->getTargetUrl() . 'customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a><br/> Läs mer på <a href="www.landncall.com">www.landncall.com</a>';
+            $message_body = 'Hej ' . $recepient_name . ',<br /> ' . $this->getContext()->getI18N()->__("This invitation is sent to you with the refrence of") . ' ' . $name . ', ' . $this->getContext()->getI18N()->__("en användare av Smartsim från SmartSim.");
+            $message_body_end = 'Vänligen klicka på acceptera för att börja spara pengar direkt med Smartsim du ocksåg' . '<a  href="' . $this->getTargetUrl() . 'customer/signup?invite_id=' . $invite->getId() . '"> ' . $this->getContext()->getI18N()->__("Accept") . '</a><br/> Läs mer på <a href="www.smartsim.se">www.smartsim.se</a>';
             //send email
             if ($recepient_name != ''):
                 $email = new EmailQueue();
@@ -2212,8 +2212,8 @@ class customerActions extends sfActions {
 
 
             $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-            $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-            $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+            $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+            $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
             $recepient_email = trim($this->customer->getEmail());
             $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());

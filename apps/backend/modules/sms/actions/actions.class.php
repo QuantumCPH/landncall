@@ -53,7 +53,7 @@ class smsActions extends sfActions
       $cbf->setDa($number);
       $cbf->setMessage($sms_text);
       $cbf->setCountryId(53);
-      $cbf->setMobileNumber('LandNcall Backend');
+      $cbf->setMobileNumber('SmartSim Backend');
 
 //$sms_text='ø  æ å  Æ Ø Å Ö ö';
       $cbf->save();
@@ -62,7 +62,7 @@ class smsActions extends sfActions
                 sleep(0.5);
    
              
-                $senderName="LandNcall";
+                $senderName="SmartSim";
 		  $res = ROUTED_SMS::Send($number, $sms_text, $senderName);
                 $this->res_cbf = 'Response from CBF is: ';
                 $this->res_cbf .= $res;

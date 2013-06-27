@@ -47,22 +47,22 @@ Her er din nye globale mobiltelefonløsning. Og du skal ikke engang skifte
 dit abonnement..
 </p><br/>
 <p>
-LandNCall AB global sikrer dig også attraktive priser når du er hjemme i Danmark og gerne vil kontakte udlandet. Når du ringer til udlandet vil LandNCall AB automatisk overtage dit opkald og sikre at du kommer i kontakt med udlandet – og du kan spare helt op mod 75%. LandNCall AB sikrer også at du sparer penge både på dine opkald til/fra Danmark og de opkald du modtaget i udlandet.
+SmartSim global sikrer dig også attraktive priser når du er hjemme i Danmark og gerne vil kontakte udlandet. Når du ringer til udlandet vil SmartSim automatisk overtage dit opkald og sikre at du kommer i kontakt med udlandet – og du kan spare helt op mod 75%. SmartSim sikrer også at du sparer penge både på dine opkald til/fra Danmark og de opkald du modtaget i udlandet.
 </p>
 
 <br/>
 <br/>
 <h3 style="font-size: 18px; ;color:#e77714"> Så enkelt er det</h3>
 <br/>
-<p>Du modtager LandNCall AB unikke SIM-kort som du kan placere ovenpå dit
+<p>Du modtager SmartSim unikke SIM-kort som du kan placere ovenpå dit
 eksisterende SIM-kort. Det betyder at du faktisk kan have 2 SIM-kort i
 din telefon. Når du rejser til udlandet, skifter du helt enkelt over dit
-LandNCall AB SIM-kortet og benytter dette til dine opkald fra udlandet og
+SmartSim SIM-kortet og benytter dette til dine opkald fra udlandet og
 til at modtage dine indgående opkald.</p>
 <br/>
 <p>
- Samtidig sikre LandNCall AB kortet at de opkald du modtager på dit normale
-SIM-kort hos din danske teleudbyder automatisk omstilles til dit LandNCall AB
+ Samtidig sikre SmartSim kortet at de opkald du modtager på dit normale
+SIM-kort hos din danske teleudbyder automatisk omstilles til dit SmartSim
 SIM-kort. Det vil sige at familie og venner altid kan ringe til dig på det
 nummer de kender.
 </p>
@@ -84,7 +84,7 @@ Klik på linket forneden og start med at spare penge.
 </p>
 <br/>
 <p>
-Du får LandNCall AB AB ved at benytte linket – og du kommer ind på zerOcalls bestillingsside og kan taste dine oplysninger ind. Du bestiller for 200 kr. taletid . Herefter går der kun ganske kort tid og så modtager du dit zerOcall SIM-kort med posten sammen med en enkelt vejleding – det tager under 2 minutter, så er du i gang med at spare penge.
+Du får SmartSim ved at benytte linket – og du kommer ind på zerOcalls bestillingsside og kan taste dine oplysninger ind. Du bestiller for 200 kr. taletid . Herefter går der kun ganske kort tid og så modtager du dit zerOcall SIM-kort med posten sammen med en enkelt vejleding – det tager under 2 minutter, så er du i gang med at spare penge.
 </p>
 <br/>
 

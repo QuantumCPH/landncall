@@ -3,8 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="title" content="LandNCall AB" />
-<title>LandNCall AB</title>
+<meta name="title" content="SmartSim" />
+<title>SmartSim</title>
 
 
 

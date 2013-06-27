@@ -321,7 +321,7 @@
         <target>Bliv kunde</target>
       </trans-unit>
       <trans-unit id="120" translate="yes" reformat="yes" xml:space="default">
-        <source>Thank you for ordering &lt;b&gt;%1%&lt;/b&gt; and becoming LandNCall AB Customer. We welcome you to a new and huge mobile world.</source>
+        <source>Thank you for ordering &lt;b&gt;%1%&lt;/b&gt; and becoming SmartSim Customer. We welcome you to a new and huge mobile world.</source>
         <target>Tak for din bestilling af &lt;b&gt;%1%&lt;/b&gt;. Vi byder dig velkommen til et nyt mobil verden.</target>
       </trans-unit>
       <trans-unit id="121" translate="yes" reformat="yes" xml:space="default">
@@ -414,20 +414,20 @@
       </trans-unit>
       <trans-unit id="159" translate="yes" reformat="yes" xml:space="default">
         <source>
-		  						You mobile number is already registered with LandNCall AB.
+		  						You mobile number is already registered with SmartSim.
 		  					</source>
-        <target>Du mobilnummer er allerede registreret med LandNCall AB.</target>
+        <target>Du mobilnummer er allerede registreret med SmartSim.</target>
       </trans-unit>
       <trans-unit id="160" translate="yes" reformat="yes" xml:space="default">
         <source>
-			  			You have been registered to LandNCall AB.</source>
-        <target>Du er blevet registreret på LandNCall AB.</target>
+			  			You have been registered to SmartSim.</source>
+        <target>Du er blevet registreret på SmartSim.</target>
       </trans-unit>
       <trans-unit id="161" translate="yes" reformat="yes" xml:space="default">
         <source>
-		  						Your mobile number is not registered with LandNCall AB.
+		  						Your mobile number is not registered with SmartSim.
 		  					</source>
-        <target>Dit mobilnummer er ikke registreret hos LandNCall AB.</target>
+        <target>Dit mobilnummer er ikke registreret hos SmartSim.</target>
       </trans-unit>
       <trans-unit id="162" translate="yes" reformat="yes" xml:space="default">
         <source>
@@ -565,20 +565,20 @@
       </trans-unit>
       <trans-unit id="1025" translate="yes" reformat="yes" xml:space="default">
         <source>
-		  						You mobile number is already registered with LandNCall AB.
+		  						You mobile number is already registered with SmartSim.
 		  					</source>
-        <target>Du mobilnummer er allerede registreret med LandNCall AB</target>
+        <target>Du mobilnummer er allerede registreret med SmartSim</target>
       </trans-unit>
       <trans-unit id="1026" translate="yes" reformat="yes" xml:space="default">
         <source>
-			  			You have been registered to LandNCall AB.</source>
-        <target>Du er blevet registreret på LandNCall AB.</target>
+			  			You have been registered to SmartSim.</source>
+        <target>Du er blevet registreret på SmartSim.</target>
       </trans-unit>
       <trans-unit id="1027" translate="yes" reformat="yes" xml:space="default">
         <source>
-		  						Your mobile number is not registered with LandNCall AB.
+		  						Your mobile number is not registered with SmartSim.
 		  					</source>
-        <target>Dit mobilnummer er ikke registreret hos LandNCall AB.</target>
+        <target>Dit mobilnummer er ikke registreret hos SmartSim.</target>
       </trans-unit>
       <trans-unit id="1028" translate="yes" reformat="yes" xml:space="default">
         <source>
@@ -619,7 +619,7 @@
       </trans-unit>
       <trans-unit id="1036" translate="yes" reformat="yes" xml:space="default">
         <source>International calls from 0 cents * With Zero Call Out, you can call the whole world.</source>
-        <target>Internationale opkald fra 0 &oslash;re* Med LandNCall AB Out kan du ringe til hele verden til de.</target>
+        <target>Internationale opkald fra 0 &oslash;re* Med SmartSim Out kan du ringe til hele verden til de.</target>
       </trans-unit>
       <trans-unit id="1037" translate="yes" reformat="yes" xml:space="default">
         <source>About Us</source>
@@ -635,7 +635,7 @@
       </trans-unit>
       <trans-unit id="1040" translate="yes" reformat="yes" xml:space="default">
         <source>How does zero call</source>
-        <target>Hvordan fungere LandNCall AB</target>
+        <target>Hvordan fungere SmartSim</target>
       </trans-unit>
       <trans-unit id="1041" translate="yes" reformat="yes" xml:space="default">
         <source>Terms</source>
@@ -663,7 +663,7 @@
       </trans-unit>
 	  <trans-unit id="1047" translate="yes" reformat="yes" xml:space="default">
         <source>See Zero Call Out Call History</source>
-        <target>Se LandNCall AB Out Opkaldsoversigt</target>
+        <target>Se SmartSim Out Opkaldsoversigt</target>
       </trans-unit>
 	  <trans-unit id="1048" translate="yes" reformat="yes" xml:space="default">
         <source>Invitation has been sent successfully</source>
@@ -726,8 +726,8 @@
         <target>Hvordan virker det?</target>
       </trans-unit>
 	  <trans-unit id="1064" translate="yes" reformat="yes" xml:space="default">
-        <source>Tell your friends about zer0call and earn 10dkk as soon as your friends have made their first payment with zer0call! Spread the word about zer0call and let your friends know about LandNCall AB services.</source>
-        <target>Fortæl dine venner om zer0call og tjene 10dkk, så snart dine venner har lavet deres første betaling med zer0call! Spred budskabet om zer0call og lad dine venner om LandNCall AB tjenester.</target>
+        <source>Tell your friends about zer0call and earn 10dkk as soon as your friends have made their first payment with zer0call! Spread the word about zer0call and let your friends know about SmartSim services.</source>
+        <target>Fortæl dine venner om zer0call og tjene 10dkk, så snart dine venner har lavet deres første betaling med zer0call! Spred budskabet om zer0call og lad dine venner om SmartSim tjenester.</target>
       </trans-unit>
 	   <trans-unit id="1065" translate="yes" reformat="yes" xml:space="default">
         <source>Tell your friends about zer0call &amp; earn extra balance!</source>
@@ -786,7 +786,7 @@
         <target>Se opkalds historikken</target>
       </trans-unit>
 	  <trans-unit id="1079" translate="yes" reformat="yes" xml:space="default">
-        <source>Your password has been changed. Please use the following information to login to your LandNCall AB account.</source>
+        <source>Your password has been changed. Please use the following information to login to your SmartSim account.</source>
         <target>Dit adgangskode er ændret, venligst brug følgende informationer til at login til kundeportalen</target>
       </trans-unit>
 	  <trans-unit id="10780" translate="yes" reformat="yes" xml:space="default">
