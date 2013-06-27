@@ -71,7 +71,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 	function checkForm()
 	{
 	
-		calc();
+		//calc();
 		
 		var objForm = document.getElementById("payment");
 		var valid = true;
@@ -150,7 +150,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 	
 </script>
 
-<form action="https://payment.architrade.com/paymentweb/start.action"   method="post" id="payment" onsubmit="return checkForm()">
+<form action="<?php echo $target; ?>payments/transaction"   method="post" id="payment" onsubmit="return checkForm()">
   <div class="left-col">
     <div class="split-form-sign-up">
       <div class="step-details"> <strong><?php echo __('Become a Customer') ?> <span class="inactive">- <?php echo __('Step 1') ?>: <?php echo __('Registrera') ?> </span><span class="active">- <?php echo __('Step 2') ?>: <?php echo __('Payment') ?></span></strong> </div>
@@ -244,7 +244,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
 			
           </ul>
         <!-- hidden fields -->
-		<?php echo $form->renderHiddenFields() ?>
+	<!--	<?php echo $form->renderHiddenFields() ?>
 		<?php 
 			
 			define("DIBS_MD5KEY2","r!oRvYT8}L5%,7XFj~Rlr$+Y[W3t3vho");
@@ -262,20 +262,35 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
             
 		
 		<input type="hidden" name="account" value="YTIP" />
-		  <input type="hidden" name="addfee" value="0" />
+		  <input type="hidden" name="addfee" value="0" />  -->
 <!--        <input type="hidden" name="test" value="yes" />-->
-                <div id="autorefilop" >
+     <!--           <div id="autorefilop" >
                     <input type="hidden" name="maketicket" value="foo" />
                 </div>
            
          <input type="hidden" name="lang" value="sv" />
 	
-     <input type="hidden" name="status" value="" />
+     <input type="hidden" name="status" value="" /> -->
+                <input type="hidden" value="<?php echo $total;?>" id="" name="amount">
+                <input type="hidden" value="_xclick" name="cmd"> 
+                <input type="hidden" value="1" name="no_note">
+                <input type="hidden" value="SE" name="lc">
+                <input type="hidden" value="SEK" name="currency_code">
+                <input type="hidden" value="PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest" name="bn">
+                <input type="hidden" value="<?php echo $customer->getFirstName(); ?>" name="firstName">
+                <input type="hidden" value="<?php echo $customer->getLastName(); ?>" name="lastName">
+                <input type="hidden" value="<?php echo $customer->getEmail(); ?>" name="payer_email">
+                <input type="hidden" value="<?php echo $order_id;?>" name="item_number">
+                
 		<input type="hidden" name="cancelurl" value="<?php echo $relay_script_url.url_for('@epay_reject_url', true)  ?>?accept=cancel&subscriptionid=&orderid=<?php echo $order->getId(); ?>&amount=<?php echo $order->getExtraRefill(); ?>" />
                 <input type="hidden" name="callbackurl" id="idcallbackurl" value="<?php echo $relay_script_url.url_for('@dibs_accept_url', true);  ?>?accept=yes&subscriptionid=&orderid=<?php echo $order_id; ?>&amount=<?php echo $total; ?>" />
 		<input type="hidden" name="accepturl" id="idaccepturl"  value="<?php echo $relay_script_url.url_for('@epay_accept_url',true);?>" />
-		      </div>
-      <div class="fr col">
+	<br/>
+        <br/>
+      <input type="submit"  class="butonsigninsmall"  name="paybutan"  style="cursor: pointer;margin-left: 185px;" value="<?php echo __('Pay') ?>">
+	
+      </div>
+      <div class="fr col" style="display: none;">
           
         <ul>
             <!-- auto fill -->
@@ -320,8 +335,7 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
                  
             </li>
         </ul>
-            <input type="submit"  class="butonsigninsmall"  name="paybutan"  style="cursor: pointer;margin-left: 185px;" value="<?php echo __('Pay') ?>">
-			
+            		
         <span class="testt">
            
 <!--            <button onclick="return checkForm();$('#payment').submit()" style="cursor: pointer; top: 150px"><?php echo __('Pay') ?></button>-->

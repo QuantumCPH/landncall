@@ -717,5 +717,12 @@ return number_format($bill_charge/100.00, 2);
 
 
 	}
-
+        
+        public function executeCallReport(sfRequest $request)
+        {
+            $cc = new Criteria();
+            $cc->add(CustomerPeer::CUSTOMER_STATUS_ID,3);
+            $customers = CustomerPeer::doSelect($cc);
+            $this->customers = $customers;
+        }
 }

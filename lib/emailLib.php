@@ -2,8 +2,8 @@
 
 class emailLib {
 
-//rs@zapna.com    to    jan.larsson@landncall.com 
-//asd@landncall.com  to    okhan@zapna.com
+//rs@zapna.com to jan.larsson@landncall.com
+//asd@landncall.com to okhan@zapna.com
     public static function sendAgentRefilEmail(AgentCompany $agent, $agent_order) {
         $vat = 0;
 
@@ -186,10 +186,10 @@ class emailLib {
         $vat = 0;
 
         //create transaction
-//        $transaction = new Transaction();
-//        $transaction->setOrderId($order->getId());
-//        $transaction->setCustomer($customer);
-//        $transaction->setAmount($order->getExtraRefill());
+// $transaction = new Transaction();
+// $transaction->setOrderId($order->getId());
+// $transaction->setCustomer($customer);
+// $transaction->setAmount($order->getExtraRefill());
 
 
         $tc = new Criteria();
@@ -414,11 +414,11 @@ class emailLib {
         echo $vat;
         echo '<br/>';
 
-//        //create transaction
-//        $transaction = new Transaction();
-//        $transaction->setOrderId($order->getId());
-//        $transaction->setCustomer($customer);
-//        $transaction->setAmount($form['extra_refill']);
+// //create transaction
+// $transaction = new Transaction();
+// $transaction->setOrderId($order->getId());
+// $transaction->setCustomer($customer);
+// $transaction->setAmount($form['extra_refill']);
 
         $tc = new Criteria();
         $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId());
@@ -960,7 +960,7 @@ www.landncall.com';
         $recepient_email = trim($customer->getEmail());
         $recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
         $customer_id = trim($customer->getId());
-        //$referrer_id        = trim($customer->getReferrerId());
+        //$referrer_id = trim($customer->getReferrerId());
         //send to user
         if ($recepient_email != ''):
             $email = new EmailQueue();
@@ -1100,7 +1100,7 @@ www.landncall.com';
         $recipient_email_ok = sfConfig::get('app_recipient_email_ok');
         
         $recipient_name_jan = sfConfig::get('app_recipient_name_jan');
-        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');  
+        $recipient_email_jan = sfConfig::get('app_recipient_email_jan');
         //------------------Sent The Email To Customer
         if ($recepient_email != '') {
             $email = new EmailQueue();
@@ -1185,11 +1185,11 @@ www.landncall.com';
         echo '<br/>' . $customer->getReferrerId();
 
 
-//        //create transaction
-//        $transaction = new Transaction();
-//        $transaction->setOrderId($order->getId());
-//        $transaction->setCustomer($customer);
-//        $transaction->setAmount($form['extra_refill']);
+// //create transaction
+// $transaction = new Transaction();
+// $transaction->setOrderId($order->getId());
+// $transaction->setCustomer($customer);
+// $transaction->setAmount($form['extra_refill']);
 
         $tc = new Criteria();
         $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId());
@@ -1219,7 +1219,7 @@ www.landncall.com';
                     'wrap' => false,
                 ));
 
-        $subject = __('Registration  Confirmation');
+        $subject = __('Registration Confirmation');
         $recepient_email = trim($customer->getEmail());
         $recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
         $customer_id = trim($customer->getId());
@@ -1322,11 +1322,11 @@ www.landncall.com';
         echo $vat;
         echo '<br/>';
 
-//        //create transaction
-//        $transaction = new Transaction();
-//        $transaction->setOrderId($order->getId());
-//        $transaction->setCustomer($customer);
-//        $transaction->setAmount($form['extra_refill']);
+// //create transaction
+// $transaction = new Transaction();
+// $transaction->setOrderId($order->getId());
+// $transaction->setCustomer($customer);
+// $transaction->setAmount($form['extra_refill']);
 
         $tc = new Criteria();
         $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId());
@@ -1479,14 +1479,14 @@ www.landncall.com';
 
         //$this->renderPartial('affiliate/order_receipt', array(
         sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
-//        $message_body = get_partial('payments/order_receipt', array(
-//                'customer'=>$customer,
-//                'order'=>$order,
-//                'transaction'=>$transaction,
-//                'vat'=>$vat,
-//                'agent_name'=>$recepient_agent_name,
-//                'wrap'=>false,
-//        ));
+// $message_body = get_partial('payments/order_receipt', array(
+// 'customer'=>$customer,
+// 'order'=>$order,
+// 'transaction'=>$transaction,
+// 'vat'=>$vat,
+// 'agent_name'=>$recepient_agent_name,
+// 'wrap'=>false,
+// ));
         // Please remove the receipt that is sent out when activating
         $getvoipInfo = new Criteria();
         $getvoipInfo->add(SeVoipNumberPeer::CUSTOMER_ID, $customer->getId());
@@ -1533,15 +1533,15 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         //----------------------------------------
         //------------------Sent the Email To Agent
         if (trim($recepient_agent_email) != ''):
-//            $email2 = new EmailQueue();
-//            $email2->setSubject($subject);
-//            $email2->setReceipientName($recepient_agent_name);
-//            $email2->setReceipientEmail($recepient_agent_email);
-//            $email2->setAgentId($referrer_id);
-//            $email2->setCutomerId($customer_id);
-//            $email2->setEmailType('Transation for VoIP Purchase');
-//            $email2->setMessage($message_body);
-//            $email2->save();
+// $email2 = new EmailQueue();
+// $email2->setSubject($subject);
+// $email2->setReceipientName($recepient_agent_name);
+// $email2->setReceipientEmail($recepient_agent_email);
+// $email2->setAgentId($referrer_id);
+// $email2->setCutomerId($customer_id);
+// $email2->setEmailType('Transation for VoIP Purchase');
+// $email2->setMessage($message_body);
+// $email2->save();
         endif;
         //---------------------------------------
         //--------------Sent The Email To Okhan
@@ -1628,8 +1628,8 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 
         sfContext::getInstance()->getConfiguration()->loadHelpers('Partial');
         $message_body = "<table cellspacing='0' width='600px'>
-                         <tr><td>" . $message . " <br/><br/>Med vänlig hälsning<br/><br/>
-                         LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
+<tr><td>" . $message . " <br/><br/>Med vänlig hälsning<br/><br/>
+LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
@@ -1666,8 +1666,8 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 
         $subject = 'Unique Ids finished.';
         $message_body = "<table cellspacing='0' width='600px'><tr><td>
-        Uniuqe Ids finsihed.<br/><br/>
-        LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
+Uniuqe Ids finsihed.<br/><br/>
+LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
@@ -1704,8 +1704,8 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
 
         $subject = 'Unique Ids finished.';
         $message_body = "<table cellspacing='0' width='600px'><tr><td>
-            Uniuqe Id " . $uniqueid . " has issue while assigning on " . $customer->getMobileNumber() . "<br/><br/>
-            LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
+Uniuqe Id " . $uniqueid . " has issue while assigning on " . $customer->getMobileNumber() . "<br/><br/>
+LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr></table>";
 
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
@@ -1784,11 +1784,11 @@ LandNCall<br/><a href='http://www.landncall.com'>www.landncall.com</a></td></tr>
         // echo $vat;
         echo '<br/>';
 
-//        //create transaction
-//        $transaction = new Transaction();
-//        $transaction->setOrderId($order->getId());
-//        $transaction->setCustomer($customer);
-//        $transaction->setAmount($form['extra_refill']);
+// //create transaction
+// $transaction = new Transaction();
+// $transaction->setOrderId($order->getId());
+// $transaction->setCustomer($customer);
+// $transaction->setAmount($form['extra_refill']);
 
         $tc = new Criteria();
         $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId());
@@ -1959,10 +1959,10 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
         if($agent_company_id!=''){
             $c = new Criteria();
             $c->add(AgentCompanyPeer::ID, $agent_company_id);
-            $recepient_agent_email  = AgentCompanyPeer::doSelectOne($c)->getEmail();
+            $recepient_agent_email = AgentCompanyPeer::doSelectOne($c)->getEmail();
             $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
         }else{
-            $recepient_agent_email  = '';
+            $recepient_agent_email = '';
             $recepient_agent_name = '';
         }
 
@@ -2072,7 +2072,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
     {
 
         $subject="SMS Not Working";
-        $message_body= "Please investigate  <br/>".$employeList;
+        $message_body= "Please investigate <br/>".$employeList;
 
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
         $recipient_email_rs = sfConfig::get('app_recipient_email_rs');
@@ -2150,7 +2150,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
                     0;
         }
         //create transaction
-        $tc  =new Criteria();
+        $tc =new Criteria();
         $tc->add(TransactionPeer::CUSTOMER_ID, $customer->getId() );
         $tc->addDescendingOrderByColumn(TransactionPeer::CREATED_AT);
         $transaction = TransactionPeer::doSelectOne($tc);
@@ -2160,10 +2160,10 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
         if($agent_company_id!=''){
             $c = new Criteria();
             $c->add(AgentCompanyPeer::ID, $agent_company_id);
-            $recepient_agent_email  = AgentCompanyPeer::doSelectOne($c)->getEmail();
+            $recepient_agent_email = AgentCompanyPeer::doSelectOne($c)->getEmail();
             $recepient_agent_name = AgentCompanyPeer::doSelectOne($c)->getName();
         }else{
-            $recepient_agent_email  = '';
+            $recepient_agent_email = '';
             $recepient_agent_name = '';
         }
         //$this->renderPartial('affiliate/order_receipt', array(
@@ -2199,9 +2199,9 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
         
 
         $subject = __('Payment Confirmation');
-        $recepient_email    = trim($customer->getEmail());
-        $recepient_name     = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
-        $customer_id        = trim($customer->getId());
+        $recepient_email = trim($customer->getEmail());
+        $recepient_name = sprintf('%s %s', $customer->getFirstName(), $customer->getLastName());
+        $customer_id = trim($customer->getId());
 
         //Support Information
         $recipient_name_rs = sfConfig::get('app_recipient_name_rs');
@@ -2239,7 +2239,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email2->setReceipientEmail($recepient_agent_email);
             $email2->setAgentId($agent_company_id);
             $email2->setCutomerId($customer_id);
-            $email2->setEmailType('LandnCall  Refill/charge via admin');
+            $email2->setEmailType('LandnCall Refill/charge via admin');
             $email2->setMessage($message_body);
 
             $email2->save();
@@ -2254,7 +2254,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email3->setReceipientEmail($recipient_email_ok);
             $email3->setAgentId($agent_company_id);
             $email3->setCutomerId($customer_id);
-            $email3->setEmailType('LandnCall  Refill/charge via admin');
+            $email3->setEmailType('LandnCall Refill/charge via admin');
             $email3->setMessage($message_body);
             $email3->save();
         endif;
@@ -2267,7 +2267,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email4->setReceipientEmail($recipient_email_jan);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandnCall  Refill/charge via admin');
+            $email4->setEmailType('LandnCall Refill/charge via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -2280,7 +2280,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email4->setReceipientEmail($recipient_email_cdu);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandnCall  Refill/charge via admin');
+            $email4->setEmailType('LandnCall Refill/charge via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;
@@ -2293,7 +2293,7 @@ public static function sendAdminRefilEmail(AgentCompany $agent,$agent_order)
             $email4->setReceipientEmail($recipient_email_rs);
             $email4->setAgentId($agent_company_id);
             $email4->setCutomerId($customer_id);
-            $email4->setEmailType('LandnCall  Refill/charge via admin');
+            $email4->setEmailType('LandnCall Refill/charge via admin');
             $email4->setMessage($message_body);
             $email4->save();
         endif;

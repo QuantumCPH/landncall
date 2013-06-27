@@ -2,6 +2,7 @@
 
 class EmployeeCustomerCallhistoryPeer extends BaseEmployeeCustomerCallhistoryPeer
 {
+
         static public function getTotalCallDuration(Employee $employee,$call,PropelPDO $con = null)
     {
        if($con === null) {
@@ -23,4 +24,5 @@ class EmployeeCustomerCallhistoryPeer extends BaseEmployeeCustomerCallhistoryPee
        $stmt->execute();
        return $stmt->fetchColumn();
     }
+
 }
