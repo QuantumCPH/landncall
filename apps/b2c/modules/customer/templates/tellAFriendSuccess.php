@@ -84,7 +84,7 @@ chars.value = "Characters: "+str.length+"/434";
 
 <br/>
 <h3><?php echo __('Tell your friends about zer0call & earn extra balance!') ?></h3>
-<p style="align:justified;"><?php echo __('Tell your friends about zer0call and earn 10dkk as soon as your friends have made their first payment with zer0call! Spread the word about zer0call and let your friends know about LandNCall AB services.') ?></p>
+<p style="align:justified;"><?php echo __('Tell your friends about zer0call and earn 10dkk as soon as your friends have made their first payment with zer0call! Spread the word about zer0call and let your friends know about SmartSim services.') ?></p>
 <br/>
 <h3><?php echo __('How does it work?'); ?></h3>
 <p style="align:justified;"><?php echo __('You can tell your friends about zer0call in two simple ways:') ?><br />

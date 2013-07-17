@@ -200,8 +200,8 @@ class pScriptsActions extends sfActions {
         //set vat
         $vat = 0;
         $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
         $recepient_email = trim($this->customer->getEmail());
         $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -487,8 +487,8 @@ class pScriptsActions extends sfActions {
                                 ));
 
                         $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-                        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                         $recepient_email = trim($this->customer->getEmail());
                         $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -812,9 +812,9 @@ class pScriptsActions extends sfActions {
         echo '<br/>';
         echo sfConfig::get('app_email_smtp_password');
         echo '<br/>';
-        echo sfConfig::get('app_email_sender_email', 'support@landncall.com');
+        echo sfConfig::get('app_email_sender_email', 'support@smartsim.se');
         echo '<br/>';
-        echo sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        echo sfConfig::get('app_email_sender_name', 'SmartSim support');
 
 
         $connection = Swift_SmtpTransport::newInstance()
@@ -826,8 +826,8 @@ class pScriptsActions extends sfActions {
 
 
 
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
         echo '<br/>';
         echo $sender_email;
@@ -1035,7 +1035,7 @@ class pScriptsActions extends sfActions {
                     'username' => $username,
                     'password' => $password,
                     'mobile' => $mobileNo,
-                    'message' => "You balance is below 25 SEK, Please refill your account. LandNCall AB - Support "
+                    'message' => "You balance is below 25 SEK, Please refill your account. SmartSim - Support "
                 );
                 $queryString = http_build_query($data, '', '&');
                 $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
@@ -1046,7 +1046,7 @@ class pScriptsActions extends sfActions {
                     'username' => $username,
                     'password' => $password,
                     'mobile' => $mobileNo,
-                    'message' => "You balance is below 10 SEK, Please refill your account. LandNCall AB - Support"
+                    'message' => "You balance is below 10 SEK, Please refill your account. SmartSim - Support"
                 );
                 $queryString = http_build_query($data, '', '&');
                 $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
@@ -1058,7 +1058,7 @@ class pScriptsActions extends sfActions {
                     'username' => $username,
                     'password' => $password,
                     'mobile' => $mobileNo,
-                    'message' => "You balance is 0 SEK, Please refill your account. LandNCall AB - Support "
+                    'message' => "You balance is 0 SEK, Please refill your account. SmartSim - Support "
                 );
                 $queryString = http_build_query($data, '', '&');
                 $this->response_text = file_get_contents('http://sms.gratisgateway.dk/send.php?' . $queryString);
@@ -1153,7 +1153,7 @@ class pScriptsActions extends sfActions {
             else if ($balance <= 0.00) {
                 $email_msg .= "\r\n balance < 10 && balance > 0";
                 $subject = 'Test Email: Balance Email ';
-                $message_body = "Test Email:  Your balance is 0 SEK, please refill otherwise your account will be closed. \r\n - LandNCall AB Support \r\n Company Contact Info";
+                $message_body = "Test Email:  Your balance is 0 SEK, please refill otherwise your account will be closed. \r\n - SmartSim Support \r\n Company Contact Info";
 
                 //This Seciton For Make The Log History When Complete registration complete - Agent
                 //echo sfConfig::get('sf_data_dir');
@@ -2010,7 +2010,7 @@ class pScriptsActions extends sfActions {
             $smstext = SmsTextPeer::doSelectOne($sm);
             $sms_text = $smstext->getMessageText();
 
-            $senderName = 'LandNcall';
+            $senderName = 'SmartSim';
             echo "Error,Cannot make callback!";
             $res = ROUTED_SMS::Send($number, $sms_text, $senderName);
             die;
@@ -2700,8 +2700,8 @@ class pScriptsActions extends sfActions {
 
     public function executeSendEmailstt(sfWebRequest $request) {
 
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-        $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
         echo '<br/>';
         echo $sender_email;
@@ -3317,8 +3317,8 @@ class pScriptsActions extends sfActions {
 
 
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-                $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -3690,8 +3690,8 @@ class pScriptsActions extends sfActions {
                     ));
 
             $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-            $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-            $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+            $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+            $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
             $recepient_email = trim($this->customer->getEmail());
             $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());
@@ -3977,7 +3977,7 @@ class pScriptsActions extends sfActions {
                         //  emailLib::sendErrorInTelinta("Resenumber about to Finis", "Resenumbers in the landncall are lest then 10 . ");
                     }
                     if (!$voip_customer = SeVoipNumberPeer::doSelectOne($c)) {
-                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the landncall are finished. This error is faced by customer id: " . $customerids);
+                        emailLib::sendErrorInTelinta("Resenumber Finished", "Resenumbers in the SmartSim are finished. This error is faced by customer id: " . $customerids);
                         return false;
                     }
                 }
@@ -4052,7 +4052,7 @@ Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras o
 ";
 
 
-                $senderName = "LandNCall";
+                $senderName = "SmartSim";
                 $res = ROUTED_SMS::Send($usnumber, $sms_text, $senderName);
 
                 //if the customer is invited, Give the invited customer a bonus of 10dkk
@@ -4139,8 +4139,8 @@ Ditt USA mobil nummer är följande: (" . $usnumber . "), numret är aktiveras o
                     'wrap' => true
                         ));
                 $subject = $this->getContext()->getI18N()->__('Payment Confirmation');
-                $sender_email = sfConfig::get('app_email_sender_email', 'support@landncall.com');
-                $sender_name = sfConfig::get('app_email_sender_name', 'LandNCall AB support');
+                $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+                $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
 
                 $recepient_email = trim($this->customer->getEmail());
                 $recepient_name = sprintf('%s %s', $this->customer->getFirstName(), $this->customer->getLastName());

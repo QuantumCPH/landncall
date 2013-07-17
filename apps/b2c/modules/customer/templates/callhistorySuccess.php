@@ -38,7 +38,7 @@
                 <center>
 
                     <form action="/index.php/customer/c9Callhistory" method="post">
-                        <INPUT TYPE="submit" VALUE="<?php echo __('Se LandNCall AB Global opkaldsoversigt') ?>">
+                        <INPUT TYPE="submit" VALUE="<?php echo __('Se SmartSim Global opkaldsoversigt') ?>">
                     </form>
                 </center>
             </span>

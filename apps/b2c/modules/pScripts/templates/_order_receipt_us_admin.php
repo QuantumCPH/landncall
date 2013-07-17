@@ -63,7 +63,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
 	<?php echo __('Tveka inte att ta kontakt med oss om det är något du undrar över.') ?>
 	</p>
         <p>
-            <a href="mailto:Support@landncall.com">Support@landncall.com</a>
+            <a href="mailto:Support@smartsim.se">Support@smartsim.se</a>
 	</p>
         <p>
 	<?php echo __('Med vänlig hälsning') ?>

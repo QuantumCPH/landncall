@@ -53,7 +53,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
 	<p><?php echo __('Dear Customer') ?></p>
 	
 	<p>
-	<?php echo __('Thank you for ordering <b>%1%</b> and becoming LandNCall AB Customer. We welcome you to a new and huge mobile world.', array('%1%'=>$order->getProduct()->getName())) ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice.
+	<?php echo __('Thank you for ordering <b>%1%</b> and becoming SmartSim Customer. We welcome you to a new and huge mobile world.', array('%1%'=>$order->getProduct()->getName())) ?> Ditt kundnummer &auml;r  <?php echo $customer->getUniqueid();?>. Det kan du anv&auml;nda i din kontakt med kundservice.
 	</p>
 	
 	<p>
@@ -79,7 +79,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
 	<?php echo __('Tveka inte att ta kontakt med oss om det är något du undrar över.') ?>
 	</p>
         <p>
-            <a href="mailto:Support@landncall.com">Support@landncall.com</a>
+            <a href="mailto:Support@smartsim.se">Support@smartsim.se</a>
 	</p>
         <p>
 	<?php echo __('Med vänlig hälsning') ?>
@@ -194,7 +194,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
   </tr>
   <tr class="footer">
     <td class="payer_summary" colspan="4" style="font-weight:normal; white-space: nowrap;"> 
-    Landncall AB&nbsp;&nbsp;&nbsp;Box 42017, SE-126 12 Stockholm&nbsp;&nbsp;&nbsp; Org.nr.556810-8921 </td>    
+    SmartSim &nbsp;&nbsp;&nbsp;Smedeholm 13 B&nbsp;&nbsp;&nbsp;2730 København</td>    
   </tr>
 </table>
 <?php if($wrap_content): ?>
@@ -218,11 +218,11 @@ $wrap_content  = isset($wrap)?$wrap:false;
 
 <p style="font-weight: bold;">
 	<?php echo __('If you have any questions please feel free to contact our customer support center at'); ?>
-	<a href="mailto:support@landncall.com">support@landncall.com</a>
+	<a href="mailto:support@smartsim.se">support@smartsim.se</a>
 </p>
 
 <p style="font-weight: bold;"><?php echo __('Cheers') ?></p>
 
 <p style="font-weight: bold;">
-<?php echo __('Support') ?>&nbsp;LandNCall AB
+<?php echo __('Support') ?>&nbsp;SmartSim
 </p>

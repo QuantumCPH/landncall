@@ -86,17 +86,17 @@ margin-top: 10px;
 		<?php echo $company_meta->getCity()?><br />
 	    Att: <?php echo $company_meta->getContactName() ?>
 	    </td>
-		<td>LandNCall AB<br />
-		 Telefonv&atilde;gen 30
+		<td>SmartSim<br />
+		 Smedeholm 13 B
 	<br />
-	126 37 H&atilde;gersten
+	2730 København
 	<br />
-	
+	Danmark
 	<br />
-	Tel:      +46 85 17 81 100
+	Tel:      +45 7027 9966
 	<br />	
 	<br />
-	Cvr:     32068219
+<!--	Cvr:     32068219-->
 	<br /></td>
 	</tr>
 	<tr>

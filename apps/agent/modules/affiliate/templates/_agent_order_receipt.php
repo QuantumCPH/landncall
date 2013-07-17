@@ -63,7 +63,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
 <?php endif; ?>
 <table class="receipt" cellspacing="0" width="600px">
 <tr bgcolor="#CCCCCC" class="receipt_header"> 
-    <td colspan="4"> LandNCall AB
+    <td colspan="4"> SmartSim
     </td>
   </tr>
   <tr>
@@ -144,12 +144,12 @@ $wrap_content  = isset($wrap)?$wrap:false;
 
 <p>
 	<?php echo __('If you have any questions please feel free to contact our customer support center at '); ?>
-	<a href="mailto:support@landncall.com">support@landncall.com</a>
+	<a href="mailto:support@smartsim.se">support@smartsim.se</a>
 </p>
 
 <p><?php echo __('Cheers') ?></p>
 
 <p>
 <?php echo __('Support') ?><br />
-LandNCall AB
+SmartSim
 </p>

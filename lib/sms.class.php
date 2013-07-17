@@ -14,7 +14,7 @@ class CARBORDFISH_SMS {
     private static $S = 'H';
     private static $UN = 'zapna1';
     private static $P = 'Zapna2010';
-    private static $SA = 'LandNCall';
+    private static $SA = 'SmartSim';
     private static $ST = 5;
 
     /*
@@ -45,7 +45,7 @@ class CARBORDFISH_SMS {
         $res = file_get_contents('http://sms1.cardboardfish.com:9001/HTTPSMS?' . $queryString);
         sleep(0.15);
         if (!$res) {
-            $message.="SMS not sent via CardboradFish to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText;
+            $message.="SMS not sent via CardboradFish to this mobile numberc On SmartSim <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText;
             emailLib::smsNotSentEmail($message);
             return false;
         }
@@ -69,7 +69,7 @@ class SMSNU {
     //put your code here
 
     private static $main = '13rkha84';
-    private static $id = 'LandNCall';
+    private static $id = 'SmartSim';
 
     /*
      * Description of Send
@@ -110,7 +110,7 @@ class SMSNU {
         if (substr($res, 10, 2) == 'OK') {
             return true;
         } else {
-            $message.="SMS not sent to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText . "<br/> and Time is " . $smsLog->getCreatedAt();
+            $message.="SMS not sent to this mobile numberc On SmartSim <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText . "<br/> and Time is " . $smsLog->getCreatedAt();
             emailLib::smsNotSentEmail($message);
             return false;
         }
@@ -124,7 +124,7 @@ class ROUTE_API {
 
     private static $username = 'zapna1';
     private static $password = 'lghanymb';
-    private static $source = 'LandNCall';
+    private static $source = 'SmartSim';
     private static $dlr = 1;
     private static $type = 0;
 
@@ -160,7 +160,7 @@ class ROUTE_API {
 
             return true;
         } else {
-            $message.="SMS not sent via Route SMSAPI to this mobile numberc On LandNCall <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText . "<br/>  Response from API =" .$res;
+            $message.="SMS not sent via Route SMSAPI to this mobile numberc On SmartSim <br/>Mobile number =" . $mobileNumber . "<br/> Message is =" . $smsText . "<br/>  Response from API =" .$res;
             emailLib::smsNotSentEmail($message);
             return false;
         }
@@ -175,7 +175,7 @@ class ROUTED_SMS {
             if (!CARBORDFISH_SMS::Send($mobileNumber, $smsText, $senderName, $smsType)) {
                 if (!SMSNU::Send($mobileNumber, $smsText, $senderName, $smsType)) {
                     if ($senderName == null)
-                        $senderName = "LandNCall";
+                        $senderName = "SmartSim";
                     if ($smsType == null)
                         $smsType = 1;
 

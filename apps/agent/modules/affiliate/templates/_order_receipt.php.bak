@@ -66,14 +66,14 @@ $wrap_content  = isset($wrap)?$wrap:false;
 <?php endif; ?>
 <table class="receipt" cellspacing="0" width="600px">
 <tr bgcolor="#CCCCCC" class="receipt_header"> 
-    <td colspan="4"> LandNCall AB
+    <td colspan="4"> SmartSim
     </td>
   </tr>
   <tr>
   <td colspan="4" class="payer_summary">
-	Bryggervangen 19, 2
+	Smedeholm 13 B
 	<br />
-	DK-2100 Kobenhavn 0
+	2730 København
 	<br />
 	Denmark
 	<br />
@@ -81,8 +81,7 @@ $wrap_content  = isset($wrap)?$wrap:false;
 	<br />
 	<br />
 	Fax:     +45 70 27 99 65 
-	<br />
-	Cvr:     32068219
+	
 	<br />
   </td>
   </tr>
@@ -168,12 +167,12 @@ $wrap_content  = isset($wrap)?$wrap:false;
 
 <p>
 	<?php echo __('If you have any questions please feel free to contact our customer support center at '); ?>
-	<a href="mailto:support@landncall.com">support@landncall.com</a>
+	<a href="mailto:support@smartsim.se">support@smartsim.se</a>
 </p>
 
 <p><?php echo __('Cheers') ?></p>
 
 <p>
 <?php echo __('Support') ?><br />
-Zapna ApS 
+SmartSim
 </p>
