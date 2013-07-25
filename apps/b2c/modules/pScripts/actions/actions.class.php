@@ -3341,7 +3341,8 @@ class pScriptsActions extends sfActions {
                     //This is for Recharge the Customer
 
                     $MinuesOpeningBalance = $OpeningBalance;
-                    Telienta::recharge($this->customer, $OpeningBalance, "Refill");
+                    $telintaObj = new Telienta();
+                    $telintaObj->recharge($this->customer, $OpeningBalance, "Refill");
 
                     //This is for Recharge the Account
                     //this condition for if follow me is Active
