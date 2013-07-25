@@ -84,14 +84,14 @@ class CompanyEmployeActivation {
         return true;
     }
 
-    public function telintaRegisterEmployeeCT($employeMobileNumber, Company $company) {
+    public function telintaRegisterEmployeeCT($employeMobileNumber, Company $company, Employee $employee) {
 
-        return $this->createAccount($company, $employeMobileNumber, 'a', $this->a_iProduct);
+        return $this->createAccount($company,$employee, $employeMobileNumber, 'a', $this->a_iProduct);
     }
 
-    public function telintaRegisterEmployeeCB($employeMobileNumber, Company $company) {
+    public function telintaRegisterEmployeeCB($employeMobileNumber, Company $company, Employee $employee) {
 
-        return $this->createAccount($company, $employeMobileNumber, 'cb', $this->CBProduct);
+        return $this->createAccount($company,$employee, $employeMobileNumber, 'cb', $this->CBProduct);
     }
 
     public function createReseNumberAccount($VOIPNumber, Company $company, $currentActiveNumber) {
@@ -347,7 +347,7 @@ class CompanyEmployeActivation {
             return -1 * $Balance;
     }
 
-    private function createAccount(Company $company, $mobileNumber, $accountType, $iProduct, $followMeEnabled='N') {
+    private function createAccount(Company $company,Employee $employee, $mobileNumber, $accountType, $iProduct, $followMeEnabled='N') {
         $account = false;
         $max_retries = 10;
         $retry_count = 0;
@@ -399,8 +399,8 @@ class CompanyEmployeActivation {
 
         $telintaAccount = new TelintaAccounts();
         $telintaAccount->setAccountTitle($accountName);
-        $telintaAccount->setParentId($company->getId());
-        $telintaAccount->setParentTable("company");
+        $telintaAccount->setParentId($employee->getId());
+        $telintaAccount->setParentTable("employee");
         $telintaAccount->setICustomer($company->getICustomer());
         $telintaAccount->setIAccount($account->i_account);
         $telintaAccount->save();
