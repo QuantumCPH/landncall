@@ -119,7 +119,7 @@
     jQuery(function(){
 
         jQuery("#productid").change(function(){
-            jQuery.post("<?PHP echo sfConfig::get('app_backend_url') ?>employee/getUniqueIds",{ product_id:jQuery(this).val() } ,function(data){
+            jQuery.post("<?php echo sfConfig::get('app_backend_url') ?>employee/getUniqueIds",{ product_id:jQuery(this).val() } ,function(data){
                jQuery("#uniqueid-select").html(data);
             });
         });

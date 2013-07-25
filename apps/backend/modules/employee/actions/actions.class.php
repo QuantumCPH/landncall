@@ -560,9 +560,9 @@ class employeeActions extends sfActions {
         $this->companys = CompanyPeer::doSelectOne($c);
         $ComtelintaObj = new CompanyEmployeActivation();
         $tomorrow1 = mktime(0, 0, 0, date("m"), date("d") - 15, date("Y"));
-        $fromdate = date("Y-m-d", $tomorrow1);
+        $fromdate = date("Y-m-d 00:00:00", $tomorrow1);
         $tomorrow = mktime(0, 0, 0, date("m"), date("d") + 1, date("Y"));
-        $todate = date("Y-m-d", $tomorrow);
+        $todate = date("Y-m-d 23:59:59", $tomorrow);
 
         $mobilenumber = $this->employee->getCountryMobileNumber();
         $ct = new Criteria();
