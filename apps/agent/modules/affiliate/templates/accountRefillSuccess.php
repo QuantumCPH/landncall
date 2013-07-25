@@ -169,20 +169,12 @@
                     <input type="hidden" value="SEK" name="currency_code">
                     <input type="hidden" value="PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest" name="bn">
 
-
                     <input type="hidden" name="first_name" value="<?php echo $agent->getName() ?>"  />
                     <input type="hidden" name="last_name" value="<?php echo $agent->getName() ?>"  />
                     <input type="hidden" name="email" value="<?php echo $agent->getEmail(); ?>"  />
                     <input type="hidden" name="city" value="<?php echo $agent->getCity(); ?>"  />
                     <input type="hidden" name="zip" value="<?php echo $agent->getPostCode() ?>"  />
                     <input type="hidden" name="address1" value="<?php echo $agent->getAddress(); ?>"  />
-
-
-
-
-
-
-
                     <input type="hidden" value="<?php echo $agent_order->getAgentOrderId(); ?>" name="item_number">
                     <input type="hidden" name="cancelurl" value="<?php echo sfConfig::get('app_agent_url'); ?>affiliate/thankyou/?accept=cancel" />
                     <input type="hidden" name="accepturl" id="accepturl"  value="<?php echo sfConfig::get('app_agent_url'); ?>affiliate/thankyou?subscriptionid=&orderid=<?php echo $agent_order->getAgentOrderId(); ?>&amount=">

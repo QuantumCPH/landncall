@@ -13,7 +13,7 @@
         <div id="wrapper">
             <div id="header">
                 <div class="logo">
-                    <?php echo image_tag('/images/logo-new.png',array("width"=>"200")) ?>
+                    <?php echo image_tag('/images/logo-new.png', array("width"=>"190")) ?>
                 </div>
                 <div class="clr"></div>
 

@@ -33,6 +33,8 @@ class Telienta {
          $this->a_iProduct        = sfConfig::get("app_a_iproduct");
          $this->cb_iProduct       = sfConfig::get("app_cb_iproduct");
          $this->voip_iProduct     = sfConfig::get("app_voip_iproduct");
+         $this->telinta_soap_user = sfConfig::get("app_telinta_soap_user");
+         $this->telinta_soap_password = sfConfig::get("app_telinta_soap_password");
     }
     public function ResgiterCustomer(Customer $customer, $OpeningBalance, $creditLimit=0, $USReseller = false) {
         $tCustomer = false;
@@ -61,17 +63,25 @@ class Telienta {
                                 'email' => 'okh@zapna.com'
                                 )));
             } catch (SoapFault $e) {
-                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
-                    emailLib::sendErrorInTelinta("Error in Customer Registration", "We have faced an issue in Customer registration on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
+                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error' && $e->faultstring != 'Bad Gateway') {
+                    if($e->faultstring=="Authentification failed"){
+                       emailLib::sendErrorInTelinta("Authentification failed","Authentification failed on telinta");
+                       $this->startNewSession();
+                       ///// after starting new session, new object must initialize for PortaBillingSoapCient
+                       $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Customer');
+                       continue;
+                    }else{ 
+                       emailLib::sendErrorInTelinta("Error in Customer Registration", "We have faced an issue in Customer registration on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
 
-                    return false;
+                       return false;
+                    }
                 }
             }
             sleep(0.5);
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Error in Customer Registration", "We have faced an issue in Customer registration on telinta. This is the error for cusotmer with Id: " . $customer->getId() . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Error in Customer Registration", "We have faced an issue in Customer registration on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
 
@@ -113,10 +123,18 @@ class Telienta {
                                     'timeout' => 30
                                     )));
                 } catch (SoapFault $e) {
-                    if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
-                        emailLib::sendErrorInTelinta("Account update_account_followme: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account update_account_followme on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
+                    if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error' && $e->faultstring != 'Bad Gateway') {
+                       if($e->faultstring=="Authentification failed"){
+                           emailLib::sendErrorInTelinta("Authentification failed","Authentification failed on telinta");
+                           $this->startNewSession();
+                           ///// after starting new session, new object must initialize for PortaBillingSoapCient
+                           $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Account');
+                           continue;
+                        }else{ 
+                          emailLib::sendErrorInTelinta("Account update_account_followme: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account update_account_followme on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
 
-                        return false;
+                          return false;
+                        }
                     }
                 }
 
@@ -125,7 +143,7 @@ class Telienta {
                 $retry_count++;
             }
             if ($retry_count == $max_retries) {
-                emailLib::sendErrorInTelinta("Account update_followme_number: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account update_followme_number on telinta. This is the error for cusotmer with Id: " . $customer->getId() . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+                emailLib::sendErrorInTelinta("Account update_followme_number: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account update_followme_number on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
                 return false;
             }
 
@@ -146,17 +164,25 @@ class Telienta {
                                 )
                             ));
                 } catch (SoapFault $e) {
-                    if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
-                        emailLib::sendErrorInTelinta("Account add_followme_number: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account add_followme_number on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
+                    if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error' && $e->faultstring != 'Bad Gateway') {
+                        if($e->faultstring=="Authentification failed"){
+                           emailLib::sendErrorInTelinta("Authentification failed","Authentification failed on telinta");
+                           $this->startNewSession();
+                           ///// after starting new session, new object must initialize for PortaBillingSoapCient
+                           $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Account');
+                           continue;
+                        }else{
+                            emailLib::sendErrorInTelinta("Account add_followme_number: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account add_followme_number on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
 
-                        return false;
+                            return false;
+                        }
                     }
                 }
                 sleep(0.5);
                 $retry_count++;
             }
             if ($retry_count == $max_retries) {
-                emailLib::sendErrorInTelinta("Account add_followme_number: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account add_followme_number on telinta. This is the error for cusotmer with Id: " . $customer->getId() . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+                emailLib::sendErrorInTelinta("Account add_followme_number: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account add_followme_number on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
                 return false;
             }
         }
@@ -173,17 +199,25 @@ class Telienta {
             try {
                 $account = $pb->terminate_account(array('i_account' => $telintaAccount->getIAccount()));
             } catch (SoapFault $e) {
-                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
-                    emailLib::sendErrorInTelinta("Account Deletion: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account Deletion on telinta. This is the error for cusotmer with Id: " . $telintaAccount->getIAccount() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
+                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error' && $e->faultstring != 'Bad Gateway') {
+                    if($e->faultstring=="Authentification failed"){
+                       emailLib::sendErrorInTelinta("Authentification failed","Authentification failed on telinta");
+                       $this->startNewSession();
+                       ///// after starting new session, new object must initialize for PortaBillingSoapCient
+                       $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Account');
+                       continue;
+                    }else{
+                        emailLib::sendErrorInTelinta("Account Deletion: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account Deletion on telinta. This is the error for cusotmer with Id: " . $telintaAccount->getIAccount() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
 
-                    return false;
+                        return false;
+                    }
                 }
             }
             sleep(0.5);
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Account Deletion: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account Deletion on telinta. This is the error for cusotmer with Id: " . $telintaAccount->getIAccount() . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Account Deletion: " . $telintaAccount->getIAccount() . " Error!", "We have faced an issue in Customer Account Deletion on telinta. This is the error for cusotmer with Id: " . $telintaAccount->getIAccount() . " and error is " . $e->faultstring . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
 
@@ -206,17 +240,25 @@ class Telienta {
                             'i_customer' => $customer->getICustomer(),
                         ));
             } catch (SoapFault $e) {
-                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
-                    emailLib::sendErrorInTelinta("Error in Get Balance", "We have faced an issue on Success in Get Balnace on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
+                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error' && $e->faultstring != 'Bad Gateway') {
+                    if($e->faultstring=="Authentification failed"){
+                       emailLib::sendErrorInTelinta("Authentification failed","Authentification failed on telinta");
+                       $this->startNewSession();
+                       ///// after starting new session, new object must initialize for PortaBillingSoapCient
+                       $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Customer');
+                       continue;
+                    }else{
+                      emailLib::sendErrorInTelinta("Error in Get Balance", "We have faced an issue on Success in Get Balnace on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
 
-                    return false;
+                      return false;
+                    }
                 }
             }
             sleep(0.5);
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Error in Get Balance", "We have faced an issue on Success in Get Balnace on telinta. This is the error for cusotmer with Id: " . $customer->getId() . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Error in Get Balance", "We have faced an issue on Success in Get Balnace on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and error is " . $e->faultstring . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
         $Balance = $cInfo->customer_info->balance;
@@ -277,11 +319,18 @@ class Telienta {
             try {
                 $xdrList = $pb->get_customer_xdr_list(array('i_customer' => $icustomer, 'from_date' => $fromDate, 'to_date' => $toDate, 'i_service' => $iService));
             } catch (SoapFault $e) {
-                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
+                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error' && $e->faultstring != 'Bad Gateway') {
+                    if($e->faultstring=="Authentification failed"){
+                       emailLib::sendErrorInTelinta("Authentification failed","Authentification failed on telinta");
+                       $this->startNewSession();
+                       ///// after starting new session, new object must initialize for PortaBillingSoapCient
+                       $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Customer');
+                       continue;
+                    }else{
 
-                    emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History. This is the error for cusotmer with ICustomer: " . $icustomer . " and the i_service is: ".$iService." and error is " . $e->faultstring . "  <br/> Please Investigate.");
-                    return false;
-
+                        emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History. This is the error for cusotmer with ICustomer: " . $icustomer . " and the i_service is: ".$iService." and error is " . $e->faultstring . "  <br/> Please Investigate.");
+                        return false;
+                    }
                 }
             }
             sleep(0.5);
@@ -289,7 +338,7 @@ class Telienta {
 
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History on telinta. This is the error for cusotmer with ICustomer: " . $icustomer . " and the i_service is: ".$iService.". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Customer Call History: " . $icustomer . " Error!", "We have faced an issue with Customer while Fetching Call History on telinta. This is the error for cusotmer with ICustomer: " . $icustomer . " and the i_service is: ".$iService." and error is " . $e->faultstring . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
 
@@ -305,12 +354,36 @@ class Telienta {
 
         $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Customer');
 
+        while (!$accounts && $retry_count < $max_retries) {
+            try {
+                $cInfo = $pb->get_customer_info(array(
+                            'name' => $uniqueId,
+                        ));
+            } catch (SoapFault $e) {
+                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error' && $e->faultstring != 'Bad Gateway') {
+                    if($e->faultstring=="Authentification failed"){
+                       emailLib::sendErrorInTelinta("Authentification failed","Authentification failed on telinta");
+                       $this->startNewSession();
+                       ///// after starting new session, new object must initialize for PortaBillingSoapCient
+                       $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Customer');
+                       continue;
+                    }else{
+                        emailLib::sendErrorInTelinta("unique id " . $uniqueId . " Error!", "We have faced an issue with Customer while getting info. This is the error for cusotmer with Customer unique id: " . $uniqueId . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
 
-        $cInfo = $pb->get_customer_info(array(
-                    'name' => $uniqueId,
-                ));
+                        return false;
+                    }
+                }
+            }
+            sleep(0.5);
+            $retry_count++;
+        }
+        if ($retry_count == $max_retries) {
+            emailLib::sendErrorInTelinta("unique id " . $uniqueId . " Error!", "We have faced an issue with Customer while getting info. This is the error for cusotmer with Customer unique id: " . $uniqueId . " and error is " . $e->faultstring . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            return false;
+        }
+
         $i_customer = $cInfo->customer_info->i_customer;
-
+ 
         return $i_customer;
     }
 
@@ -367,17 +440,25 @@ class Telienta {
                                 'follow_me_enabled' => $followMeEnabled
                                 )));
             } catch (SoapFault $e) {
-                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
-                    emailLib::sendErrorInTelinta("Account Creation: " . $accountName . " Error!", "We have faced an issue in Customer Account Creation on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and on Account" . $accountName . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
+                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error' && $e->faultstring != 'Bad Gateway') {
+                   if($e->faultstring=="Authentification failed"){
+                       emailLib::sendErrorInTelinta("Authentification failed","Authentification failed on telinta");
+                       $this->startNewSession();
+                       ///// after starting new session, new object must initialize for PortaBillingSoapCient
+                       $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Account');
+                       continue;
+                    }else{ 
+                        emailLib::sendErrorInTelinta("Account Creation: " . $accountName . " Error!", "We have faced an issue in Customer Account Creation on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and on Account" . $accountName . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
 
-                    return false;
+                        return false;
+                    }
                 }
             }
             sleep(0.5);
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Account Creation: " . $accountName . " Error!", "We have faced an issue in Customer Account Creation on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and on Account" . $accountName . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Account Creation: " . $accountName . " Error!", "We have faced an issue in Customer Account Creation on telinta. This is the error for cusotmer with Id: " . $customer->getId() . " and on Account" . $accountName . " and error is " . $e->faultstring . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
 
@@ -407,23 +488,51 @@ class Telienta {
                             'visible_comment' => $description
                         ));
             } catch (SoapFault $e) {
-                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error') {
-                    emailLib::sendErrorInTelinta("Customer Transcation: " . $customer->getId() . " Error!", "We have faced an issue with Customer while making transaction " . $action . " with balance:" . $amount . ". This is the error for cusotmer with Customer ID: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
+                if ($e->faultstring != 'Could not connect to host' && $e->faultstring != 'Internal Server Error' && $e->faultstring != 'Bad Gateway') {
+                    if($e->faultstring=="Authentification failed"){
+                       emailLib::sendErrorInTelinta("Authentification failed","Authentification failed on telinta");
+                       $this->startNewSession();
+                       ///// after starting new session, new object must initialize for PortaBillingSoapCient
+                       $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Customer');
+                       continue;
+                    }else{
+                        emailLib::sendErrorInTelinta("Customer Transcation: " . $customer->getId() . " Error!", "We have faced an issue with Customer while making transaction " . $action . " with balance:" . $amount . ". This is the error for cusotmer with Customer ID: " . $customer->getId() . " and error is " . $e->faultstring . "  <br/> Please Investigate.");
 
-                    return false;
+                        return false;
+                    }
                 }
             }
             sleep(0.5);
             $retry_count++;
         }
         if ($retry_count == $max_retries) {
-            emailLib::sendErrorInTelinta("Customer Transcation: " . $customer->getId() . " Error!", "We have faced an issue with Customer while making transaction " . $action . " with balance:" . $amount . ". This is the error for cusotmer with Customer ID: " . $customer->getId() . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
+            emailLib::sendErrorInTelinta("Customer Transcation: " . $customer->getId() . " Error!", "We have faced an issue with Customer while making transaction " . $action . " with balance:" . $amount . ". This is the error for cusotmer with Customer ID: " . $customer->getId() . " and error is " . $e->faultstring . ". Error is Even After Max Retries " . $max_retries . "  <br/> Please Investigate.");
             return false;
         }
 
         return true;
     }
+    
+    public function startNewSession(){
+        $pb = new PortaBillingSoapClient($this->telintaSOAPUrl, 'Admin', 'Customer');
+        $session = $pb->_login($this->telinta_soap_user, $this->telinta_soap_password);
 
+        if ($session) {
+            $ctc = new Criteria();
+            $countTC = TelintaConfigPeer::doCount($ctc);
+            if($countTC==0){
+                $telintaConfig = new TelintaConfig();
+                $telintaConfig->setSession($session);
+                $telintaConfig->save();
+            }else{
+               $telintaConfig = TelintaConfigPeer::doSelectOne($ctc); 
+               $telintaConfig->setSession($session);
+               $telintaConfig->save();
+            }
+            emailLib::sendErrorInTelinta("New Session started","New session generated for telinta. session id: ".$session);
+            return true;
+        }
+    }
 }
 
 ?>

@@ -2097,7 +2097,6 @@ class pScriptsActions extends sfActions {
                 $un->addDescendingOrderByColumn(CallbackLogPeer::CREATED);
                 $unumber = CallbackLogPeer::doSelectOne($un);
 
-
                 $cdrc = new Criteria();
                 $cdrc->add(ZerocallCdrPeer::ANI, "00" . $unumber->getMobileNumber());
                 $cdrc->add(ZerocallCdrPeer::EXECUTE_STATUS, 1);
@@ -2852,9 +2851,9 @@ class pScriptsActions extends sfActions {
         }
 
         $cardcount = 0;
-        $serial = 100000;
+        $serial =138000;
         $i = 1;
-        while ($i <= 20000) {
+        while ($i <=1000) {
 
 
             $val = random(20);
@@ -2883,34 +2882,34 @@ class pScriptsActions extends sfActions {
                 $cardTotalcount = 0;
                 $ct = new Criteria();
                 $cardTotalcount = CardNumbersPeer::doCount($ct);
-                if ($cardTotalcount < 200) {
+                if ($cardTotalcount < 1000) {
                     $cardcount = 0;
 
-                    $c = new Criteria();
-                    $c->add(CardNumbersPeer::CARD_PRICE, 50);
-                    $cardcount = CardNumbersPeer::doCount($c);
-                    if ($cardcount < 100) {
-
-                        $cardnumber = "2149" . $cardnumber;
-                        $price = 50;
-                        $cr = new CardNumbers();
-                        $cr->setCardNumber($cardnumber);
-                        $cr->setCardPrice($price);
-                        $cr->setCardSerial($serial);
-                        $cr->save();
-                        $serial++;
-                    } else {
-                        $cardnumber = "1149" . $cardnumber;
-                        $price = 100;
+//                    $c = new Criteria();
+//                    $c->add(CardNumbersPeer::CARD_PRICE, 50);
+//                    $cardcount = CardNumbersPeer::doCount($c);
+//                    if ($cardcount < 100) {
+//
+//                        $cardnumber = "2149" . $cardnumber;
+//                        $price = 50;
+//                        $cr = new CardNumbers();
+//                        $cr->setCardNumber($cardnumber);
+//                        $cr->setCardPrice($price);
+//                        $cr->setCardSerial($serial);
+//                        $cr->save();
+//                        $serial++;
+//                    } else {
+                        $cardnumber = "100" . $cardnumber;
+                        $price =50;
                         $crp = new CardNumbers();
                         $crp->setCardNumber($cardnumber);
                         $crp->setCardPrice($price);
                         $crp->setCardSerial($serial);
                         $crp->save();
                         $serial++;
-                    }
+                   // }
                 } else {
-                    $i = 20000;
+                    $i =139000;
                 }
             }
             $i++;
