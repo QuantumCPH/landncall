@@ -829,8 +829,11 @@ class pScriptsActions extends sfActions {
 
 
 
-        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
-        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
+//        $sender_email = sfConfig::get('app_email_sender_email', 'support@smartsim.se');
+//        $sender_name = sfConfig::get('app_email_sender_name', 'SmartSim support');
+        
+        $sender_email = sfConfig::get('app_email_support_email');
+        $sender_name = sfConfig::get('app_email_support_name');
 
         echo '<br/>';
         echo $sender_email;
