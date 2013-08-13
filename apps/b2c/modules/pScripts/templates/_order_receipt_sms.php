@@ -139,6 +139,12 @@ $wrap_content  = isset($wrap)?$wrap:false;
     <td>&nbsp;</td>
     <td><?php echo format_number($vat) ?></td>
   </tr>
+  <tr class="footer"> 
+    <td>&nbsp;</td>
+    <td><?php echo __('Delivery Charges') ?></td>
+    <td>&nbsp;</td>
+    <td><?php echo format_number($transaction->getPostalCharges()) ?></td>
+  </tr>
   <tr class="footer">
     <td>&nbsp;</td>
     <td><?php echo __('Total') ?></td>
