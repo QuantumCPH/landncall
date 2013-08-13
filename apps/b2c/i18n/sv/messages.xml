@@ -1018,7 +1018,10 @@
                 <source>Credit History</source>
                 <target>Kredit Historia</target>
             </trans-unit>
-
+ <trans-unit id="10847" translate="yes" reformat="yes" xml:space="default">
+                <source>Delivery Charges</source>
+                <target>fraktkostnader</target>
+            </trans-unit>
 
 
         </body>
