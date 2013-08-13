@@ -22,6 +22,7 @@ class BaseTransactionForm extends BaseFormPropel
       'agent_company_id'      => new sfWidgetFormInput(),
       'commission_amount'     => new sfWidgetFormInput(),
       'transaction_from'      => new sfWidgetFormInput(),
+      'postal_charges'        => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -35,6 +36,7 @@ class BaseTransactionForm extends BaseFormPropel
       'agent_company_id'      => new sfValidatorInteger(array('required' => false)),
       'commission_amount'     => new sfValidatorNumber(array('required' => false)),
       'transaction_from'      => new sfValidatorInteger(array('required' => false)),
+      'postal_charges'        => new sfValidatorNumber(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('transaction[%s]');

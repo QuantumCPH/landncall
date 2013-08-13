@@ -228,20 +228,31 @@ $customer_form->unsetAllExcept(array('auto_refill_amount', 'auto_refill_min_bala
             </li>
             <li>
               <label><?php echo __('VAT') ?> (25%)<br />
-              <?php echo __('Total amount') ?></label>
+               <?php echo __('Delivery Charges') ?> <br/>
+              <?php echo __('Total amount') ?> 
+            
+              </label>
               <input type="hidden" id="vat" value="<?php $vat = .25 * ($product_price); echo $vat; ?>" />
               <label class="fr ac" >
               	<span id="vat_span">
               	<?php echo format_number($vat) ?>
               	</span> SEK
               <br />
-              	<?php $total = $product_price + $extra_refill + $vat ?>
+              
+               <span id="total_span">
+              	<?php echo number_format($order->getProduct()->getPostalCharges(),2,",",""); ?>SEK
+              	</span><br/> 
+              	<?php $total = $product_price + $extra_refill + $vat+$order->getProduct()->getPostalCharges() ?>
               	<span id="total_span">
               	<?php echo format_number($total) ?>
               	</span> SEK
+               
+                
               </label>
             </li>
-			
+            
+            
+         
           </ul>
         <!-- hidden fields -->
 	<!--	<?php echo $form->renderHiddenFields() ?>

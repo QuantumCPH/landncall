@@ -11,7 +11,7 @@ generator:
 
     edit:
       title: Create/Edit Product
-      display: [name, price, description, initial_balance , include_in_zerocall, is_in_store, is_in_b2b,country_id,sms_code, product_order,product_type_package,product_country_us,sim_type_id]
+      display: [name, price, description, initial_balance , include_in_zerocall, is_in_store, is_in_b2b,country_id,sms_code, product_order,product_type_package,product_country_us,sim_type_id,postal_charges]
       fields:
               enablecountry: {name: Country}
               include_in_zerocall: {name: Customer Module}
@@ -20,7 +20,7 @@ generator:
               is_reg_share_value_pc: {name: Is Reg. share value %}
               is_extra_payments_share_value_pc: {name: Is extra refill share value %}
     list:
-      display: [name, price, description, initial_balance  , include_in_zerocall, is_in_store, is_in_b2b,enablecountry, sms_code, product_order,product_type_package,product_country_us,sim_types]
+      display: [name, price, description, initial_balance  , include_in_zerocall, is_in_store, is_in_b2b,enablecountry, sms_code, product_order,product_type_package,product_country_us,sim_types,postal_charges]
       fields:
               enablecountry: {name: Country}
               include_in_zerocall: {name: Customer Module}

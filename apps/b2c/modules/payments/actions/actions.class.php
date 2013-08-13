@@ -151,8 +151,9 @@ class paymentsActions extends sfActions {
 
         $order->save();
 
-        $transaction->setAmount($order->getProduct()->getPrice() - $order->getProduct()->getInitialBalance() + $order->getExtraRefill());
+        $transaction->setAmount($order->getProduct()->getPrice() - $order->getProduct()->getInitialBalance() + $order->getExtraRefill()+ $order->getProduct()->getPostalCharges());
         //TODO: $transaction->setAmount($order->getProduct()->getPrice());
+         $transaction->setPostalCharges($order->getProduct()->getPostalCharges());
         $transaction->setDescription($this->getContext()->getI18N()->__('Registrering inkl. taletid'));
         $transaction->setOrderId($order->getId());
         $transaction->setCustomerId($customer_id);

@@ -23,6 +23,7 @@ class BaseTransactionFormFilter extends BaseFormFilterPropel
       'agent_company_id'      => new sfWidgetFormFilterInput(),
       'commission_amount'     => new sfWidgetFormFilterInput(),
       'transaction_from'      => new sfWidgetFormFilterInput(),
+      'postal_charges'        => new sfWidgetFormFilterInput(),
     ));
 
     $this->setValidators(array(
@@ -35,6 +36,7 @@ class BaseTransactionFormFilter extends BaseFormFilterPropel
       'agent_company_id'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
       'commission_amount'     => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
       'transaction_from'      => new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))),
+      'postal_charges'        => new sfValidatorSchemaFilter('text', new sfValidatorNumber(array('required' => false))),
     ));
 
     $this->widgetSchema->setNameFormat('transaction_filters[%s]');
@@ -62,6 +64,7 @@ class BaseTransactionFormFilter extends BaseFormFilterPropel
       'agent_company_id'      => 'Number',
       'commission_amount'     => 'Number',
       'transaction_from'      => 'Number',
+      'postal_charges'        => 'Number',
     );
   }
 }

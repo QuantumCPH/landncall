@@ -32,6 +32,7 @@ class BaseProductForm extends BaseFormPropel
       'product_country_us'    => new sfWidgetFormInputCheckbox(),
       'sim_type_id'           => new sfWidgetFormPropelChoice(array('model' => 'SimTypes', 'add_empty' => false)),
       'is_in_b2b'             => new sfWidgetFormInputCheckbox(),
+      'postal_charges'        => new sfWidgetFormInput(),
     ));
 
     $this->setValidators(array(
@@ -55,6 +56,7 @@ class BaseProductForm extends BaseFormPropel
       'product_country_us'    => new sfValidatorBoolean(),
       'sim_type_id'           => new sfValidatorPropelChoice(array('model' => 'SimTypes', 'column' => 'id')),
       'is_in_b2b'             => new sfValidatorBoolean(array('required' => false)),
+      'postal_charges'        => new sfValidatorNumber(array('required' => false)),
     ));
 
     $this->widgetSchema->setNameFormat('product[%s]');
